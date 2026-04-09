@@ -45,7 +45,8 @@ class ReportController extends Controller
         $monthlyRevenue = Invoice::where('status', 'paid')
             ->whereYear('paid_at', $startDate->year)
             ->selectRaw('MONTH(paid_at) as month, SUM(total) as total')
-            ->groupBy('month')
+            ->groupByRaw('MONTH(paid_at)')
+            ->orderByRaw('MONTH(paid_at)')
             ->get()
             ->keyBy('month');
 
