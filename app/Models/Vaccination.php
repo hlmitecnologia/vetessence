@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Vaccination extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'pet_id', 'vaccine', 'batch', 'date', 'next_date',
+        'lot', 'manufacturer', 'application_site', 'vet_id',
+        'medical_record_id', 'notes'
+    ];
+
+    protected $casts = [
+        'date' => 'date',
+        'next_date' => 'date',
+    ];
+
+    public function pet(): BelongsTo
+    {
+        return $this->belongsTo(Pet::class);
+    }
+
+    public function vet(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'vet_id');
+    }
+
+    public function medicalRecord(): BelongsTo
+    {
+        return $this->belongsTo(MedicalRecord::class);
+    }
+}
