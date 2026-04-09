@@ -95,4 +95,50 @@ class PetController extends Controller
 
         return response()->json($pet, 201);
     }
+
+    public function update(Request $request, $id)
+    {
+        $pet = Pet::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:100',
+            'species' => 'sometimes|in:canine,feline,avian,exotic,reptile,small_mammal',
+            'breed' => 'sometimes|nullable|string|max:100',
+            'gender' => 'sometimes|in:male,female',
+            'birth_date' => 'sometimes|nullable|date',
+            'weight' => 'sometimes|nullable|numeric|min:0',
+            'color' => 'sometimes|nullable|string|max:50',
+            'microchip' => 'sometimes|nullable|string|max:50',
+            'size' => 'sometimes|nullable|in:small,medium,large,giant',
+        ]);
+
+        $pet->update($validated);
+
+        return response()->json($pet);
+    }
+
+    public function myPets(Request $request)
+    {
+        $user = $request->user();
+        
+        if (!$user->tutor) {
+            return response()->json(['error' => 'Tutor não encontrado'], 404);
+        }
+
+        $pets = $user->tutor->pets()->with('tutors')->get();
+
+        return response()->json($pets->map(function ($pet) {
+            return [
+                'id' => $pet->id,
+                'name' => $pet->name,
+                'species' => $pet->species,
+                'breed' => $pet->breed,
+                'gender' => $pet->gender,
+                'birth_date' => $pet->birth_date,
+                'weight' => $pet->weight,
+                'photo_url' => $pet->photo_url,
+                'age' => $pet->age,
+            ];
+        }));
+    }
 }

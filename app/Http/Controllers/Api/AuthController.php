@@ -66,4 +66,21 @@ class AuthController extends Controller
             'role' => $roleName,
         ]);
     }
+
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'phone' => 'sometimes|nullable|string|max:20',
+        ]);
+
+        $user->update($validated);
+
+        return response()->json([
+            'message' => 'Perfil atualizado com sucesso.',
+            'user' => $user,
+        ]);
+    }
 }

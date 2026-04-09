@@ -58,4 +58,54 @@ class TutorController extends Controller
 
         return response()->json($tutor, 201);
     }
+
+    public function update(Request $request, $id)
+    {
+        $tutor = Tutor::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'phone' => 'sometimes|nullable|string',
+            'phone_secondary' => 'sometimes|nullable|string',
+            'email' => 'sometimes|email|unique:tutors,email,' . $id,
+            'address' => 'sometimes|nullable|string',
+            'city' => 'sometimes|nullable|string',
+            'state' => 'sometimes|nullable|string|max:2',
+        ]);
+
+        $tutor->update($validated);
+
+        return response()->json($tutor);
+    }
+
+    public function myTutor(Request $request)
+    {
+        $user = $request->user();
+        
+        if (!$user->tutor) {
+            return response()->json(['error' => 'Tutor não encontrado'], 404);
+        }
+
+        $tutor = $user->tutor->load('pets');
+
+        return response()->json([
+            'id' => $tutor->id,
+            'name' => $tutor->name,
+            'cpf' => $tutor->cpf,
+            'phone' => $tutor->phone,
+            'email' => $tutor->email,
+            'address' => $tutor->address,
+            'city' => $tutor->city,
+            'state' => $tutor->state,
+            'pets' => $tutor->pets->map(function ($pet) {
+                return [
+                    'id' => $pet->id,
+                    'name' => $pet->name,
+                    'species' => $pet->species,
+                    'breed' => $pet->breed,
+                    'photo_url' => $pet->photo_url,
+                ];
+            }),
+        ]);
+    }
 }
