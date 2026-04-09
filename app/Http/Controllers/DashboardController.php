@@ -50,13 +50,13 @@ class DashboardController extends Controller
         // Charts Data
         // Revenue by month (last 6 months)
         $revenueByMonth = Invoice::select(
-                DB::raw("DATE_FORMAT(paid_at, '%b') as month"),
+                DB::raw("DATE_FORMAT(paid_at, '%Y-%m') as month"),
                 DB::raw('SUM(total) as total')
             )
             ->where('status', 'paid')
             ->where('paid_at', '>=', now()->subMonths(6))
-            ->groupBy('month')
-            ->orderBy('paid_at')
+            ->groupByRaw("DATE_FORMAT(paid_at, '%Y-%m')")
+            ->orderByRaw("DATE_FORMAT(paid_at, '%Y-%m')")
             ->get();
 
         // Appointments by type (current month)
