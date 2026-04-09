@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Vaccination;
 use App\Models\Pet;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -28,7 +29,7 @@ class VaccinationController extends Controller
     public function create(Request $request)
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::role('veterinario')->get();
+        $veterinarians = $this->getVeterinarians();
         $selectedPet = $request->pet_id ? Pet::find($request->pet_id) : null;
 
         return view('vaccinations.create', compact('pets', 'veterinarians', 'selectedPet'));
@@ -62,7 +63,7 @@ class VaccinationController extends Controller
     public function edit(Vaccination $vaccination)
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::role('veterinario')->get();
+        $veterinarians = $this->getVeterinarians();
 
         return view('vaccinations.edit', compact('vaccination', 'pets', 'veterinarians'));
     }
@@ -87,5 +88,14 @@ class VaccinationController extends Controller
     {
         $vaccination->delete();
         return redirect()->route('vaccinations.index')->with('success', 'Vacina excluída!');
+    }
+
+    protected function getVeterinarians()
+    {
+        $vetRole = Role::where('slug', 'veterinario')->first();
+        if (!$vetRole) {
+            return collect();
+        }
+        return User::where('role_id', $vetRole->id)->where('is_active', true)->orderBy('name')->get();
     }
 }

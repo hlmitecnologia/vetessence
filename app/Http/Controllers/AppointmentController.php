@@ -7,6 +7,7 @@ use App\Models\AppointmentService;
 use App\Models\Pet;
 use App\Models\Service;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -30,7 +31,7 @@ class AppointmentController extends Controller
 
         $appointments = $query->orderBy('date')->orderBy('time')->paginate(20);
 
-        $veterinarians = User::role('veterinario')->get();
+        $veterinarians = $this->getVeterinarians();
 
         return view('appointments.index', compact('appointments', 'veterinarians'));
     }
@@ -38,7 +39,7 @@ class AppointmentController extends Controller
     public function create()
     {
         $pets = Pet::with('tutors')->where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::role('veterinario')->get();
+        $veterinarians = $this->getVeterinarians();
         $services = Service::where('is_active', true)->orderBy('name')->get();
 
         return view('appointments.create', compact('pets', 'veterinarians', 'services'));
@@ -99,7 +100,7 @@ class AppointmentController extends Controller
     public function edit(Appointment $appointment)
     {
         $pets = Pet::with('tutors')->where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::role('veterinario')->get();
+        $veterinarians = $this->getVeterinarians();
         $services = Service::where('is_active', true)->orderBy('name')->get();
         $appointment->load('services');
 
@@ -132,5 +133,14 @@ class AppointmentController extends Controller
         $appointment->delete();
 
         return redirect()->route('appointments.index')->with('success', 'Consulta excluída com sucesso!');
+    }
+
+    protected function getVeterinarians()
+    {
+        $vetRole = Role::where('slug', 'veterinario')->first();
+        if (!$vetRole) {
+            return collect();
+        }
+        return User::where('role_id', $vetRole->id)->where('is_active', true)->orderBy('name')->get();
     }
 }

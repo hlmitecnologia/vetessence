@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\Pet;
 use App\Models\Service;
 use App\Models\User;
+use App\Models\Role;
 use Livewire\Component;
 
 class AppointmentForm extends Component
@@ -34,10 +35,19 @@ class AppointmentForm extends Component
     public function mount()
     {
         $this->pets = Pet::with('tutors')->where('is_active', true)->orderBy('name')->get();
-        $this->veterinarians = User::role('veterinario')->get();
+        $this->veterinarians = $this->getVeterinarians();
         $this->services = Service::where('is_active', true)->orderBy('name')->get();
         $this->date = date('Y-m-d');
         $this->time = date('H:00');
+    }
+
+    protected function getVeterinarians()
+    {
+        $vetRole = Role::where('slug', 'veterinario')->first();
+        if (!$vetRole) {
+            return collect();
+        }
+        return User::where('role_id', $vetRole->id)->where('is_active', true)->orderBy('name')->get();
     }
 
     public function updatedSelectedServices($value)

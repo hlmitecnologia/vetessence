@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Surgery;
 use App\Models\Pet;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
 class SurgeryController extends Controller
@@ -31,7 +32,7 @@ class SurgeryController extends Controller
     public function create(Request $request)
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::role('veterinario')->get();
+        $veterinarians = $this->getVeterinarians();
 
         return view('surgeries.create', compact('pets', 'veterinarians'));
     }
@@ -63,7 +64,7 @@ class SurgeryController extends Controller
     public function edit(Surgery $surgery)
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::role('veterinario')->get();
+        $veterinarians = $this->getVeterinarians();
 
         return view('surgeries.edit', compact('surgery', 'pets', 'veterinarians'));
     }
@@ -96,5 +97,14 @@ class SurgeryController extends Controller
 
         $surgery->delete();
         return redirect()->route('surgeries.index')->with('success', 'Cirurgia excluída!');
+    }
+
+    protected function getVeterinarians()
+    {
+        $vetRole = Role::where('slug', 'veterinario')->first();
+        if (!$vetRole) {
+            return collect();
+        }
+        return User::where('role_id', $vetRole->id)->where('is_active', true)->orderBy('name')->get();
     }
 }

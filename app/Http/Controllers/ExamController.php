@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Exam;
 use App\Models\Pet;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
 class ExamController extends Controller
@@ -31,7 +32,7 @@ class ExamController extends Controller
     public function create(Request $request)
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::role('veterinario')->get();
+        $veterinarians = $this->getVeterinarians();
         $selectedPet = $request->pet_id ? Pet::find($request->pet_id) : null;
 
         return view('exams.create', compact('pets', 'veterinarians', 'selectedPet'));
@@ -61,7 +62,7 @@ class ExamController extends Controller
     public function edit(Exam $exam)
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::role('veterinario')->get();
+        $veterinarians = $this->getVeterinarians();
 
         return view('exams.edit', compact('exam', 'pets', 'veterinarians'));
     }
@@ -86,5 +87,14 @@ class ExamController extends Controller
     {
         $exam->delete();
         return redirect()->route('exams.index')->with('success', 'Exame excluído!');
+    }
+
+    protected function getVeterinarians()
+    {
+        $vetRole = Role::where('slug', 'veterinario')->first();
+        if (!$vetRole) {
+            return collect();
+        }
+        return User::where('role_id', $vetRole->id)->where('is_active', true)->orderBy('name')->get();
     }
 }

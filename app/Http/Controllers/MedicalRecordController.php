@@ -6,6 +6,7 @@ use App\Models\MedicalRecord;
 use App\Models\Pet;
 use App\Models\Prescription;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -37,7 +38,7 @@ class MedicalRecordController extends Controller
     public function create(Request $request)
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::role('veterinario')->get();
+        $veterinarians = $this->getVeterinarians();
         
         $selectedPet = $request->pet_id ? Pet::find($request->pet_id) : null;
 
@@ -97,7 +98,7 @@ class MedicalRecordController extends Controller
     public function edit(MedicalRecord $medicalRecord)
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::role('veterinario')->get();
+        $veterinarians = $this->getVeterinarians();
         $medicalRecord->load('prescriptions');
 
         return view('medical-records.edit', compact('medicalRecord', 'pets', 'veterinarians'));
@@ -124,5 +125,14 @@ class MedicalRecordController extends Controller
     {
         $medicalRecord->delete();
         return redirect()->route('medical-records.index')->with('success', 'Registro excluído!');
+    }
+
+    protected function getVeterinarians()
+    {
+        $vetRole = Role::where('slug', 'veterinario')->first();
+        if (!$vetRole) {
+            return collect();
+        }
+        return User::where('role_id', $vetRole->id)->where('is_active', true)->orderBy('name')->get();
     }
 }
