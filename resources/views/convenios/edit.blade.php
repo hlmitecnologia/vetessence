@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Editar Convênio'])
+@extends('layouts.adminlte', ['title' => 'Editar Convênio'])
 
 @section('header')
     <a href="{{ route('convenios.index') }}" class="text-gray-500 hover:text-gray-700"><i class="fas fa-arrow-left"></i></a>

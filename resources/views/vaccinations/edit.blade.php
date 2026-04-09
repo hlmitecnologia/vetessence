@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Editar Vacina'])
+@extends('layouts.adminlte', ['title' => 'Editar Vacina'])
 
 @section('header')
     <a href="{{ route('vaccinations.index') }}" class="text-gray-500 hover:text-gray-700"><i class="fas fa-arrow-left"></i></a>

@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Editar Fatura'])
+@extends('layouts.adminlte', ['title' => 'Editar Fatura'])
 
 @section('header')
     <a href="{{ route('invoices.index') }}" class="text-gray-500 hover:text-gray-700"><i class="fas fa-arrow-left"></i></a>

@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => ucfirst('$dir')])
+@extends('layouts.adminlte', ['title' => ucfirst('$dir')])
 
 @section('header')
     <div class="flex items-center justify-between">

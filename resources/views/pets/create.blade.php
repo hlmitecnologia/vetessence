@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Novo Pet'])
+@extends('layouts.adminlte', ['title' => 'Novo Pet'])
 
 @section('header')
     <a href="{{ route('pets.index') }}" class="text-gray-500 hover:text-gray-700">

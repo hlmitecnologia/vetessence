@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Novo Tutor'])
+@extends('layouts.adminlte', ['title' => 'Novo Tutor'])
 
 @section('header')
     <a href="{{ route('tutors.index') }}" class="text-gray-500 hover:text-gray-700">

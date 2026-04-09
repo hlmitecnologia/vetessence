@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Editar Fornecedor'])
+@extends('layouts.adminlte', ['title' => 'Editar Fornecedor'])
 
 @section('header')
     <a href="{{ route('suppliers.index') }}" class="text-gray-500 hover:text-gray-700"><i class="fas fa-arrow-left"></i></a>

@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Tutores'])
+@extends('layouts.adminlte', ['title' => 'Tutores'])
 
 @section('header')
     <div class="flex items-center justify-between">

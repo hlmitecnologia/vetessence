@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Nova Consulta'])
+@extends('layouts.adminlte', ['title' => 'Nova Consulta'])
 
 @section('header')
     <a href="{{ route('appointments.index') }}" class="text-gray-500 hover:text-gray-700">

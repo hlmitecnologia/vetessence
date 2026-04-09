@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => $tutor->name])
+@extends('layouts.adminlte', ['title' => $tutor->name])
 
 @section('header')
     <a href="{{ route('tutors.index') }}" class="text-gray-500 hover:text-gray-700">

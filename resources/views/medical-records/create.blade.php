@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Novo Prontuário'])
+@extends('layouts.adminlte', ['title' => 'Novo Prontuário'])
 
 @section('header')
     <a href="{{ route('medical-records.index') }}" class="text-gray-500 hover:text-gray-700"><i class="fas fa-arrow-left"></i></a>

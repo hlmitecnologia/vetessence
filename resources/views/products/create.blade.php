@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Novo Produto'])
+@extends('layouts.adminlte', ['title' => 'Novo Produto'])
 
 @section('header')
     <a href="{{ route('products.index') }}" class="text-gray-500 hover:text-gray-700"><i class="fas fa-arrow-left"></i></a>

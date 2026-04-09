@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Solicitar Exame'])
+@extends('layouts.adminlte', ['title' => 'Solicitar Exame'])
 
 @section('header')
     <a href="{{ route('exams.index') }}" class="text-gray-500 hover:text-gray-700"><i class="fas fa-arrow-left"></i></a>
