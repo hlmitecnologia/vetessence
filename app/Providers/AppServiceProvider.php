@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
     protected function registerGates()
     {
         Gate::before(function ($user, $ability) {
-            if ($user->hasRole('admin')) {
+            if ($user->hasRole(['super-admin', 'admin'])) {
                 return true;
             }
         });
