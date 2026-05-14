@@ -62,6 +62,7 @@ Route::middleware(['auth'])->group(function () {
     ]);
 
     // Patient Flow Board (must be before appointments resource)
+    Route::get('appointments/flow-data', 'App\Http\Controllers\AppointmentController@flowData')->name('appointments.flow-data');
     Route::get('appointments/flow-board', 'App\Http\Controllers\AppointmentController@flowBoard')->name('appointments.flow-board');
     Route::patch('appointments/{appointment}/status', 'App\Http\Controllers\AppointmentController@updateStatus')->name('appointments.update-status');
 

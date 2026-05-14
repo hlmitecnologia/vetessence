@@ -56,6 +56,9 @@ class AppointmentController extends Controller
             'reason' => 'nullable|string',
             'services' => 'nullable|array',
             'services.*' => 'exists:services,id',
+            'is_recurring' => 'nullable|boolean',
+            'recurrence_rule' => 'nullable|string|max:100',
+            'recurrence_end_date' => 'nullable|date|after:date',
         ]);
 
         DB::beginTransaction();
@@ -69,6 +72,9 @@ class AppointmentController extends Controller
                 'reason' => $validated['reason'] ?? null,
                 'status' => 'scheduled',
                 'created_by' => auth()->id(),
+                'is_recurring' => $validated['is_recurring'] ?? false,
+                'recurrence_rule' => $validated['recurrence_rule'] ?? null,
+                'recurrence_end_date' => $validated['recurrence_end_date'] ?? null,
             ]);
 
             if (!empty($validated['services'])) {
@@ -133,6 +139,17 @@ class AppointmentController extends Controller
         $appointment->delete();
 
         return redirect()->route('appointments.index')->with('success', 'Consulta excluída com sucesso!');
+    }
+
+    public function flowData()
+    {
+        $appointments = Appointment::with(['pet.tutors', 'vet'])
+            ->whereDate('date', today())
+            ->orderBy('time')
+            ->get()
+            ->groupBy('status');
+
+        return response()->json($appointments);
     }
 
     public function flowBoard()

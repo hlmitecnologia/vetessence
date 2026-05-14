@@ -72,6 +72,9 @@ class AppointmentController extends Controller
             'type' => 'required|in:consulta,retorno,emergencia,cirurgia,vacina,exame',
             'reason' => 'nullable|string',
             'services' => 'nullable|array',
+            'is_recurring' => 'nullable|boolean',
+            'recurrence_rule' => 'nullable|string|max:100',
+            'recurrence_end_date' => 'nullable|date|after:date',
         ]);
 
         $appointment = Appointment::create([
@@ -83,6 +86,9 @@ class AppointmentController extends Controller
             'reason' => $validated['reason'] ?? null,
             'status' => 'scheduled',
             'created_by' => $request->user()->id,
+            'is_recurring' => $validated['is_recurring'] ?? false,
+            'recurrence_rule' => $validated['recurrence_rule'] ?? null,
+            'recurrence_end_date' => $validated['recurrence_end_date'] ?? null,
         ]);
 
         if (!empty($validated['services'])) {

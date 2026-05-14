@@ -13,12 +13,15 @@ class Appointment extends Model
 
     protected $fillable = [
         'pet_id', 'vet_id', 'date', 'time', 'duration', 'type',
-        'status', 'reason', 'notes', 'room', 'created_by'
+        'status', 'reason', 'notes', 'room', 'created_by',
+        'is_recurring', 'recurrence_rule', 'recurrence_end_date', 'parent_appointment_id',
     ];
 
     protected $casts = [
         'date' => 'date',
         'time' => 'datetime:H:i',
+        'is_recurring' => 'boolean',
+        'recurrence_end_date' => 'date',
     ];
 
     public function pet(): BelongsTo
@@ -54,6 +57,16 @@ class Appointment extends Model
     public function invoice(): HasOne
     {
         return $this->hasOne(Invoice::class);
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Appointment::class, 'parent_appointment_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Appointment::class, 'parent_appointment_id');
     }
 
     public function getTotalAttribute(): float
