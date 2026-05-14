@@ -4,16 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BranchScoped;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class LabEquipmentIntegration extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'name', 'equipment_type', 'protocol', 'endpoint_url',
         'api_key', 'ip_address', 'port', 'is_active',
-        'config', 'notes', 'last_contact_at',
+        'config', 'notes', 'branch_id', 'last_contact_at',
     ];
 
     protected $casts = [
@@ -27,7 +29,7 @@ class LabEquipmentIntegration extends Model
 
 class LabEquipmentResult extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'integration_id', 'result_identifier', 'pet_id',

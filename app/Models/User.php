@@ -15,7 +15,9 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     protected $fillable = [
-        'name', 'email', 'password', 'role_id', 'avatar', 'phone', 'is_active'
+        'name', 'email', 'password', 'role_id', 'avatar', 'phone', 'is_active',
+        'branch_id', 'department_id', 'position_id', 'hire_date', 'contract_type',
+        'crmv', 'emergency_contact', 'emergency_phone',
     ];
 
     protected $hidden = [
@@ -25,6 +27,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_active' => 'boolean',
+        'hire_date' => 'date',
     ];
 
     public function role(): BelongsTo
@@ -35,6 +38,21 @@ class User extends Authenticatable
     public function tutor(): BelongsTo
     {
         return $this->belongsTo(Tutor::class);
+    }
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function position(): BelongsTo
+    {
+        return $this->belongsTo(Position::class);
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
     }
 
     public function hasRole($roles): bool

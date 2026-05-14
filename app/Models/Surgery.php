@@ -4,16 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Surgery extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'pet_id', 'vet_id', 'medical_record_id', 'scheduled_date',
         'surgery_type', 'status', 'anesthesia_type', 'protocol',
-        'pre_op_diagnosis', 'post_op_notes', 'surgery_duration', 'complications', 'notes'
+        'pre_op_diagnosis', 'post_op_notes', 'surgery_duration', 'complications', 'notes', 'branch_id'
     ];
 
     protected $casts = [

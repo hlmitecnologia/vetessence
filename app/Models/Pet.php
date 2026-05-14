@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Traits\HasPhoto;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Pet extends Model
 {
@@ -14,7 +15,8 @@ class Pet extends Model
 
     protected $fillable = [
         'name', 'species', 'breed', 'gender', 'birth_date', 'weight',
-        'color', 'microchip', 'photo', 'coat', 'size', 'is_active', 'notes'
+        'color', 'microchip', 'photo', 'coat', 'size', 'is_active', 'notes',
+        'created_at_branch_id',
     ];
 
     protected $casts = [
@@ -62,6 +64,11 @@ class Pet extends Model
     public function convenioPets(): HasMany
     {
         return $this->hasMany(ConvenioPet::class);
+    }
+
+    public function createdAtBranch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class, 'created_at_branch_id');
     }
 
     public function getAgeMonthsAttribute(): int

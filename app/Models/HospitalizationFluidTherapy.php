@@ -4,15 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class HospitalizationFluidTherapy extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'hospitalization_id', 'fluid_type', 'rate', 'volume',
-        'start_time', 'end_time', 'route', 'observations',
+        'start_time', 'end_time', 'route', 'observations', 'branch_id',
     ];
 
     protected $casts = [

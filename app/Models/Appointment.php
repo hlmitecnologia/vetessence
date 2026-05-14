@@ -5,16 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Appointment extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'pet_id', 'vet_id', 'date', 'time', 'duration', 'type',
         'status', 'reason', 'notes', 'room', 'created_by',
         'is_recurring', 'recurrence_rule', 'recurrence_end_date', 'parent_appointment_id',
+        'branch_id',
     ];
 
     protected $casts = [

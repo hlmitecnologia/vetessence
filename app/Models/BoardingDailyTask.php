@@ -4,15 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BoardingDailyTask extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'boarding_id', 'task_date', 'task_name', 'description',
-        'is_completed', 'completed_at', 'completed_by', 'observations',
+        'is_completed', 'completed_at', 'completed_by', 'observations', 'branch_id',
     ];
 
     protected $casts = [

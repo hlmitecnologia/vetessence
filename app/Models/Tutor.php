@@ -20,6 +20,7 @@ class Tutor extends Authenticatable
         'zipcode', 'address', 'number', 'complement', 'neighborhood',
         'city', 'state', 'profession', 'photo', 'notes',
         'password', 'remember_token',
+        'created_at_branch_id',
     ];
 
     protected $hidden = [
@@ -62,5 +63,10 @@ class Tutor extends Authenticatable
     public function convenioPets(): HasMany
     {
         return $this->hasMany(ConvenioPet::class);
+    }
+
+    public function createdAtBranch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class, 'created_at_branch_id');
     }
 }

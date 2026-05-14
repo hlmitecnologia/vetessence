@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class NotificationLog extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
-    protected $fillable = ['pet_id', 'tutor_id', 'type', 'channel', 'destination', 'sent_at', 'status', 'message', 'error_message'];
+    protected $fillable = ['pet_id', 'tutor_id', 'type', 'channel', 'destination', 'sent_at', 'status', 'message', 'error_message', 'branch_id'];
 
     protected $casts = ['sent_at' => 'datetime'];
 

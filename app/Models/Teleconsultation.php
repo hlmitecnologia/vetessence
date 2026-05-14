@@ -4,19 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
 class Teleconsultation extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'room_name', 'room_token', 'appointment_id', 'pet_id',
         'tutor_id', 'vet_id', 'status', 'provider',
         'provider_room_id', 'provider_url', 'scheduled_at',
         'started_at', 'ended_at', 'duration_minutes',
-        'notes', 'recording_url',
+        'notes', 'recording_url', 'branch_id',
     ];
 
     protected $casts = [

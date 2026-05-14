@@ -6,16 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\BranchScoped;
 use Illuminate\Support\Str;
 
 class TreatmentPlan extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'plan_number', 'pet_id', 'tutor_id', 'vet_id', 'appointment_id',
         'title', 'description', 'total_estimated', 'total_authorized',
-        'status', 'client_approved_at', 'client_notes', 'vet_notes',
+        'status', 'client_approved_at', 'client_notes', 'vet_notes', 'branch_id',
     ];
 
     protected $casts = [

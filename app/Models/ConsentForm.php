@@ -5,16 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\BranchScoped;
 use Illuminate\Support\Str;
 
 class ConsentForm extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'consent_number', 'pet_id', 'tutor_id', 'appointment_id', 'consent_template_id',
         'signed_content', 'client_name', 'client_document', 'veterinarian_id', 'witness_id',
-        'signed_at', 'signature_data', 'status', 'notes',
+        'signed_at', 'signature_data', 'status', 'notes', 'branch_id',
     ];
 
     protected $casts = ['signed_at' => 'datetime'];

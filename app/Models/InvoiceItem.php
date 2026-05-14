@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InvoiceItem extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
-    protected $fillable = ['invoice_id', 'description', 'quantity', 'unit_price', 'total'];
+    protected $fillable = ['invoice_id', 'description', 'quantity', 'unit_price', 'total', 'branch_id'];
 
     protected $casts = [
         'quantity' => 'integer',

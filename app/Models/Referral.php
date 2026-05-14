@@ -4,23 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
 class Referral extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'referral_number', 'pet_id', 'referring_vet_id', 'referring_clinic',
         'receiving_vet_id', 'receiving_clinic', 'appointment_id',
         'reason', 'clinical_history', 'requested_procedures',
-        'attachments', 'status', 'response_notes', 'completed_at',
+        'attachments', 'status', 'response_notes', 'completed_at', 'branch_id',
     ];
 
     protected $casts = [
         'attachments' => 'array',
-        'completed_at' => 'date',
+        'completed_at', 'branch_id' => 'date',
     ];
 
     public static function generateNumber(): string

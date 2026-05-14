@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Invoice extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'invoice_number', 'tutor_id', 'pet_id', 'appointment_id',
         'subtotal', 'discount', 'total', 'status', 'due_date',
         'paid_at', 'payment_method', 'payment_proof', 'pix_code',
-        'pix_expiration', 'convenio_discount', 'notes', 'created_by'
+        'pix_expiration', 'convenio_discount', 'notes', 'created_by', 'branch_id'
     ];
 
     protected $casts = [
@@ -44,7 +45,7 @@ class Invoice extends Model
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by', 'branch_id');
     }
 
     public function items(): HasMany

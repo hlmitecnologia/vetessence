@@ -6,17 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MedicalRecord extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'record_id', 'version', 'pet_id', 'appointment_id', 'vet_id',
         'date', 'time', 'type', 'chief_complaint', 'anamnesis',
         'physical_exam', 'vital_signs', 'diagnosis', 'treatment',
-        'prognosis', 'attachments', 'notes'
+        'prognosis', 'attachments', 'notes', 'branch_id'
     ];
 
     protected $casts = [
@@ -59,6 +60,6 @@ class MedicalRecord extends Model
     public function zoonoticDiseases(): BelongsToMany
     {
         return $this->belongsToMany(ZoonoticDisease::class, 'diagnosis_disease')
-            ->withPivot('is_suspected', 'notes');
+            ->withPivot('is_suspected', 'notes', 'branch_id');
     }
 }

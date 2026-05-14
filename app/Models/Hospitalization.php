@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Hospitalization extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'pet_id', 'tutor_id', 'vet_id', 'appointment_id',
         'admission_date', 'admission_time', 'admission_reason', 'initial_diagnosis',
         'department', 'bed', 'is_emergency', 'status',
-        'discharged_at', 'discharge_summary', 'discharge_instructions',
+        'discharged_at', 'discharge_summary', 'discharge_instructions', 'branch_id',
     ];
 
     protected $casts = [

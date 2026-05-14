@@ -4,20 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StaffNote extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'title', 'content', 'priority', 'created_by',
-        'assigned_to', 'category', 'is_read', 'read_at',
+        'assigned_to', 'category', 'is_read', 'read_at', 'branch_id',
     ];
 
     protected $casts = [
         'is_read' => 'boolean',
-        'read_at' => 'datetime',
+        'read_at', 'branch_id' => 'datetime',
     ];
 
     public function creator(): BelongsTo { return $this->belongsTo(User::class, 'created_by'); }
@@ -42,6 +43,6 @@ class StaffNote extends Model
 
     public function markAsRead(): void
     {
-        $this->update(['is_read' => true, 'read_at' => now()]);
+        $this->update(['is_read' => true, 'read_at', 'branch_id' => now()]);
     }
 }

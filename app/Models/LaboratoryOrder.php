@@ -6,15 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\BranchScoped;
 use Illuminate\Support\Str;
 
 class LaboratoryOrder extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'order_number', 'pet_id', 'vet_id', 'appointment_id',
-        'lab_name', 'order_date', 'result_date', 'status', 'notes',
+        'lab_name', 'order_date', 'result_date', 'status', 'notes', 'branch_id',
     ];
 
     protected $casts = [

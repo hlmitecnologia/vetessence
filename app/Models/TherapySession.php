@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BranchScoped;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TherapySession extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
     protected $fillable = [
         'pet_id', 'type', 'session_date', 'therapist_id',
-        'duration_minutes', 'notes', 'observations', 'status',
+        'duration_minutes', 'notes', 'observations', 'status', 'branch_id',
     ];
 
     protected $casts = [

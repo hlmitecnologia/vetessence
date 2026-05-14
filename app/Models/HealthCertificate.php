@@ -4,17 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class HealthCertificate extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'certificate_number', 'pet_id', 'type', 'destination',
         'issuer_vet_id', 'issue_date', 'expiration_date',
         'clinical_notes', 'is_export', 'status',
-        'pdf_generated_at', 'notes',
+        'pdf_generated_at', 'notes', 'branch_id',
     ];
 
     protected $casts = [

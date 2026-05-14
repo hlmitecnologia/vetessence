@@ -4,16 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ControlledSubstanceLog extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     protected $fillable = [
         'controlled_substance_id', 'user_id', 'pet_id', 'type',
         'quantity', 'balance_before', 'balance_after', 'reason',
-        'prescription_id', 'witness_id', 'notes',
+        'prescription_id', 'witness_id', 'notes', 'branch_id',
     ];
 
     public function substance(): BelongsTo { return $this->belongsTo(ControlledSubstance::class, 'controlled_substance_id'); }

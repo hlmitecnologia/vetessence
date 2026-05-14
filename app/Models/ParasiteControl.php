@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ParasiteControl extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScoped;
 
     public function scopeOverdue($query)
     {
@@ -18,7 +19,7 @@ class ParasiteControl extends Model
     protected $fillable = [
         'pet_id', 'product_name', 'active_ingredient', 'type',
         'application_date', 'next_due_date', 'dose', 'batch',
-        'vet_id', 'medical_record_id', 'notes',
+        'vet_id', 'medical_record_id', 'notes', 'branch_id',
     ];
 
     protected $casts = [
