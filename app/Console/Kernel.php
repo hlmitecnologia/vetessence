@@ -23,6 +23,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('backup:database --compress')->dailyAt('01:00');
         $schedule->command('backup:cleanup --keep=30')->dailyAt('02:00');
         $schedule->command('queue:process')->everyMinute();
+        $schedule->command('staff:remind')->dailyAt('18:00');
     }
 
     /**

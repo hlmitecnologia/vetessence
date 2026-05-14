@@ -571,6 +571,7 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'staff-schedules.update',
         'destroy' => 'staff-schedules.destroy',
     ]);
+    Route::get('staff-schedules/on-call-calendar', 'App\Http\Controllers\StaffScheduleController@onCallCalendar')->name('staff-schedules.on-call-calendar');
     Route::get('staff-time-off', 'App\Http\Controllers\StaffScheduleController@timeOff')->name('staff-schedules.time-off');
     Route::post('staff-time-off', 'App\Http\Controllers\StaffScheduleController@storeTimeOff')->name('staff-schedules.time-off.store');
     Route::post('staff-time-off/{staffTimeOff}/approve', 'App\Http\Controllers\StaffScheduleController@approveTimeOff')->name('staff-time-off.approve');

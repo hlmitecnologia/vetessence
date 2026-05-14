@@ -336,6 +336,38 @@
                         </li>
                         @endif
 
+                        <!-- AGENDA -->
+                        @can('agenda-equipe')
+                        <li class="nav-item has-treeview {{ request()->routeIs('staff-schedules.*') || request()->routeIs('staff-time-off.*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-calendar-alt"></i>
+                                <p>Agenda <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('staff-schedules.index') }}" class="nav-link {{ request()->routeIs('staff-schedules.index') || request()->routeIs('staff-schedules.create') || request()->routeIs('staff-schedules.edit') ? 'active' : '' }}">
+                                        <i class="fas fa-clock nav-icon"></i>
+                                        <p>Escalas</p>
+                                    </a>
+                                </li>
+                                @can('schedules-on-call.view')
+                                <li class="nav-item">
+                                    <a href="{{ route('staff-schedules.on-call-calendar') }}" class="nav-link {{ request()->routeIs('staff-schedules.on-call-calendar') ? 'active' : '' }}">
+                                        <i class="fas fa-phone-alt nav-icon"></i>
+                                        <p>Plantão</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                <li class="nav-item">
+                                    <a href="{{ route('staff-schedules.time-off') }}" class="nav-link {{ request()->routeIs('staff-schedules.time-off') ? 'active' : '' }}">
+                                        <i class="fas fa-umbrella-beach nav-icon"></i>
+                                        <p>Folgas</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        @endcan
+
                         <!-- FINANCEIRO -->
                         @can('financeiro')
                         <li class="nav-item has-treeview {{ request()->routeIs('invoices.*') || request()->routeIs('reports.*') || request()->routeIs('payment-gateways.*') ? 'menu-open' : '' }}">
