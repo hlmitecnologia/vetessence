@@ -7,23 +7,34 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use App\Traits\HasPhoto;
 
-class Tutor extends Model
+class Tutor extends Authenticatable
 {
-    use HasFactory, HasPhoto;
+    use HasFactory, HasPhoto, Notifiable;
 
     protected $fillable = [
-        'user_id', 'cpf', 'rg', 'phone', 'phone_secondary', 'email',
+        'name', 'user_id', 'cpf', 'rg', 'phone', 'phone_secondary', 'email',
         'zipcode', 'address', 'number', 'complement', 'neighborhood',
-        'city', 'state', 'profession', 'photo', 'notes'
+        'city', 'state', 'profession', 'photo', 'notes',
+        'password', 'remember_token',
+    ];
+
+    protected $hidden = [
+        'password', 'remember_token',
     ];
 
     protected $appends = ['name'];
 
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
     public function getNameAttribute()
     {
-        return $this->user ? $this->user->name : null;
+        return $this->user ? $this->user->name : ($this->email ?? 'Tutor');
     }
 
     public function user(): BelongsTo

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\ControlledSubstance;
+use App\Models\ControlledSubstanceLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ControlledSubstanceController extends Controller
 {
@@ -96,5 +98,66 @@ class ControlledSubstanceController extends Controller
         $controlledSubstance->delete();
 
         return redirect()->route('controlled-substances.index')->with('success', 'Substância controlada excluída!');
+    }
+
+    public function reportMonthly(Request $request)
+    {
+        $month = $request->month ?? now()->format('Y-m');
+        $logs = ControlledSubstanceLog::with('substance', 'user')
+            ->whereYear('created_at', substr($month, 0, 4))
+            ->whereMonth('created_at', substr($month, 5, 2))
+            ->orderBy('created_at')
+            ->get();
+
+        $grouped = $logs->groupBy('substance.name');
+
+        return view('controlled-substances.reports.monthly', compact('logs', 'grouped', 'month'));
+    }
+
+    public function reportAnnual(Request $request)
+    {
+        $year = $request->year ?? now()->year;
+        $logs = ControlledSubstanceLog::with('substance')
+            ->whereYear('created_at', $year)
+            ->orderBy('created_at')
+            ->get()
+            ->groupBy(fn($l) => $l->created_at->format('m'));
+
+        return view('controlled-substances.reports.annual', compact('logs', 'year'));
+    }
+
+    public function exportCsv(Request $request)
+    {
+        $month = $request->month ?? now()->format('Y-m');
+        $logs = ControlledSubstanceLog::with('substance', 'user')
+            ->whereYear('created_at', substr($month, 0, 4))
+            ->whereMonth('created_at', substr($month, 5, 2))
+            ->orderBy('created_at')
+            ->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => "attachment; filename=anvisa-report-{$month}.csv",
+        ];
+
+        $callback = function () use ($logs) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['Data', 'Substância', 'Tipo', 'Quantidade', 'Usuário', 'Observações']);
+
+            foreach ($logs as $log) {
+                fputcsv($file, [
+                    $log->created_at->format('d/m/Y H:i'),
+                    $log->substance->name ?? 'N/A',
+                    $log->type,
+                    $log->quantity,
+                    $log->user->name ?? 'N/A',
+                    $log->observations ?? '',
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

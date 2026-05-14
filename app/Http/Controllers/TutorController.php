@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\NotificationLog;
 use App\Models\Pet;
 use App\Models\Tutor;
 use Illuminate\Http\Request;
@@ -87,6 +88,15 @@ class TutorController extends Controller
         $tutor->update($validated);
 
         return redirect()->route('tutors.index')->with('success', 'Tutor atualizado com sucesso!');
+    }
+
+    public function communication(Tutor $tutor)
+    {
+        $logs = NotificationLog::where('tutor_id', $tutor->id)
+            ->latest()
+            ->paginate(20);
+
+        return view('tutors.communication', compact('tutor', 'logs'));
     }
 
     public function destroy(Tutor $tutor)

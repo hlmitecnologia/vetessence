@@ -6,6 +6,7 @@ use App\Models\Vaccination;
 use App\Models\Pet;
 use App\Models\User;
 use App\Models\Role;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -88,6 +89,16 @@ class VaccinationController extends Controller
     {
         $vaccination->delete();
         return redirect()->route('vaccinations.index')->with('success', 'Vacina excluída!');
+    }
+
+    public function certificate(Pet $pet)
+    {
+        $vaccinations = $pet->vaccinations()->with('vet')->orderBy('date', 'desc')->get();
+        $pet->load('tutors');
+
+        $pdf = Pdf::loadView('vaccinations.certificate-pdf', compact('pet', 'vaccinations'));
+
+        return $pdf->download("certificado-vacinas-{$pet->name}.pdf");
     }
 
     protected function getVeterinarians()

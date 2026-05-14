@@ -61,6 +61,10 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'pets.destroy',
     ]);
 
+    // Patient Flow Board (must be before appointments resource)
+    Route::get('appointments/flow-board', 'App\Http\Controllers\AppointmentController@flowBoard')->name('appointments.flow-board');
+    Route::patch('appointments/{appointment}/status', 'App\Http\Controllers\AppointmentController@updateStatus')->name('appointments.update-status');
+
     // Appointments
     Route::resource('appointments', 'App\Http\Controllers\AppointmentController')->names([
         'index' => 'appointments.index',
@@ -71,6 +75,7 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'appointments.update',
         'destroy' => 'appointments.destroy',
     ]);
+    Route::put('appointments/{appointment}/reschedule', 'App\Http\Controllers\AppointmentController@reschedule');
 
     // Medical Records
     Route::resource('medical-records', 'App\Http\Controllers\MedicalRecordController')->names([
@@ -498,6 +503,97 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'staff-notes.destroy',
     ]);
     Route::post('staff-notes/{staffNote}/mark-read', 'App\Http\Controllers\StaffNoteController@markRead')->name('staff-notes.mark-read');
+
+    // Kennel Map
+    Route::get('boardings/kennel-map', 'App\Http\Controllers\BoardingController@kennelMap')->name('boardings.kennel-map');
+    Route::post('boardings/{boarding}/assign-kennel', 'App\Http\Controllers\BoardingController@assignKennel')->name('boardings.assign-kennel');
+
+    // Pet Death Records
+    Route::resource('pet-death-records', 'App\Http\Controllers\PetDeathRecordController')->names([
+        'index' => 'pet-death-records.index',
+        'create' => 'pet-death-records.create',
+        'store' => 'pet-death-records.store',
+        'show' => 'pet-death-records.show',
+        'edit' => 'pet-death-records.edit',
+        'update' => 'pet-death-records.update',
+        'destroy' => 'pet-death-records.destroy',
+    ]);
+
+    // Grooming Templates
+    Route::resource('grooming-templates', 'App\Http\Controllers\GroomingTemplateController')->names([
+        'index' => 'grooming-templates.index',
+        'create' => 'grooming-templates.create',
+        'store' => 'grooming-templates.store',
+        'show' => 'grooming-templates.show',
+        'edit' => 'grooming-templates.edit',
+        'update' => 'grooming-templates.update',
+        'destroy' => 'grooming-templates.destroy',
+    ]);
+
+    // Therapy Sessions
+    Route::resource('therapy-sessions', 'App\Http\Controllers\TherapySessionController')->names([
+        'index' => 'therapy-sessions.index',
+        'create' => 'therapy-sessions.create',
+        'store' => 'therapy-sessions.store',
+        'show' => 'therapy-sessions.show',
+        'edit' => 'therapy-sessions.edit',
+        'update' => 'therapy-sessions.update',
+        'destroy' => 'therapy-sessions.destroy',
+    ]);
+
+    // Breed Defaults
+    Route::resource('breed-defaults', 'App\Http\Controllers\BreedDefaultController')->names([
+        'index' => 'breed-defaults.index',
+        'create' => 'breed-defaults.create',
+        'store' => 'breed-defaults.store',
+        'show' => 'breed-defaults.show',
+        'edit' => 'breed-defaults.edit',
+        'update' => 'breed-defaults.update',
+        'destroy' => 'breed-defaults.destroy',
+    ]);
+
+    // Vaccination Certificate
+    Route::get('vaccinations/{pet}/certificate', 'App\Http\Controllers\VaccinationController@certificate')->name('vaccinations.certificate');
+
+    // Tutor Communication History
+    Route::get('tutors/{tutor}/communication', 'App\Http\Controllers\TutorController@communication')->name('tutors.communication');
+
+    // Prescription Print
+    Route::get('prescriptions/{prescription}/print', 'App\Http\Controllers\PrescriptionController@print')->name('prescriptions.print');
+
+    // Staff Schedules
+    Route::resource('staff-schedules', 'App\Http\Controllers\StaffScheduleController')->names([
+        'index' => 'staff-schedules.index',
+        'create' => 'staff-schedules.create',
+        'store' => 'staff-schedules.store',
+        'edit' => 'staff-schedules.edit',
+        'update' => 'staff-schedules.update',
+        'destroy' => 'staff-schedules.destroy',
+    ]);
+    Route::get('staff-time-off', 'App\Http\Controllers\StaffScheduleController@timeOff')->name('staff-schedules.time-off');
+    Route::post('staff-time-off', 'App\Http\Controllers\StaffScheduleController@storeTimeOff')->name('staff-schedules.time-off.store');
+    Route::post('staff-time-off/{staffTimeOff}/approve', 'App\Http\Controllers\StaffScheduleController@approveTimeOff')->name('staff-time-off.approve');
+    Route::post('staff-time-off/{staffTimeOff}/reject', 'App\Http\Controllers\StaffScheduleController@rejectTimeOff')->name('staff-time-off.reject');
+
+    // Audit Logs
+    Route::resource('audit-logs', 'App\Http\Controllers\AuditLogController')->names([
+        'index' => 'audit-logs.index',
+        'show' => 'audit-logs.show',
+    ])->only(['index', 'show']);
+
+    // ANVISA Reports
+    Route::get('controlled-substances/reports/monthly', 'App\Http\Controllers\ControlledSubstanceController@reportMonthly')->name('controlled-substances.reports.monthly');
+    Route::get('controlled-substances/reports/annual', 'App\Http\Controllers\ControlledSubstanceController@reportAnnual')->name('controlled-substances.reports.annual');
+    Route::get('controlled-substances/reports/export-csv', 'App\Http\Controllers\ControlledSubstanceController@exportCsv')->name('controlled-substances.reports.export-csv');
+
+    // Database Backups
+    Route::resource('backups', 'App\Http\Controllers\BackupController')->names([
+        'index' => 'backups.index',
+        'create' => 'backups.create',
+        'destroy' => 'backups.destroy',
+        'show' => 'backups.show',
+    ])->only(['index', 'create', 'destroy']);
+    Route::get('backups/{filename}/download', 'App\Http\Controllers\BackupController@download')->name('backups.download');
 
     // Boarding / Grooming
     Route::resource('boardings', 'App\Http\Controllers\BoardingController')->names([

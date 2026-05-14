@@ -58,6 +58,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/appointments/{id}', [AppointmentController::class, 'show']);
         Route::post('/appointments', [AppointmentController::class, 'store']);
         Route::put('/appointments/{id}', [AppointmentController::class, 'update']);
+        Route::get('/appointments/calendar/data', [AppointmentController::class, 'calendar']);
         Route::get('/my-appointments', [AppointmentController::class, 'myAppointments']);
 
         // Vaccinations

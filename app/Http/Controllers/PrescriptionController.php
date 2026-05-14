@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Prescription;
 use App\Models\MedicalRecord;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class PrescriptionController extends Controller
@@ -79,5 +80,11 @@ class PrescriptionController extends Controller
     {
         $prescription->delete();
         return redirect()->back()->with('success', 'Prescrição excluída!');
+    }
+
+    public function print(Prescription $prescription)
+    {
+        $prescription->load('medicalRecord.pet', 'medicalRecord.user');
+        return view('prescriptions.print', compact('prescription'));
     }
 }

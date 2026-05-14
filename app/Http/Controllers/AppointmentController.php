@@ -135,6 +135,41 @@ class AppointmentController extends Controller
         return redirect()->route('appointments.index')->with('success', 'Consulta excluída com sucesso!');
     }
 
+    public function flowBoard()
+    {
+        $statuses = ['scheduled', 'checked_in', 'waiting', 'in_progress', 'completed', 'cancelled', 'no_show'];
+        $appointments = Appointment::with(['pet', 'vet'])
+            ->whereDate('date', today())
+            ->orderBy('time')
+            ->get()
+            ->groupBy('status');
+
+        return view('appointments.flow-board', compact('appointments', 'statuses'));
+    }
+
+    public function updateStatus(Request $request, Appointment $appointment)
+    {
+        $request->validate([
+            'status' => 'required|in:scheduled,checked_in,waiting,in_progress,completed,cancelled,no_show',
+        ]);
+
+        $appointment->update(['status' => $request->status]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function reschedule(Request $request, Appointment $appointment)
+    {
+        $validated = $request->validate([
+            'date' => 'required|date',
+            'time' => 'required',
+        ]);
+
+        $appointment->update($validated);
+
+        return response()->json(['success' => true]);
+    }
+
     protected function getVeterinarians()
     {
         $vetRole = Role::where('slug', 'veterinario')->first();

@@ -64,13 +64,18 @@ class Pet extends Model
         return $this->hasMany(ConvenioPet::class);
     }
 
+    public function getAgeMonthsAttribute(): int
+    {
+        return $this->birth_date ? $this->birth_date->diffInMonths(now()) : 0;
+    }
+
     public function getAgeAttribute(): ?string
     {
         if (!$this->birth_date) return null;
-        
+
         $years = $this->birth_date->age;
         $months = $this->birth_date->diffInMonths(now());
-        
+
         if ($years > 0) {
             return $years . ' ano(s)';
         }

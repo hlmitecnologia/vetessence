@@ -154,5 +154,33 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('notificacoes', function ($user) {
             return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
         });
+
+        Gate::define('obito', function ($user) {
+            return $user->hasRole(['admin', 'veterinario']);
+        });
+
+        Gate::define('servicos', function ($user) {
+            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
+        });
+
+        Gate::define('terapias', function ($user) {
+            return $user->hasRole(['admin', 'veterinario']);
+        });
+
+        Gate::define('configuracoes', function ($user) {
+            return $user->hasRole(['admin']);
+        });
+
+        Gate::define('agenda-equipe', function ($user) {
+            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
+        });
+
+        Gate::define('auditoria', function ($user) {
+            return $user->hasRole(['admin']);
+        });
+
+        Gate::define('backup', function ($user) {
+            return $user->hasRole(['admin']);
+        });
     }
 }

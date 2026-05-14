@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Boarding;
 use App\Models\BoardingDailyTask;
+use App\Models\BoardingKennel;
 use App\Models\Pet;
 use Illuminate\Http\Request;
 
@@ -201,5 +202,23 @@ class BoardingController extends Controller
             ->paginate(20);
 
         return view('boardings.index', compact('boardings'));
+    }
+
+    public function kennelMap()
+    {
+        $kennels = BoardingKennel::with('activeBoardings.pet')->where('is_active', true)->get();
+        $activeBoardings = Boarding::active()->with('pet', 'kennel')->get();
+        return view('boardings.kennel-map', compact('kennels', 'activeBoardings'));
+    }
+
+    public function assignKennel(Request $request, Boarding $boarding)
+    {
+        $data = $request->validate([
+            'kennel_id' => 'required|exists:boarding_kennels,id',
+        ]);
+
+        $boarding->update(['kennel_id' => $data['kennel_id']]);
+
+        return redirect()->back()->with('success', 'Canil atribuído com sucesso!');
     }
 }
