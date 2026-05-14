@@ -31,7 +31,7 @@
             <div class="col-md-3"><strong>Pet:</strong><p>{{ $teleconsultation->pet->name ?? 'N/A' }}</p></div>
             <div class="col-md-3"><strong>Veterinário:</strong><p>{{ $teleconsultation->vet->name ?? '-' }}</p></div>
             <div class="col-md-3"><strong>Tutor:</strong><p>{{ $teleconsultation->tutor->name ?? '-' }}</p></div>
-            <div class="col-md-3"><strong>Agendado:</strong><p>{{ $teleconsultation->scheduled_at?->format('d/m/Y H:i') ?? '-' }}</p></div>
+            <div class="col-md-3"><strong>Agendado:</strong><p>{{ optional($teleconsultation->scheduled_at)->format('d/m/Y H:i') ?? '-' }}</p></div>
         </div>
         @if($teleconsultation->status == 'active')
         <div class="row mt-3">

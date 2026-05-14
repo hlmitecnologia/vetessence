@@ -10,6 +10,10 @@ use Illuminate\Http\Request;
 
 class ParasiteControlController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:parasitario');
+    }
     public function index(Request $request)
     {
         $query = ParasiteControl::with(['pet', 'vet']);

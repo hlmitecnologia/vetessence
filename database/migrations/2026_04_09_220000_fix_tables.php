@@ -34,6 +34,13 @@ return new class extends Migration
             });
         }
 
+        // Add guard_name to roles for Spatie compatibility (only if not exists)
+        if (!Schema::hasColumn('roles', 'guard_name')) {
+            Schema::table('roles', function (Blueprint $table) {
+                $table->string('guard_name')->default('web')->after('slug');
+            });
+        }
+
         // Create Spatie permission tables (only if not exists)
         if (!Schema::hasTable('permissions')) {
             Schema::create('permissions', function (Blueprint $table) {
@@ -59,7 +66,7 @@ return new class extends Migration
         if (!Schema::hasTable('model_has_roles')) {
             Schema::create('model_has_roles', function (Blueprint $table) {
                 $table->bigIncrements('id');
-                $table->string('guard_name');
+                $table->string('guard_name')->default('web');
                 $table->unsignedBigInteger('role_id');
                 $table->string('model_type');
                 $table->unsignedBigInteger('model_id');

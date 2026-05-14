@@ -29,7 +29,7 @@
                     <td><strong>{{ $integration->name }}</strong></td>
                     <td>{{ $integration->equipment_type }}</td>
                     <td>{{ strtoupper($integration->protocol) }}</td>
-                    <td>{{ $integration->last_contact_at?->format('d/m/Y H:i') ?? 'Nunca' }}</td>
+                    <td>{{ optional($integration->last_contact_at)->format('d/m/Y H:i') ?? 'Nunca' }}</td>
                     <td>
                         @if($integration->is_active)
                             <span class="badge badge-success">Sim</span>

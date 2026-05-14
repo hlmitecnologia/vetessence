@@ -30,7 +30,7 @@
         @endif
         @if($onlineBooking->handledBy)
         <div class="row mt-2">
-            <div class="col-md-12"><strong>Processado por:</strong> {{ $onlineBooking->handledBy->name }} em {{ $onlineBooking->handled_at?->format('d/m/Y H:i') }}</div>
+            <div class="col-md-12"><strong>Processado por:</strong> {{ $onlineBooking->handledBy->name }} em {{ optional($onlineBooking->handled_at)->format('d/m/Y H:i') }}</div>
         </div>
         @endif
         @if($onlineBooking->staff_notes)

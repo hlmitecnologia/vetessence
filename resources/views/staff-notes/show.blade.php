@@ -29,7 +29,7 @@
                 <strong>Status:</strong>
                 <p>
                     @if($staffNote->is_read)
-                        <span class="badge badge-success">Lida em {{ $staffNote->read_at?->format('d/m/Y H:i') }}</span>
+                        <span class="badge badge-success">Lida em {{ optional($staffNote->read_at)->format('d/m/Y H:i') }}</span>
                     @else
                         <span class="badge badge-warning">Não lida</span>
                     @endif

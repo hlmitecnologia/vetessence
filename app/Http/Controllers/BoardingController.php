@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class BoardingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:hospedagem');
+    }
     public function index(Request $request)
     {
         $query = Boarding::with(['pet', 'createdBy']);

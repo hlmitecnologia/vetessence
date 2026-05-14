@@ -32,7 +32,7 @@ class Teleconsultation extends Model
 
     public static function generateRoomToken(): string
     {
-        return strtoupper(Str::random(8) . '-' . Str::random(4) . '-' . Str::random(4));
+        return strtoupper(Str::random(7) . '-' . Str::random(4) . '-' . Str::random(4));
     }
 
     public function getRoomUrlAttribute(): string

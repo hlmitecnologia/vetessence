@@ -8,6 +8,10 @@ use Illuminate\Support\Str;
 
 class ClinicalReportTemplateController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:modelo-laudo');
+    }
     public function index(Request $request)
     {
         $query = ClinicalReportTemplate::query();

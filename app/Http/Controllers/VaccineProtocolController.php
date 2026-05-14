@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class VaccineProtocolController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:protocolo-vacinas');
+    }
     public function index(Request $request)
     {
         $query = VaccineProtocol::query();

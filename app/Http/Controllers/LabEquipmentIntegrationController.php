@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 class LabEquipmentIntegrationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:integracao-equipamentos');
+    }
     public function index(Request $request)
     {
         $integrations = LabEquipmentIntegration::orderBy('name')->paginate(20);

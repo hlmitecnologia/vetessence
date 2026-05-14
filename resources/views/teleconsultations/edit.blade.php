@@ -32,7 +32,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="scheduled_at">Agendado para</label>
-                        <input type="datetime-local" name="scheduled_at" class="form-control @error('scheduled_at') is-invalid @enderror" value="{{ old('scheduled_at', $teleconsultation->scheduled_at?->format('Y-m-d\TH:i')) }}" required>
+                        <input type="datetime-local" name="scheduled_at" class="form-control @error('scheduled_at') is-invalid @enderror" value="{{ old('scheduled_at', optional($teleconsultation->scheduled_at)->format('Y-m-d\TH:i')) }}" required>
                     </div>
                 </div>
             </div>

@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-md-3"><strong>Pet:</strong><p>{{ $boarding->pet->name ?? 'N/A' }}</p></div>
             <div class="col-md-3"><strong>Check-in:</strong><p>{{ $boarding->check_in_at->format('d/m/Y H:i') }}</p></div>
-            <div class="col-md-3"><strong>Check-out Previsto:</strong><p>{{ $boarding->expected_check_out?->format('d/m/Y') ?? '-' }}</p></div>
+            <div class="col-md-3"><strong>Check-out Previsto:</strong><p>{{ optional($boarding->expected_check_out)->format('d/m/Y') ?? '-' }}</p></div>
             <div class="col-md-3"><strong>Status:</strong><p>
                 @if($boarding->status == 'checked_in') <span class="badge badge-success">Hospedado</span>
                 @elseif($boarding->status == 'checked_out') <span class="badge badge-secondary">Finalizado</span>

@@ -22,7 +22,7 @@
         </div>
         <div class="row mt-2">
             <div class="col-md-4"><strong>Status:</strong><p>@if($labEquipmentIntegration->is_active) <span class="badge badge-success">Ativo</span> @else <span class="badge badge-secondary">Inativo</span> @endif</p></div>
-            <div class="col-md-4"><strong>Último Contato:</strong><p>{{ $labEquipmentIntegration->last_contact_at?->format('d/m/Y H:i:s') ?? 'Nunca' }}</p></div>
+            <div class="col-md-4"><strong>Último Contato:</strong><p>{{ optional($labEquipmentIntegration->last_contact_at)->format('d/m/Y H:i:s') ?? 'Nunca' }}</p></div>
             <div class="col-md-4">
                 <strong>Webhook (API):</strong>
                 <p><code>{{ url('/api/v1/lab-equipment/' . $labEquipmentIntegration->id . '/receive') }}</code></p>

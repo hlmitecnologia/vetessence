@@ -13,6 +13,7 @@ class DrugInteractionController extends Controller
     public function __construct(DrugInteractionService $interactionService)
     {
         $this->interactionService = $interactionService;
+        $this->middleware('can:interacao-medicamentosa');
     }
 
     public function index(Request $request)

@@ -11,6 +11,10 @@ use Illuminate\Http\Request;
 
 class HealthCertificateController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:certificado-sanitario');
+    }
     public function index(Request $request)
     {
         $query = HealthCertificate::with(['pet', 'issuerVet']);

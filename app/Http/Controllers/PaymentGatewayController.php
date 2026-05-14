@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class PaymentGatewayController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:gateway-pagamento');
+    }
     public function index()
     {
         $gateways = PaymentGateway::orderBy('name')->paginate(20);

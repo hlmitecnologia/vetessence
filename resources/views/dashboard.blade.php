@@ -216,7 +216,7 @@
                     <li class="nav-item">
                         <a href="{{ route('parasite-controls.show', $pc) }}" class="nav-link">
                             <i class="fas fa-bug mr-2 text-danger"></i> {{ $pc->pet->name ?? 'Pet' }} - {{ $pc->product_name }}
-                            <span class="float-right text-danger text-sm">{{ $pc->next_due_date?->format('d/m') }}</span>
+                            <span class="float-right text-danger text-sm">{{ optional($pc->next_due_date)->format('d/m') }}</span>
                         </a>
                     </li>
                     @empty

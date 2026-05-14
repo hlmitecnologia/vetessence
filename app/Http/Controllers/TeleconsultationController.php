@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class TeleconsultationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:teleconsulta');
+    }
     public function index(Request $request)
     {
         $query = Teleconsultation::with(['pet', 'vet', 'tutor', 'appointment']);

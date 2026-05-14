@@ -18,7 +18,7 @@
                         <select name="pet_id" id="pet_id" class="form-control @error('pet_id') is-invalid @enderror" required>
                             <option value="">Selecione</option>
                             @foreach($pets as $pet)
-                                <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>{{ $pet->name }} ({{ $pet->tutor?->name ?? 'Sem tutor' }})</option>
+                                <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>{{ $pet->name }} ({{ optional($pet->tutor)->name ?? 'Sem tutor' }})</option>
                             @endforeach
                         </select>
                         @error('pet_id')<span class="invalid-feedback">{{ $message }}</span>@enderror

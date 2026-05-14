@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 class StaffNoteController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:nota-interna');
+    }
     public function index(Request $request)
     {
         $query = StaffNote::with(['creator', 'assignedTo']);

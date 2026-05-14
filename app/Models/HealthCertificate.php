@@ -31,7 +31,7 @@ class HealthCertificate extends Model
     {
         $year = now()->year;
         $last = static::whereYear('created_at', $year)->orderBy('id', 'desc')->first();
-        $seq = $last ? (int)explode('/', $last->certificate_number)[1] + 1 : 1;
+        $seq = $last ? (int) substr($last->certificate_number, 3, 4) + 1 : 1;
         return sprintf('HC-%04d/%d', $seq, $year);
     }
 }

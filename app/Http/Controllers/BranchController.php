@@ -8,6 +8,10 @@ use Illuminate\Support\Str;
 
 class BranchController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:unidades');
+    }
     public function index()
     {
         $branches = Branch::orderBy('name')->paginate(20);

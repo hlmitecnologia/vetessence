@@ -60,7 +60,7 @@
                         @else Ambos @endif
                     </td>
                     <td>{{ $boarding->check_in_at->format('d/m/Y H:i') }}</td>
-                    <td>{{ $boarding->expected_check_out?->format('d/m/Y') ?? '-' }}</td>
+                    <td>{{ optional($boarding->expected_check_out)->format('d/m/Y') ?? '-' }}</td>
                     <td>
                         @if($boarding->status == 'checked_in')
                             <span class="badge badge-success">Hospedado</span>

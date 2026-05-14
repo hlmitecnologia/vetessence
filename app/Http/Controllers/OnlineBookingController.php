@@ -10,6 +10,10 @@ use Illuminate\Http\Request;
 
 class OnlineBookingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:agendamento-online');
+    }
     public function index(Request $request)
     {
         $query = OnlineBooking::with(['convertedAppointment', 'handledBy']);
@@ -53,21 +57,25 @@ class OnlineBookingController extends Controller
         $tutor = Tutor::firstOrCreate(
             ['email' => $onlineBooking->tutor_email],
             [
-                'name' => $onlineBooking->tutor_name,
                 'phone' => $onlineBooking->tutor_phone,
             ]
         );
 
         $pet = Pet::firstOrCreate(
-            ['name' => $onlineBooking->pet_name, 'tutor_id' => $tutor->id],
-            ['species' => $onlineBooking->pet_species, 'breed' => $onlineBooking->pet_breed ?? '', 'birth_date' => null, 'is_active' => true]
+            ['name' => $onlineBooking->pet_name, 'species' => $onlineBooking->pet_species],
+            ['breed' => $onlineBooking->pet_breed ?? '', 'birth_date' => null, 'is_active' => true]
         );
+
+        if (!$pet->tutors()->where('tutor_id', $tutor->id)->exists()) {
+            $pet->tutors()->attach($tutor->id, ['is_primary' => true]);
+        }
 
         $appointment = Appointment::create([
             'pet_id' => $pet->id,
-            'user_id' => $validated['user_id'],
+            'vet_id' => $validated['user_id'],
             'date' => $validated['appointment_date'],
             'time' => $validated['appointment_time'],
+            'type' => 'consulta',
             'status' => 'scheduled',
             'notes' => $validated['notes'] ?? $onlineBooking->reason,
         ]);

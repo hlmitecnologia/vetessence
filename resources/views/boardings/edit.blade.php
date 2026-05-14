@@ -47,7 +47,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="expected_check_out">Check-out Previsto</label>
-                        <input type="date" name="expected_check_out" class="form-control" value="{{ old('expected_check_out', $boarding->expected_check_out?->format('Y-m-d')) }}">
+                        <input type="date" name="expected_check_out" class="form-control" value="{{ old('expected_check_out', optional($boarding->expected_check_out)->format('Y-m-d')) }}">
                     </div>
                 </div>
                 <div class="col-md-4">

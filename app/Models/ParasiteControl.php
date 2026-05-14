@@ -10,6 +10,11 @@ class ParasiteControl extends Model
 {
     use HasFactory;
 
+    public function scopeOverdue($query)
+    {
+        return $query->where('next_due_date', '<', now());
+    }
+
     protected $fillable = [
         'pet_id', 'product_name', 'active_ingredient', 'type',
         'application_date', 'next_due_date', 'dose', 'batch',

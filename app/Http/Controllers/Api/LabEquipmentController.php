@@ -27,7 +27,7 @@ class LabEquipmentController extends Controller
 
         $result = LabEquipmentResult::create([
             'integration_id' => $integration->id,
-            'result_identifier' => $validated['result_identifier'],
+            'result_identifier' => $validated['result_identifier'] ?? null,
             'pet_id' => $validated['pet_id'] ?? null,
             'laboratory_order_id' => $validated['laboratory_order_id'] ?? null,
             'test_type' => $validated['test_type'],
