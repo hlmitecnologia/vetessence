@@ -3,10 +3,16 @@
 namespace App\Traits;
 
 use App\Models\Branch;
+use App\Scopes\BranchScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait BranchScoped
 {
+    public static function bootBranchScoped(): void
+    {
+        static::addGlobalScope(new BranchScope);
+    }
+
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
@@ -18,5 +24,10 @@ trait BranchScoped
             return $query->where('branch_id', $branchId);
         }
         return $query;
+    }
+
+    public function scopeWithoutBranch($query)
+    {
+        return $query->withoutGlobalScope(BranchScope::class);
     }
 }
