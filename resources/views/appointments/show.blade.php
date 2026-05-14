@@ -1,101 +1,103 @@
 @extends('layouts.adminlte', ['title' => 'Consulta'])
 
-@section('header')
-    <a href="{{ route('appointments.index') }}" class="text-gray-500 hover:text-gray-700">
-        <i class="fas fa-arrow-left"></i>
-    </a>
-    <h2 class="ml-4 text-lg font-semibold">Consulta - {{ $appointment->date->format('d/m/Y') }}</h2>
-@endsection
-
 @section('content')
-<div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-xl shadow-sm p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-                <h3 class="text-sm text-gray-500">Pet</h3>
-                <p class="font-semibold">{{ $appointment->pet->name ?? '-' }}</p>
-                <p class="text-sm text-gray-600">{{ $appointment->pet->tutors->first()->name ?? '' }}</p>
-            </div>
-            <div>
-                <h3 class="text-sm text-gray-500">Veterinário</h3>
-                <p class="font-semibold">{{ $appointment->vet->name ?? '-' }}</p>
-            </div>
-            <div>
-                <h3 class="text-sm text-gray-500">Data e Hora</h3>
-                <p class="font-semibold">{{ $appointment->date->format('d/m/Y') }} às {{ substr($appointment->time, 0, 5) }}</p>
-            </div>
-            <div>
-                <h3 class="text-sm text-gray-500">Tipo</h3>
-                <p class="font-semibold">{{ ucfirst($appointment->type) }}</p>
-            </div>
-            <div>
-                <h3 class="text-sm text-gray-500">Status</h3>
-                @php
-                    $statusClass = match($appointment->status) {
-                        'scheduled' => 'bg-blue-100 text-blue-800',
-                        'confirmed' => 'bg-green-100 text-green-800',
-                        'completed' => 'bg-gray-100 text-gray-800',
-                        'cancelled' => 'bg-red-100 text-red-800',
-                        default => 'bg-gray-100 text-gray-800'
-                    };
-                @endphp
-                <span class="px-2 py-1 text-xs rounded-full {{ $statusClass }}">{{ ucfirst($appointment->status) }}</span>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Consulta - {{ $appointment->date->format('d/m/Y') }}</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-borderless">
+                    <tr><td><strong>Pet:</strong></td><td>{{ $appointment->pet->name ?? '-' }}</td></tr>
+                    <tr>
+                        <td><strong>Tutor:</strong></td>
+                        <td>
+                            @if($appointment->pet && $appointment->pet->tutors && $appointment->pet->tutors->first())
+                                {{ $appointment->pet->tutors->first()->name }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                    </tr>
+                    <tr><td><strong>Veterinário:</strong></td><td>{{ $appointment->vet->name ?? '-' }}</td></tr>
+                    <tr><td><strong>Data/Hora:</strong></td><td>{{ $appointment->date->format('d/m/Y') }} às {{ substr($appointment->time, 0, 5) }}</td></tr>
+                    <tr><td><strong>Tipo:</strong></td><td>{{ ucfirst($appointment->type) }}</td></tr>
+                    <tr>
+                        <td><strong>Status:</strong></td>
+                        <td>
+                            @php
+                                $statusColors = [
+                                    'scheduled' => 'badge badge-primary',
+                                    'confirmed' => 'badge badge-success',
+                                    'in_progress' => 'badge badge-warning',
+                                    'completed' => 'badge badge-secondary',
+                                    'cancelled' => 'badge badge-danger',
+                                    'no_show' => 'badge badge-dark'
+                                ];
+                                $statusLabels = [
+                                    'scheduled' => 'Agendado',
+                                    'confirmed' => 'Confirmado',
+                                    'in_progress' => 'Em Andamento',
+                                    'completed' => 'Concluído',
+                                    'cancelled' => 'Cancelado',
+                                    'no_show' => 'Faltou'
+                                ];
+                            @endphp
+                            <span class="{{ $statusColors[$appointment->status] ?? 'badge badge-secondary' }}">
+                                {{ $statusLabels[$appointment->status] ?? $appointment->status }}
+                            </span>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
 
         @if($appointment->reason)
-        <div class="mb-6">
-            <h3 class="text-sm text-gray-500 mb-1">Motivo</h3>
+        <div class="mt-3">
+            <strong>Motivo:</strong>
             <p>{{ $appointment->reason }}</p>
         </div>
         @endif
 
         @if($appointment->services->count() > 0)
-        <div class="mb-6">
-            <h3 class="text-sm text-gray-500 mb-2">Serviços</h3>
-            <table class="w-full">
-                <thead class="bg-gray-50">
+        <div class="mt-4">
+            <strong>Serviços:</strong>
+            <table class="table table-striped mt-2">
+                <thead>
                     <tr>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">Serviço</th>
-                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-500">Qtd</th>
-                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-500">Valor</th>
+                        <th>Serviço</th>
+                        <th class="text-center">Qtd</th>
+                        <th class="text-right">Valor</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y">
+                <tbody>
                     @foreach($appointment->services as $service)
                     <tr>
-                        <td class="px-4 py-2">{{ $service->service->name }}</td>
-                        <td class="px-4 py-2 text-right">{{ $service->quantity }}</td>
-                        <td class="px-4 py-2 text-right">R$ {{ number_format($service->price, 2, ',', '.') }}</td>
+                        <td>{{ $service->service->name }}</td>
+                        <td class="text-center">{{ $service->quantity }}</td>
+                        <td class="text-right">R$ {{ number_format($service->price, 2, ',', '.') }}</td>
                     </tr>
                     @endforeach
                 </tbody>
-                <tfoot class="bg-gray-50">
+                <tfoot>
                     <tr>
-                        <td colspan="2" class="px-4 py-2 text-right font-semibold">Total:</td>
-                        <td class="px-4 py-2 text-right font-semibold">R$ {{ number_format($appointment->total, 2, ',', '.') }}</td>
+                        <td colspan="2" class="text-right"><strong>Total:</strong></td>
+                        <td class="text-right"><strong>R$ {{ number_format($appointment->services->sum('price'), 2, ',', '.') }}</strong></td>
                     </tr>
                 </tfoot>
             </table>
         </div>
         @endif
-
-        <div class="flex justify-between">
-            <a href="{{ route('appointments.index') }}" class="px-4 py-2 border rounded-lg hover:bg-gray-50">
-                <i class="fas fa-arrow-left mr-2"></i> Voltar
-            </a>
-            <div class="flex gap-2">
-                @if($appointment->status === 'scheduled' || $appointment->status === 'confirmed')
-                <a href="{{ route('medical-records.create') }}?appointment_id={{ $appointment->id }}&pet_id={{ $appointment->pet_id }}" 
-                   class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
-                    <i class="fas fa-file-medical mr-2"></i> Iniciar Atendimento
-                </a>
-                @endif
-                <a href="{{ route('appointments.edit', $appointment) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">
-                    <i class="fas fa-edit mr-2"></i> Editar
-                </a>
-            </div>
-        </div>
+    </div>
+    <div class="card-footer">
+        <a href="{{ route('appointments.index') }}" class="btn btn-default"><i class="fas fa-arrow-left"></i> Voltar</a>
+        @if($appointment->status === 'scheduled' || $appointment->status === 'confirmed')
+        <a href="{{ route('medical-records.create') }}?appointment_id={{ $appointment->id }}&pet_id={{ $appointment->pet_id }}" class="btn btn-success">
+            <i class="fas fa-file-medical"></i> Iniciar Atendimento
+        </a>
+        @endif
+        <a href="{{ route('appointments.edit', $appointment) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Editar</a>
     </div>
 </div>
 @endsection

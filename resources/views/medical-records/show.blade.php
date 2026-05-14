@@ -1,4 +1,4 @@
-@extends('layouts.adminlte', ['title' => 'Prontuário'])
+@extends('layouts.adminlte', ['title' => 'Prontuário - ' . ($medicalRecord->pet->name ?? '')])
 
 @section('header')
     <a href="{{ route('medical-records.index') }}" class="text-gray-500 hover:text-gray-700"><i class="fas fa-arrow-left"></i></a>
@@ -77,6 +77,28 @@
         </div>
         @endif
     </div>
+
+    @if($medicalRecord->zoonoticDiseases->count() > 0)
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="font-semibold mb-4"><i class="fas fa-biohazard text-red-500 mr-2"></i>Doenças Zoonóticas</h3>
+        <div class="flex flex-wrap gap-3">
+            @foreach($medicalRecord->zoonoticDiseases as $disease)
+            <a href="{{ route('zoonotic-diseases.show', $disease) }}"
+               class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium
+                      {{ $disease->pivot->is_suspected ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800' }}">
+                <i class="fas fa-biohazard mr-2"></i>
+                {{ $disease->name }}
+                @if($disease->pivot->is_suspected)
+                    <span class="ml-2 text-xs">(Suspeito)</span>
+                @endif
+                @if($disease->is_notifiable)
+                    <span class="ml-2 text-xs">🔔</span>
+                @endif
+            </a>
+            @endforeach
+        </div>
+    </div>
+    @endif
 
     @if($medicalRecord->prescriptions->count() > 0)
     <div class="bg-white rounded-xl shadow-sm p-6">

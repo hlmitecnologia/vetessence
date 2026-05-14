@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\VaccinationController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\MedicalRecordController;
+use App\Http\Controllers\Api\ZoonoticDiseaseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,11 @@ use App\Http\Controllers\Api\MedicalRecordController;
 Route::prefix('v1')->group(function () {
     // Public Routes
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/online-bookings', [\App\Http\Controllers\Api\OnlineBookingController::class, 'store']);
+    Route::get('/online-bookings/availability', [\App\Http\Controllers\Api\OnlineBookingController::class, 'availability']);
+    // Lab Equipment (no auth - equipment posts results via webhook)
+    Route::post('/lab-equipment/{integrationId}/receive', [\App\Http\Controllers\Api\LabEquipmentController::class, 'receive']);
+    Route::get('/lab-equipment/{integrationId}/status', [\App\Http\Controllers\Api\LabEquipmentController::class, 'status']);
     Route::get('/config', function () {
         return response()->json([
             'app_name' => config('app.name'),
@@ -69,5 +75,22 @@ Route::prefix('v1')->group(function () {
         Route::get('/medical-records', [MedicalRecordController::class, 'index']);
         Route::get('/medical-records/{id}', [MedicalRecordController::class, 'show']);
         Route::get('/pets/{petId}/medical-records', [MedicalRecordController::class, 'byPet']);
+
+        // Zoonotic Diseases
+        Route::get('/zoonotic-diseases', [ZoonoticDiseaseController::class, 'index']);
+        Route::get('/zoonotic-diseases/{id}', [ZoonoticDiseaseController::class, 'show']);
+        Route::get('/zoonotic-diseases/notifiable/list', [ZoonoticDiseaseController::class, 'notifiable']);
+        Route::get('/zoonotic-diseases/categories/list', [ZoonoticDiseaseController::class, 'categories']);
+
+        // Module API
+        Route::get('/my-pets/{petId}/weight-records', [\App\Http\Controllers\Api\ModuleApiController::class, 'weightRecords']);
+        Route::get('/my-pets/{petId}/hospitalizations', [\App\Http\Controllers\Api\ModuleApiController::class, 'hospitalizations']);
+        Route::get('/my-pets/{petId}/treatment-plans', [\App\Http\Controllers\Api\ModuleApiController::class, 'treatmentPlans']);
+        Route::get('/my-pets/{petId}/laboratory-orders', [\App\Http\Controllers\Api\ModuleApiController::class, 'laboratoryOrders']);
+        Route::get('/my-pets/{petId}/imaging-exams', [\App\Http\Controllers\Api\ModuleApiController::class, 'imagingExams']);
+        Route::get('/my-pets/{petId}/referrals', [\App\Http\Controllers\Api\ModuleApiController::class, 'referrals']);
+        Route::get('/my-pets/{petId}/consent-forms', [\App\Http\Controllers\Api\ModuleApiController::class, 'consentForms']);
+
+
     });
 });

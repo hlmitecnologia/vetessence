@@ -1,62 +1,59 @@
 @extends('layouts.adminlte', ['title' => 'Faturas'])
 
-@section('header')
-    <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold">Faturas</h2>
-        <a href="{{ route('invoices.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm">
-            <i class="fas fa-plus mr-2"></i> Nova Fatura
-        </a>
-    </div>
-@endsection
-
 @section('content')
-<div class="bg-white rounded-xl shadow-sm">
-    <div class="p-4 border-b">
-        <form method="GET" class="flex gap-4">
-            <select name="status" class="px-4 py-2 border rounded-lg">
-                <option value="">Todos Status</option>
-                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pendente</option>
-                <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>Pago</option>
-                <option value="overdue" {{ request('status') == 'overdue' ? 'selected' : '' }}>Vencido</option>
-            </select>
-            <button type="submit" class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg"><i class="fas fa-search"></i></button>
-        </form>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Faturas</h3>
+        <div class="card-tools">
+            <a href="{{ route('invoices.create') }}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Novo
+            </a>
+        </div>
     </div>
-    <div class="overflow-x-auto">
-        <table class="w-full">
-            <thead class="bg-gray-50">
+    <div class="card-body">
+        @if($invoices->count() > 0)
+        <table class="table table-bordered table-striped">
+            <thead>
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nº</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tutor</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vencimento</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th class="px-6 py-3 text-right">Ações</th>
+                    <th>Nº Fatura</th>
+                    <th>Tutor</th>
+                    <th>Pet</th>
+                    <th>Valor</th>
+                    <th>Vencimento</th>
+                    <th>Status</th>
+                    <th style="width: 120px;">Ações</th>
                 </tr>
             </thead>
-            <tbody class="divide-y">
-                @forelse($invoices as $inv)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 font-medium">{{ $inv->invoice_number }}</td>
-                    <td class="px-6 py-4">{{ $inv->tutor->name ?? '-' }}</td>
-                    <td class="px-6 py-4">R$ {{ number_format($inv->total, 2, ',', '.') }}</td>
-                    <td class="px-6 py-4 text-sm">{{ $inv->due_date->format('d/m/Y') }}</td>
-                    <td class="px-6 py-4">
-                        @php $statusClass = match($inv->status) { 'paid' => 'bg-green-100 text-green-800', 'pending' => 'bg-yellow-100 text-yellow-800', 'overdue' => 'bg-red-100 text-red-800', 'cancelled' => 'bg-gray-100 text-gray-800', default => 'bg-gray-100' }; @endphp
-                        @php $statusLabels = ['pending' => 'Pendente', 'paid' => 'Pago', 'overdue' => 'Vencido', 'cancelled' => 'Cancelado', 'refunded' => 'Estornado']; @endphp
-                        <span class="px-2 py-1 text-xs rounded-full {{ $statusClass }}">{{ $statusLabels[$inv->status] ?? $inv->status }}</span>
+            <tbody>
+                @foreach($invoices as $inv)
+                <tr>
+                    <td><strong>{{ $inv->invoice_number }}</strong></td>
+                    <td>{{ $inv->tutor->name ?? '-' }}</td>
+                    <td>{{ $inv->pet->name ?? '-' }}</td>
+                    <td>R$ {{ number_format($inv->total, 2, ',', '.') }}</td>
+                    <td>{{ $inv->due_date->format('d/m/Y') }}</td>
+                    <td>
+                        @php
+                            $statusColors = ['pending' => 'badge-warning', 'paid' => 'badge-success', 'overdue' => 'badge-danger', 'cancelled' => 'badge-secondary'];
+                            $statusLabels = ['pending' => 'Pendente', 'paid' => 'Pago', 'overdue' => 'Vencido', 'cancelled' => 'Cancelado'];
+                        @endphp
+                        <span class="badge {{ $statusColors[$inv->status] ?? 'badge-secondary' }}">{{ $statusLabels[$inv->status] ?? $inv->status }}</span>
                     </td>
-                    <td class="px-6 py-4 text-right">
-                        <a href="{{ route('invoices.show', $inv) }}" class="text-blue-600 mr-2"><i class="fas fa-eye"></i></a>
-                        <a href="{{ route('invoices.edit', $inv) }}" class="text-gray-600"><i class="fas fa-edit"></i></a>
+                    <td>
+                        <a href="{{ route('invoices.show', $inv) }}" class="btn btn-action btn-info" title="Visualizar">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ route('invoices.edit', $inv) }}" class="btn btn-action btn-primary" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
                     </td>
                 </tr>
-                @empty
-                <tr><td colspan="6" class="px-6 py-12 text-center text-gray-500">Nenhuma fatura encontrada.</td></tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
+        @else
+        <p class="text-center text-muted">Nenhum registro encontrado.</p>
+        @endif
     </div>
-    <div class="p-4 border-t">{{ $invoices->links() }}</div>
 </div>
 @endsection

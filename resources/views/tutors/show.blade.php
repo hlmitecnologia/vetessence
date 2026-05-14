@@ -114,14 +114,14 @@
                         <td class="px-4 py-2 text-sm">{{ $invoice->due_date->format('d/m/Y') }}</td>
                         <td class="px-4 py-2">
                             @php
-                                $statusClass = match($invoice->status) {
-                                    'paid' => 'bg-green-100 text-green-800',
-                                    'pending' => 'bg-yellow-100 text-yellow-800',
-                                    'overdue' => 'bg-red-100 text-red-800',
-                                    default => 'bg-gray-100 text-gray-800'
-                                };
+                                $statusColors = [
+                                    'paid' => 'badge badge-success',
+                                    'pending' => 'badge badge-warning',
+                                    'overdue' => 'badge badge-danger',
+                                    'cancelled' => 'badge badge-secondary'
+                                ];
                             @endphp
-                            <span class="px-2 py-1 text-xs rounded-full {{ $statusClass }}">
+                            <span class="{{ $statusColors[$invoice->status] ?? 'badge badge-secondary' }}">
                                 {{ ucfirst($invoice->status) }}
                             </span>
                         </td>

@@ -58,7 +58,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Data de Nascimento</label>
-                <input type="date" name="birth_date" value="{{ old('birth_date', $pet->birth_date?->format('Y-m-d')) }}"
+                 <input type="date" name="birth_date" value="{{ old('birth_date', $pet->birth_date ? $pet->birth_date->format('Y-m-d') : '') }}"
                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
             </div>
 

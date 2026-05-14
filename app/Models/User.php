@@ -37,6 +37,17 @@ class User extends Authenticatable
         return $this->belongsTo(Tutor::class);
     }
 
+    public function hasRole($roles): bool
+    {
+        if (is_string($roles)) {
+            $roles = [$roles];
+        }
+        if ($this->role && in_array($this->role->slug, $roles)) {
+            return true;
+        }
+        return !empty(array_intersect($roles, $this->getRoleNames()->toArray()));
+    }
+
     public function appointments(): HasMany
     {
         return $this->hasMany(Appointment::class, 'vet_id');

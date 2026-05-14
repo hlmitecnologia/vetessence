@@ -213,6 +213,344 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'users.destroy',
     ]);
 
+    // Zoonotic Diseases
+    Route::resource('zoonotic-diseases', 'App\Http\Controllers\ZoonoticDiseaseController')->names([
+        'index' => 'zoonotic-diseases.index',
+        'create' => 'zoonotic-diseases.create',
+        'store' => 'zoonotic-diseases.store',
+        'show' => 'zoonotic-diseases.show',
+        'edit' => 'zoonotic-diseases.edit',
+        'update' => 'zoonotic-diseases.update',
+        'destroy' => 'zoonotic-diseases.destroy',
+    ]);
+
+    // Hospitalization
+    Route::resource('hospitalizations', 'App\Http\Controllers\HospitalizationController')->names([
+        'index' => 'hospitalizations.index',
+        'create' => 'hospitalizations.create',
+        'store' => 'hospitalizations.store',
+        'show' => 'hospitalizations.show',
+        'edit' => 'hospitalizations.edit',
+        'update' => 'hospitalizations.update',
+        'destroy' => 'hospitalizations.destroy',
+    ]);
+    Route::get('hospitalization-daily-records', 'App\Http\Controllers\HospitalizationDailyRecordController@index')
+        ->name('hospitalization-daily-records.index');
+    Route::get('hospitalization-daily-records/create', 'App\Http\Controllers\HospitalizationDailyRecordController@create')
+        ->name('hospitalization-daily-records.create');
+    Route::post('hospitalizations/{hospitalization}/daily-records', 'App\Http\Controllers\HospitalizationDailyRecordController@store')
+        ->name('hospitalizations.daily-records.store');
+    Route::post('hospitalization-daily-records', 'App\Http\Controllers\HospitalizationDailyRecordController@store')
+        ->name('hospitalization-daily-records.store');
+    Route::get('hospitalization-daily-records/{hospitalizationDailyRecord}', 'App\Http\Controllers\HospitalizationDailyRecordController@show')
+        ->name('hospitalization-daily-records.show');
+    Route::get('hospitalization-daily-records/{hospitalizationDailyRecord}/edit', 'App\Http\Controllers\HospitalizationDailyRecordController@edit')
+        ->name('hospitalization-daily-records.edit');
+    Route::put('hospitalization-daily-records/{hospitalizationDailyRecord}', 'App\Http\Controllers\HospitalizationDailyRecordController@update')
+        ->name('hospitalization-daily-records.update');
+    Route::delete('hospitalizations/daily-records/{dailyRecord}', 'App\Http\Controllers\HospitalizationDailyRecordController@destroy')
+        ->name('hospitalizations.daily-records.destroy');
+    Route::delete('hospitalization-daily-records/{hospitalizationDailyRecord}', 'App\Http\Controllers\HospitalizationDailyRecordController@destroy')
+        ->name('hospitalization-daily-records.destroy');
+    Route::resource('hospitalizations.fluid-therapies', 'App\Http\Controllers\HospitalizationFluidTherapyController')
+        ->only(['store', 'destroy'])->names(['store' => 'hospitalizations.fluid-therapies.store', 'destroy' => 'hospitalizations.fluid-therapies.destroy']);
+    Route::resource('hospitalizations.prescriptions', 'App\Http\Controllers\HospitalizationPrescriptionController')
+        ->except(['index', 'show'])->names(['store' => 'hospitalizations.prescriptions.store', 'update' => 'hospitalizations.prescriptions.update', 'destroy' => 'hospitalizations.prescriptions.destroy']);
+
+    // Vaccination Reminders
+    Route::resource('vaccination-reminders', 'App\Http\Controllers\VaccinationReminderController')->names([
+        'index' => 'vaccination-reminders.index',
+        'create' => 'vaccination-reminders.create',
+        'store' => 'vaccination-reminders.store',
+        'show' => 'vaccination-reminders.show',
+        'edit' => 'vaccination-reminders.edit',
+        'update' => 'vaccination-reminders.update',
+        'destroy' => 'vaccination-reminders.destroy',
+    ]);
+
+    // Notification Logs
+    Route::get('notification-logs', 'App\Http\Controllers\NotificationLogController@index')->name('notification-logs.index');
+    Route::get('notification-logs/{notificationLog}', 'App\Http\Controllers\NotificationLogController@show')->name('notification-logs.show');
+    Route::delete('notification-logs/{notificationLog}', 'App\Http\Controllers\NotificationLogController@destroy')->name('notification-logs.destroy');
+
+    // Weight Records
+    Route::get('weight-records', 'App\Http\Controllers\WeightRecordController@index')->name('weight-records.index');
+    Route::get('weight-records/create', 'App\Http\Controllers\WeightRecordController@create')->name('weight-records.create');
+    Route::post('weight-records', 'App\Http\Controllers\WeightRecordController@store')->name('weight-records.store');
+    Route::get('weight-records/{weightRecord}', 'App\Http\Controllers\WeightRecordController@show')->name('weight-records.show');
+    Route::get('weight-records/{weightRecord}/edit', 'App\Http\Controllers\WeightRecordController@edit')->name('weight-records.edit');
+    Route::put('weight-records/{weightRecord}', 'App\Http\Controllers\WeightRecordController@update')->name('weight-records.update');
+    Route::delete('weight-records/{weightRecord}', 'App\Http\Controllers\WeightRecordController@destroy')->name('weight-records.destroy');
+    Route::get('weight-records/{pet}/chart-data', 'App\Http\Controllers\WeightRecordController@chartData')->name('weight-records.chart');
+
+    // Treatment Plans
+    Route::resource('treatment-plans', 'App\Http\Controllers\TreatmentPlanController')->names([
+        'index' => 'treatment-plans.index',
+        'create' => 'treatment-plans.create',
+        'store' => 'treatment-plans.store',
+        'show' => 'treatment-plans.show',
+        'edit' => 'treatment-plans.edit',
+        'update' => 'treatment-plans.update',
+        'destroy' => 'treatment-plans.destroy',
+    ]);
+
+    // Consent Forms
+    Route::resource('consent-forms', 'App\Http\Controllers\ConsentFormController')->names([
+        'index' => 'consent-forms.index',
+        'create' => 'consent-forms.create',
+        'store' => 'consent-forms.store',
+        'show' => 'consent-forms.show',
+        'edit' => 'consent-forms.edit',
+        'update' => 'consent-forms.update',
+        'destroy' => 'consent-forms.destroy',
+    ]);
+    Route::get('consent-forms/{consentForm}/preview', 'App\Http\Controllers\ConsentFormController@preview')->name('consent-forms.preview');
+
+    // Consent Templates
+    Route::resource('consent-templates', 'App\Http\Controllers\ConsentTemplateController')->names([
+        'index' => 'consent-templates.index',
+        'create' => 'consent-templates.create',
+        'store' => 'consent-templates.store',
+        'show' => 'consent-templates.show',
+        'edit' => 'consent-templates.edit',
+        'update' => 'consent-templates.update',
+        'destroy' => 'consent-templates.destroy',
+    ]);
+
+    // Dental Charts
+    Route::resource('dental-charts', 'App\Http\Controllers\DentalChartController')->names([
+        'index' => 'dental-charts.index',
+        'create' => 'dental-charts.create',
+        'store' => 'dental-charts.store',
+        'show' => 'dental-charts.show',
+        'edit' => 'dental-charts.edit',
+        'update' => 'dental-charts.update',
+        'destroy' => 'dental-charts.destroy',
+    ]);
+
+    // Controlled Substances
+    Route::resource('controlled-substances', 'App\Http\Controllers\ControlledSubstanceController')->names([
+        'index' => 'controlled-substances.index',
+        'create' => 'controlled-substances.create',
+        'store' => 'controlled-substances.store',
+        'show' => 'controlled-substances.show',
+        'edit' => 'controlled-substances.edit',
+        'update' => 'controlled-substances.update',
+        'destroy' => 'controlled-substances.destroy',
+    ]);
+    Route::get('controlled-substances/{substance}/movements', 'App\Http\Controllers\ControlledSubstanceLogController@index')
+        ->name('controlled-substance-logs.index');
+    Route::post('controlled-substances/{substance}/movements', 'App\Http\Controllers\ControlledSubstanceLogController@store')
+        ->name('controlled-substance-logs.store');
+    Route::get('controlled-substances/logs/{controlledSubstanceLog}', 'App\Http\Controllers\ControlledSubstanceLogController@show')
+        ->name('controlled-substance-logs.show');
+    Route::delete('controlled-substances/logs/{controlledSubstanceLog}', 'App\Http\Controllers\ControlledSubstanceLogController@destroy')
+        ->name('controlled-substance-logs.destroy');
+
+    // Anesthesia Monitoring
+    Route::resource('anesthesia-monitorings', 'App\Http\Controllers\AnesthesiaMonitoringController')->names([
+        'index' => 'anesthesia-monitorings.index',
+        'create' => 'anesthesia-monitorings.create',
+        'store' => 'anesthesia-monitorings.store',
+        'show' => 'anesthesia-monitorings.show',
+        'edit' => 'anesthesia-monitorings.edit',
+        'update' => 'anesthesia-monitorings.update',
+        'destroy' => 'anesthesia-monitorings.destroy',
+    ]);
+
+    // Laboratory Orders
+    Route::resource('laboratory-orders', 'App\Http\Controllers\LaboratoryOrderController')->names([
+        'index' => 'laboratory-orders.index',
+        'create' => 'laboratory-orders.create',
+        'store' => 'laboratory-orders.store',
+        'show' => 'laboratory-orders.show',
+        'edit' => 'laboratory-orders.edit',
+        'update' => 'laboratory-orders.update',
+        'destroy' => 'laboratory-orders.destroy',
+    ]);
+
+    // Imaging Exams
+    Route::resource('imaging-exams', 'App\Http\Controllers\ImagingExamController')->names([
+        'index' => 'imaging-exams.index',
+        'create' => 'imaging-exams.create',
+        'store' => 'imaging-exams.store',
+        'show' => 'imaging-exams.show',
+        'edit' => 'imaging-exams.edit',
+        'update' => 'imaging-exams.update',
+        'destroy' => 'imaging-exams.destroy',
+    ]);
+
+    // Referrals
+    Route::resource('referrals', 'App\Http\Controllers\ReferralController')->names([
+        'index' => 'referrals.index',
+        'create' => 'referrals.create',
+        'store' => 'referrals.store',
+        'show' => 'referrals.show',
+        'edit' => 'referrals.edit',
+        'update' => 'referrals.update',
+        'destroy' => 'referrals.destroy',
+    ]);
+
+    // Communication Templates
+    Route::resource('communication-templates', 'App\Http\Controllers\CommunicationTemplateController')->names([
+        'index' => 'communication-templates.index',
+        'create' => 'communication-templates.create',
+        'store' => 'communication-templates.store',
+        'show' => 'communication-templates.show',
+        'edit' => 'communication-templates.edit',
+        'update' => 'communication-templates.update',
+        'destroy' => 'communication-templates.destroy',
+    ]);
+
+    // Communication Queue
+    Route::get('communication-queues', 'App\Http\Controllers\CommunicationQueueController@index')->name('communication-queues.index');
+    Route::get('communication-queues/create', 'App\Http\Controllers\CommunicationQueueController@create')->name('communication-queues.create');
+    Route::post('communication-queues', 'App\Http\Controllers\CommunicationQueueController@store')->name('communication-queues.store');
+    Route::get('communication-queues/{communicationQueue}', 'App\Http\Controllers\CommunicationQueueController@show')->name('communication-queues.show');
+    Route::delete('communication-queues/{communicationQueue}', 'App\Http\Controllers\CommunicationQueueController@destroy')->name('communication-queues.destroy');
+
+    // Parasite Controls
+    Route::resource('parasite-controls', 'App\Http\Controllers\ParasiteControlController')->names([
+        'index' => 'parasite-controls.index',
+        'create' => 'parasite-controls.create',
+        'store' => 'parasite-controls.store',
+        'show' => 'parasite-controls.show',
+        'edit' => 'parasite-controls.edit',
+        'update' => 'parasite-controls.update',
+        'destroy' => 'parasite-controls.destroy',
+    ]);
+
+    // Vaccine Protocols
+    Route::resource('vaccine-protocols', 'App\Http\Controllers\VaccineProtocolController')->names([
+        'index' => 'vaccine-protocols.index',
+        'create' => 'vaccine-protocols.create',
+        'store' => 'vaccine-protocols.store',
+        'show' => 'vaccine-protocols.show',
+        'edit' => 'vaccine-protocols.edit',
+        'update' => 'vaccine-protocols.update',
+        'destroy' => 'vaccine-protocols.destroy',
+    ]);
+
+    // Teleconsultations
+    Route::resource('teleconsultations', 'App\Http\Controllers\TeleconsultationController')->names([
+        'index' => 'teleconsultations.index',
+        'create' => 'teleconsultations.create',
+        'store' => 'teleconsultations.store',
+        'show' => 'teleconsultations.show',
+        'edit' => 'teleconsultations.edit',
+        'update' => 'teleconsultations.update',
+        'destroy' => 'teleconsultations.destroy',
+    ]);
+    Route::get('teleconsultations/{teleconsultation}/start', 'App\Http\Controllers\TeleconsultationController@start')->name('teleconsultations.start');
+    Route::post('teleconsultations/{teleconsultation}/end', 'App\Http\Controllers\TeleconsultationController@end')->name('teleconsultations.end');
+    Route::get('teleconsultation/{token}', 'App\Http\Controllers\TeleconsultationController@room')->name('teleconsultations.room');
+
+    // Branches (Multi-unit)
+    Route::resource('branches', 'App\Http\Controllers\BranchController')->names([
+        'index' => 'branches.index',
+        'create' => 'branches.create',
+        'store' => 'branches.store',
+        'show' => 'branches.show',
+        'edit' => 'branches.edit',
+        'update' => 'branches.update',
+        'destroy' => 'branches.destroy',
+    ]);
+
+    // Payment Gateways
+    Route::resource('payment-gateways', 'App\Http\Controllers\PaymentGatewayController')->names([
+        'index' => 'payment-gateways.index',
+        'create' => 'payment-gateways.create',
+        'store' => 'payment-gateways.store',
+        'show' => 'payment-gateways.show',
+        'edit' => 'payment-gateways.edit',
+        'update' => 'payment-gateways.update',
+        'destroy' => 'payment-gateways.destroy',
+    ]);
+
+    // Lab Equipment Integrations
+    Route::resource('lab-equipment-integrations', 'App\Http\Controllers\LabEquipmentIntegrationController')->names([
+        'index' => 'lab-equipment-integrations.index',
+        'create' => 'lab-equipment-integrations.create',
+        'store' => 'lab-equipment-integrations.store',
+        'show' => 'lab-equipment-integrations.show',
+        'edit' => 'lab-equipment-integrations.edit',
+        'update' => 'lab-equipment-integrations.update',
+        'destroy' => 'lab-equipment-integrations.destroy',
+    ]);
+
+    // Online Bookings
+    Route::resource('online-bookings', 'App\Http\Controllers\OnlineBookingController')->names([
+        'index' => 'online-bookings.index',
+        'show' => 'online-bookings.show',
+        'destroy' => 'online-bookings.destroy',
+    ])->only(['index', 'show', 'destroy']);
+    Route::post('online-bookings/{onlineBooking}/confirm', 'App\Http\Controllers\OnlineBookingController@confirm')->name('online-bookings.confirm');
+    Route::post('online-bookings/{onlineBooking}/reject', 'App\Http\Controllers\OnlineBookingController@reject')->name('online-bookings.reject');
+
+    // Staff Notes
+    Route::resource('staff-notes', 'App\Http\Controllers\StaffNoteController')->names([
+        'index' => 'staff-notes.index',
+        'create' => 'staff-notes.create',
+        'store' => 'staff-notes.store',
+        'show' => 'staff-notes.show',
+        'edit' => 'staff-notes.edit',
+        'update' => 'staff-notes.update',
+        'destroy' => 'staff-notes.destroy',
+    ]);
+    Route::post('staff-notes/{staffNote}/mark-read', 'App\Http\Controllers\StaffNoteController@markRead')->name('staff-notes.mark-read');
+
+    // Boarding / Grooming
+    Route::resource('boardings', 'App\Http\Controllers\BoardingController')->names([
+        'index' => 'boardings.index',
+        'create' => 'boardings.create',
+        'store' => 'boardings.store',
+        'show' => 'boardings.show',
+        'edit' => 'boardings.edit',
+        'update' => 'boardings.update',
+        'destroy' => 'boardings.destroy',
+    ]);
+    Route::post('boardings/{boarding}/checkout', 'App\Http\Controllers\BoardingController@checkout')->name('boardings.checkout');
+    Route::post('boardings/{boarding}/cancel', 'App\Http\Controllers\BoardingController@cancel')->name('boardings.cancel');
+    Route::post('boardings/{boarding}/tasks', 'App\Http\Controllers\BoardingController@storeTask')->name('boardings.tasks.store');
+    Route::post('boardings/{boarding}/tasks/{task}/complete', 'App\Http\Controllers\BoardingController@completeTask')->name('boardings.tasks.complete');
+    Route::delete('boardings/{boarding}/tasks/{task}', 'App\Http\Controllers\BoardingController@destroyTask')->name('boardings.tasks.destroy');
+    Route::get('boardings-active', 'App\Http\Controllers\BoardingController@active')->name('boardings.active');
+
+    // Drug Interactions
+    Route::resource('drug-interactions', 'App\Http\Controllers\DrugInteractionController')->names([
+        'index' => 'drug-interactions.index',
+        'create' => 'drug-interactions.create',
+        'store' => 'drug-interactions.store',
+        'show' => 'drug-interactions.show',
+        'edit' => 'drug-interactions.edit',
+        'update' => 'drug-interactions.update',
+        'destroy' => 'drug-interactions.destroy',
+    ]);
+    Route::post('drug-interactions/check', 'App\Http\Controllers\DrugInteractionController@checkApi')->name('drug-interactions.check');
+
+    // Clinical Report Templates
+    Route::resource('clinical-report-templates', 'App\Http\Controllers\ClinicalReportTemplateController')->names([
+        'index' => 'clinical-report-templates.index',
+        'create' => 'clinical-report-templates.create',
+        'store' => 'clinical-report-templates.store',
+        'show' => 'clinical-report-templates.show',
+        'edit' => 'clinical-report-templates.edit',
+        'update' => 'clinical-report-templates.update',
+        'destroy' => 'clinical-report-templates.destroy',
+    ]);
+
+    // Health Certificates
+    Route::resource('health-certificates', 'App\Http\Controllers\HealthCertificateController')->names([
+        'index' => 'health-certificates.index',
+        'create' => 'health-certificates.create',
+        'store' => 'health-certificates.store',
+        'show' => 'health-certificates.show',
+        'edit' => 'health-certificates.edit',
+        'update' => 'health-certificates.update',
+        'destroy' => 'health-certificates.destroy',
+    ]);
+    Route::get('health-certificates/{healthCertificate}/pdf', 'App\Http\Controllers\HealthCertificateController@pdf')->name('health-certificates.pdf');
+
     // Roles (Admin)
     Route::resource('roles', 'App\Http\Controllers\RoleController')->names([
         'index' => 'roles.index',

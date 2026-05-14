@@ -19,7 +19,10 @@
                     <option value="">Selecione...</option>
                     @foreach($pets as $pet)
                     <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>
-                        {{ $pet->name }} - {{ $pet->tutors->first()->name ?? '' }}
+                        {{ $pet->name }}
+                        @if($pet->tutors->first())
+                            - {{ $pet->tutors->first()->name }}
+                        @endif
                     </option>
                     @endforeach
                 </select>

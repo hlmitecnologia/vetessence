@@ -12,7 +12,8 @@ class Prescription extends Model
 
     protected $fillable = [
         'medical_record_id', 'medication', 'dosage', 'unit',
-        'frequency', 'duration', 'route', 'instructions', 'batch'
+        'frequency', 'duration', 'route', 'instructions', 'batch',
+        'created_by', 'notes'
     ];
 
     public function medicalRecord(): BelongsTo

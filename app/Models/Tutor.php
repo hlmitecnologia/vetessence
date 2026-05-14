@@ -19,6 +19,13 @@ class Tutor extends Model
         'city', 'state', 'profession', 'photo', 'notes'
     ];
 
+    protected $appends = ['name'];
+
+    public function getNameAttribute()
+    {
+        return $this->user ? $this->user->name : null;
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

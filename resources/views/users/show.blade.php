@@ -20,7 +20,7 @@
         <div class="grid grid-cols-2 gap-4">
             <div><h4 class="text-xs text-gray-500 uppercase">Email</h4><p>{{ $user->email }}</p></div>
             <div><h4 class="text-xs text-gray-500 uppercase">Telefone</h4><p>{{ $user->phone ?? '-' }}</p></div>
-            <div><h4 class="text-xs text-gray-500 uppercase">Perfil</h4><p>{{ $user->roles->first()?->name ?? '-' }}</p></div>
+            <div><h4 class="text-xs text-gray-500 uppercase">Perfil</h4><p>{{ $user->role->name ?? '-' }}</p></div>
             <div><h4 class="text-xs text-gray-500 uppercase">Criado em</h4><p>{{ $user->created_at->format('d/m/Y') }}</p></div>
         </div>
     </div>

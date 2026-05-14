@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MedicalRecord extends Model
@@ -53,5 +54,11 @@ class MedicalRecord extends Model
     public function versions(): HasMany
     {
         return $this->hasMany(MedicalRecord::class, 'record_id');
+    }
+
+    public function zoonoticDiseases(): BelongsToMany
+    {
+        return $this->belongsToMany(ZoonoticDisease::class, 'diagnosis_disease')
+            ->withPivot('is_suspected', 'notes');
     }
 }

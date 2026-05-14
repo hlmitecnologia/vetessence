@@ -258,4 +258,30 @@
     </div>
 </div>
 @endif
+
+@if($zoonosisStats->count() > 0)
+<div class="card">
+    <div class="card-header" style="background: #dc3545; color: white;">
+        <h3 class="card-title"><i class="fas fa-biohazard"></i> Doenças Zoonóticas no Período</h3>
+    </div>
+    <div class="card-body">
+        <p class="text-muted mb-3">
+            <span class="badge badge-danger"><i class="fas fa-exclamation-triangle"></i> {{ $notifiableCount }} doenças de notificação obrigatória registradas</span>
+        </p>
+        <table class="table table-striped">
+            <thead>
+                <tr><th>Doença</th><th class="text-right">Registros</th></tr>
+            </thead>
+            <tbody>
+                @foreach($zoonosisStats as $stat)
+                <tr>
+                    <td>{{ $stat->name }}</td>
+                    <td class="text-right">{{ $stat->total }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+@endif
 @endsection

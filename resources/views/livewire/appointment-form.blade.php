@@ -8,7 +8,12 @@
                     <select wire:model="pet_id" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">Selecione...</option>
                         @foreach($pets as $pet)
-                        <option value="{{ $pet->id }}">{{ $pet->name }} - {{ $pet->tutors->first()->name ?? '' }}</option>
+                        <option value="{{ $pet->id }}">
+                            {{ $pet->name }}
+                            @if($pet->tutors->first())
+                                - {{ $pet->tutors->first()->name }}
+                            @endif
+                        </option>
                         @endforeach
                     </select>
                     @error('pet_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror

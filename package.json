@@ -10,12 +10,14 @@
         "production": "mix --production"
     },
     "devDependencies": {
+        "@playwright/test": "^1.59.1",
         "@tailwindcss/forms": "^0.5.2",
         "alpinejs": "^3.15.11",
         "autoprefixer": "^10.4.2",
         "axios": "^0.21",
         "laravel-mix": "6.0.6",
         "lodash": "^4.17.19",
+        "playwright": "^1.59.1",
         "postcss": "^8.4.6",
         "tailwindcss": "^3.1.0"
     },
@@ -24,5 +26,24 @@
         "chart.js": "^4.5.1",
         "flatpickr": "^4.6.13",
         "select2": "^4.1.0-rc.0"
-    }
+    },
+    "name": "vetessence",
+    "version": "1.0.0",
+    "description": "<p align=\"center\"><a href=\"https://laravel.com\" target=\"_blank\"><img src=\"https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg\" width=\"400\"></a></p>",
+    "main": "postcss.config.js",
+    "directories": {
+        "test": "tests"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://hectordufau: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@github.com/hectordufau/vetessence.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "bugs": {
+        "url": "https://github.com/hectordufau/vetessence/issues"
+    },
+    "homepage": "https://github.com/hectordufau/vetessence#readme"
 }

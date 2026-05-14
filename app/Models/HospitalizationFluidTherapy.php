@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class HospitalizationFluidTherapy extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'hospitalization_id', 'fluid_type', 'rate', 'volume',
+        'start_time', 'end_time', 'route', 'observations',
+    ];
+
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
+
+    public function hospitalization(): BelongsTo { return $this->belongsTo(Hospitalization::class); }
+}

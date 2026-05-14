@@ -54,16 +54,19 @@ class AuditObserver
             return;
         }
 
-        AuditLog::create([
-            'user_id' => $this->userId,
-            'auditable_type' => get_class($model),
-            'auditable_id' => $model->getKey(),
-            'action' => $action,
-            'changes' => ['old' => $oldValues, 'new' => $newValues],
-            'ip_address' => $this->ipAddress,
-            'user_agent' => Request::userAgent(),
-            'created_at' => now(),
-        ]);
+        try {
+            AuditLog::create([
+                'user_id' => $this->userId,
+                'model_type' => get_class($model),
+                'model_id' => $model->getKey(),
+                'action' => $action,
+                'old_values' => $oldValues ? json_encode($oldValues) : null,
+                'new_values' => $newValues ? json_encode($newValues) : null,
+                'ip_address' => $this->ipAddress,
+            ]);
+        } catch (\Exception $e) {
+            // Silently fail if audit log fails
+        }
     }
 
     protected function getAttributes(Model $model)

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pet;
-use App\Models\PetTutor;
 use App\Models\Tutor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +29,9 @@ class PetController extends Controller
 
     public function create()
     {
-        $tutors = Tutor::orderBy('name')->get();
+        $tutors = Tutor::with('user')->get()->sortBy(function($tutor) {
+            return $tutor->user ? $tutor->user->name : '';
+        });
         return view('pets.create', compact('tutors'));
     }
 
@@ -59,9 +60,7 @@ class PetController extends Controller
                 $pet->savePhoto($request->file('photo'), 'pets');
             }
             
-            PetTutor::create([
-                'pet_id' => $pet->id,
-                'tutor_id' => $validated['tutor_id'],
+            $pet->tutors()->attach($validated['tutor_id'], [
                 'is_primary' => $request->boolean('is_primary', true),
                 'relationship' => 'proprietário',
             ]);
@@ -82,7 +81,9 @@ class PetController extends Controller
 
     public function edit(Pet $pet)
     {
-        $tutors = Tutor::orderBy('name')->get();
+        $tutors = Tutor::with('user')->get()->sortBy(function($tutor) {
+            return $tutor->user ? $tutor->user->name : '';
+        });
         $petTutor = $pet->tutors()->first();
         return view('pets.edit', compact('pet', 'tutors', 'petTutor'));
     }

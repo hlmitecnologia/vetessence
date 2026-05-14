@@ -57,15 +57,15 @@ class PetForm extends Component
 
     public function updateBreeds()
     {
-        $this->breeds = match($this->species) {
+        $breedsBySpecies = [
             'canine' => ['SRD', 'Labrador', 'Golden Retriever', 'Poodle', 'Bulldog', 'Pastor Alemão', 'Rottweiler', 'Beagle', 'Vira-lata', 'Shih Tzu', 'Yorkshire', 'Dachshund', 'Boxer', 'Doberman', 'Pug', 'Husky', 'Border Collie', 'Outro'],
             'feline' => ['SRD', 'Persa', 'Siamês', 'Maine Coon', 'British Shorthair', 'Ragdoll', 'Bengal', 'Abissínio', 'Sphynx', 'Munchkin', 'Norueguês', 'Outro'],
             'avian' => ['Canário', 'Periquito', 'Calopsita', 'Papagaio', 'Arara', 'Cacatua', 'Curió', 'Bicudo', 'Outro'],
             'exotic' => ['Hamster', 'Porquinho da Índia', 'Coelho', 'Furão', 'Chinchila', 'Gerbil', 'Porco-espinho', 'Outro'],
             'reptile' => ['Tartaruga', 'Jabuti', 'Iguana', 'Gecko', 'Dragão barbudo', 'Serpente', 'Camaleão', 'Outro'],
             'small_mammal' => ['Hamster', 'Porquinho da Índia', 'Coelho anão', 'Furão', 'Chinchila', 'Gerbil', 'Rato', 'Camundongo', 'Outro'],
-            default => []
-        };
+        ];
+        $this->breeds = isset($breedsBySpecies[$this->species]) ? $breedsBySpecies[$this->species] : [];
     }
 
     public function save()

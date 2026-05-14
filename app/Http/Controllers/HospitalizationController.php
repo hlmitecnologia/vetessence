@@ -1,0 +1,117 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Hospitalization;
+use Illuminate\Http\Request;
+
+class HospitalizationController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = Hospitalization::with(['pet', 'tutor', 'vet', 'dailyRecords', 'fluidTherapies', 'prescriptions']);
+
+        if ($request->pet_id) {
+            $query->where('pet_id', $request->pet_id);
+        }
+
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->department) {
+            $query->where('department', $request->department);
+        }
+
+        if ($request->date_from) {
+            $query->whereDate('admission_date', '>=', $request->date_from);
+        }
+
+        if ($request->date_to) {
+            $query->whereDate('admission_date', '<=', $request->date_to);
+        }
+
+        $hospitalizations = $query->orderBy('admission_date', 'desc')->paginate(20);
+
+        return view('hospitalizations.index', compact('hospitalizations'));
+    }
+
+    public function create()
+    {
+        return view('hospitalizations.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'pet_id' => 'required|exists:pets,id',
+            'tutor_id' => 'required|exists:tutors,id',
+            'vet_id' => 'required|exists:users,id',
+            'appointment_id' => 'nullable|exists:appointments,id',
+            'admission_date' => 'required|date',
+            'admission_time' => 'nullable',
+            'admission_reason' => 'required|string',
+            'initial_diagnosis' => 'nullable|string',
+            'department' => 'nullable|string|max:100',
+            'bed' => 'nullable|string|max:50',
+            'is_emergency' => 'boolean',
+            'status' => 'required|string|max:50',
+        ]);
+
+        $validated['is_emergency'] = $request->boolean('is_emergency');
+
+        Hospitalization::create($validated);
+
+        return redirect()->route('hospitalizations.index')->with('success', 'Internação cadastrada com sucesso!');
+    }
+
+    public function show(Hospitalization $hospitalization)
+    {
+        $hospitalization->load(['pet', 'tutor', 'vet', 'dailyRecords.user', 'fluidTherapies', 'prescriptions']);
+
+        return view('hospitalizations.show', compact('hospitalization'));
+    }
+
+    public function edit(Hospitalization $hospitalization)
+    {
+        return view('hospitalizations.edit', compact('hospitalization'));
+    }
+
+    public function update(Request $request, Hospitalization $hospitalization)
+    {
+        $validated = $request->validate([
+            'pet_id' => 'required|exists:pets,id',
+            'tutor_id' => 'required|exists:tutors,id',
+            'vet_id' => 'required|exists:users,id',
+            'appointment_id' => 'nullable|exists:appointments,id',
+            'admission_date' => 'required|date',
+            'admission_time' => 'nullable',
+            'admission_reason' => 'required|string',
+            'initial_diagnosis' => 'nullable|string',
+            'department' => 'nullable|string|max:100',
+            'bed' => 'nullable|string|max:50',
+            'is_emergency' => 'boolean',
+            'status' => 'required|string|max:50',
+            'discharged_at' => 'nullable|date',
+            'discharge_summary' => 'nullable|string',
+            'discharge_instructions' => 'nullable|string',
+        ]);
+
+        $validated['is_emergency'] = $request->boolean('is_emergency');
+
+        $hospitalization->update($validated);
+
+        return redirect()->route('hospitalizations.index')->with('success', 'Internação atualizada com sucesso!');
+    }
+
+    public function destroy(Hospitalization $hospitalization)
+    {
+        if ($hospitalization->status === 'active' || $hospitalization->status === 'internado') {
+            return back()->with('error', 'Não é possível excluir uma internação com status ativo.');
+        }
+
+        $hospitalization->delete();
+
+        return redirect()->route('hospitalizations.index')->with('success', 'Internação excluída com sucesso!');
+    }
+}

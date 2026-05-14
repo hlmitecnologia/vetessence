@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::with('roles');
+        $query = User::with('role');
 
         if ($request->search) {
             $query->where('name', 'like', "%{$request->search}%")
@@ -19,7 +19,7 @@ class UserController extends Controller
         }
 
         if ($request->role_id) {
-            $query->role($request->role_id);
+            $query->where('role_id', $request->role_id);
         }
 
         $users = $query->orderBy('name')->paginate(20);
@@ -56,7 +56,9 @@ class UserController extends Controller
 
         if (!empty($validated['role_id'])) {
             $role = Role::find($validated['role_id']);
-            $user->assignRole($role);
+            $user->role_id = $role->id;
+            $user->save();
+            $user->assignRole($role->name);
         }
 
         return redirect()->route('users.index')->with('success', 'Usuário cadastrado!');
@@ -81,6 +83,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'password' => 'nullable|min:8|confirmed',
             'phone' => 'nullable|string|max:20',
+            'role_id' => 'nullable|exists:roles,id',
             'is_active' => 'boolean',
         ]);
 
@@ -91,6 +94,12 @@ class UserController extends Controller
 
         if (!empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
+        }
+
+        if (isset($validated['role_id'])) {
+            $role = Role::find($validated['role_id']);
+            $user->role_id = $role->id;
+            $user->syncRoles([$role->name]);
         }
 
         $user->save();

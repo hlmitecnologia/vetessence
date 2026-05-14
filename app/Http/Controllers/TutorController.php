@@ -14,12 +14,21 @@ class TutorController extends Controller
         $query = Tutor::with('user');
 
         if ($request->search) {
-            $query->where('name', 'like', "%{$request->search}%")
-                  ->orWhere('cpf', 'like', "%{$request->search}%")
+            $query->where(function($q) use ($request) {
+                $q->where('cpf', 'like', "%{$request->search}%")
+                  ->orWhere('phone', 'like', "%{$request->search}%");
+            });
+            $query->orWhereHas('user', function($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
                   ->orWhere('email', 'like', "%{$request->search}%");
+            });
         }
 
-        $tutors = $query->orderBy('name')->paginate(15);
+        $tutors = $query->join('users', 'tutors.user_id', '=', 'users.id')
+            ->select('tutors.*')
+            ->orderBy('users.name')
+            ->paginate(15)
+            ->withQueryString();
 
         return view('tutors.index', compact('tutors'));
     }

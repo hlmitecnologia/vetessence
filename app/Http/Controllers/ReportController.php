@@ -9,6 +9,8 @@ use App\Models\Vaccination;
 use App\Models\Exam;
 use App\Models\Surgery;
 use App\Models\Product;
+use App\Models\ZoonoticDisease;
+use App\Models\MedicalRecord;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -53,8 +55,9 @@ class ReportController extends Controller
         $topClients = Invoice::where('status', 'paid')
             ->whereBetween('paid_at', [$startDate, $endDate])
             ->join('tutors', 'invoices.tutor_id', '=', 'tutors.id')
-            ->selectRaw('tutors.name, SUM(invoices.total) as total, COUNT(*) as count')
-            ->groupBy('tutors.id', 'tutors.name')
+            ->join('users', 'tutors.user_id', '=', 'users.id')
+            ->selectRaw('users.name, SUM(invoices.total) as total, COUNT(*) as count')
+            ->groupBy('tutors.id', 'users.name')
             ->orderBy('total', 'desc')
             ->limit(10)
             ->get();
@@ -75,8 +78,8 @@ class ReportController extends Controller
             ->get();
 
         $vaccinationStats = Vaccination::whereBetween('date', [$startDate, $endDate])->count();
-        $examStats = Exam::whereBetween('date', [$startDate, $endDate])->count();
-        $surgeryStats = Surgery::whereBetween('date', [$startDate, $endDate])->count();
+        $examStats = Exam::whereBetween('requested_date', [$startDate, $endDate])->count();
+        $surgeryStats = Surgery::whereBetween('scheduled_date', [$startDate, $endDate])->count();
 
         $totalPets = Pet::count();
         $activePets = Pet::where('is_active', true)->count();
@@ -86,6 +89,19 @@ class ReportController extends Controller
             ->groupBy('species')
             ->get()
             ->keyBy('species');
+
+        $zoonosisStats = ZoonoticDisease::selectRaw('zoonotic_diseases.name, COUNT(diagnosis_disease.medical_record_id) as total')
+            ->join('diagnosis_disease', 'zoonotic_diseases.id', '=', 'diagnosis_disease.zoonotic_disease_id')
+            ->join('medical_records', 'diagnosis_disease.medical_record_id', '=', 'medical_records.id')
+            ->whereBetween('medical_records.date', [$startDate, $endDate])
+            ->groupBy('zoonotic_diseases.id', 'zoonotic_diseases.name')
+            ->orderBy('total', 'desc')
+            ->limit(10)
+            ->get();
+
+        $notifiableCount = ZoonoticDisease::whereHas('medicalRecords', function ($q) use ($startDate, $endDate) {
+            $q->whereBetween('date', [$startDate, $endDate]);
+        })->where('is_notifiable', true)->count();
 
         $lowStockProducts = Product::whereRaw('stock <= min_stock')
             ->selectRaw('name, stock, min_stock')
@@ -118,6 +134,8 @@ class ReportController extends Controller
             'activePets',
             'newPets',
             'speciesBreakdown',
+            'zoonosisStats',
+            'notifiableCount',
             'lowStockProducts',
             'overdueInvoices'
         ));

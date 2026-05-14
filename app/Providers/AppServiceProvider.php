@@ -74,5 +74,85 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('convenios', function ($user) {
             return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
         });
+
+        Gate::define('prescricoes', function ($user) {
+            return $user->hasRole(['admin', 'veterinario']);
+        });
+
+        Gate::define('zoonoses', function ($user) {
+            return $user->hasRole(['admin', 'veterinario']);
+        });
+
+        Gate::define('hospitalizacao', function ($user) {
+            return $user->hasRole(['admin', 'veterinario']);
+        });
+
+        Gate::define('laboratorio', function ($user) {
+            return $user->hasRole(['admin', 'veterinario']);
+        });
+
+        Gate::define('imagem', function ($user) {
+            return $user->hasRole(['admin', 'veterinario']);
+        });
+
+        Gate::define('referral', function ($user) {
+            return $user->hasRole(['admin', 'veterinario']);
+        });
+
+        Gate::define('parasitario', function ($user) {
+            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
+        });
+
+        Gate::define('protocolo-vacinas', function ($user) {
+            return $user->hasRole(['admin', 'veterinario']);
+        });
+
+        Gate::define('lembrete-vacinas', function ($user) {
+            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
+        });
+
+        Gate::define('teleconsulta', function ($user) {
+            return $user->hasRole(['admin', 'veterinario']);
+        });
+
+        Gate::define('unidades', function ($user) {
+            return $user->hasRole(['admin']);
+        });
+
+        Gate::define('gateway-pagamento', function ($user) {
+            return $user->hasRole(['admin', 'financeiro']);
+        });
+
+        Gate::define('integracao-equipamentos', function ($user) {
+            return $user->hasRole(['admin']);
+        });
+
+        Gate::define('agendamento-online', function ($user) {
+            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
+        });
+
+        Gate::define('nota-interna', function ($user) {
+            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
+        });
+
+        Gate::define('hospedagem', function ($user) {
+            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
+        });
+
+        Gate::define('interacao-medicamentosa', function ($user) {
+            return $user->hasRole(['admin', 'veterinario']);
+        });
+
+        Gate::define('modelo-laudo', function ($user) {
+            return $user->hasRole(['admin', 'veterinario']);
+        });
+
+        Gate::define('certificado-sanitario', function ($user) {
+            return $user->hasRole(['admin', 'veterinario']);
+        });
+
+        Gate::define('notificacoes', function ($user) {
+            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
+        });
     }
 }

@@ -38,6 +38,9 @@
                 <a href="{{ route('appointments.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-list w-5 mr-2"></i> Listar
                 </a>
+                <a href="{{ route('online-bookings.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-globe w-5 mr-2"></i> Agendamentos Online
+                </a>
                 <a href="{{ route('appointments.create') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-plus w-5 mr-2"></i> Novo
                 </a>
@@ -67,35 +70,97 @@
                 <a href="{{ route('convenios.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-heartbeat w-5 mr-2"></i> Convênios
                 </a>
+                @role('admin|veterinario')
+                <a href="{{ route('zoonotic-diseases.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-biohazard w-5 mr-2"></i> Zoonoses
+                </a>
+                @endrole
             </div>
         </div>
         @endrole
 
         @role('admin|veterinario')
-        <!-- Prontuário -->
+        <!-- Clínico -->
         <div x-data="{ open: false }">
             <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-gray-200 hover:bg-gray-800 rounded-lg transition">
                 <div class="flex items-center">
                     <i class="fas fa-file-medical w-6"></i>
-                    <span>Prontuário</span>
+                    <span>Clínico</span>
                 </div>
                 <i class="fas fa-chevron-down text-xs transition-transform" :class="open ? 'rotate-180' : ''"></i>
             </button>
             <div x-show="open" class="pl-4 mt-1 space-y-1">
                 <a href="{{ route('medical-records.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
-                    <i class="fas fa-folder-open w-5 mr-2"></i> Registros
+                    <i class="fas fa-folder-open w-5 mr-2"></i> Prontuários
+                </a>
+                <a href="{{ route('treatment-plans.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-clipboard-list w-5 mr-2"></i> Planos de Tratamento
                 </a>
                 <a href="{{ route('vaccinations.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-syringe w-5 mr-2"></i> Vacinas
                 </a>
-                <a href="{{ route('exams.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
-                    <i class="fas fa-flask w-5 mr-2"></i> Exames
+                <a href="{{ route('boardings.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-dog w-5 mr-2"></i> Hospedagem & Banho/Tosa
+                </a>
+                <a href="{{ route('vaccination-reminders.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-bell w-5 mr-2"></i> Lembretes de Vacinas
+                </a>
+                <a href="{{ route('health-certificates.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-file-contract w-5 mr-2"></i> Certificados Sanitários
+                </a>
+                <a href="{{ route('vaccine-protocols.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-clipboard-check w-5 mr-2"></i> Protocolos de Vacinação
+                </a>
+                <a href="{{ route('parasite-controls.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-bug w-5 mr-2"></i> Controle Parasitário
+                </a>
+                <a href="{{ route('clinical-report-templates.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-file-alt w-5 mr-2"></i> Modelos de Laudo
+                </a>
+                <a href="{{ route('hospitalizations.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-procedures w-5 mr-2"></i> Internações
                 </a>
                 <a href="{{ route('surgeries.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-user-md w-5 mr-2"></i> Cirurgias
                 </a>
+                <a href="{{ route('anesthesia-monitorings.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-heartbeat w-5 mr-2"></i> Anestesia
+                </a>
+                <a href="{{ route('laboratory-orders.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-microscope w-5 mr-2"></i> Laboratório
+                </a>
+                <a href="{{ route('imaging-exams.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-x-ray w-5 mr-2"></i> Imagem
+                </a>
+                <a href="{{ route('exams.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-flask w-5 mr-2"></i> Exames
+                </a>
                 <a href="{{ route('prescriptions.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
-                    <i class="fas fa-prescription w-5 mr-2"></i> Receitas
+                    <i class="fas fa-prescription w-5 mr-2"></i> Prescrições
+                </a>
+                <a href="{{ route('dental-charts.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-tooth w-5 mr-2"></i> Odontologia
+                </a>
+                <a href="{{ route('consent-forms.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-file-signature w-5 mr-2"></i> Termos de Consentimento
+                </a>
+                <a href="{{ route('weight-records.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-weight w-5 mr-2"></i> Controle de Peso
+                </a>
+                <a href="{{ route('referrals.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-share-alt w-5 mr-2"></i> Encaminhamentos
+                </a>
+                <a href="{{ route('teleconsultations.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-video w-5 mr-2"></i> Teleconsultas
+                </a>
+                <a href="{{ route('zoonotic-diseases.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-biohazard w-5 mr-2"></i> Zoonoses
+                </a>
+                <a href="{{ route('drug-interactions.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-exclamation-triangle w-5 mr-2"></i> Interações Medicamentosas
+                </a>
+                <a href="{{ route('zoonotic-diseases.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-biohazard w-5 mr-2"></i> Zoonoses
                 </a>
             </div>
         </div>
@@ -117,6 +182,27 @@
                 </a>
                 <a href="{{ route('reports.financial') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-chart-bar w-5 mr-2"></i> Relatórios
+                </a>
+                <a href="{{ route('payment-gateways.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-credit-card w-5 mr-2"></i> Gateways Pagamento
+                </a>
+            </div>
+        </div>
+        @endrole
+
+        @role('admin|veterinario|recepcionista')
+        <!-- Notas Internas -->
+        <div x-data="{ open: false }">
+            <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-gray-200 hover:bg-gray-800 rounded-lg transition">
+                <div class="flex items-center">
+                    <i class="fas fa-sticky-note w-6"></i>
+                    <span>Comunicação</span>
+                </div>
+                <i class="fas fa-chevron-down text-xs transition-transform" :class="open ? 'rotate-180' : ''"></i>
+            </button>
+            <div x-show="open" class="pl-4 mt-1 space-y-1">
+                <a href="{{ route('staff-notes.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-sticky-note w-5 mr-2"></i> Notas Internas
                 </a>
             </div>
         </div>
@@ -145,6 +231,12 @@
                 <a href="{{ route('suppliers.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-truck w-5 mr-2"></i> Fornecedores
                 </a>
+                <a href="{{ route('controlled-substances.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-prescription-bottle w-5 mr-2"></i> Subst. Controladas
+                </a>
+                <a href="{{ route('lab-equipment-integrations.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-microscope w-5 mr-2"></i> Equip. Laboratório
+                </a>
             </div>
         </div>
         @endrole
@@ -168,6 +260,18 @@
                 </a>
                 <a href="{{ route('roles.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-user-shield w-5 mr-2"></i> Perfis
+                </a>
+                <a href="{{ route('consent-templates.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-file-contract w-5 mr-2"></i> Modelos de Termos
+                </a>
+                <a href="{{ route('communication-templates.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-envelope-open-text w-5 mr-2"></i> Modelos de Comunicação
+                </a>
+                <a href="{{ route('communication-queues.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-tasks w-5 mr-2"></i> Fila de Comunicação
+                </a>
+                <a href="{{ route('branches.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-building w-5 mr-2"></i> Unidades
                 </a>
             </div>
         </div>
