@@ -658,4 +658,32 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'roles.update',
         'destroy' => 'roles.destroy',
     ]);
+
+    // HR - Departments
+    Route::resource('departments', 'App\Http\Controllers\DepartmentController')->names([
+        'index' => 'departments.index',
+        'create' => 'departments.create',
+        'store' => 'departments.store',
+        'show' => 'departments.show',
+        'edit' => 'departments.edit',
+        'update' => 'departments.update',
+        'destroy' => 'departments.destroy',
+    ]);
+
+    // HR - Positions
+    Route::resource('positions', 'App\Http\Controllers\PositionController')->names([
+        'index' => 'positions.index',
+        'create' => 'positions.create',
+        'store' => 'positions.store',
+        'show' => 'positions.show',
+        'edit' => 'positions.edit',
+        'update' => 'positions.update',
+        'destroy' => 'positions.destroy',
+    ]);
+
+    // HR - Employees (view-only)
+    Route::resource('employees', 'App\Http\Controllers\EmployeeController')->names([
+        'index' => 'employees.index',
+        'show' => 'employees.show',
+    ])->only(['index', 'show']);
 });
