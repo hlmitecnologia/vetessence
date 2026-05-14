@@ -369,7 +369,7 @@
                         @endcan
 
                         <!-- FINANCEIRO -->
-                        @can('financeiro')
+                        @if(Gate::allows('financeiro') || Gate::allows('gateway-pagamento'))
                         <li class="nav-item has-treeview {{ request()->routeIs('invoices.*') || request()->routeIs('reports.*') || request()->routeIs('payment-gateways.*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-dollar-sign"></i>
@@ -398,7 +398,7 @@
                                 @endcan
                             </ul>
                         </li>
-                        @endcan
+                        @endif
 
                         <!-- ESTOQUE -->
                         @can('estoque')

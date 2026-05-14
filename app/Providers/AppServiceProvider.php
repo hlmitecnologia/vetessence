@@ -64,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::define('financeiro', function ($user) {
-            return $user->hasRole(['admin', 'financeiro']);
+            return $user->hasRole(['admin', 'financeiro', 'super-financial']);
         });
 
         Gate::define('estoque', function ($user) {
@@ -120,7 +120,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::define('gateway-pagamento', function ($user) {
-            return $user->hasRole(['admin', 'financeiro']);
+            return $user->hasRole(['admin', 'financeiro', 'super-financial']);
         });
 
         Gate::define('integracao-equipamentos', function ($user) {
