@@ -31,156 +31,67 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        Gate::define('admin', function ($user) {
-            return $user->hasRole('admin');
-        });
+        // Admin
+        Gate::define('admin', fn($user) => $user->can('admin.view'));
+        Gate::define('unidades', fn($user) => $user->can('branches.view'));
+        Gate::define('configuracoes', fn($user) => $user->can('configuracoes.view'));
 
-        Gate::define('tutores', function ($user) {
-            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
-        });
+        // HR
+        Gate::define('departments.view', fn($user) => $user->can('departments.view'));
+        Gate::define('positions.view', fn($user) => $user->can('positions.view'));
+        Gate::define('employees.view', fn($user) => $user->can('employees.view'));
 
-        Gate::define('pets', function ($user) {
-            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
-        });
+        // Cadastro
+        Gate::define('tutores', fn($user) => $user->can('tutors.view'));
+        Gate::define('pets', fn($user) => $user->can('pets.view'));
+        Gate::define('convenios', fn($user) => $user->can('convenios.view'));
 
-        Gate::define('atendimentos', function ($user) {
-            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
-        });
+        // Atendimento
+        Gate::define('atendimentos', fn($user) => $user->can('appointments.view'));
+        Gate::define('prontuarios', fn($user) => $user->can('medical-records.view'));
+        Gate::define('vacinas', fn($user) => $user->can('vaccinations.view'));
+        Gate::define('exames', fn($user) => $user->can('exams.view'));
+        Gate::define('cirurgias', fn($user) => $user->can('surgeries.view'));
+        Gate::define('prescricoes', fn($user) => $user->can('prescriptions.view'));
+        Gate::define('hospitalizacao', fn($user) => $user->can('hospitalizations.view'));
+        Gate::define('laboratorio', fn($user) => $user->can('laboratory.view'));
+        Gate::define('imagem', fn($user) => $user->can('imaging.view'));
+        Gate::define('referral', fn($user) => $user->can('referrals.view'));
+        Gate::define('parasitario', fn($user) => $user->can('parasite-controls.view'));
+        Gate::define('protocolo-vacinas', fn($user) => $user->can('vaccine-protocols.view'));
+        Gate::define('lembrete-vacinas', fn($user) => $user->can('vaccination-reminders.view'));
+        Gate::define('teleconsulta', fn($user) => $user->can('teleconsultations.view'));
+        Gate::define('agendamento-online', fn($user) => $user->can('online-bookings.view'));
+        Gate::define('interacao-medicamentosa', fn($user) => $user->can('drug-interactions.view'));
+        Gate::define('modelo-laudo', fn($user) => $user->can('clinical-report-templates.view'));
+        Gate::define('certificado-sanitario', fn($user) => $user->can('health-certificates.view'));
+        Gate::define('obito', fn($user) => $user->can('pet-death-records.view'));
+        Gate::define('servicos', fn($user) => $user->can('services.view'));
+        Gate::define('terapias', fn($user) => $user->can('therapy-sessions.view'));
+        Gate::define('hospedagem', fn($user) => $user->can('boardings.view'));
+        Gate::define('zoonoses', fn($user) => $user->can('zoonotic-diseases.view'));
 
-        Gate::define('prontuarios', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
+        // Financeiro
+        Gate::define('financeiro', fn($user) => $user->can('invoices.view'));
+        Gate::define('gateway-pagamento', fn($user) => $user->can('payment-gateways.view'));
 
-        Gate::define('vacinas', function ($user) {
-            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
-        });
+        // Estoque
+        Gate::define('estoque', fn($user) => $user->can('products.view'));
 
-        Gate::define('exames', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
+        // Equipamentos
+        Gate::define('integracao-equipamentos', fn($user) => $user->can('lab-equipment.view'));
 
-        Gate::define('cirurgias', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
+        // Comunicacao
+        Gate::define('notificacoes', fn($user) => $user->can('notification-logs.view'));
+        Gate::define('nota-interna', fn($user) => $user->can('staff-notes.view'));
 
-        Gate::define('financeiro', function ($user) {
-            return $user->hasRole(['admin', 'financeiro', 'super-financial']);
-        });
+        // Agenda
+        Gate::define('agenda-equipe', fn($user) => $user->can('staff-schedules.view'));
 
-        Gate::define('estoque', function ($user) {
-            return $user->hasRole(['admin', 'estoque']);
-        });
+        // Auditoria
+        Gate::define('auditoria', fn($user) => $user->can('audit-logs.view'));
 
-        Gate::define('convenios', function ($user) {
-            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
-        });
-
-        Gate::define('prescricoes', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
-
-        Gate::define('zoonoses', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
-
-        Gate::define('hospitalizacao', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
-
-        Gate::define('laboratorio', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
-
-        Gate::define('imagem', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
-
-        Gate::define('referral', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
-
-        Gate::define('parasitario', function ($user) {
-            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
-        });
-
-        Gate::define('protocolo-vacinas', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
-
-        Gate::define('lembrete-vacinas', function ($user) {
-            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
-        });
-
-        Gate::define('teleconsulta', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
-
-        Gate::define('unidades', function ($user) {
-            return $user->hasRole(['admin']);
-        });
-
-        Gate::define('gateway-pagamento', function ($user) {
-            return $user->hasRole(['admin', 'financeiro', 'super-financial']);
-        });
-
-        Gate::define('integracao-equipamentos', function ($user) {
-            return $user->hasRole(['admin']);
-        });
-
-        Gate::define('agendamento-online', function ($user) {
-            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
-        });
-
-        Gate::define('nota-interna', function ($user) {
-            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
-        });
-
-        Gate::define('hospedagem', function ($user) {
-            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
-        });
-
-        Gate::define('interacao-medicamentosa', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
-
-        Gate::define('modelo-laudo', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
-
-        Gate::define('certificado-sanitario', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
-
-        Gate::define('notificacoes', function ($user) {
-            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
-        });
-
-        Gate::define('obito', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
-
-        Gate::define('servicos', function ($user) {
-            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
-        });
-
-        Gate::define('terapias', function ($user) {
-            return $user->hasRole(['admin', 'veterinario']);
-        });
-
-        Gate::define('configuracoes', function ($user) {
-            return $user->hasRole(['admin']);
-        });
-
-        Gate::define('agenda-equipe', function ($user) {
-            return $user->hasRole(['admin', 'veterinario', 'recepcionista']);
-        });
-
-        Gate::define('auditoria', function ($user) {
-            return $user->hasRole(['admin']);
-        });
-
-        Gate::define('backup', function ($user) {
-            return $user->hasRole(['admin']);
-        });
+        // Backup
+        Gate::define('backup', fn($user) => $user->can('backups.view'));
     }
 }
