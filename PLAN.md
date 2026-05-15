@@ -1,4 +1,4 @@
-# VetEssence — Build Plan (v5)
+# VetEssence — Build Plan (v6)
 
 ## Context
 Laravel 8, AdminLTE 3.2, Livewire 2, Spatie Permissions, MySQL, Tailwind CSS, Alpine.js.
@@ -291,6 +291,139 @@ All 40+ missing columns added via 8 migrations across 10 tables:
 - CRUD controller + 4 views with color-coded board
 - Gates: `triage.*`
 - Tests: 4 unit + 7 feature = 11
+
+---
+
+## Phase Q — Veterinary Clinic Real-World Gaps
+
+7 features identified as missing for daily clinic operations, based on real practice workflows.
+
+### Q1 — Lote/Validade em Produtos (Batch/Expiry Tracking)
+
+**Why**: Farmácia veterinária precisa rastrear lotes de medicamentos e vacinas com alerta de vencimento.
+
+**Tasks**:
+| # | Task | Files |
+|---|------|-------|
+| 1 | Add `batch_number`, `lot_number`, `expiry_date` columns to `products` | migration |
+| 2 | Add `batch_number`, `lot_number`, `expiry_date` columns to `stock_movements` | migration |
+| 3 | Update Product model (fillable, casts, scopes for expiring soon) | `app/Models/Product.php` |
+| 4 | Update StockMovement model | `app/Models/StockMovement.php` |
+| 5 | Create `products:alert-expiry` command to notify on near-expiry batches | command |
+| 6 | Add expiry badge + filter on stock views | views |
+| 7 | **Tests**: Unit (fillable/casts/scopes), Feature (command), Model (relationships) | test files |
+
+**Tests**: ~10
+
+### Q2 — Fluxo de Aprovação de Orçamento (Treatment Plan Approval)
+
+**Why**: TreatmentPlan tem status livre (string). Tutor precisa aprovar orçamento antes da execução.
+
+**Tasks**:
+| # | Task | Files |
+|---|------|-------|
+| 1 | Migration: change `status` to enum `pending/approved/rejected` on `treatment_plans`, add `rejected_at`, `rejection_reason` | migration |
+| 2 | Update TreatmentPlan model (casts, scopes for pending/approved) | `app/Models/TreatmentPlan.php` |
+| 3 | Update TreatmentPlanController validation (enforce enum) | controller |
+| 4 | Add `approve()` and `reject()` methods with notification to vet | controller |
+| 5 | Add approval badge + actions in show/edit views | views |
+| 6 | **Tests**: Unit (scopes/casts), Feature (approve/reject flow) | test files |
+
+**Tests**: ~10
+
+### Q3 — Microchip / RG Animal (Pet Identification)
+
+**Why**: Pet não tem número de microchip. Obrigatório para CVI, exigido por CFMV.
+
+**Tasks**:
+| # | Task | Files |
+|---|------|-------|
+| 1 | Add `microchip_number`, `microchip_date`, `rg_number` (registro geral animal), `rg_issuer` columns to `pets` | migration |
+| 2 | Update Pet model (fillable, casts, validation for microchip format) | `app/Models/Pet.php` |
+| 3 | Add fields to pet create/edit views | views |
+| 4 | **Tests**: Unit (fillable/validation) | test files |
+
+**Tests**: ~5
+
+### Q4 — Auto-Faturamento Pós-Consulta
+
+**Why**: Após marcar consulta como `completed`, gerar fatura automaticamente com os serviços prestados.
+
+**Tasks**:
+| # | Task | Files |
+|---|------|-------|
+| 1 | Create event `AppointmentCompleted` | event |
+| 2 | Create listener `GenerateInvoiceFromAppointment` | listener |
+| 3 | Wire event in AppointmentController `updateStatus()` | controller |
+| 4 | Create invoice items from appointment services | logic |
+| 5 | **Tests**: Feature (appointment complete → invoice created) | test files |
+
+**Tests**: ~8
+
+### Q5 — Comissões de Veterinários (Vet Commissions)
+
+**Why**: Clínicas pagam comissão por serviço/produto. Sem isso, controle é manual.
+
+**Tasks**:
+| # | Task | Files |
+|---|------|-------|
+| 1 | Create `commission_rates` table (user_id, service_id/product_id, rate_type: percentage/fixed, rate_value, applies_to: service/product, is_active) | migration |
+| 2 | Create `commission_logs` table (user_id, invoice_id, invoice_item_id, commission_rate_id, base_value, commission_value, status: pending/paid, paid_at) | migration |
+| 3 | Create `CommissionRate` model + factory | model + factory |
+| 4 | Create `CommissionLog` model + factory | model + factory |
+| 5 | Add `User` relationship to commission rates | model |
+| 6 | Add auto-calculation on invoice payment | logic |
+| 7 | Add commission report view (per vet, period) | views |
+| 8 | Add gates (`commissions.*`) | `PermissionSeeder.php` |
+| 9 | **Tests**: Unit (models), Feature (calculation, report) | test files |
+
+**Tests**: ~14
+
+### Q6 — Prescrição Eletrônica Validável (Verifiable Rx)
+
+**Why**: CFMV exige receitas digitais com validação. Tutor escaneia QR code e verifica autenticidade.
+
+**Tasks**:
+| # | Task | Files |
+|---|------|-------|
+| 1 | Add `verification_hash`, `verified_at` columns to `prescriptions` | migration |
+| 2 | Generate SHA-256 hash on prescription create (content + timestamp + user) | model event |
+| 3 | Create public route `/r/{hash}` to verify prescription (shows stripped info) | route + controller |
+| 4 | Add QR code generation in prescription print view | view (QR lib) |
+| 5 | **Tests**: Unit (hash generation), Feature (verification route) | test files |
+
+**Tests**: ~8
+
+### Q7 — Conciliação Bancária (Bank Reconciliation)
+
+**Why**: Clínicas recebem por PIX, cartão, dinheiro — precisam casar extratos bancários com faturas.
+
+**Tasks**:
+| # | Task | Files |
+|---|------|-------|
+| 1 | Create `bank_accounts` table (bank, agency, account, type, branch_id) | migration |
+| 2 | Create `bank_transactions` table (bank_account_id, external_id, description, amount, transaction_date, type: credit/debit, status: pending/reconciled/unmatched) | migration |
+| 3 | Create BankAccount model + factory | model + factory |
+| 4 | Create BankTransaction model + factory | model + factory |
+| 5 | Create `bank:import-ofx` command (parses OFX/QIF/CSV) | command |
+| 6 | Create reconciliation view (match transactions ↔ invoices) | controller + views |
+| 7 | Add gates (`bank-reconciliation.*`) | `PermissionSeeder.php` |
+| 8 | **Tests**: Unit (models), Feature (import + reconcile) | test files |
+
+**Tests**: ~14
+
+### Phase Q Totals
+
+| Feature | Migrations | Models | Controllers | Commands | Views | Tests |
+|---------|-----------|--------|-------------|----------|-------|-------|
+| Q1 Lote | 1 | 2 edit | — | 1 | 1 edit | 10 |
+| Q2 Aprovação | 1 | 1 edit | 1 edit | — | 1 edit | 10 |
+| Q3 Microchip | 1 | 1 edit | — | — | 2 edit | 5 |
+| Q4 Auto-fatura | — | — | 1 edit | — | — | 8 |
+| Q5 Comissões | 2 | 2+1 edit | 1 | — | 2 | 14 |
+| Q6 Rx Validação | 1 | 1 edit | 1 | — | 1 edit | 8 |
+| Q7 Conciliação | 2 | 2 | 1 | 1 | 2 | 14 |
+| **Total** | **8** | **4+5 edit** | **3+2 edit** | **2** | **4+5 edit** | **~69** |
 
 ---
 
