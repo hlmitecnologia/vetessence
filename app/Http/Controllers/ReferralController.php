@@ -30,7 +30,9 @@ class ReferralController extends Controller
 
     public function create()
     {
-        return view('referrals.create');
+        $pets = \App\Models\Pet::with('tutors.user')->orderBy('name')->get();
+        $veterinarians = \App\Models\User::where('is_active', true)->orderBy('name')->get();
+        return view('referrals.create', compact('pets', 'veterinarians'));
     }
 
     public function store(Request $request)
@@ -66,7 +68,9 @@ class ReferralController extends Controller
 
     public function edit(Referral $referral)
     {
-        return view('referrals.edit', compact('referral'));
+        $pets = \App\Models\Pet::with('tutors.user')->orderBy('name')->get();
+        $veterinarians = \App\Models\User::where('is_active', true)->orderBy('name')->get();
+        return view('referrals.edit', compact('referral', 'pets', 'veterinarians'));
     }
 
     public function update(Request $request, Referral $referral)

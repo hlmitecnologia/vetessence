@@ -1,17 +1,14 @@
-@extends('layouts.adminlte', ['title' => 'Substância Controlada - ' . $substance->name])
+@extends('layouts.adminlte', ['title' => 'Substância Controlada - ' . $controlledSubstance->name])
 
 @section('content')
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">{{ $substance->name }}</h3>
+                <h3 class="card-title">{{ $controlledSubstance->name }}</h3>
                 <div class="card-tools">
-                    <a href="{{ route('controlled-substances.edit', $substance) }}" class="btn btn-primary btn-sm">
+                    <a href="{{ route('controlled-substances.edit', $controlledSubstance) }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-edit"></i> Editar
-                    </a>
-                    <a href="{{ route('controlled-substance-logs.create', ['substance_id' => $substance->id]) }}" class="btn btn-success btn-sm">
-                        <i class="fas fa-exchange-alt"></i> Registrar Movimento
                     </a>
                     <a href="{{ route('controlled-substances.index') }}" class="btn btn-default btn-sm">
                         <i class="fas fa-arrow-left"></i> Voltar
@@ -22,19 +19,19 @@
                 <div class="row">
                     <div class="col-md-3">
                         <strong>Princípio Ativo:</strong>
-                        <p>{{ $substance->active_ingredient ?? '-' }}</p>
+                        <p>{{ $controlledSubstance->active_ingredient ?? '-' }}</p>
                     </div>
                     <div class="col-md-3">
                         <strong>Lista/Controle:</strong>
-                        <p>{{ $substance->schedule ?? '-' }}</p>
+                        <p>{{ $controlledSubstance->schedule ?? '-' }}</p>
                     </div>
                     <div class="col-md-3">
                         <strong>Registro ANVISA:</strong>
-                        <p>{{ $substance->anvisa_register ?? '-' }}</p>
+                        <p>{{ $controlledSubstance->anvisa_register ?? '-' }}</p>
                     </div>
                     <div class="col-md-3">
                         <strong>Unidade:</strong>
-                        <p>{{ $substance->unit }}</p>
+                        <p>{{ $controlledSubstance->unit }}</p>
                     </div>
                 </div>
                 <div class="row mt-3">
@@ -43,7 +40,7 @@
                             <span class="info-box-icon"><i class="fas fa-boxes"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text">Estoque Atual</span>
-                                <span class="info-box-number">{{ number_format($substance->current_stock, 2, ',', '.') }} {{ $substance->unit }}</span>
+                                <span class="info-box-number">{{ number_format($controlledSubstance->current_stock, 2, ',', '.') }} {{ $controlledSubstance->unit }}</span>
                             </div>
                         </div>
                     </div>
@@ -52,31 +49,31 @@
                             <span class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text">Estoque Mínimo</span>
-                                <span class="info-box-number">{{ number_format($substance->min_stock, 2, ',', '.') }} {{ $substance->unit }}</span>
+                                <span class="info-box-number">{{ number_format($controlledSubstance->min_stock, 2, ',', '.') }} {{ $controlledSubstance->unit }}</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="info-box bg-{{ $substance->is_active ? 'success' : 'secondary' }}">
-                            <span class="info-box-icon"><i class="fas fa-{{ $substance->is_active ? 'check-circle' : 'minus-circle' }}"></i></span>
+                        <div class="info-box bg-{{ $controlledSubstance->is_active ? 'success' : 'secondary' }}">
+                            <span class="info-box-icon"><i class="fas fa-{{ $controlledSubstance->is_active ? 'check-circle' : 'minus-circle' }}"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text">Status</span>
-                                <span class="info-box-number">{{ $substance->is_active ? 'Ativo' : 'Inativo' }}</span>
+                                <span class="info-box-number">{{ $controlledSubstance->is_active ? 'Ativo' : 'Inativo' }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                @if($substance->notes)
+                @if($controlledSubstance->notes)
                 <div class="mt-3 p-3 bg-light rounded">
                     <strong>Observações:</strong>
-                    <p class="mt-1">{{ $substance->notes }}</p>
+                    <p class="mt-1">{{ $controlledSubstance->notes }}</p>
                 </div>
                 @endif
 
                 <hr>
                 <h5>Movimentações de Estoque</h5>
-                @if($substance->logs->count() > 0)
+                @if($controlledSubstance->logs->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped">
                         <thead>
@@ -92,7 +89,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($substance->logs->sortByDesc('created_at') as $log)
+                            @foreach($controlledSubstance->logs->sortByDesc('created_at') as $log)
                             <tr>
                                 <td>{{ $log->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
@@ -102,7 +99,7 @@
                                         <span class="badge badge-danger"><i class="fas fa-arrow-up"></i> Saída</span>
                                     @endif
                                 </td>
-                                <td class="font-weight-bold">{{ number_format($log->quantity, 2, ',', '.') }} {{ $substance->unit }}</td>
+                                <td class="font-weight-bold">{{ number_format($log->quantity, 2, ',', '.') }} {{ $controlledSubstance->unit }}</td>
                                 <td>{{ number_format($log->balance_before, 2, ',', '.') }}</td>
                                 <td>{{ number_format($log->balance_after, 2, ',', '.') }}</td>
                                 <td>{{ $log->user->name ?? '-' }}</td>

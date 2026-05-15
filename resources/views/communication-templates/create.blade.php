@@ -56,7 +56,7 @@
                 <label for="subject">Assunto *</label>
                 <input type="text" name="subject" id="subject" class="form-control @error('subject') is-invalid @enderror" value="{{ old('subject') }}" required>
                 <small class="text-muted">
-                    Use variáveis como {{ '{{' }}pet_name{{ '}}' }}, {{ '{{' }}tutor_name{{ '}}' }}, {{ '{{' }}appointment_date{{ '}}' }}, {{ '{{' }}appointment_time{{ '}}' }}
+                    Use variáveis como @{{pet_name}}, @{{tutor_name}}, @{{appointment_date}}, @{{appointment_time}}
                 </small>
                 @error('subject')
                     <span class="invalid-feedback">{{ $message }}</span>
@@ -66,7 +66,7 @@
                 <label for="content">Conteúdo da Mensagem *</label>
                 <textarea name="content" id="content" rows="8" class="form-control @error('content') is-invalid @enderror" required>{{ old('content') }}</textarea>
                 <small class="text-muted">
-                    Variáveis disponíveis: {{ '{{' }}pet_name{{ '}}' }}, {{ '{{' }}tutor_name{{ '}}' }}, {{ '{{' }}appointment_date{{ '}}' }}, {{ '{{' }}appointment_time{{ '}}' }}, {{ '{{' }}clinic_name{{ '}}' }}, {{ '{{' }}vet_name{{ '}}' }}
+                    Variáveis disponíveis: @{{pet_name}}, @{{tutor_name}}, @{{appointment_date}}, @{{appointment_time}}, @{{clinic_name}}, @{{vet_name}}
                 </small>
                 @error('content')
                     <span class="invalid-feedback">{{ $message }}</span>

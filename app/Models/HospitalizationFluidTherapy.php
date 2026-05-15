@@ -11,6 +11,8 @@ class HospitalizationFluidTherapy extends Model
 {
     use HasFactory, BranchScoped;
 
+    protected $table = 'hospitalization_fluid_therapy';
+
     protected $fillable = [
         'hospitalization_id', 'fluid_type', 'rate', 'volume',
         'start_time', 'end_time', 'route', 'observations', 'branch_id',

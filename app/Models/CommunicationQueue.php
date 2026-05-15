@@ -11,6 +11,8 @@ class CommunicationQueue extends Model
 {
     use HasFactory, BranchScoped;
 
+    protected $table = 'communication_queue';
+
     protected $fillable = [
         'tutor_id', 'pet_id', 'template_id', 'channel', 'destination',
         'message_content', 'scheduled_at', 'sent_at', 'status', 'error_message', 'branch_id',

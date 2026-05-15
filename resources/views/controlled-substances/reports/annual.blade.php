@@ -34,7 +34,7 @@
             </div>
         </form>
 
-        @if($reportData->count() > 0)
+        @if($logs->count() > 0)
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -44,11 +44,12 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($reportData as $row)
+                @foreach($logs as $monthKey => $monthLogs)
+                @php $monthNum = (int)$monthKey; @endphp
                 <tr>
-                    <td>{{ \Carbon\Carbon::create()->month($row->month)->format('F') }}</td>
-                    <td>{{ $row->total_movements }}</td>
-                    <td>{{ $row->substances_count }}</td>
+                    <td>{{ \Carbon\Carbon::create()->month($monthNum)->format('F') }}</td>
+                    <td>{{ $monthLogs->count() }}</td>
+                    <td>{{ $monthLogs->pluck('substance.name')->unique()->count() }}</td>
                 </tr>
                 @endforeach
             </tbody>

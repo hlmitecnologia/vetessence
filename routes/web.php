@@ -562,7 +562,8 @@ Route::middleware(['auth'])->group(function () {
     // Prescription Print
     Route::get('prescriptions/{prescription}/print', 'App\Http\Controllers\PrescriptionController@print')->name('prescriptions.print');
 
-    // Staff Schedules
+    // Staff Schedules (on-call-calendar must be before resource to avoid matching show route)
+    Route::get('staff-schedules/on-call-calendar', 'App\Http\Controllers\StaffScheduleController@onCallCalendar')->name('staff-schedules.on-call-calendar');
     Route::resource('staff-schedules', 'App\Http\Controllers\StaffScheduleController')->names([
         'index' => 'staff-schedules.index',
         'create' => 'staff-schedules.create',
@@ -571,7 +572,6 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'staff-schedules.update',
         'destroy' => 'staff-schedules.destroy',
     ]);
-    Route::get('staff-schedules/on-call-calendar', 'App\Http\Controllers\StaffScheduleController@onCallCalendar')->name('staff-schedules.on-call-calendar');
     Route::get('staff-time-off', 'App\Http\Controllers\StaffScheduleController@timeOff')->name('staff-schedules.time-off');
     Route::post('staff-time-off', 'App\Http\Controllers\StaffScheduleController@storeTimeOff')->name('staff-schedules.time-off.store');
     Route::post('staff-time-off/{staffTimeOff}/approve', 'App\Http\Controllers\StaffScheduleController@approveTimeOff')->name('staff-time-off.approve');

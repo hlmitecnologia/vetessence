@@ -57,8 +57,12 @@ class User extends Authenticatable
 
     public function hasRole($roles): bool
     {
-        if (is_string($roles)) {
+        if ($roles instanceof \Illuminate\Support\Collection) {
+            $roles = $roles->pluck('name')->toArray();
+        } elseif (is_string($roles)) {
             $roles = [$roles];
+        } elseif ($roles instanceof \Spatie\Permission\Models\Role) {
+            $roles = [$roles->name];
         }
         if ($this->role && in_array($this->role->slug, $roles)) {
             return true;

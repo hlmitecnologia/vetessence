@@ -84,7 +84,7 @@ class PrescriptionController extends Controller
 
     public function print(Prescription $prescription)
     {
-        $prescription->load('medicalRecord.pet', 'medicalRecord.user');
+        $prescription->load('medicalRecord.pet', 'medicalRecord.vet');
         return view('prescriptions.print', compact('prescription'));
     }
 }

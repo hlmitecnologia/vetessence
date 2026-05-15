@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Traits\ConsentLoggable;
 use App\Traits\HasPhoto;
 
 class Tutor extends Authenticatable
 {
-    use HasFactory, HasPhoto, Notifiable;
+    use HasFactory, HasPhoto, Notifiable, ConsentLoggable;
 
     protected $fillable = [
         'name', 'user_id', 'cpf', 'rg', 'phone', 'phone_secondary', 'email',

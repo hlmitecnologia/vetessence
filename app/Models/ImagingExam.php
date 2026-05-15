@@ -20,7 +20,7 @@ class ImagingExam extends Model
 
     protected $casts = [
         'images' => 'array',
-        'exam_date', 'branch_id' => 'date',
+        'exam_date' => 'date',
     ];
 
     public static function generateNumber(): string

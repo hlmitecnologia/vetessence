@@ -9,14 +9,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class HospitalizationDailyRecord extends Model
 {
-    use HasFactory, BranchScoped;
+    use HasFactory;
 
     protected $fillable = [
         'hospitalization_id', 'user_id', 'record_date', 'shift',
         'subjective', 'objective', 'assessment', 'plan',
         'temperature', 'heart_rate', 'respiratory_rate',
         'appetite', 'hydration', 'urination', 'defecation',
-        'medications_given', 'observations', 'branch_id',
+        'medications_given', 'observations',
     ];
 
     protected $casts = [

@@ -88,7 +88,8 @@ class TreatmentPlanController extends Controller
     {
         $treatmentPlan->load(['pet', 'tutor', 'vet', 'appointment', 'items']);
 
-        return view('treatment-plans.show', compact('treatmentPlan'));
+        $plan = $treatmentPlan;
+        return view('treatment-plans.show', compact('plan'));
     }
 
     public function edit(TreatmentPlan $treatmentPlan)

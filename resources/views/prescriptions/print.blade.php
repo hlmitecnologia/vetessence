@@ -59,6 +59,30 @@
         table th {
             background: #f0f0f0;
         }
+        .controlled-badge {
+            display: inline-block;
+            background: #dc2626;
+            color: #fff;
+            font-size: 9pt;
+            font-weight: bold;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .controlled-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 48pt;
+            font-weight: bold;
+            color: rgba(220, 38, 38, 0.12);
+            pointer-events: none;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            z-index: -1;
+        }
         .signature-area {
             margin-top: 3rem;
             padding-top: 1rem;
@@ -95,6 +119,13 @@
         <p>CNPJ: {{ config('app.cnpj', '00.000.000/0001-00') }}</p>
     </div>
 
+    @if($prescription->is_controlled)
+    <div class="controlled-watermark">SUBSTÂNCIA CONTROLADA</div>
+    <div style="text-align: right; margin-bottom: 1rem;">
+        <span class="controlled-badge">Substância Controlada - ANVISA</span>
+    </div>
+    @endif
+
     <div class="section">
         <div class="section-title">Dados do Paciente</div>
         <div class="info-row">
@@ -103,7 +134,7 @@
         </div>
         <div class="info-row">
             <span class="info-label">Tutor:</span>
-            <span>{{ $prescription->medicalRecord->user->name ?? $prescription->medicalRecord->pet->tutor->name ?? '-' }}</span>
+            <span>{{ $prescription->medicalRecord->vet->name ?? $prescription->medicalRecord->pet->tutor->name ?? '-' }}</span>
         </div>
         <div class="info-row">
             <span class="info-label">Data:</span>
@@ -149,9 +180,14 @@
 
     <div class="signature-area">
         <p>_________________________________________________________</p>
-        <p class="name">{{ $prescription->medicalRecord->user->name ?? 'Médico Veterinário' }}</p>
-        <p>CRM/V: ___________________</p>
+        <p class="name">{{ $prescription->medicalRecord->vet->name ?? 'Médico Veterinário' }}</p>
+        <p>CRM/V: {{ optional($prescription->medicalRecord->vet)->crmv ?? '___________________' }}</p>
         <p>Assinatura e Carimbo</p>
+        @if($prescription->isSigned())
+        <p style="font-size: 8pt; color: #666; margin-top: 0.5rem;">
+            Assinatura digital: {{ $prescription->signed_at->format('d/m/Y H:i:s') }}
+        </p>
+        @endif
     </div>
 
     <div class="footer">

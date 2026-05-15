@@ -72,7 +72,16 @@ class VaccinationProtocolTest extends ModuleTestCase
 
     public function test_gate_blocks_recepcionista()
     {
-        $this->loginAs('recepcionista');
+        $role = \App\Models\Role::where('slug', 'recepcionista')->first();
+        if (!$role) {
+            $role = \App\Models\Role::create(['name' => 'Recepcionista', 'slug' => 'recepcionista']);
+        }
+        $user = \App\Models\User::factory()->create([
+            'role_id' => $role->id,
+            'is_active' => true,
+        ]);
+        $user->assignRole('recepcionista');
+        $this->actingAs($user);
         $response = $this->get(route('vaccine-protocols.index'));
         $response->assertForbidden();
     }

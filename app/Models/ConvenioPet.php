@@ -10,22 +10,16 @@ class ConvenioPet extends Model
 {
     use HasFactory;
 
-    protected $table = 'convenio_pets';
+    protected $table = 'convenio_pet';
 
     protected $fillable = [
-        'tutor_id', 'pet_id', 'convenio_id', 'plan_name',
-        'contract_number', 'status', 'start_date', 'end_date', 'notes'
+        'pet_id', 'convenio_id', 'policy_number', 'start_date', 'end_date',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
     ];
-
-    public function tutor(): BelongsTo
-    {
-        return $this->belongsTo(Tutor::class);
-    }
 
     public function pet(): BelongsTo
     {
@@ -35,11 +29,5 @@ class ConvenioPet extends Model
     public function convenio(): BelongsTo
     {
         return $this->belongsTo(Convenio::class);
-    }
-
-    public function getIsActiveAttribute(): bool
-    {
-        return $this->status === 'active' && 
-               (!$this->end_date || $this->end_date >= now());
     }
 }

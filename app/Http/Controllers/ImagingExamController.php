@@ -64,7 +64,8 @@ class ImagingExamController extends Controller
     public function show(ImagingExam $imagingExam)
     {
         $imagingExam->load(['pet', 'vet', 'appointment', 'radiologist']);
-        return view('imaging-exams.show', compact('imagingExam'));
+        $exam = $imagingExam;
+        return view('imaging-exams.show', compact('exam'));
     }
 
     public function edit(ImagingExam $imagingExam)

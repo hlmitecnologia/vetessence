@@ -12,7 +12,8 @@ class Convenio extends Model
 
     protected $fillable = [
         'name', 'cnpj', 'plan_name', 'coverage', 'discount_percent',
-        'max_consults_month', 'contract_number', 'start_date', 'end_date', 'is_active'
+        'max_consults_month', 'contract_number', 'start_date', 'end_date', 'is_active',
+        'phone', 'email', 'notes'
     ];
 
     protected $casts = [

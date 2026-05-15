@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hospitalization;
+use App\Models\Pet;
+use App\Models\Tutor;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class HospitalizationController extends Controller
@@ -38,7 +41,10 @@ class HospitalizationController extends Controller
 
     public function create()
     {
-        return view('hospitalizations.create');
+        $pets = Pet::where('is_active', true)->orderBy('name')->get();
+        $tutors = Tutor::where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
+        return view('hospitalizations.create', compact('pets', 'tutors', 'veterinarians'));
     }
 
     public function store(Request $request)
@@ -74,24 +80,27 @@ class HospitalizationController extends Controller
 
     public function edit(Hospitalization $hospitalization)
     {
-        return view('hospitalizations.edit', compact('hospitalization'));
+        $pets = Pet::where('is_active', true)->orderBy('name')->get();
+        $tutors = Tutor::where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
+        return view('hospitalizations.edit', compact('hospitalization', 'pets', 'tutors', 'veterinarians'));
     }
 
     public function update(Request $request, Hospitalization $hospitalization)
     {
         $validated = $request->validate([
-            'pet_id' => 'required|exists:pets,id',
-            'tutor_id' => 'required|exists:tutors,id',
-            'vet_id' => 'required|exists:users,id',
+            'pet_id' => 'sometimes|required|exists:pets,id',
+            'tutor_id' => 'sometimes|required|exists:tutors,id',
+            'vet_id' => 'sometimes|required|exists:users,id',
             'appointment_id' => 'nullable|exists:appointments,id',
-            'admission_date' => 'required|date',
+            'admission_date' => 'sometimes|required|date',
             'admission_time' => 'nullable',
-            'admission_reason' => 'required|string',
+            'admission_reason' => 'sometimes|required|string',
             'initial_diagnosis' => 'nullable|string',
             'department' => 'nullable|string|max:100',
             'bed' => 'nullable|string|max:50',
             'is_emergency' => 'boolean',
-            'status' => 'required|string|max:50',
+            'status' => 'sometimes|required|string|max:50',
             'discharged_at' => 'nullable|date',
             'discharge_summary' => 'nullable|string',
             'discharge_instructions' => 'nullable|string',

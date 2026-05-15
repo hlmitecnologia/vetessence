@@ -18,7 +18,7 @@ class StaffNote extends Model
 
     protected $casts = [
         'is_read' => 'boolean',
-        'read_at', 'branch_id' => 'datetime',
+        'read_at' => 'datetime',
     ];
 
     public function creator(): BelongsTo { return $this->belongsTo(User::class, 'created_by'); }
@@ -43,6 +43,6 @@ class StaffNote extends Model
 
     public function markAsRead(): void
     {
-        $this->update(['is_read' => true, 'read_at', 'branch_id' => now()]);
+        $this->update(['is_read' => true, 'read_at' => now()]);
     }
 }

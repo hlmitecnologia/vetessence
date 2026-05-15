@@ -15,13 +15,15 @@ class AppointmentController extends Controller
         $petIds = $tutor->pets()->pluck('pets.id');
 
         $upcoming = Appointment::whereIn('pet_id', $petIds)
-            ->where('start_time', '>=', now())
-            ->orderBy('start_time')
+            ->where('date', '>=', today())
+            ->orderBy('date')
+            ->orderBy('time')
             ->get();
 
         $past = Appointment::whereIn('pet_id', $petIds)
-            ->where('start_time', '<', now())
-            ->orderBy('start_time', 'desc')
+            ->where('date', '<', today())
+            ->orderBy('date', 'desc')
+            ->orderBy('time', 'desc')
             ->take(20)
             ->get();
 

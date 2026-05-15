@@ -15,12 +15,14 @@ class DashboardController extends Controller
 
         $upcomingAppointmentsList = $tutor->pets()
             ->with(['appointments' => function ($q) {
-                $q->where('start_time', '>=', now())->orderBy('start_time');
+                $q->where('date', '>=', today())->orderBy('date')->orderBy('time');
             }])
             ->get()
             ->pluck('appointments')
             ->flatten()
-            ->sortBy('start_time')
+            ->sortBy(function ($a) {
+                return $a->date.' '.$a->time;
+            })
             ->take(5);
 
         $upcomingAppointments = $upcomingAppointmentsList->count();

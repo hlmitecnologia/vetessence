@@ -122,7 +122,7 @@
 <div class="modal fade" id="addVitalSignModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <form action="{{ route('anesthesia-vital-signs.store', $monitoring) }}" method="POST">
+            <form action="#" method="POST">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Novo Registro de Sinais Vitais</h5>

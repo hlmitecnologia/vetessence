@@ -49,7 +49,7 @@
             </div>
         </form>
 
-        @if($reportData->count() > 0)
+        @if($grouped->count() > 0)
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -60,14 +60,18 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($reportData as $row)
+                @foreach($grouped as $substanceName => $subLogs)
+                @php
+                    $totalIn = $subLogs->where('type', 'in')->sum('quantity');
+                    $totalOut = $subLogs->where('type', 'out')->sum('quantity');
+                @endphp
                 <tr>
-                    <td>{{ $row->substance ?? $row->name }}</td>
-                    <td>{{ $row->total_in }}</td>
-                    <td>{{ $row->total_out }}</td>
+                    <td>{{ $substanceName }}</td>
+                    <td>{{ $totalIn }}</td>
+                    <td>{{ $totalOut }}</td>
                     <td>
-                        <span class="badge {{ ($row->balance ?? ($row->total_in - $row->total_out)) >= 0 ? 'badge-success' : 'badge-danger' }}">
-                            {{ $row->balance ?? ($row->total_in - $row->total_out) }}
+                        <span class="badge {{ ($totalIn - $totalOut) >= 0 ? 'badge-success' : 'badge-danger' }}">
+                            {{ $totalIn - $totalOut }}
                         </span>
                     </td>
                 </tr>

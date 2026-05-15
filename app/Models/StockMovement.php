@@ -15,15 +15,14 @@ class StockMovement extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'product_id', 'type', 'quantity', 'balance_before',
-        'balance_after', 'reason', 'reference', 'user_id', 'created_at', 'branch_id'
+        'product_id', 'type', 'quantity',
+        'balance_after', 'reference', 'notes', 'user_id', 'created_at', 'branch_id'
     ];
 
     protected $casts = [
         'quantity' => 'integer',
-        'balance_before' => 'integer',
         'balance_after' => 'integer',
-        'created_at', 'branch_id' => 'datetime',
+        'created_at' => 'datetime',
     ];
 
     public function product(): BelongsTo

@@ -78,7 +78,8 @@ class LaboratoryOrderController extends Controller
     public function show(LaboratoryOrder $laboratoryOrder)
     {
         $laboratoryOrder->load(['pet', 'vet', 'appointment', 'tests']);
-        return view('laboratory-orders.show', compact('laboratoryOrder'));
+        $order = $laboratoryOrder;
+        return view('laboratory-orders.show', compact('order'));
     }
 
     public function edit(LaboratoryOrder $laboratoryOrder)

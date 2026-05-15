@@ -73,13 +73,13 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="current_stock">Estoque Atual</label>
-                        <input type="number" step="0.01" name="current_stock" id="current_stock" class="form-control" value="{{ old('current_stock', '0')">
+                        <input type="number" step="0.01" name="current_stock" id="current_stock" class="form-control" value="{{ old('current_stock', '0') }}">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="min_stock">Estoque Mínimo</label>
-                        <input type="number" step="0.01" name="min_stock" id="min_stock" class="form-control" value="{{ old('min_stock', '0')">
+                        <input type="number" step="0.01" name="min_stock" id="min_stock" class="form-control" value="{{ old('min_stock', '0') }}">
                     </div>
                 </div>
                 <div class="col-md-4">

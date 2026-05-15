@@ -88,7 +88,8 @@ class AnesthesiaMonitoringController extends Controller
     public function show(AnesthesiaMonitoring $anesthesiaMonitoring)
     {
         $anesthesiaMonitoring->load(['surgery', 'pet', 'vet', 'vitalSigns']);
-        return view('anesthesia-monitorings.show', compact('anesthesiaMonitoring'));
+        $monitoring = $anesthesiaMonitoring;
+        return view('anesthesia-monitorings.show', compact('monitoring'));
     }
 
     public function edit(AnesthesiaMonitoring $anesthesiaMonitoring)

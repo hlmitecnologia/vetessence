@@ -5,7 +5,7 @@
     <div class="card-header">
         <h3 class="card-title">Movimentação - {{ $controlledSubstanceLog->substance->name ?? '' }}</h3>
         <div class="card-tools">
-            <a href="{{ route('controlled-substance-logs.index') }}" class="btn btn-default btn-sm">
+            <a href="{{ route('controlled-substance-logs.index', ['substance' => $controlledSubstanceLog->controlled_substance_id]) }}" class="btn btn-default btn-sm">
                 <i class="fas fa-arrow-left"></i> Voltar
             </a>
         </div>

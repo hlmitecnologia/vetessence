@@ -76,7 +76,8 @@ class DentalChartController extends Controller
     public function show(DentalChart $dentalChart)
     {
         $dentalChart->load(['pet', 'vet', 'appointment', 'conditions']);
-        return view('dental-charts.show', compact('dentalChart'));
+        $chart = $dentalChart;
+        return view('dental-charts.show', compact('chart'));
     }
 
     public function edit(DentalChart $dentalChart)

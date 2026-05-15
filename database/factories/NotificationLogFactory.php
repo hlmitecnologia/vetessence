@@ -19,7 +19,7 @@ class NotificationLogFactory extends Factory
             'destination' => $this->faker->email,
             'message' => $this->faker->text,
             'status' => 'pending',
-            'sent_at' => null,
+            'sent_at' => now(),
         ];
     }
 }

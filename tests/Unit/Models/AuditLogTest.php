@@ -12,22 +12,6 @@ class AuditLogTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function test_log_method()
-    {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $pet = Pet::factory()->create();
-        AuditLog::log($pet, 'created', [], ['name' => 'Rex']);
-
-        $this->assertDatabaseHas('audit_logs', [
-            'user_id' => $user->id,
-            'model_type' => Pet::class,
-            'model_id' => $pet->id,
-            'action' => 'created',
-        ]);
-    }
-
     public function test_fillable()
     {
         $user = User::factory()->create();
@@ -45,9 +29,44 @@ class AuditLogTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $user->id,
             'model_type' => Pet::class,
             'action' => 'updated',
+        ]);
+    }
+
+    public function test_user_relationship()
+    {
+        $user = User::factory()->create();
+        $pet = Pet::factory()->create();
+        $log = AuditLog::create([
             'user_id' => $user->id,
+            'model_type' => Pet::class,
+            'model_id' => $pet->id,
+            'action' => 'created',
+            'old_values' => [],
+            'new_values' => [],
+            'ip_address' => '127.0.0.1',
+            'created_at' => now(),
+        ]);
+
+        $this->assertInstanceOf(User::class, $log->user);
+        $this->assertEquals($user->id, $log->user->id);
+    }
+
+    public function test_log_method()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $pet = Pet::factory()->create();
+        AuditLog::log($pet, 'created', [], ['name' => 'Rex']);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $user->id,
+            'model_type' => Pet::class,
+            'model_id' => $pet->id,
+            'action' => 'created',
         ]);
     }
 }

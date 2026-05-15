@@ -28,7 +28,7 @@ class MedicalRecordController extends Controller
             $query->whereDate('date', '<=', $request->date_to);
         }
 
-        $records = $query->orderBy('date', 'desc')->orderBy('time', 'desc')->paginate(20);
+        $records = $query->orderBy('date', 'desc')->paginate(20);
 
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
 
@@ -49,10 +49,9 @@ class MedicalRecordController extends Controller
     {
         $validated = $request->validate([
             'pet_id' => 'required|exists:pets,id',
-            'vet_id' => 'required|exists:users,id',
+            'user_id' => 'required|exists:users,id',
             'date' => 'required|date',
-            'time' => 'required',
-            'type' => 'required|in:consulta,cirurgia,emergencia,vacina,retorno,exame',
+            'type' => 'required|in:consulta,cirurgia,emergencia,vacina,retorno,exame,consultation',
             'chief_complaint' => 'nullable|string',
             'anamnesis' => 'nullable|string',
             'physical_exam' => 'nullable|string',

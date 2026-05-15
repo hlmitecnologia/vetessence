@@ -42,16 +42,13 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'sku' => 'required|string|unique:products',
-            'barcode' => 'nullable|string|unique:products',
+            'sku' => 'nullable|string',
             'category_id' => 'nullable|exists:categories,id',
             'supplier_id' => 'nullable|exists:suppliers,id',
-            'unit' => 'required|string',
             'cost_price' => 'required|numeric|min:0',
             'sale_price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'min_stock' => 'required|integer|min:0',
-            'expiration_date' => 'nullable|date',
+            'is_active' => 'boolean',
         ]);
 
         Product::create($validated);
@@ -77,16 +74,12 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'sku' => 'required|string|unique:products,sku,' . $product->id,
-            'barcode' => 'nullable|string|unique:products,barcode,' . $product->id,
+            'sku' => 'nullable|string',
             'category_id' => 'nullable|exists:categories,id',
             'supplier_id' => 'nullable|exists:suppliers,id',
-            'unit' => 'required|string',
             'cost_price' => 'required|numeric|min:0',
             'sale_price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'min_stock' => 'required|integer|min:0',
-            'expiration_date' => 'nullable|date',
             'is_active' => 'boolean',
         ]);
 

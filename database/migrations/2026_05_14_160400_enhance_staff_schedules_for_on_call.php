@@ -9,6 +9,7 @@ class EnhanceStaffSchedulesForOnCall extends Migration
     public function up()
     {
         Schema::table('staff_schedules', function (Blueprint $table) {
+            $table->index('user_id');
             $table->dropUnique(['user_id', 'work_date']);
 
             $table->boolean('is_on_call')->default(false)->after('shift_type');

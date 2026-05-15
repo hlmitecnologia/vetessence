@@ -5,8 +5,8 @@
     <div class="card-header">
         <h3 class="card-title">Movimentações de Substâncias Controladas</h3>
         <div class="card-tools">
-            <a href="{{ route('controlled-substance-logs.create') }}" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus"></i> Nova Movimentação
+            <a href="{{ route('controlled-substances.index') }}" class="btn btn-default btn-sm">
+                <i class="fas fa-arrow-left"></i> Substâncias
             </a>
         </div>
     </div>
@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
-                    <a href="{{ route('controlled-substance-logs.index') }}" class="btn btn-default">Limpar Filtros</a>
+                    <a href="{{ route('controlled-substance-logs.index', ['substance' => request('substance_id') ?: 0]) }}" class="btn btn-default">Limpar Filtros</a>
                 </div>
             </div>
         </form>

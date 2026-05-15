@@ -7,17 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Traits\BranchScoped;
+use App\Traits\DigitalSignable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MedicalRecord extends Model
 {
-    use HasFactory, BranchScoped;
+    use HasFactory, BranchScoped, DigitalSignable;
 
     protected $fillable = [
-        'record_id', 'version', 'pet_id', 'appointment_id', 'vet_id',
+        'record_id', 'version', 'pet_id', 'appointment_id', 'user_id',
         'date', 'time', 'type', 'chief_complaint', 'anamnesis',
         'physical_exam', 'vital_signs', 'diagnosis', 'treatment',
-        'prognosis', 'attachments', 'notes', 'branch_id'
+        'prognosis', 'attachments', 'notes', 'content_hash',
+        'digital_signature', 'signed_at', 'branch_id'
     ];
 
     protected $casts = [
@@ -25,6 +27,7 @@ class MedicalRecord extends Model
         'time' => 'datetime:H:i',
         'vital_signs' => 'array',
         'attachments' => 'array',
+        'signed_at' => 'datetime',
     ];
 
     public function pet(): BelongsTo
@@ -34,7 +37,7 @@ class MedicalRecord extends Model
 
     public function vet(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'vet_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function appointment(): BelongsTo
@@ -60,6 +63,6 @@ class MedicalRecord extends Model
     public function zoonoticDiseases(): BelongsToMany
     {
         return $this->belongsToMany(ZoonoticDisease::class, 'diagnosis_disease')
-            ->withPivot('is_suspected', 'notes', 'branch_id');
+            ->withPivot('is_suspected', 'notes');
     }
 }
