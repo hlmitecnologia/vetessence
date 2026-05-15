@@ -103,8 +103,8 @@
                         @endif
 
                         <!-- ATENDIMENTO -->
-                        @if(Gate::allows('atendimentos') || Gate::allows('prontuarios') || Gate::allows('vacinas') || Gate::allows('exames') || Gate::allows('cirurgias') || Gate::allows('prescricoes') || Gate::allows('hospitalizacao') || Gate::allows('laboratorio') || Gate::allows('imagem') || Gate::allows('referral') || Gate::allows('lembrete-vacinas') || Gate::allows('protocolo-vacinas') || Gate::allows('parasitario') || Gate::allows('certificado-sanitario') || Gate::allows('modelo-laudo') || Gate::allows('interacao-medicamentosa') || Gate::allows('hospedagem') || Gate::allows('agendamento-online') || Gate::allows('teleconsulta'))
-                        <li class="nav-item has-treeview {{ request()->routeIs('appointments.*') || request()->routeIs('medical-records.*') || request()->routeIs('vaccinations.*') || request()->routeIs('vaccination-reminders.*') || request()->routeIs('vaccine-protocols.*') || request()->routeIs('parasite-controls.*') || request()->routeIs('health-certificates.*') || request()->routeIs('clinical-report-templates.*') || request()->routeIs('drug-interactions.*') || request()->routeIs('boardings.*') || request()->routeIs('online-bookings.*') || request()->routeIs('teleconsultations.*') || request()->routeIs('exams.*') || request()->routeIs('surgeries.*') || request()->routeIs('prescriptions.*') || request()->routeIs('hospitalizations.*') || request()->routeIs('hospitalization-daily-records.*') || request()->routeIs('anesthesia-monitorings.*') || request()->routeIs('dental-charts.*') || request()->routeIs('weight-records.*') || request()->routeIs('treatment-plans.*') || request()->routeIs('consent-forms.*') || request()->routeIs('laboratory-orders.*') || request()->routeIs('imaging-exams.*') || request()->routeIs('referrals.*') ? 'menu-open' : '' }}">
+                        @if(Gate::allows('atendimentos') || Gate::allows('prontuarios') || Gate::allows('vacinas') || Gate::allows('exames') || Gate::allows('cirurgias') || Gate::allows('prescricoes') || Gate::allows('hospitalizacao') || Gate::allows('laboratorio') || Gate::allows('imagem') || Gate::allows('referral') || Gate::allows('lembrete-vacinas') || Gate::allows('protocolo-vacinas') || Gate::allows('parasitario') || Gate::allows('certificado-sanitario') || Gate::allows('modelo-laudo') || Gate::allows('interacao-medicamentosa') || Gate::allows('hospedagem') || Gate::allows('agendamento-online') || Gate::allows('teleconsulta') || Gate::allows('triage') || Gate::allows('pre-anesthetic') || Gate::allows('diet-plans') || Gate::allows('convenio-claims'))
+                        <li class="nav-item has-treeview {{ request()->routeIs('appointments.*') || request()->routeIs('medical-records.*') || request()->routeIs('vaccinations.*') || request()->routeIs('vaccination-reminders.*') || request()->routeIs('vaccine-protocols.*') || request()->routeIs('parasite-controls.*') || request()->routeIs('health-certificates.*') || request()->routeIs('clinical-report-templates.*') || request()->routeIs('drug-interactions.*') || request()->routeIs('boardings.*') || request()->routeIs('online-bookings.*') || request()->routeIs('teleconsultations.*') || request()->routeIs('exams.*') || request()->routeIs('surgeries.*') || request()->routeIs('prescriptions.*') || request()->routeIs('hospitalizations.*') || request()->routeIs('hospitalization-daily-records.*') || request()->routeIs('anesthesia-monitorings.*') || request()->routeIs('dental-charts.*') || request()->routeIs('weight-records.*') || request()->routeIs('treatment-plans.*') || request()->routeIs('consent-forms.*') || request()->routeIs('laboratory-orders.*') || request()->routeIs('imaging-exams.*') || request()->routeIs('referrals.*') || request()->routeIs('triage.*') || request()->routeIs('pre-anesthetic-evaluations.*') || request()->routeIs('diet-plans.*') || request()->routeIs('convenio-claims.*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-stethoscope"></i>
                                 <p>Atendimento <i class="right fas fa-angle-left"></i></p>
@@ -115,6 +115,14 @@
                             <a href="{{ route('appointments.index') }}" class="nav-link {{ request()->routeIs('appointments.*') ? 'active' : '' }}">
                                 <i class="fas fa-calendar-alt nav-icon"></i>
                                 <p>Agendamentos</p>
+                            </a>
+                        </li>
+                        @endcan
+                        @can('triage')
+                        <li class="nav-item">
+                            <a href="{{ route('triage.index') }}" class="nav-link {{ request()->routeIs('triage.*') ? 'active' : '' }}">
+                                <i class="fas fa-sort-amount-up nav-icon"></i>
+                                <p>Triagem</p>
                             </a>
                         </li>
                         @endcan
@@ -213,6 +221,14 @@
                                         <p>Anestesia</p>
                                     </a>
                                 </li>
+                                @can('pre-anesthetic')
+                                <li class="nav-item">
+                                    <a href="{{ route('pre-anesthetic-evaluations.index') }}" class="nav-link {{ request()->routeIs('pre-anesthetic-evaluations.*') ? 'active' : '' }}">
+                                        <i class="fas fa-stethoscope nav-icon"></i>
+                                        <p>Aval. Pré-Anestésica</p>
+                                    </a>
+                                </li>
+                                @endcan
                                 <li class="nav-item">
                                     <a href="{{ route('surgeries.index') }}" class="nav-link {{ request()->routeIs('surgeries.*') ? 'active' : '' }}">
                                         <i class="fas fa-user-md nav-icon"></i>
@@ -279,12 +295,28 @@
                                         <p>Controle de Peso</p>
                                     </a>
                                 </li>
+                                @can('diet-plans')
+                                <li class="nav-item">
+                                    <a href="{{ route('diet-plans.index') }}" class="nav-link {{ request()->routeIs('diet-plans.*') ? 'active' : '' }}">
+                                        <i class="fas fa-utensils nav-icon"></i>
+                                        <p>Planos Alimentares</p>
+                                    </a>
+                                </li>
+                                @endcan
                                 @endcan
                         @can('referral')
                         <li class="nav-item">
                             <a href="{{ route('referrals.index') }}" class="nav-link {{ request()->routeIs('referrals.*') ? 'active' : '' }}">
                                 <i class="fas fa-share-alt nav-icon"></i>
                                 <p>Encaminhamentos</p>
+                            </a>
+                        </li>
+                        @endcan
+                        @can('convenio-claims')
+                        <li class="nav-item">
+                            <a href="{{ route('convenio-claims.index') }}" class="nav-link {{ request()->routeIs('convenio-claims.*') ? 'active' : '' }}">
+                                <i class="fas fa-file-invoice nav-icon"></i>
+                                <p>Reembolsos Convênios</p>
                             </a>
                         </li>
                         @endcan

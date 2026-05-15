@@ -13,7 +13,8 @@ class Convenio extends Model
     protected $fillable = [
         'name', 'cnpj', 'plan_name', 'coverage', 'discount_percent',
         'max_consults_month', 'contract_number', 'start_date', 'end_date', 'is_active',
-        'phone', 'email', 'notes'
+        'phone', 'email', 'notes',
+        'pre_authorization_required', 'coverage_details', 'claim_form_url',
     ];
 
     protected $casts = [
@@ -21,6 +22,8 @@ class Convenio extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'is_active' => 'boolean',
+        'pre_authorization_required' => 'boolean',
+        'coverage_details' => 'array',
     ];
 
     public function convenioPets(): HasMany

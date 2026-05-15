@@ -90,6 +90,18 @@ class PermissionSeeder extends Seeder
             'teleconsultations.view', 'teleconsultations.create', 'teleconsultations.edit', 'teleconsultations.delete',
             'referrals.view', 'referrals.create', 'referrals.edit', 'referrals.delete',
 
+            // Pre-Anesthetic Evaluation
+            'pre-anesthetic.view', 'pre-anesthetic.create', 'pre-anesthetic.edit', 'pre-anesthetic.delete',
+
+            // Diet Plans
+            'diet-plans.view', 'diet-plans.create', 'diet-plans.edit', 'diet-plans.delete',
+
+            // Convenio Claims
+            'convenio-claims.view', 'convenio-claims.create', 'convenio-claims.edit', 'convenio-claims.delete',
+
+            // Triage
+            'triage.view', 'triage.create', 'triage.edit', 'triage.delete',
+
             // Agenda
             'staff-schedules.view', 'staff-schedules.create', 'staff-schedules.edit', 'staff-schedules.delete',
             'schedules-on-call.view', 'schedules-on-call.create', 'schedules-on-call.edit', 'schedules-on-call.delete',
@@ -147,6 +159,10 @@ class PermissionSeeder extends Seeder
                 'grooming-templates.view',
                 'breed-defaults.view',
                 'pet-death-records.view', 'pet-death-records.create', 'pet-death-records.edit',
+                'pre-anesthetic.view', 'pre-anesthetic.create', 'pre-anesthetic.edit',
+                'diet-plans.view', 'diet-plans.create', 'diet-plans.edit',
+                'convenio-claims.view', 'convenio-claims.create', 'convenio-claims.edit',
+                'triage.view', 'triage.create', 'triage.edit',
                 'communication.view',
                 'notification-logs.view',
                 'staff-notes.view', 'staff-notes.create',

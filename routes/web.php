@@ -687,4 +687,48 @@ Route::middleware(['auth'])->group(function () {
         'index' => 'employees.index',
         'show' => 'employees.show',
     ])->only(['index', 'show']);
+
+    // Pre-Anesthetic Evaluations
+    Route::resource('pre-anesthetic-evaluations', 'App\Http\Controllers\PreAnestheticEvaluationController')->names([
+        'index' => 'pre-anesthetic-evaluations.index',
+        'create' => 'pre-anesthetic-evaluations.create',
+        'store' => 'pre-anesthetic-evaluations.store',
+        'show' => 'pre-anesthetic-evaluations.show',
+        'edit' => 'pre-anesthetic-evaluations.edit',
+        'update' => 'pre-anesthetic-evaluations.update',
+        'destroy' => 'pre-anesthetic-evaluations.destroy',
+    ]);
+
+    // Diet Plans
+    Route::resource('diet-plans', 'App\Http\Controllers\DietPlanController')->names([
+        'index' => 'diet-plans.index',
+        'create' => 'diet-plans.create',
+        'store' => 'diet-plans.store',
+        'show' => 'diet-plans.show',
+        'edit' => 'diet-plans.edit',
+        'update' => 'diet-plans.update',
+        'destroy' => 'diet-plans.destroy',
+    ]);
+
+    // Convenio Claims
+    Route::resource('convenio-claims', 'App\Http\Controllers\ConvenioClaimController')->names([
+        'index' => 'convenio-claims.index',
+        'create' => 'convenio-claims.create',
+        'store' => 'convenio-claims.store',
+        'show' => 'convenio-claims.show',
+        'edit' => 'convenio-claims.edit',
+        'update' => 'convenio-claims.update',
+        'destroy' => 'convenio-claims.destroy',
+    ]);
+
+    // Triage
+    Route::resource('triage', 'App\Http\Controllers\TriageRecordController')->names([
+        'index' => 'triage.index',
+        'create' => 'triage.create',
+        'store' => 'triage.store',
+        'show' => 'triage.show',
+        'edit' => 'triage.edit',
+        'update' => 'triage.update',
+        'destroy' => 'triage.destroy',
+    ]);
 });
