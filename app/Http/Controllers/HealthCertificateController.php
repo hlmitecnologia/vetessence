@@ -115,9 +115,13 @@ class HealthCertificateController extends Controller
             'status' => 'issued',
         ]);
 
-        $pdf = Pdf::loadView('health-certificates.pdf', compact('healthCertificate'));
+        $view = $healthCertificate->is_cvi ? 'health-certificates.cvi-pdf' : 'health-certificates.pdf';
+        $filename = $healthCertificate->is_cvi
+            ? "cvi-{$healthCertificate->cvi_number}.pdf"
+            : "certificado-{$healthCertificate->certificate_number}.pdf";
 
-        return $pdf->download("certificado-{$healthCertificate->certificate_number}.pdf");
+        $pdf = Pdf::loadView($view, compact('healthCertificate'));
+        return $pdf->download($filename);
     }
 
     protected function getVeterinarians()

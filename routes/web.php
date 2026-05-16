@@ -25,6 +25,11 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.update');
 });
 
+// Public prescription verification (QR code scan) — no auth required, rate-limited
+Route::get('r/{hash}', 'App\Http\Controllers\PrescriptionVerificationController@verify')
+    ->name('prescriptions.verify')
+    ->middleware('throttle:10,1');
+
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', [EmailVerificationPromptController::class, '__invoke'])->name('verification.notice');
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])->name('password.confirm');
@@ -123,7 +128,6 @@ Route::middleware(['auth'])->group(function () {
     ]);
 
     // Prescriptions
-    Route::get('r/{hash}', 'App\Http\Controllers\PrescriptionVerificationController@verify')->name('prescriptions.verify');
     Route::resource('prescriptions', 'App\Http\Controllers\PrescriptionController')->names([
         'index' => 'prescriptions.index',
         'create' => 'prescriptions.create',
@@ -735,3 +739,8 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'triage.destroy',
     ]);
 });
+
+// Insurance claim webhook (external callback, no auth)
+Route::post('api/insurance/webhook', 'App\Http\Controllers\InsuranceWebhookController')
+    ->name('insurance.webhook')
+    ->middleware('throttle:60,1');

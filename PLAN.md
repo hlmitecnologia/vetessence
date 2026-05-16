@@ -1,4 +1,4 @@
-# VetEssence — Build Plan (v6)
+# VetEssence — Build Plan (v7)
 
 ## Context
 Laravel 8, AdminLTE 3.2, Livewire 2, Spatie Permissions, MySQL, Tailwind CSS, Alpine.js.
@@ -427,7 +427,72 @@ All 40+ missing columns added via 8 migrations across 10 tables:
 
 ---
 
-## Test Execution
+## Optional Enhancements (Post-Phase Q)
+
+These are **not** on the core roadmap. Each should be discussed and approved before implementation.
+
+### R1 — Livewire Real-Time Triage Board
+
+**Why**: ER triage board (P6) is currently a static CRUD. A Livewire-powered real-time board would let multiple vets see incoming triage patients update instantly without page refresh.
+
+**Scope**:
+| # | Task | Details |
+|---|------|---------|
+| 1 | Convert Triage index view to Livewire component | `app/Http/Livewire/TriageBoard.php` + view |
+| 2 | Add polling or Laravel Echo for real-time updates | `wire:poll.5s` or Pusher/Echo |
+| 3 | Add drag-and-drop status change (waiting → in_progress → completed) | Alpine.js Sortable or Livewire drag |
+| 4 | Add sound/visual alert for new red (critical) triage | JS notification |
+| 5 | **Tests**: Livewire unit/feature tests | test files |
+
+**Estimated tests**: ~8 | **Effort**: Medium
+
+### R2 — CVI PDF Template (CFMV-Mandated Layout)
+
+**Why**: CVI (International Travel Certificate) from P5 currently uses the generic `health_certificates` print view. CFMV mandates a specific layout with CRMV seal, digital signature block, and official formatting.
+
+**Scope**:
+| # | Task | Details |
+|---|------|---------|
+| 1 | Design CVI PDF layout matching CFMV Res. 974/2006 specs | PDF blade template |
+| 2 | Add CRMV seal image + digital signature block | storage + template |
+| 3 | Generate PDF via `barryvdh/laravel-dompdf` or `laravel-snappy` | controller/download route |
+| 4 | Add CVI download button on health certificate show view | view edit |
+| 5 | **Tests**: Feature (PDF generation, content assertions) | test files |
+
+**Estimated tests**: ~4 | **Effort**: Medium
+
+### R3 — Pet Insurance Auto-Claim Filing
+
+**Why**: P4 added claims tracking. Currently the clinic must manually file claims with each insurer. Auto-filing would submit claims via API to partner insurers.
+
+**Scope**:
+| # | Task | Details |
+|---|------|---------|
+| 1 | Define insurer API contract (abstract `InsuranceProvider` interface) | `app/Services/Insurance/InsuranceProvider.php` |
+| 2 | Implement concrete provider for one insurer (e.g., Porto Seguro, PetLove) | `app/Services/Insurance/PortoSeguroProvider.php` |
+| 3 | Create `claims:auto-file` command to submit pending claims | command |
+| 4 | Add claim status webhook endpoint for insurer callbacks | controller + route |
+| 5 | **Tests**: Unit (provider interface), Feature (command, webhook) | test files |
+
+**Estimated tests**: ~8 | **Effort**: Large (depends on insurer API availability)
+
+### R4 — QR Code Scanner Workflow for Public Rx Verification
+
+**Why**: Q6 added the `/r/{hash}` verification route but it's behind the `auth` middleware. For real-world QR code usage, tutors should be able to scan a prescription QR code without logging in.
+
+**Scope**:
+| # | Task | Details |
+|---|------|---------|
+| 1 | Move verify route out of `auth` middleware | `routes/web.php` |
+| 2 | Add `qrcode` library (e.g., `simplesoftwareio/simple-qrcode` or `bacon/bacon-qr-code`) | `composer.json` |
+| 3 | Generate QR code on prescription print view (embeds `/r/{hash}` URL) | view edit |
+| 4 | Scaffold a public scan landing page with camera integration | view (JS QR scanner lib) |
+| 5 | Rate-limit public verify route (prevent hash brute-force) | middleware/throttle |
+| 6 | **Tests**: Feature (public access, rate limit, QR generation) | test files |
+
+**Estimated tests**: ~6 | **Effort**: Medium
+
+---
 
 ```bash
 # Unit tests

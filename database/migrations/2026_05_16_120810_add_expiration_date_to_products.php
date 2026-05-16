@@ -13,11 +13,15 @@ class AddExpirationDateToProducts extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            if (!Schema::hasColumn('products', 'expiration_date')) {
-                $table->date('expiration_date')->nullable()->after('lot_number');
+        if (Schema::hasColumn('products', 'lot_number')) {
+                Schema::table('products', function (Blueprint $table) {
+                    $table->date('expiration_date')->nullable()->after('lot_number');
+                });
+            } else {
+                Schema::table('products', function (Blueprint $table) {
+                    $table->date('expiration_date')->nullable();
+                });
             }
-        });
     }
 
     public function down()

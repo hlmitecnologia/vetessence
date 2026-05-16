@@ -190,9 +190,33 @@
         @endif
     </div>
 
+    @php
+        use Endroid\QrCode\QrCode;
+        use Endroid\QrCode\Writer\PngWriter;
+        if ($prescription->verification_hash) {
+            $qrCode = new QrCode(route('prescriptions.verify', $prescription->verification_hash));
+            $writer = new PngWriter();
+            $qrResult = $writer->write($qrCode);
+            $qrBase64 = base64_encode($qrResult->getString());
+        }
+    @endphp
+
+    @if(isset($qrBase64))
+    <div class="section" style="text-align: center; margin-top: 2rem;">
+        <div class="section-title">Verificação Digital</div>
+        <img src="data:image/png;base64,{{ $qrBase64 }}" alt="QR Code" style="width: 150px; height: 150px;">
+        <p style="font-size: 9pt; margin-top: 0.5rem;">
+            Escaneie para verificar a autenticidade<br>
+            <span style="font-size: 8pt; color: #666;">
+                {{ route('prescriptions.verify', $prescription->verification_hash) }}
+            </span>
+        </p>
+    </div>
+    @endif
+
     <div class="footer">
         <p>Documento gerado em {{ now()->format('d/m/Y H:i:s') }} - {{ config('app.name', 'VetEssence') }}</p>
-        <p>Este documento é válido apenas com assinatura e carimbo do profissional responsável.</p>
+        <p>Este documento é válido apenas com assinatura e carrimbo do profissional responsável.</p>
     </div>
 </body>
 </html>

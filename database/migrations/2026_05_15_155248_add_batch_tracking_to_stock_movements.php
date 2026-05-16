@@ -14,9 +14,9 @@ class AddBatchTrackingToStockMovements extends Migration
     public function up()
     {
         Schema::table('stock_movements', function (Blueprint $table) {
-            $table->string('batch_number', 100)->nullable()->after('quantity');
-            $table->string('lot_number', 100)->nullable()->after('batch_number');
-            $table->date('expiry_date')->nullable()->after('lot_number');
+            $table->string('batch_number', 100)->nullable();
+            $table->string('lot_number', 100)->nullable();
+            $table->date('expiry_date')->nullable();
         });
     }
 

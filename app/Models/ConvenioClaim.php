@@ -11,7 +11,7 @@ class ConvenioClaim extends Model
     use HasFactory;
 
     protected $fillable = [
-        'convenio_pet_id', 'invoice_id', 'claim_number', 'status',
+        'convenio_pet_id', 'invoice_id', 'claim_number', 'external_id', 'status',
         'amount_requested', 'amount_approved', 'notes', 'filed_at', 'response_at',
     ];
 

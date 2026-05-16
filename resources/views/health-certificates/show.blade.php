@@ -25,6 +25,9 @@
         <div class="row">
             <div class="col-md-4"><strong>Status:</strong><p><span class="badge badge-{{ $healthCertificate->status == 'issued' ? 'success' : ($healthCertificate->status == 'expired' ? 'danger' : 'secondary') }}">{{ $healthCertificate->status }}</span></p></div>
             <div class="col-md-4"><strong>Exportação:</strong><p>{{ $healthCertificate->is_export ? 'Sim' : 'Não' }}</p></div>
+            @if($healthCertificate->is_cvi)
+            <div class="col-md-4"><strong>CVI:</strong><p><span class="badge badge-info">Certificado Veterinário Internacional</span> {{ $healthCertificate->cvi_number ? "nº {$healthCertificate->cvi_number}" : '' }}</p></div>
+            @endif
             <div class="col-md-4"><strong>PDF Gerado em:</strong><p>{{ $healthCertificate->pdf_generated_at ? $healthCertificate->pdf_generated_at->format('d/m/Y H:i') : 'Ainda não' }}</p></div>
         </div>
         @if($healthCertificate->clinical_notes)

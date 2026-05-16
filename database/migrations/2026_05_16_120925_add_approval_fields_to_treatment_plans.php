@@ -15,10 +15,10 @@ class AddApprovalFieldsToTreatmentPlans extends Migration
     {
         Schema::table('treatment_plans', function (Blueprint $table) {
             if (!Schema::hasColumn('treatment_plans', 'rejected_at')) {
-                $table->timestamp('rejected_at')->nullable()->after('client_approved_at');
+                $table->timestamp('rejected_at')->nullable();
             }
             if (!Schema::hasColumn('treatment_plans', 'rejection_reason')) {
-                $table->text('rejection_reason')->nullable()->after('rejected_at');
+                $table->text('rejection_reason')->nullable();
             }
         });
     }

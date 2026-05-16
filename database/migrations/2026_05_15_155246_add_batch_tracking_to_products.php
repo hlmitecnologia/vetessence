@@ -14,8 +14,8 @@ class AddBatchTrackingToProducts extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->string('batch_number', 100)->nullable()->after('barcode');
-            $table->string('lot_number', 100)->nullable()->after('batch_number');
+            $table->string('batch_number', 100)->nullable();
+            $table->string('lot_number', 100)->nullable();
         });
     }
 
