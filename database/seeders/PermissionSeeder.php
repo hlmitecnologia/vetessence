@@ -184,6 +184,7 @@ class PermissionSeeder extends Seeder
                 'staff-schedules.view',
                 'schedules-on-call.view',
                 'online-bookings.view',
+                'chat.view', 'chat.create', 'chat.edit', 'chat.delete',
             ],
 
             'receptionist' => [
@@ -204,6 +205,8 @@ class PermissionSeeder extends Seeder
                 'online-bookings.view', 'online-bookings.create', 'online-bookings.edit',
                 'weight-records.view', 'weight-records.create',
                 'vaccination-reminders.view',
+                'triage.view', 'triage.create',
+                'chat.view', 'chat.create',
             ],
 
             'financial' => [
@@ -216,6 +219,7 @@ class PermissionSeeder extends Seeder
                 'convenios.view',
                 'payment-gateways.view', 'payment-gateways.create', 'payment-gateways.edit',
                 'notification-logs.view',
+                'purchase-orders.view',
             ],
 
             'super-financial' => [
@@ -229,6 +233,7 @@ class PermissionSeeder extends Seeder
                 'payment-gateways.view', 'payment-gateways.create', 'payment-gateways.edit',
                 'notification-logs.view',
                 'branches.view',
+                'purchase-orders.view',
             ],
 
             'stock-manager' => [

@@ -18,6 +18,8 @@ class PurchaseOrderController extends Controller
         $this->middleware('can:purchase-orders.create')->only(['create', 'store']);
         $this->middleware('can:purchase-orders.edit')->only(['edit', 'update']);
         $this->middleware('can:purchase-orders.delete')->only(['destroy']);
+        $this->middleware('can:purchase-orders.approve')->only(['order']);
+        $this->middleware('can:purchase-orders.receive')->only(['receive']);
     }
 
     public function index()

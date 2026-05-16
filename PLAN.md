@@ -623,6 +623,24 @@ These came from analyzing what a practicing vet/receptionist touches every day t
 
 ---
 
+## Permissions Audit — Fixes Applied (2026-05-16)
+
+**Problemas encontrados e corrigidos** durante auditoria dos módulos R1–R4 e S1–S7:
+
+| # | Problema | Módulo | Correção |
+|---|----------|--------|----------|
+| 1 | `CommunicationQueueController` sem middleware de permissão | S5 | Adicionado `can:communication.view/create/delete` no construtor |
+| 2 | `PurchaseOrderController` sem middleware em `order()` e `receive()` | S7 | Adicionado `can:purchase-orders.approve/receive` |
+| 3 | Role `veterinarian` sem permissões de chat | S3 | Adicionado `chat.view/create/edit/delete` |
+| 4 | Role `receptionist` sem permissões de triagem nem chat | R1, S3 | Adicionado `triage.view/create`, `chat.view/create` |
+| 5 | Role `financial` sem `purchase-orders.view` | S7 | Adicionado (consulta apenas) |
+| 6 | Role `super-financial` sem `purchase-orders.view` | S7 | Adicionado (consulta apenas) |
+| 7 | Chat sem link na sidebar | S3 | Adicionado `Chat Interno` na seção "Comunicação" |
+
+**Regra atualizada**: todo novo controller deve ter middleware de permissão no construtor, e toda nova role deve receber as permissões correspondentes no `PermissionSeeder`.
+
+---
+
 ```bash
 # Unit tests
 php artisan test --env=testing --testsuite=Unit

@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class CommunicationQueueController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:communication.view')->only(['index', 'show']);
+        $this->middleware('can:communication.create')->only(['create', 'store']);
+        $this->middleware('can:communication.delete')->only(['destroy']);
+    }
+
     public function index(Request $request)
     {
         $query = CommunicationQueue::with(['tutor', 'pet', 'template']);

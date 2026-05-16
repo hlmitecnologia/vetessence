@@ -201,9 +201,14 @@
                 <i class="fas fa-chevron-down text-xs transition-transform" :class="open ? 'rotate-180' : ''"></i>
             </button>
             <div x-show="open" class="pl-4 mt-1 space-y-1">
-                <a href="{{ route('staff-notes.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
-                    <i class="fas fa-sticky-note w-5 mr-2"></i> Notas Internas
-                </a>
+                    <a href="{{ route('staff-notes.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                        <i class="fas fa-sticky-note w-5 mr-2"></i> Notas Internas
+                    </a>
+                    @can('chat.view')
+                    <a href="{{ route('chat.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                        <i class="fas fa-comments w-5 mr-2"></i> Chat Interno
+                    </a>
+                    @endcan
             </div>
         </div>
         @endrole
