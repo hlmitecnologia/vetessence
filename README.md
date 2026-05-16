@@ -113,7 +113,9 @@ Tests: 293 Unit + 403 Feature = 696 total (0 failures)
 
 | Feature | Status |
 |---------|--------|
-| Auto-Update via Git (admin) | ✅ Feito — aplicar atualizações e migrations sem SSH |
+| Auto-Update via Git (admin) | ✅ Feito |
+| Rebranding (logo, cores, nome da clínica) | Pendente |
+| Documentação do Sistema (/docs) | ✅ Feito — manual do usuário, manual técnico, changelog |
 
 ## Início Rápido
 

@@ -318,6 +318,11 @@
                     <i class="fas fa-sync-alt w-5 mr-2"></i> Atualizar Sistema
                 </a>
                 @endcan
+                @can('docs.view')
+                <a href="{{ route('docs.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-book w-5 mr-2"></i> Documentação
+                </a>
+                @endcan
             </div>
         </div>
         @endrole

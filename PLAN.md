@@ -850,6 +850,43 @@ Análise de gaps funcionais sob perspectiva veterinária. 12 itens organizados e
 
 ---
 
+### U2 — Rebranding (Logo, Cores, Nome)
+
+**Por que**: Cada clínica quer usar sua própria marca — logo, paleta de cores, nome da clínica no título e sidebar.
+
+| Item | Descrição |
+|------|-----------|
+| Model | `BrandingConfig` (ou reaproveitar `settings`) — logo_url, primary_color, clinic_name, favicon |
+| Controller | `BrandingController` (index + update) |
+| Views | `branding/index.blade.php` — upload logo, seletor cor, campos texto |
+| Impacto | Sidebar (`bg-{color}-700`), brand-text, login page, adminlte title, favicon, PDF headers |
+| Segurança | Gate `branding` (admin only) |
+| Armazenamento | Logo salvo em `storage/app/public/branding/`, cores/título em `settings` |
+| Testes | ~4 (Feature: permission, save config, render with custom brand) |
+
+### U3 — Documentação do Sistema (/docs)
+
+**Por que**: Não há documentação técnica ou de uso embutida no sistema — desenvolvedores e usuários precisam consultar o README/PLAN.md externamente.
+
+| Item | Descrição |
+|------|-----------|
+| Rota | `/docs` com middleware `can:docs.view` (admin/veterinario) |
+| Controller | `DocController` (index + show) ou Livewire |
+| Views | `docs/index.blade.php` — sidebar de navegação, conteúdo em Markdown renderizado |
+| Conteúdo | 1. **Manual do Usuário** (fluxos: agendar consulta, lançar vacina, emitir receita, etc.) 2. **Manual Técnico** (arquitetura, módulos, permissões, varáveis de ambiente, deploy) 3. **Changelog** (histórico de versões baseado em commits) |
+| Armazenamento | Arquivos `.md` em `storage/docs/` ou diretório próprio `docs/` no projeto, renderizados com pacote Markdown (ex: `spatie/laravel-markdown`) |
+| Seed | Runner artisan `docs:publish` que copia `resources/docs/` para `storage/docs/` |
+| Gate | `docs.view` |
+| Testes | ~4 (Feature: access, render) |
+
+| Feature | Migrations | Models | Controllers | Commands | Views | Tests | Status |
+|---------|-----------|--------|-------------|----------|-------|-------|--------|
+| U1 Auto-Update | 1 | 1 | 1 | — | 2 | 4 | ✅ Feito |
+| U2 Rebranding | Pendente | Pendente | Pendente | — | Pendente | Pendente | Pendente |
+| U3 Documentação | — | — | 1 | 1 | 1 | 4 | ✅ Feito |
+
+---
+
 ### Phase T Totals
 
 | Feature | Migrations | Models | Controllers | Livewire | Views | Tests | Status |

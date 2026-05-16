@@ -140,6 +140,9 @@ class PermissionSeeder extends Seeder
 
             // System Update
             'system-update',
+
+            // Documentation
+            'docs.view',
         ];
 
         // Create all permissions

@@ -96,6 +96,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('emergency-protocols.delete', fn($user) => $user->can('emergency-protocols.delete'));
         Gate::define('corporate-dashboard.view', fn($user) => $user->can('corporate-dashboard.view'));
         Gate::define('system-update', fn($user) => $user->can('system-update'));
+        Gate::define('docs.view', fn($user) => $user->can('docs.view'));
 
         // Equipamentos
         Gate::define('integracao-equipamentos', fn($user) => $user->can('lab-equipment.view'));

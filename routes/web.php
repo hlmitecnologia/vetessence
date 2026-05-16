@@ -801,6 +801,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('system-update/check', 'App\Http\Controllers\SystemUpdateController@check')->name('system-update.check');
     Route::post('system-update/apply', 'App\Http\Controllers\SystemUpdateController@apply')->name('system-update.apply');
     Route::get('system-update/history', 'App\Http\Controllers\SystemUpdateController@history')->name('system-update.history');
+
+    // Documentation
+    Route::get('docs', 'App\Http\Controllers\DocController@index')->name('docs.index');
+    Route::get('docs/{section}', 'App\Http\Controllers\DocController@show')->name('docs.show');
+    Route::get('docs/{section}/{page}', 'App\Http\Controllers\DocController@show')->name('docs.page');
 });
 
 // Insurance claim webhook (external callback, no auth)
