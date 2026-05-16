@@ -84,6 +84,18 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('purchase-orders.approve', fn($user) => $user->can('purchase-orders.approve'));
         Gate::define('purchase-orders.receive', fn($user) => $user->can('purchase-orders.receive'));
 
+        // Fase T
+        Gate::define('drug-formulary.view', fn($user) => $user->can('drug-formulary.view'));
+        Gate::define('drug-formulary.create', fn($user) => $user->can('drug-formulary.create'));
+        Gate::define('drug-formulary.edit', fn($user) => $user->can('drug-formulary.edit'));
+        Gate::define('drug-formulary.delete', fn($user) => $user->can('drug-formulary.delete'));
+        Gate::define('stock.transfer', fn($user) => $user->can('stock.transfer'));
+        Gate::define('emergency-protocols.view', fn($user) => $user->can('emergency-protocols.view'));
+        Gate::define('emergency-protocols.create', fn($user) => $user->can('emergency-protocols.create'));
+        Gate::define('emergency-protocols.edit', fn($user) => $user->can('emergency-protocols.edit'));
+        Gate::define('emergency-protocols.delete', fn($user) => $user->can('emergency-protocols.delete'));
+        Gate::define('corporate-dashboard.view', fn($user) => $user->can('corporate-dashboard.view'));
+
         // Equipamentos
         Gate::define('integracao-equipamentos', fn($user) => $user->can('lab-equipment.view'));
 

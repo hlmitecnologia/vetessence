@@ -54,9 +54,12 @@
                 @endif
             </div>
 
-            <div class="mt-6">
+            <div class="mt-6 space-y-2">
                 <a href="{{ route('pets.edit', $pet) }}" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center py-2 rounded-lg">
                     <i class="fas fa-edit mr-2"></i> Editar
+                </a>
+                <a href="{{ route('pets.timeline', $pet) }}" class="block w-full bg-teal-600 hover:bg-teal-700 text-white text-center py-2 rounded-lg">
+                    <i class="fas fa-history mr-2"></i> Timeline
                 </a>
             </div>
         </div>

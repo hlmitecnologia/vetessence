@@ -643,9 +643,11 @@ These came from analyzing what a practicing vet/receptionist touches every day t
 
 ## Phase T — 100% Cobertura do Dia a Dia Clínico
 
-**Status**: Aguardando aprovação
+**Status**: Em construção
 
 Análise de gaps funcionais sob perspectiva veterinária. 12 itens organizados em 3 níveis de impacto.
+
+**Novas permissões**: `drug-formulary.*` (T3), `stock.transfer` (T9), `emergency-protocols.*` (T11), `corporate-dashboard.view` (T12). Nenhuma nova role necessária — as 10 existentes são suficientes. Ajustes no `AppServiceProvider` + `PermissionSeeder`.
 
 ---
 

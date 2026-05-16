@@ -125,6 +125,18 @@ class PermissionSeeder extends Seeder
             // Purchase Orders
             'purchase-orders.view', 'purchase-orders.create', 'purchase-orders.edit', 'purchase-orders.delete',
             'purchase-orders.approve', 'purchase-orders.receive',
+
+            // Drug Formulary
+            'drug-formulary.view', 'drug-formulary.create', 'drug-formulary.edit', 'drug-formulary.delete',
+
+            // Stock Transfer
+            'stock.transfer',
+
+            // Emergency Protocols
+            'emergency-protocols.view', 'emergency-protocols.create', 'emergency-protocols.edit', 'emergency-protocols.delete',
+
+            // Corporate Dashboard
+            'corporate-dashboard.view',
         ];
 
         // Create all permissions
@@ -185,6 +197,8 @@ class PermissionSeeder extends Seeder
                 'schedules-on-call.view',
                 'online-bookings.view',
                 'chat.view', 'chat.create', 'chat.edit', 'chat.delete',
+                'drug-formulary.view', 'drug-formulary.create', 'drug-formulary.edit',
+                'emergency-protocols.view', 'emergency-protocols.create', 'emergency-protocols.edit', 'emergency-protocols.delete',
             ],
 
             'receptionist' => [
@@ -234,6 +248,7 @@ class PermissionSeeder extends Seeder
                 'notification-logs.view',
                 'branches.view',
                 'purchase-orders.view',
+                'corporate-dashboard.view',
             ],
 
             'stock-manager' => [
@@ -244,6 +259,9 @@ class PermissionSeeder extends Seeder
                 'controlled-substances.view', 'controlled-substances.create', 'controlled-substances.edit',
                 'purchase-orders.view', 'purchase-orders.create', 'purchase-orders.edit', 'purchase-orders.delete',
                 'purchase-orders.approve', 'purchase-orders.receive',
+                'drug-formulary.view', 'drug-formulary.create', 'drug-formulary.edit', 'drug-formulary.delete',
+                'stock.transfer',
+                'emergency-protocols.view', 'emergency-protocols.create', 'emergency-protocols.edit',
                 'notification-logs.view',
             ],
 

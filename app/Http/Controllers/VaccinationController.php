@@ -9,6 +9,7 @@ use App\Models\Role;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class VaccinationController extends Controller
 {
@@ -99,6 +100,26 @@ class VaccinationController extends Controller
         $pdf = Pdf::loadView('vaccinations.certificate-pdf', compact('pet', 'vaccinations'));
 
         return $pdf->download("certificado-vacinas-{$pet->name}.pdf");
+    }
+
+    public function forecast(Request $request)
+    {
+        $days = (int) $request->get('days', 30);
+        $species = $request->get('species');
+
+        $query = \App\Models\Vaccination::with(['pet', 'vet'])
+            ->whereNotNull('next_date')
+            ->whereBetween('next_date', [Carbon::today(), Carbon::today()->addDays($days)]);
+
+        if ($species) {
+            $query->whereHas('pet', fn($q) => $q->where('species', $species));
+        }
+
+        $vaccinations = $query->orderBy('next_date')->get();
+
+        $speciesList = \App\Models\Pet::select('species')->distinct()->whereNotNull('species')->pluck('species');
+
+        return view('vaccinations.forecast', compact('vaccinations', 'days', 'species', 'speciesList'));
     }
 
     protected function getVeterinarians()

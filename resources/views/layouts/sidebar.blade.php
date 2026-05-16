@@ -96,9 +96,12 @@
                 <a href="{{ route('treatment-plans.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-clipboard-list w-5 mr-2"></i> Planos de Tratamento
                 </a>
-                <a href="{{ route('vaccinations.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
-                    <i class="fas fa-syringe w-5 mr-2"></i> Vacinas
-                </a>
+                    <a href="{{ route('vaccinations.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                        <i class="fas fa-syringe w-5 mr-2"></i> Vacinas
+                    </a>
+                    <a href="{{ route('vaccinations.forecast') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                        <i class="fas fa-calendar-alt w-5 mr-2"></i> Previsão de Vacinas
+                    </a>
                 <a href="{{ route('boardings.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-dog w-5 mr-2"></i> Hospedagem & Banho/Tosa
                 </a>
@@ -230,9 +233,14 @@
                 <a href="{{ route('services.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-hand-holding-medical w-5 mr-2"></i> Serviços
                 </a>
-                <a href="{{ route('stock.movements') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
-                    <i class="fas fa-exchange-alt w-5 mr-2"></i> Movimentações
-                </a>
+                    <a href="{{ route('stock.movements') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                        <i class="fas fa-exchange-alt w-5 mr-2"></i> Movimentações
+                    </a>
+                    @can('stock.transfer')
+                    <a href="{{ route('stock.transfer-form') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                        <i class="fas fa-arrow-right w-5 mr-2"></i> Transferir
+                    </a>
+                    @endcan
                 <a href="{{ route('suppliers.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-truck w-5 mr-2"></i> Fornecedores
                 </a>
@@ -244,9 +252,14 @@
                 <a href="{{ route('controlled-substances.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-prescription-bottle w-5 mr-2"></i> Subst. Controladas
                 </a>
-                <a href="{{ route('lab-equipment-integrations.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
-                    <i class="fas fa-microscope w-5 mr-2"></i> Equip. Laboratório
-                </a>
+                    <a href="{{ route('lab-equipment-integrations.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                        <i class="fas fa-microscope w-5 mr-2"></i> Equip. Laboratório
+                    </a>
+                    @can('products.view')
+                    <a href="{{ route('scanner.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                        <i class="fas fa-camera w-5 mr-2"></i> Scanner
+                    </a>
+                    @endcan
             </div>
         </div>
         @endrole

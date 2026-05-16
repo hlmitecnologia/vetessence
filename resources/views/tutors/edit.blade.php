@@ -63,7 +63,23 @@
             </div>
         </div>
 
-        <div class="mt-6 flex justify-end gap-4">
+        <div class="mt-6 space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Canais de Notificação</label>
+                <label class="inline-flex items-center mr-4">
+                    <input type="checkbox" name="notify_whatsapp" value="1" {{ $tutor->notify_whatsapp ? 'checked' : '' }} class="mr-2">
+                    WhatsApp
+                </label>
+                <label class="inline-flex items-center mr-4">
+                    <input type="checkbox" name="notify_sms" value="1" {{ $tutor->notify_sms ? 'checked' : '' }} class="mr-2">
+                    SMS
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="notify_email" value="1" {{ $tutor->notify_email ? 'checked' : '' }} class="mr-2">
+                    E-mail
+                </label>
+            </div>
+            <div class="flex justify-end gap-4">
             <a href="{{ route('tutors.index') }}" class="px-6 py-2 border rounded-lg hover:bg-gray-50">Cancelar</a>
             <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg">
                 <i class="fas fa-save mr-2"></i> Salvar

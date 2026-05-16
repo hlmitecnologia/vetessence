@@ -22,6 +22,7 @@ class Tutor extends Authenticatable
         'city', 'state', 'profession', 'photo', 'notes',
         'password', 'remember_token',
         'created_at_branch_id',
+        'notify_sms', 'notify_whatsapp', 'notify_email',
     ];
 
     protected $hidden = [
@@ -32,6 +33,9 @@ class Tutor extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'notify_sms' => 'boolean',
+        'notify_whatsapp' => 'boolean',
+        'notify_email' => 'boolean',
     ];
 
     public function getNameAttribute()

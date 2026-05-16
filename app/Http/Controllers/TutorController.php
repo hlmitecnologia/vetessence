@@ -51,6 +51,10 @@ class TutorController extends Controller
             'state' => 'nullable|string|max:2',
         ]);
 
+        $validated['notify_sms'] = $request->boolean('notify_sms');
+        $validated['notify_whatsapp'] = $request->boolean('notify_whatsapp');
+        $validated['notify_email'] = $request->boolean('notify_email');
+
         DB::beginTransaction();
         try {
             $tutor = Tutor::create($validated);
@@ -85,6 +89,9 @@ class TutorController extends Controller
             'state' => 'nullable|string|max:2',
         ]);
 
+        $validated['notify_sms'] = $request->boolean('notify_sms');
+        $validated['notify_whatsapp'] = $request->boolean('notify_whatsapp');
+        $validated['notify_email'] = $request->boolean('notify_email');
         $tutor->update($validated);
 
         return redirect()->route('tutors.index')->with('success', 'Tutor atualizado com sucesso!');

@@ -65,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'pets.update',
         'destroy' => 'pets.destroy',
     ]);
+    Route::get('pets/{pet}/timeline', 'App\Http\Controllers\PatientTimelineController@index')->name('pets.timeline');
 
     // Patient Flow Board (must be before appointments resource)
     Route::get('appointments/flow-data', 'App\Http\Controllers\AppointmentController@flowData')->name('appointments.flow-data');
@@ -95,6 +96,7 @@ Route::middleware(['auth'])->group(function () {
     ]);
 
     // Vaccinations
+    Route::get('vaccinations/forecast', 'App\Http\Controllers\VaccinationController@forecast')->name('vaccinations.forecast');
     Route::resource('vaccinations', 'App\Http\Controllers\VaccinationController')->names([
         'index' => 'vaccinations.index',
         'create' => 'vaccinations.create',
@@ -186,6 +188,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Stock
     Route::get('stock/movements', 'App\Http\Controllers\StockController@movements')->name('stock.movements');
+    Route::get('stock/transfer', 'App\Http\Controllers\StockController@transferForm')->name('stock.transfer-form');
+    Route::post('stock/transfer', 'App\Http\Controllers\StockController@transfer')->name('stock.transfer');
 
     // Suppliers
     Route::resource('suppliers', 'App\Http\Controllers\SupplierController')->names([
@@ -535,6 +539,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/{purchaseOrder}/order', 'App\Http\Controllers\PurchaseOrderController@order')->name('order');
         Route::post('/{purchaseOrder}/receive', 'App\Http\Controllers\PurchaseOrderController@receive')->name('receive');
     });
+
+    // Scanner
+    Route::get('scanner', function () { return view('scanner'); })->name('scanner.index')->middleware('can:products.view');
 
     // Kennel Map
     Route::get('boardings/kennel-map', 'App\Http\Controllers\BoardingController@kennelMap')->name('boardings.kennel-map');

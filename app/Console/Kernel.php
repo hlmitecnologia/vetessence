@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('vaccines:remind --days=7')->dailyAt('08:00');
         $schedule->command('vaccines:remind --days=3')->dailyAt('08:00');
         $schedule->command('appointments:generate-recurring')->dailyAt('03:00');
+        $schedule->command('appointments:remind --days=1')->dailyAt('18:00');
         $schedule->command('recall:process')->weekly()->mondays()->at('09:00');
         $schedule->command('birthday:process')->dailyAt('08:00');
         $schedule->command('backup:database --compress')->dailyAt('01:00');
