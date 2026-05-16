@@ -832,6 +832,24 @@ Análise de gaps funcionais sob perspectiva veterinária. 12 itens organizados e
 
 ---
 
+## Phase U — Manutenção & Governança
+
+### U1 — Auto-Update via Git (Admin)
+
+**Por que**: Admins precisam aplicar atualizações (novas features, migrations) sem acesso SSH.
+
+| Item | Descrição |
+|------|-----------|
+| Controller | `SystemUpdateController` — `check`, `apply`, `history` |
+| Views | `system-update/index.blade.php` — status, config token, botão verificar/aplicar, log |
+| Funcionamento | `exec("git pull https://token@github.com/... main 2>&1")` → `php artisan migrate` |
+| Segurança | Gate `system-update` (super-admin only); token em `settings` table; `php artisan down` antes, `up` depois |
+| Bypass | `exec()` desabilitado? Fallback: baixar release .zip e extrair (futuro) |
+| Observações | Merge conflicts quebram o processo; recomendar backup manual antes. Webhook (GitHub → endpoint) como alternativa futura |
+| Testes | 4 (Feature: permission, token save, access) |
+
+---
+
 ### Phase T Totals
 
 | Feature | Migrations | Models | Controllers | Livewire | Views | Tests | Status |
@@ -849,6 +867,7 @@ Análise de gaps funcionais sob perspectiva veterinária. 12 itens organizados e
 | T11 Emergency Protocols | 1 | 1 | 1 | — | 4 | 2 | ✅ Feito |
 | T12 Corporate Dashboard | — | — | 1 | — | 1 | 2 | ✅ Feito |
 | **Total** | **5** | **4** | **7 + 4 edit** | **2** | **15** | **~29** | |
+| U1 System Update | 1 | 1 | 1 | — | 2 | 4 | ✅ Feito |
 
 ---
 

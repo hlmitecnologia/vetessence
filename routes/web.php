@@ -794,6 +794,13 @@ Route::middleware(['auth'])->group(function () {
 
     // Corporate Dashboard
     Route::get('corporate-dashboard', 'App\Http\Controllers\CorporateDashboardController@index')->name('corporate-dashboard.index');
+
+    // System Update
+    Route::get('system-update', 'App\Http\Controllers\SystemUpdateController@index')->name('system-update.index');
+    Route::post('system-update/token', 'App\Http\Controllers\SystemUpdateController@token')->name('system-update.token');
+    Route::get('system-update/check', 'App\Http\Controllers\SystemUpdateController@check')->name('system-update.check');
+    Route::post('system-update/apply', 'App\Http\Controllers\SystemUpdateController@apply')->name('system-update.apply');
+    Route::get('system-update/history', 'App\Http\Controllers\SystemUpdateController@history')->name('system-update.history');
 });
 
 // Insurance claim webhook (external callback, no auth)

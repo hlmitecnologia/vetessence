@@ -313,6 +313,11 @@
                 <a href="{{ route('branches.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-building w-5 mr-2"></i> Unidades
                 </a>
+                @can('system-update')
+                <a href="{{ route('system-update.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-sync-alt w-5 mr-2"></i> Atualizar Sistema
+                </a>
+                @endcan
             </div>
         </div>
         @endrole

@@ -137,6 +137,9 @@ class PermissionSeeder extends Seeder
 
             // Corporate Dashboard
             'corporate-dashboard.view',
+
+            // System Update
+            'system-update',
         ];
 
         // Create all permissions

@@ -78,6 +78,7 @@ Construído com **Laravel 8**, **AdminLTE 3.2**, **Livewire 2**, **Spatie Permis
 - **Modelos de Termos** — Termos de consentimento reutilizáveis
 - **Modelos de Comunicação** — Mensagens pré-definidas por canal
 - **Backup** — Backup automatizado com retenção configurável
+- **Auto-Update** — Atualização do sistema via GitHub diretamente do painel admin (git pull + migrate)
 
 ---
 
@@ -104,9 +105,15 @@ Tests: 293 Unit + 403 Feature = 696 total (0 failures)
 
 ---
 
-## Fase T — Planejada
+## Fase T — Concluída
 
 12 novos módulos para cobertura 100% do dia a dia clínico. [Detalhes no PLAN.md](./PLAN.md#phase-t--100-cobertura-do-dia-a-dia-clnico)
+
+## Fase U — Planejada
+
+| Feature | Status |
+|---------|--------|
+| Auto-Update via Git (admin) | ✅ Feito — aplicar atualizações e migrations sem SSH |
 
 ## Início Rápido
 
