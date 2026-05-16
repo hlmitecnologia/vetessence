@@ -27,4 +27,9 @@ class Service extends Model
     {
         return $this->hasMany(AppointmentService::class);
     }
+
+    public function priceTiers(): HasMany
+    {
+        return $this->hasMany(ServicePriceTier::class);
+    }
 }

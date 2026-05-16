@@ -8,6 +8,9 @@ use App\Http\Controllers\Portal\DashboardController;
 use App\Http\Controllers\Portal\PetController;
 use App\Http\Controllers\Portal\AppointmentController;
 use App\Http\Controllers\Portal\InvoiceController;
+use App\Http\Controllers\Portal\MedicalRecordController;
+use App\Http\Controllers\Portal\ExamController;
+use App\Http\Controllers\Portal\PrescriptionController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest:tutor')->group(function () {
@@ -37,4 +40,11 @@ Route::middleware('auth:tutor')->group(function () {
 
     Route::get('invoices', [InvoiceController::class, 'index'])->name('portal.invoices.index');
     Route::get('invoices/{id}', [InvoiceController::class, 'show'])->name('portal.invoices.show');
+
+    Route::get('medical-records', [MedicalRecordController::class, 'index'])->name('portal.medical-records.index');
+    Route::get('medical-records/{id}', [MedicalRecordController::class, 'show'])->name('portal.medical-records.show');
+
+    Route::get('exams', [ExamController::class, 'index'])->name('portal.exams.index');
+
+    Route::get('prescriptions', [PrescriptionController::class, 'index'])->name('portal.prescriptions.index');
 });

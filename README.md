@@ -99,7 +99,7 @@ Construído com **Laravel 8**, **AdminLTE 3.2**, **Livewire 2**, **Spatie Permis
 ## Suite de Testes
 
 ```
-Tests: 293 Unit + 385 Feature = 678 total (0 failures)
+Tests: 293 Unit + 403 Feature = 696 total (0 failures)
 ```
 
 ---

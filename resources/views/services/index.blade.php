@@ -1,5 +1,4 @@
 @extends('layouts.adminlte', ['title' => 'Serviços'])
-
 @section('content')
 <div class="card">
     <div class="card-header">
@@ -17,7 +16,8 @@
                 <tr>
                     <th>Serviço</th>
                     <th>Categoria</th>
-                    <th>Preço</th>
+                    <th>Preço Base</th>
+                    <th>Preços por Espécie</th>
                     <th>Duração</th>
                     <th style="width: 120px;">Ações</th>
                 </tr>
@@ -28,6 +28,17 @@
                     <td><strong>{{ $svc->name }}</strong></td>
                     <td>{{ $svc->category->name ?? '-' }}</td>
                     <td>R$ {{ number_format($svc->price, 2, ',', '.') }}</td>
+                    <td>
+                        @if($svc->priceTiers->count() > 0)
+                            @foreach($svc->priceTiers as $tier)
+                                <span class="badge badge-info" title="{{ $tier->size ? $tier->size : '' }}">
+                                    {{ $tier->species }}{{ $tier->size ? ' ('.$tier->size.')' : '' }}: R$ {{ number_format($tier->price, 2, ',', '.') }}
+                                </span><br>
+                            @endforeach
+                        @else
+                            <span class="text-muted">-</span>
+                        @endif
+                    </td>
                     <td>{{ $svc->duration ? $svc->duration . ' min' : '-' }}</td>
                     <td>
                         <a href="{{ route('services.show', $svc) }}" class="btn btn-action btn-info" title="Visualizar">

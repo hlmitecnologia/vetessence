@@ -594,6 +594,17 @@ Route::middleware(['auth'])->group(function () {
     // Vaccination Certificate
     Route::get('vaccinations/{pet}/certificate', 'App\Http\Controllers\VaccinationController@certificate')->name('vaccinations.certificate');
 
+    // Drug Formulary
+    Route::resource('drug-formulary', 'App\Http\Controllers\DrugFormularyController')->names([
+        'index' => 'drug-formulary.index',
+        'create' => 'drug-formulary.create',
+        'store' => 'drug-formulary.store',
+        'edit' => 'drug-formulary.edit',
+        'update' => 'drug-formulary.update',
+        'destroy' => 'drug-formulary.destroy',
+    ]);
+    Route::post('drug-formulary/calculate', 'App\Http\Controllers\DrugFormularyController@calculate')->name('drug-formulary.calculate');
+
     // Tutor Communication History
     Route::get('tutors/{tutor}/communication', 'App\Http\Controllers\TutorController@communication')->name('tutors.communication');
 
@@ -769,6 +780,20 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'triage.update',
         'destroy' => 'triage.destroy',
     ]);
+
+    // Emergency Protocols
+    Route::resource('emergency-protocols', 'App\Http\Controllers\EmergencyProtocolController')->names([
+        'index' => 'emergency-protocols.index',
+        'create' => 'emergency-protocols.create',
+        'store' => 'emergency-protocols.store',
+        'show' => 'emergency-protocols.show',
+        'edit' => 'emergency-protocols.edit',
+        'update' => 'emergency-protocols.update',
+        'destroy' => 'emergency-protocols.destroy',
+    ]);
+
+    // Corporate Dashboard
+    Route::get('corporate-dashboard', 'App\Http\Controllers\CorporateDashboardController@index')->name('corporate-dashboard.index');
 });
 
 // Insurance claim webhook (external callback, no auth)

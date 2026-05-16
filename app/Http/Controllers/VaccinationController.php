@@ -6,6 +6,7 @@ use App\Models\Vaccination;
 use App\Models\Pet;
 use App\Models\User;
 use App\Models\Role;
+use App\Events\ProcedurePerformed;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -48,10 +49,12 @@ class VaccinationController extends Controller
             'lot' => 'nullable|string|max:50',
             'manufacturer' => 'nullable|string|max:100',
             'vet_id' => 'required|exists:users,id',
+            'product_id' => 'nullable|exists:products,id',
             'notes' => 'nullable|string',
         ]);
 
-        Vaccination::create($validated);
+        $vaccination = Vaccination::create($validated);
+        event(new ProcedurePerformed($vaccination));
 
         return redirect()->route('vaccinations.index')->with('success', 'Vacina registrada!');
     }

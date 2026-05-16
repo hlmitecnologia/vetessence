@@ -162,9 +162,19 @@
                 <a href="{{ route('drug-interactions.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-exclamation-triangle w-5 mr-2"></i> Interações Medicamentosas
                 </a>
+                    @can('drug-formulary.view')
+                    <a href="{{ route('drug-formulary.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                        <i class="fas fa-pills w-5 mr-2"></i> Formulário de Fármacos
+                    </a>
+                    @endcan
                 <a href="{{ route('zoonotic-diseases.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-biohazard w-5 mr-2"></i> Zoonoses
                 </a>
+                @can('emergency-protocols.view')
+                <a href="{{ route('emergency-protocols.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-ambulance w-5 mr-2"></i> Protocolos de Emergência
+                </a>
+                @endcan
             </div>
         </div>
         @endrole
@@ -264,7 +274,14 @@
         </div>
         @endrole
 
-        @role('admin')
+            @can('corporate-dashboard.view')
+            <a href="{{ route('corporate-dashboard.index') }}" class="flex items-center px-4 py-3 text-gray-200 hover:bg-gray-800 rounded-lg transition">
+                <i class="fas fa-chart-pie w-6"></i>
+                <span>Dashboard Corporativo</span>
+            </a>
+            @endcan
+
+            @role('admin')
         <!-- Configurações -->
         <div x-data="{ open: false }">
             <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-gray-200 hover:bg-gray-800 rounded-lg transition">

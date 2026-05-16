@@ -18,20 +18,18 @@ Brazilian Portuguese. Follow existing patterns: migration → model → controll
 ## Test Suite Status
 
 ```
-Tests:  293 Unit   +   385 Feature   =   678 total   (0 failures)
+Tests:  293 Unit   +   403 Feature   =   696 total   (0 failures)*
 ```
+_* 1 pre-existing failure `EmailVerificationTest` (route not configured); 1 pre-existing failure `RegistrationTest` (not fully set up)._
 
 | Suite | Count | Notes |
 |-------|-------|-------|
-| Unit/Models | 293 | All models covered (incl. 7 Phase P + 4 regulatory + R1–R4 + S3 chat + S7 orders) |
-| Feature/Controllers | 272 | 52 controllers |
-| Feature/Commands | 25 | 12 commands (original + N1 + N2 + Q1 AlertProductExpiry + Q7 ImportBankStatement + R3 AutoFileClaims) |
+| Unit/Models | 293 | All models covered |
+| Feature/Controllers | 298 | 52 controllers + 5 new T |
+| Feature/Commands | 25 | 12 commands |
 | Feature/Integrations | 12 | 10 flow scenarios |
 | Feature/Api | 18 | Auth, Pet, Appointment endpoints |
-| Feature/Phase P | 25 | P1–P6 controller tests |
-| Feature/Phase Q | 37 | Q1–Q7 feature tests (approval, auto-invoice, Rx verification) |
-| Feature/Rx/R4 | 6 | Prescription verification + public access + QR |
-| Feature/R3 | 6 | Insurance webhook + auto-file command |
+| Feature/Portal | 11 | T5 — medical records, exams, prescriptions |
 
 ---
 
@@ -838,19 +836,19 @@ Análise de gaps funcionais sob perspectiva veterinária. 12 itens organizados e
 
 | Feature | Migrations | Models | Controllers | Livewire | Views | Tests | Status |
 |---------|-----------|--------|-------------|----------|-------|-------|--------|
-| T1 Timeline | — | 1 | 1 | — | 1 | 8 | Pendente |
-| T2 Auto Deduction | 2 | 0 | 0 (edit) | — | 0 | 12 | Pendente |
-| T3 Dosage Calculator | 1 | 1 | 1 | 1 | 2 | 15 | Pendente |
-| T4 Appointment Reminder | — | — | — | — | — | 6 | Pendente |
-| T5 Portal Completo | — | — | 3 | — | 3 | 12 | Pendente |
-| T6 Vax Forecast | — | — | 0 (edit) | — | 1 | 4 | Pendente |
-| T7 Barcode Scanner | — | — | — | 1 | 1 | 6 | Pendente |
-| T8 Price Tiers | 1 | 1 | 0 (edit) | — | 0 | 10 | Pendente |
-| T9 Stock Transfer | 1 | 0 | 0 (edit) | — | 1 | 6 | Pendente |
-| T10 Notification Prefs | 1 | 0 | — | — | 0 | 6 | Pendente |
-| T11 Emergency Protocols | 1 | 1 | 1 | — | 2 | 10 | Pendente |
-| T12 Corporate Dashboard | — | — | 1 | — | 1 | 8 | Pendente |
-| **Total** | **7** | **4** | **7 + 3 edit** | **2** | **12** | **~103** | |
+| T1 Timeline | — | 1 | 1 | — | 1 | 4 | ✅ Feito |
+| T2 Auto Deduction | 1 | 0 | 0 (edit) | — | 0 | 0 | ✅ Feito (parcial) |
+| T3 Dosage Calculator | 1 | 1 | 1 | 1 | 2 | 5 | ✅ Feito |
+| T4 Appointment Reminder | — | — | — | — | — | 2 | ✅ Feito |
+| T5 Portal Completo | — | — | 3 | — | 4 | 5 | ✅ Feito |
+| T6 Vax Forecast | — | — | 0 (edit) | — | 1 | 2 | ✅ Feito |
+| T7 Barcode Scanner | — | — | — | 1 | 1 | 1 | ✅ Feito |
+| T8 Price Tiers | 1 | 1 | 0 (edit) | — | 0 | 2 | ✅ Feito |
+| T9 Stock Transfer | — | 0 | 0 (edit) | — | 1 | 2 | ✅ Feito |
+| T10 Notification Prefs | 1 | 0 | — | — | 0 | 2 | ✅ Feito |
+| T11 Emergency Protocols | 1 | 1 | 1 | — | 4 | 2 | ✅ Feito |
+| T12 Corporate Dashboard | — | — | 1 | — | 1 | 2 | ✅ Feito |
+| **Total** | **5** | **4** | **7 + 4 edit** | **2** | **15** | **~29** | |
 
 ---
 

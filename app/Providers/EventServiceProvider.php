@@ -21,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\AppointmentCompleted::class => [
             \App\Listeners\GenerateInvoiceFromAppointment::class,
         ],
+        \App\Events\ProcedurePerformed::class => [
+            \App\Listeners\DeductStockListener::class,
+        ],
     ];
 
     /**
