@@ -1,664 +1,131 @@
-# VetEssence — Build Plan (v8)
+# VetEssence — Sistema de Gerenciamento Veterinário
 
-## Context
-Laravel 8, AdminLTE 3.2, Livewire 2, Spatie Permissions, MySQL, Tailwind CSS, Alpine.js.
-Brazilian Portuguese. Follow existing patterns: migration → model → controller → views → routes → sidebar → gate.
+**VetEssence** é um sistema completo de gestão para clínicas veterinárias, no modelo SaaS. Atende prontuário clínico, farmácia, financeiro, conformidade regulatória (ANVISA, LGPD, CFMV) e fluxos diários de trabalho — acessível via web, mobile e API.
 
----
-
-## Design Pillars
-
-1. **Tutors & pets are global** — shared across branches. `created_at_branch_id` logs registration origin. Attendance tracked via operational records (branch-scoped). No restriction — any branch serves any tutor/pet.
-2. **Operational data is branch-scoped** — appointments, invoices, medical records, stock, etc. belong to one branch.
-3. **Users belong to a home branch** — `branch_id` on `users`. `NULL` = global access (super-admin, super-financial, HR, auditor).
-4. **Permissions via Spatie** — granular CRUD permissions per module, assigned to roles.
+Construído com **Laravel 8**, **AdminLTE 3.2**, **Livewire 2**, **Spatie Permissions**, **MySQL**, **Tailwind CSS** e **Alpine.js**. Interface em português brasileiro, código em inglês.
 
 ---
 
-## Test Suite Status
+## Funcionalidades
+
+### Clínico
+- **Prontuários** — Registros SOAP com diagnóstico, anamnese, plano terapêutico
+- **Prescrições** — Receitas digitais com medicamento, dosagem, duração; verificação via QR code
+- **Vacinas** — Agendamento por protocolo, multi-dose, certificado PDF (layout CFMV)
+- **Cirurgias** — Agendamento, monitoramento anestésico, avaliação pré-anestésica
+- **Internações** — Registros diários, evolução clínica, resumo de alta
+- **Laboratório** — Pedidos de exame, rastreamento de amostras, lançamento de resultados
+- **Imagem** — Pedidos de raio-X, ultrassom, tomografia com laudos
+- **Odontologia** — Ficha odontológica e registro de procedimentos
+- **Teleconsultas** — Agendamento e anotações de consultas remotas
+- **Controle de Peso** — Acompanhamento de peso/crescimento ao longo do tempo
+- **Controle Parasitário** — Vermifugação e tratamento de ectoparasitas agendados
+- **Interações Medicamentosas** — Ferramenta de verificação cruzada de conflitos
+
+### Triagem & Emergência
+- **Painel de Triagem** — Livewire em tempo real com cores de gravidade (vermelho/laranja/amarelo/verde), polling a cada 5s, alerta sonoro
+- **Protocolos de Emergência** — Modelos pré-configurados para atendimento urgente
+
+### Agenda
+- **Calendário Visual** — FullCalendar 6 com visões dia/semana/mês, arrastar e soltar, codificado por cor por veterinário/procedimento
+- **Consultas** — CRUD com integração de agendamento online
+- **Escala da Equipe** — Turnos de veterinários/recepcionistas e plantão
+
+### Farmácia & Estoque
+- **Produtos** — Catálogo completo com SKU, código de barras, preço custo/venda, rastreamento por lote
+- **Movimentações de Estoque** — Entrada/saída/ajuste/transferência, alertas de estoque baixo
+- **Pedidos de Compra** — Fluxo de compras: rascunho → pedido → recebimento → conciliação
+- **Substâncias Controladas** — Rastreamento conforme ANVISA com registro de uso
+- **Fornecedores** — Gestão de fornecedores e histórico de pedidos
+
+### Financeiro
+- **Faturas** — Faturamento de serviços/produtos com controle de pagamentos
+- **Pagamentos** — Multi-forma (dinheiro, cartão, PIX via gateway), parcelamentos
+- **Conciliação Bancária** — Importação de extrato e correspondência automática
+- **Comissões** — Cálculo de comissão por procedimento ou produto por veterinário/funcionário
+- **Guias de Convênio** — Faturamento de convênios, comando de envio automático, webhook
+- **Relatórios Financeiros** — Receita, contas a receber, formas de pagamento
+
+### Regulatório & Compliance
+- **ANVISA** — Controle de substâncias controladas, receituário, rastreamento de lotes
+- **LGPD** — Termos de consentimento, políticas de retenção, auditoria de privacidade
+- **CFMV** — Atestados sanitários conforme Res. 974/2006 (CVI), certificados de vacina, bloco de assinatura digital
+- **Verificação de Prescrição** — Hash SHA-256 via URL pública (`/r/{hash}`), com limite de taxa
+- **Trilha de Auditoria** — Todas as alterações registradas com usuário, data, IP
+
+### Pets
+- **Cadastro de Tutores e Pets** — Registro global compartilhado entre unidades
+- **Atestados Sanitários** — Modelos CVI com selo CRMV, campos de transporte/destino
+- **Lembretes de Vacina** — E-mail/SMS automáticos para doses futuras
+- **Registro de Óbito** — Causa mortis, flag de necropsia
+- **Microchip** — Registro e consulta de chip de identificação
+- **Hospedagem / Banho e Tosa** — Hotel, banho & tosa com check-in/check-out
+
+### Comunicação
+- **WhatsApp/SMS** — Integração Z-API para WhatsApp, fallback SMS, canal configurável por modelo
+- **Chat Interno** — Chat em tempo real com Livewire entre equipe, indicador de não lido
+- **Notas Internas** — Recados para a equipe da clínica
+- **Fila de Comunicação** — Processamento em lote via comando Artisan
+- **Notificações** — Acompanhamento de entrega de todas as mensagens enviadas
+
+### Mobile
+- **Layout Responsivo** — Navegação inferior (Início, Triagem, Receitas, Prontuários), visões simplificadas para veterinários em campo
+
+### Administração
+- **Usuários** — Controle de acesso por papel (10 perfis), permissões CRUD
+- **Unidades** — Suporte multi-unidade com dados escopados por filial
+- **Categorias** — Classificação de serviços/produtos
+- **Modelos de Termos** — Termos de consentimento reutilizáveis
+- **Modelos de Comunicação** — Mensagens pré-definidas por canal
+- **Backup** — Backup automatizado com retenção configurável
+
+---
+
+## Stack Tecnológica
+
+| Camada | Tecnologia |
+|--------|-----------|
+| Backend | Laravel 8, PHP 8.x |
+| Frontend | AdminLTE 3.2, Tailwind CSS, Alpine.js |
+| Componentes | Livewire 2, FullCalendar 6, Chart.js |
+| Banco | MySQL |
+| Autenticação | Laravel Breeze, Spatie Permissions |
+| PDF | Dompdf (barryvdh/laravel-dompdf) |
+| QR Code | endroid/qr-code |
+| Testes | PHPUnit, DatabaseTransactions |
+
+---
+
+## Suite de Testes
 
 ```
-Tests:  293 Unit   +   385 Feature   =   678 total   (0 failures)
+Tests: 293 Unit + 385 Feature = 678 total (0 failures)
 ```
 
-| Suite | Count | Notes |
-|-------|-------|-------|
-| Unit/Models | 293 | All models covered (incl. 7 Phase P + 4 regulatory + R1–R4 + S3 chat + S7 orders) |
-| Feature/Controllers | 272 | 52 controllers |
-| Feature/Commands | 25 | 12 commands (original + N1 + N2 + Q1 AlertProductExpiry + Q7 ImportBankStatement + R3 AutoFileClaims) |
-| Feature/Integrations | 12 | 10 flow scenarios |
-| Feature/Api | 18 | Auth, Pet, Appointment endpoints |
-| Feature/Phase P | 25 | P1–P6 controller tests |
-| Feature/Phase Q | 37 | Q1–Q7 feature tests (approval, auto-invoice, Rx verification) |
-| Feature/Rx/R4 | 6 | Prescription verification + public access + QR |
-| Feature/R3 | 6 | Insurance webhook + auto-file command |
-
 ---
 
-## Phases A–G: Infrastructure (completed before test sweep)
-
-### A — Schema & Migrations
-- Departments, positions tables; branch_id on operational tables; HR fields on users; on-call fields on staff_schedules
-
-### B — Roles & Permissions
-- 10 roles (super-admin, branch-admin, veterinarian, receptionist, financial, super-financial, stock-manager, human-resources, tutor, auditor)
-- 160+ Spatie permissions across all modules
-- PermissionSeeder with role↔permission assignment
-
-### C — Middleware & Scoping
-- SetBranchContext middleware, BranchScope global scope, auto-set branch_id on create
-
-### D — HR Features
-- Departments CRUD, Positions CRUD, Employee management, contract types
-
-### E — On-Call Scheduling
-- StaffSchedule enhancements, on-call calendar, conflict detection, staff:remind command
-
-### F — Super Financial Role
-- Global financial access, branch filter on financial UI
-
-### G — Gate & Controller Authorization Sweep
-- 38+ gates rewritten to Spatie, Gate::before super-admin bypass, controllers audited
-
----
-
-## Test Phases
-
-### Phase H — Model Unit Tests ✅ (214 tests, 68 files)
-
-**Files:** `tests/Unit/Models/*Test.php`
-
-Every model tested for:
-- Fillable fields match DB columns
-- Casts are correct
-- All relationships (BelongsTo, HasMany, BelongsToMany)
-- Custom scopes and accessors
-
-**Pre-existing bugs found & fixed during model testing:**
-| Fix | File | Issue |
-|-----|------|-------|
-| FK fix | `User.php:hasRole()` | Didn't handle Spatie Collection parameter (crashed on `in_array()`) |
-| Casts fix | `StaffNote.php` | `$casts` had `'branch_id' => 'datetime'` (FK is not a date) |
-| FK fix | `Category.php` | `parent()`/`children()` FKs pointed at `branch_id` instead of `id` |
-| FK fix | `MedicalRecord.php` | `vet()` used `vet_id` (DB column is `user_id`) |
-| Fillable fix | `StockMovement.php` | Removed non-existent `balance_before`, `reason`; fixed broken casts |
-| Fillable fix | `ConvenioPet.php` | Removed non-existent `tutor_id`, `status`, `plan_name` |
-| Table fix | `CommunicationQueue.php` | `$table` was wrong (plural vs singular) |
-| Table fix | `HospitalizationFluidTherapy.php` | `$table` was wrong |
-
-### Phase I — Controller Feature Tests ✅ (272 tests, 52 controllers)
-
-**Files:** `tests/Feature/Controllers/*Test.php`
-
-| Group | Controllers | Tests |
-|-------|-------------|-------|
-| Core CRUD | Department, Position, Employee, Service, Convenio, Category, Supplier, Product, Referral, Surgery, Vaccination, VaccineProtocol, Tutor, Pet, Role | ~114 |
-| Clinical | MedicalRecord, Hospitalization, DailyRecord, Prescription, ConsentForm, TreatmentPlan, WeightRecord, DentalChart, ImagingExam, LabOrder, Exam, AnesthesiaMonitoring | ~55 |
-| Pharmacy | Stock, ControlledSubstance, ControlledSubstanceLog, VaccinationReminder, CommunicationTemplate, CommunicationQueue, NotificationLog, Prescription | ~34 |
-| Financial | Report, PrescriptionPrint (pre-existing) | ~3 |
-| Portal | Dashboard, Pet, Appointment, Invoice (3 pre-existing failures) | ~9 |
-| Auth | (tested by existing Auth tests) | — |
-
-**Pre-existing bugs found & fixed during controller testing:**
-| Fix | Issue |
-|-----|-------|
-| `ReferralController.php` | `create()`/`edit()` didn't pass `$pets`/`$veterinarians` to views |
-| `ProductController.php` | Validated `unit`, `min_stock`, `barcode`, `expiration_date` — none have DB columns |
-| `HospitalizationController.php` | `create()`/`edit()` didn't pass `$pets`/`$tutors`/`$veterinarians` |
-| `MedicalRecordController.php` | Validated `vet_id` (DB has `user_id`), used `time` (no column) |
-| Various controllers | Wrong view variable names vs what compact() passes |
-| Various views | Missing template variables, broken `$casts` syntax, missing `}}` |
-| `routes/web.php` | `on-call-calendar` route after resource (`/create` matched before `/on-call-calendar`) |
-
-### Phase J — Command Tests ✅ (15 tests, 8 files)
-
-**Files:** `tests/Feature/Commands/*Test.php`
-
-| Command | Signature | Tests |
-|---------|-----------|-------|
-| SendVaccineReminders | `vaccines:remind` | 2 |
-| ProcessCommunicationQueue | `queue:process` | 2 |
-| ProcessBirthdayCampaigns | `birthday:process` | 1 |
-| DatabaseBackup | `backup:database` | 2 |
-| DatabaseBackupCleanup | `backup:cleanup` | 2 |
-| StaffRemind | `staff:remind` | 2 |
-| GenerateRecurringAppointments | `appointments:generate-recurring` | 2 |
-| ProcessRecallCampaigns | `recall:process` | 2 |
-
-### Phase K — Service Tests ✅ (18 tests, 3 files)
-
-**Files:** `tests/Unit/Services/*Test.php`
-
-| Service | Tests | Coverage |
-|---------|-------|----------|
-| EmailApiService | 4 | Instantiate, send success/failure, timeout |
-| PixService | 9 | Payload generation, CRC16 checksum, EMV format |
-| BranchContext | 5 | Set/get, global detection, clear |
-
-### Phase L — Trait Tests ✅ (10 tests, 3 files)
-
-**Files:** `tests/Unit/Traits/*Test.php`
-
-| Trait | Tests | Coverage |
-|-------|-------|----------|
-| Auditable | 3 | Created/updated/deleted events log to `audit_logs` |
-| BranchScoped | 4 | Global scope registered, `branch()` relationship, scopeForBranch, withoutBranch |
-| HasPhoto | 3 | Upload, URL generation, delete |
-
-### Phase M — Integration Tests ✅ (12 tests, 10 files)
-
-**Files:** `tests/Feature/Integrations/*Test.php`
-
-| Flow | Tests | Steps |
-|------|-------|-------|
-| FullAppointment | 1 | Tutor→Pet→Appointment→MedicalRecord→Prescription→Invoice→Paid |
-| VaccinationCycle | 1 | Pet→Vaccination→Reminder→NotificationLog |
-| HospitalizationCycle | 1 | Admit→DailyRecord→FluidTherapy→Prescription→Discharge |
-| BoardingFlow | 1 | Check-in→Kennel→Task→Checkout |
-| ControlledSubstance | 1 | Substance→Stock In→Stock Out→Balance check |
-| BranchIsolation | 2 | Global pets across branches, branch-scoped appointments |
-| AuditTrail | 2 | MedicalRecord audit logging, AuditLog retrieval |
-| ReferralFlow | 1 | Pending→Responded→Completed |
-| InvoicePayment | 1 | Invoice→Items→Mark paid |
-| PatientFlowBoard | 1 | Scheduled→InProgress→Completed |
-
----
-
-## Pre-existing Failures — All Resolved ✅
-
-| Test | Fix |
-|------|-----|
-| `Portal/PetControllerTest::show/index` | Replaced `start_time` with `date`+`time` columns |
-| `Portal/AppointmentControllerTest::show` | Same `start_time` → `date`+`time` fix |
-| `ExampleTest` | Added `/` route or skipped in test env |
-| `PrescriptionPrintTest` | Fixed view/route issues |
-| `VaccinationProtocolTest` | Fixed gate check |
-| Schema–model mismatches (40+ cols) | 8 migrations added missing columns across 10 tables |
-
----
-
-## Phase N — Regulatory Compliance (ANVISA + LGPD + CFMV) ✅
-
-### N1. ANVISA (Portaria 344/98, RDC 44/2009)
-
-| Requirement | Status |
-|-------------|--------|
-| Controlled substance schedule (A1–C1) | ✅ Done |
-| Stock movement tracking | ✅ Done |
-| Monthly/annual reports + CSV export | ✅ Done |
-| Digital prescription storage | ✅ Done |
-| Inventory reconciliation | ✅ `inventory_reconciliations` table + `AlertaEstoque` command |
-| Prescription retention (2 years) | ✅ `RetentionProtected` trait on `ControlledSubstanceLog` |
-| ANVISA discrepancy alerts | ✅ `AlertaEstoque` variance alert command |
-| Controlled watermark on print | ✅ ANVISA-controlled-substance watermark on prescription print |
-
-### N2. LGPD (Lei Geral de Proteção de Dados)
-
-| Requirement | Status |
-|-------------|--------|
-| Data processing consent (Art. 7, I) | ✅ `consent_logs` table + `ConsentLoggable` trait on Tutor |
-| Right to access (Art. 9) | ✅ `lgpd:export` command — JSON export of all tutor/pet data |
-| Right to deletion (Art. 15) | ✅ `lgpd:anonymize` command — replaces PII, keeps operational records |
-| Data retention policy | ✅ Retention periods defined per data category |
-| Security measures | ✅ Role-based access + encryption audit |
-
-### N3. CFMV (Conselho Federal de Medicina Veterinária)
-
-| Requirement | Status |
-|-------------|--------|
-| Digital medical records (Res. 875/2006) | ✅ Done |
-| Prescription print (Res. 957/2006) | ✅ CRMV number + `DigitalSignable` trait (hash, signed_at) |
-| Telemedicine (Res. 1465/2022) | ⚠️ Partial — needs digital signature validation |
-| Health certificate (Res. 974/2006) | ✅ CRMV + digital signature on print view |
-
----
-
-## Phase O — Test Gap Closure ✅
-
-### O1. Remaining Controller Coverage ✅
-- [x] Fix Portal controllers (`start_time` → `time` column)
-- [x] Fix ExampleTest
-- [x] Fix PrescriptionPrintTest
-- [x] Fix VaccinationProtocolTest gate
-- [x] Add API controller tests (Api/*)
-- [x] Add Auth controller tests (Auth/*)
-
-### O2. Missing Edge Cases
-- [ ] Soft delete tests on models with `SoftDeletes`
-- [ ] File upload tests (photo, exam files)
-- [ ] Validation rule tests per controller
-- [ ] Pagination tests on index endpoints
-- [ ] Empty state tests (no records)
-
-### O3. Performance Tests
-- [ ] N+1 query detection on index views
-- [ ] Pagination with large datasets
-
-### O4. Pre-existing Schema–Model Mismatches ✅
-All 40+ missing columns added via 8 migrations across 10 tables:
-
-| Model | Columns Added |
-|-------|---------------|
-| `Appointment` | `duration`, `room`, `created_by` |
-| `AppointmentService` | `discount` |
-| `Category` | `description` |
-| `Convenio` | `coverage`, `max_consults_month`, `contract_number`, `start_date`, `end_date` |
-| `MedicalRecord` | `time`, `vital_signs`, `attachments`, `anamnesis`, `physical_exam`, `prognosis`, `record_id`, `version` |
-| `Product` | `unit`, `barcode`, `max_stock` |
-| `Surgery` | `anesthesia_type`, `surgery_duration`, `medical_record_id` |
-| `Vaccination` | `lot_number`, `next_due_date`, `dose` |
-| `Invoice` | `pix_code`, `pix_expiration` |
-| `Appointment` | `duration`, `room`, `created_by` (also `user_id` FK fix) |
-
----
-
-## Phase P — Feature Gap Closure ✅
-
-6 missing veterinary workflow features built with full CRUD, tests, gates, and sidebar integration.
-
-### P1 — Euthanasia & Cremation ✅
-- Columns added to `pet_death_records`: `authorized_by`, `authorization_doc`, `cremation_type`, `cremation_pickup_date`, `cremation_notes`, `memorial_text`
-- `PetDeathRecordController` CRUD + gates + sidebar
-- Tests: unit (fillable/casts/relationships) + feature (CRUD/validation)
-
-### P2 — Pre-Anesthetic Evaluation ✅
-- `pre_anesthetic_evaluations` table + model + factory
-- ASA score, exam checklist (cardiac/pulmonary/lab/etc.), fasting status, hydration
-- CRUD controller + 4 views with ASA selector + exam checklist
-- Gates: `pre-anesthetic.*`
-- Tests: 3 unit + 7 feature = 10
-
-### P3 — Prescription Diet Plans ✅
-- `diet_plans` table + model + factory
-- Diet type (renal/hepatic/urinary/etc.), brand, product name, daily amount, duration, instructions
-- CRUD controller + 3 views
-- Gates: `diet-plans.*`
-- Tests: 3 unit + 6 feature = 9
-
-### P4 — Pet Insurance Claims ✅
-- `convenio_claims` table + model + factory
-- Claim number, amount requested/approved, status (pending/approved/rejected), filed_at/response_at
-- CRUD controller + 4 views
-- Coverage fields added to `convenios`: `pre_authorization_required`, `coverage_details`, `claim_form_url`
-- Gates: `convenio-claims.*`
-- Tests: 4 unit + 6 feature = 10
-
-### P5 — CVI (International Travel Certificate) ✅
-- Columns added to `health_certificates`: `cvi_number`, `destination_country`, `transport_mode`, `embarkation_date`, `crmv_emitter`, `valid_until`, `requirements_checklist` (JSON), `is_cvi`
-- CVI scope + `generateCviNumber()` on model
-- Tests: existing feature tests extended
-
-### P6 — ER Triage / Waiting Room Board ✅
-- `triage_records` table + model + factory
-- Color severity (green/yellow/orange/red), chief complaint, vital signs (JSON), assigned_vet, status flow
-- CRUD controller + 4 views with color-coded board
-- Gates: `triage.*`
-- Tests: 4 unit + 7 feature = 11
-
----
-
-## Phase Q — Veterinary Clinic Real-World Gaps
-
-7 features identified as missing for daily clinic operations, based on real practice workflows.
-
-### Q1 — Lote/Validade em Produtos (Batch/Expiry Tracking)
-
-**Why**: Farmácia veterinária precisa rastrear lotes de medicamentos e vacinas com alerta de vencimento.
-
-**Tasks**:
-| # | Task | Files |
-|---|------|-------|
-| 1 | Add `batch_number`, `lot_number`, `expiry_date` columns to `products` | migration |
-| 2 | Add `batch_number`, `lot_number`, `expiry_date` columns to `stock_movements` | migration |
-| 3 | Update Product model (fillable, casts, scopes for expiring soon) | `app/Models/Product.php` |
-| 4 | Update StockMovement model | `app/Models/StockMovement.php` |
-| 5 | Create `products:alert-expiry` command to notify on near-expiry batches | command |
-| 6 | Add expiry badge + filter on stock views | views |
-| 7 | **Tests**: Unit (fillable/casts/scopes), Feature (command), Model (relationships) | test files |
-
-**Tests**: ~10
-
-### Q2 — Fluxo de Aprovação de Orçamento (Treatment Plan Approval)
-
-**Why**: TreatmentPlan tem status livre (string). Tutor precisa aprovar orçamento antes da execução.
-
-**Tasks**:
-| # | Task | Files |
-|---|------|-------|
-| 1 | Migration: change `status` to enum `pending/approved/rejected` on `treatment_plans`, add `rejected_at`, `rejection_reason` | migration |
-| 2 | Update TreatmentPlan model (casts, scopes for pending/approved) | `app/Models/TreatmentPlan.php` |
-| 3 | Update TreatmentPlanController validation (enforce enum) | controller |
-| 4 | Add `approve()` and `reject()` methods with notification to vet | controller |
-| 5 | Add approval badge + actions in show/edit views | views |
-| 6 | **Tests**: Unit (scopes/casts), Feature (approve/reject flow) | test files |
-
-**Tests**: ~10
-
-### Q3 — Microchip / RG Animal (Pet Identification)
-
-**Why**: Pet não tem número de microchip. Obrigatório para CVI, exigido por CFMV.
-
-**Tasks**:
-| # | Task | Files |
-|---|------|-------|
-| 1 | Add `microchip_number`, `microchip_date`, `rg_number` (registro geral animal), `rg_issuer` columns to `pets` | migration |
-| 2 | Update Pet model (fillable, casts, validation for microchip format) | `app/Models/Pet.php` |
-| 3 | Add fields to pet create/edit views | views |
-| 4 | **Tests**: Unit (fillable/validation) | test files |
-
-**Tests**: ~5
-
-### Q4 — Auto-Faturamento Pós-Consulta
-
-**Why**: Após marcar consulta como `completed`, gerar fatura automaticamente com os serviços prestados.
-
-**Tasks**:
-| # | Task | Files |
-|---|------|-------|
-| 1 | Create event `AppointmentCompleted` | event |
-| 2 | Create listener `GenerateInvoiceFromAppointment` | listener |
-| 3 | Wire event in AppointmentController `updateStatus()` | controller |
-| 4 | Create invoice items from appointment services | logic |
-| 5 | **Tests**: Feature (appointment complete → invoice created) | test files |
-
-**Tests**: ~8
-
-### Q5 — Comissões de Veterinários (Vet Commissions)
-
-**Why**: Clínicas pagam comissão por serviço/produto. Sem isso, controle é manual.
-
-**Tasks**:
-| # | Task | Files |
-|---|------|-------|
-| 1 | Create `commission_rates` table (user_id, service_id/product_id, rate_type: percentage/fixed, rate_value, applies_to: service/product, is_active) | migration |
-| 2 | Create `commission_logs` table (user_id, invoice_id, invoice_item_id, commission_rate_id, base_value, commission_value, status: pending/paid, paid_at) | migration |
-| 3 | Create `CommissionRate` model + factory | model + factory |
-| 4 | Create `CommissionLog` model + factory | model + factory |
-| 5 | Add `User` relationship to commission rates | model |
-| 6 | Add auto-calculation on invoice payment | logic |
-| 7 | Add commission report view (per vet, period) | views |
-| 8 | Add gates (`commissions.*`) | `PermissionSeeder.php` |
-| 9 | **Tests**: Unit (models), Feature (calculation, report) | test files |
-
-**Tests**: ~14
-
-### Q6 — Prescrição Eletrônica Validável (Verifiable Rx)
-
-**Why**: CFMV exige receitas digitais com validação. Tutor escaneia QR code e verifica autenticidade.
-
-**Tasks**:
-| # | Task | Files |
-|---|------|-------|
-| 1 | Add `verification_hash`, `verified_at` columns to `prescriptions` | migration |
-| 2 | Generate SHA-256 hash on prescription create (content + timestamp + user) | model event |
-| 3 | Create public route `/r/{hash}` to verify prescription (shows stripped info) | route + controller |
-| 4 | Add QR code generation in prescription print view | view (QR lib) |
-| 5 | **Tests**: Unit (hash generation), Feature (verification route) | test files |
-
-**Tests**: ~8
-
-### Q7 — Conciliação Bancária (Bank Reconciliation)
-
-**Why**: Clínicas recebem por PIX, cartão, dinheiro — precisam casar extratos bancários com faturas.
-
-**Tasks**:
-| # | Task | Files |
-|---|------|-------|
-| 1 | Create `bank_accounts` table (bank, agency, account, type, branch_id) | migration |
-| 2 | Create `bank_transactions` table (bank_account_id, external_id, description, amount, transaction_date, type: credit/debit, status: pending/reconciled/unmatched) | migration |
-| 3 | Create BankAccount model + factory | model + factory |
-| 4 | Create BankTransaction model + factory | model + factory |
-| 5 | Create `bank:import-ofx` command (parses OFX/QIF/CSV) | command |
-| 6 | Create reconciliation view (match transactions ↔ invoices) | controller + views |
-| 7 | Add gates (`bank-reconciliation.*`) | `PermissionSeeder.php` |
-| 8 | **Tests**: Unit (models), Feature (import + reconcile) | test files |
-
-**Tests**: ~14
-
-### Phase Q Totals
-
-| Feature | Migrations | Models | Controllers | Commands | Views | Tests |
-|---------|-----------|--------|-------------|----------|-------|-------|
-| Q1 Lote | 1 | 2 edit | — | 1 | 1 edit | 10 |
-| Q2 Aprovação | 1 | 1 edit | 1 edit | — | 1 edit | 10 |
-| Q3 Microchip | 1 | 1 edit | — | — | 2 edit | 5 |
-| Q4 Auto-fatura | — | — | 1 edit | — | — | 8 |
-| Q5 Comissões | 2 | 2+1 edit | 1 | — | 2 | 14 |
-| Q6 Rx Validação | 1 | 1 edit | 1 | — | 1 edit | 8 |
-| Q7 Conciliação | 2 | 2 | 1 | 1 | 2 | 14 |
-| **Total** | **8** | **4+5 edit** | **3+2 edit** | **2** | **4+5 edit** | **~69** |
-
----
-
-## Optional Enhancements (Post-Phase Q)
-
-These are **not** on the core roadmap. Each should be discussed and approved before implementation.
-
-### R1 — Livewire Real-Time Triage Board
-
-**Why**: ER triage board (P6) is currently a static CRUD. A Livewire-powered real-time board would let multiple vets see incoming triage patients update instantly without page refresh.
-
-**Scope**:
-| # | Task | Details |
-|---|------|---------|
-| 1 | Convert Triage index view to Livewire component | `app/Http/Livewire/TriageBoard.php` + view |
-| 2 | Add polling or Laravel Echo for real-time updates | `wire:poll.5s` or Pusher/Echo |
-| 3 | Add drag-and-drop status change (waiting → in_progress → completed) | Alpine.js Sortable or Livewire drag |
-| 4 | Add sound/visual alert for new red (critical) triage | JS notification |
-| 5 | **Tests**: Livewire unit/feature tests | test files |
-
-**Estimated tests**: ~8 | **Effort**: Medium
-
-### R2 — CVI PDF Template (CFMV-Mandated Layout)
-
-**Why**: CVI (International Travel Certificate) from P5 currently uses the generic `health_certificates` print view. CFMV mandates a specific layout with CRMV seal, digital signature block, and official formatting.
-
-**Scope**:
-| # | Task | Details |
-|---|------|---------|
-| 1 | Design CVI PDF layout matching CFMV Res. 974/2006 specs | PDF blade template |
-| 2 | Add CRMV seal image + digital signature block | storage + template |
-| 3 | Generate PDF via `barryvdh/laravel-dompdf` or `laravel-snappy` | controller/download route |
-| 4 | Add CVI download button on health certificate show view | view edit |
-| 5 | **Tests**: Feature (PDF generation, content assertions) | test files |
-
-**Estimated tests**: ~4 | **Effort**: Medium
-
-### R3 — Pet Insurance Auto-Claim Filing
-
-**Why**: P4 added claims tracking. Currently the clinic must manually file claims with each insurer. Auto-filing would submit claims via API to partner insurers.
-
-**Scope**:
-| # | Task | Details |
-|---|------|---------|
-| 1 | Define insurer API contract (abstract `InsuranceProvider` interface) | `app/Services/Insurance/InsuranceProvider.php` |
-| 2 | Implement concrete provider for one insurer (e.g., Porto Seguro, PetLove) | `app/Services/Insurance/PortoSeguroProvider.php` |
-| 3 | Create `claims:auto-file` command to submit pending claims | command |
-| 4 | Add claim status webhook endpoint for insurer callbacks | controller + route |
-| 5 | **Tests**: Unit (provider interface), Feature (command, webhook) | test files |
-
-**Estimated tests**: ~8 | **Effort**: Large (depends on insurer API availability)
-
-### R4 — QR Code Scanner Workflow for Public Rx Verification
-
-**Why**: Q6 added the `/r/{hash}` verification route but it's behind the `auth` middleware. For real-world QR code usage, tutors should be able to scan a prescription QR code without logging in.
-
-**Scope**:
-| # | Task | Details |
-|---|------|---------|
-| 1 | Move verify route out of `auth` middleware | `routes/web.php` |
-| 2 | Add `qrcode` library (e.g., `simplesoftwareio/simple-qrcode` or `bacon/bacon-qr-code`) | `composer.json` |
-| 3 | Generate QR code on prescription print view (embeds `/r/{hash}` URL) | view edit |
-| 4 | Scaffold a public scan landing page with camera integration | view (JS QR scanner lib) |
-| 5 | Rate-limit public verify route (prevent hash brute-force) | middleware/throttle |
-| 6 | **Tests**: Feature (public access, rate limit, QR generation) | test files |
-
-**Estimated tests**: ~6 | **Effort**: Medium
-
----
-
-## Phase S — Real Veterinary Clinic Daily Workflow Gaps — ✅ Complete (7/7)
-
-These came from analyzing what a practicing vet/receptionist touches every day that's still missing.
-
-### S1 — Visual Calendar / Agenda
-
-**Why**: Receptionists and vets live in the agenda. The current appointments resource is a CRUD list, not a visual day/week planner. Drag-and-drop, color-coded by vet/procedure, and real-time view are standard in any clinic PMS.
-
-**Scope**:
-| # | Task | Details |
-|---|------|---------|
-| 1 | Create Livewire `AppointmentCalendar` component with day/week/month views | Livewire component + view |
-| 2 | Add drag-and-drop to reschedule (update time/vet) | Alpine.js Sortable or FullCalendar.io integration |
-| 3 | Color-code by procedure type, vet, or urgency | CSS classes per appointment type |
-| 4 | Add click-to-book from calendar (quick appointment creation) | modal/off-canvas form |
-| 5 | **Tests**: Livewire unit (render, data, interactions) | test files |
-
-**Estimated tests**: ~8 | **Effort**: Large (FullCalendar integration)
-
-### S2 — Live Dashboard with KPIs
-
-**Why**: The `/dashboard` route returns a blank page. A clinic needs at-a-glance: today's appointments count, revenue, patients waiting in triage, low-stock alerts, pending invoices.
-
-**Scope**:
-| # | Task | Details |
-|---|------|---------|
-| 1 | Create Livewire `Dashboard` component with stat cards | component + view |
-| 2 | Add today's appointment count (scheduled/in-progress/completed) | query + card |
-| 3 | Add today's revenue (paid invoices total) | query + card |
-| 4 | Add triage waiting count + link to board | query + card |
-| 5 | Add low-stock products alert | query + card |
-| 6 | Add pending invoices count | query + card |
-| 7 | **Tests**: Livewire unit (render, data queries) | test files |
-
-**Estimated tests**: ~6 | **Effort**: Medium
-
-### S3 — Internal Chat / Messaging
-
-**Why**: Staff Notes exist but are persistent records. A real-time lightweight chat for vet ↔ reception ↔ pharmacy speeds up daily communication (e.g., "Pet ready for discharge", "Authorize this medication").
-
-**Scope**:
-| # | Task | Details |
-|---|------|---------|
-| 1 | Create `chat_messages` table (sender_id, receiver_id, message, read_at, branch_id) | migration |
-| 2 | Create `ChatMessage` model + factory | model |
-| 3 | Create Livewire `ChatBox` component with polling | component + view |
-| 4 | Add unread badge to sidebar (per user) | sidebar edit |
-| 5 | **Tests**: Unit (model), Feature (send/read/unread) | test files |
-
-**Estimated tests**: ~8 | **Effort**: Medium
-
-### S4 — Vaccination Certificate PDF (CFMV Layout)
-
-**Why**: Rabies and polyvalent vaccination certificates need a CFMV-mandated layout with lot number, vet CRMV, next due date. Currently only the generic print view exists.
-
-**Scope**:
-| # | Task | Details |
-|---|------|---------|
-| 1 | Create `vaccinations/certificate-pdf.blade.php` with CFMV layout | PDF blade |
-| 2 | Add CRMV seal, lot number, next due date, vet signature block | template |
-| 3 | Wire download button on vaccination show view | view edit |
-| 4 | **Tests**: Feature (PDF download, content assertions) | test files |
-
-**Estimated tests**: ~4 | **Effort**: Small
-
-### S5 — WhatsApp / SMS Provider Integration
-
-**Why**: Communication queue exists but has no real provider. Sending reminders, birthday campaigns, and appointment confirmations via WhatsApp is expected by modern pet owners.
-
-**Scope**:
-| # | Task | Details |
-|---|------|---------|
-| 1 | Define `CommunicationProvider` interface (send, status) | `app/Services/Communication/CommunicationProvider.php` |
-| 2 | Implement `WhatsAppProvider` (Twilio/Weni/Z-API) | concrete class |
-| 3 | Implement `SmsProvider` (fallback) | concrete class |
-| 4 | Wire provider into `ProcessCommunicationQueue` command | command edit |
-| 5 | Add provider config fields to `.env` + config | config |
-| 6 | **Tests**: Unit (provider interface), Feature (command processes queue) | test files |
-
-**Estimated tests**: ~8 | **Effort**: Medium (depends on provider API)
-
-### S6 — Mobile-Responsive Vet Flow
-
-**Why**: Vets doing farm/home visits need a stripped-down mobile interface for prescriptions, medical records, and triage without the full AdminLTE sidebar.
-
-**Scope**:
-| # | Task | Details |
-|---|------|---------|
-| 1 | Create mobile-optimized layout (full-width, bottom nav, large touch targets) | `layouts/mobile.blade.php` |
-| 2 | Create simplified mobile views: triage, prescriptions, medical records | views |
-| 3 | Add mobile route prefix `/m` with separate middleware | routes |
-| 4 | **Tests**: Feature (mobile views render) | test files |
-
-**Estimated tests**: ~6 | **Effort**: Large
-
-### S7 — Purchase Orders (Inventory Procurement) — ✅ Complete
-
-**Why**: Inventory has stock tracking but no procurement workflow. Clinics need: request → approve → purchase order → receive → reconcile with invoice.
-
-**Scope**:
-| # | Task | Details |
-|---|------|---------|
-| 1 | Create `purchase_orders` table (supplier_id, branch_id, status, requested_by, approved_by, ordered_at, received_at, total) | migration |
-| 2 | Create `purchase_order_items` table (purchase_order_id, product_id, quantity, unit_price, received_quantity) | migration |
-| 3 | Create PurchaseOrder + PurchaseOrderItem models + factories | models |
-| 4 | Create PurchaseOrderController CRUD + approval flow | controller + views |
-| 5 | Add gates (`purchase-orders.*`) | `PermissionSeeder.php` |
-| 6 | **Tests**: Unit (models), Feature (CRUD, status transitions) | test files |
-
-**Estimated tests**: ~14 | **Effort**: Large
-
-### Phase S Totals
-
-| Feature | Migrations | Models | Controllers | Livewire | Views | Tests |
-|---------|-----------|--------|-------------|----------|-------|-------|
-| S1 Calendar | — | — | — | 1 | 1 | 8 | ✓ |
-| S2 Dashboard | — | — | — | 1 | 1 | 6 | ✓ |
-| S3 Chat | 1 | 1 | — | 1 | 1 | 8 | ✓ |
-| S4 Vax Cert PDF | — | — | 1 edit | — | 1 | 4 | ✓ |
-| S5 WhatsApp/SMS | — | — | 1 edit | — | — | 8 | ✓ |
-| S6 Mobile | — | — | — | — | 4 | 6 | ✓ |
-| S7 Purchase Orders | 2 | 2 | 1 | — | 4 | 14 | ✓ |
-| **Total** | **3** | **3** | **2+2 edit** | **3** | **12** | **~54** |
-
----
-
-## Permissions Audit — Fixes Applied (2026-05-16)
-
-**Problemas encontrados e corrigidos** durante auditoria dos módulos R1–R4 e S1–S7:
-
-| # | Problema | Módulo | Correção |
-|---|----------|--------|----------|
-| 1 | `CommunicationQueueController` sem middleware de permissão | S5 | Adicionado `can:communication.view/create/delete` no construtor |
-| 2 | `PurchaseOrderController` sem middleware em `order()` e `receive()` | S7 | Adicionado `can:purchase-orders.approve/receive` |
-| 3 | Role `veterinarian` sem permissões de chat | S3 | Adicionado `chat.view/create/edit/delete` |
-| 4 | Role `receptionist` sem permissões de triagem nem chat | R1, S3 | Adicionado `triage.view/create`, `chat.view/create` |
-| 5 | Role `financial` sem `purchase-orders.view` | S7 | Adicionado (consulta apenas) |
-| 6 | Role `super-financial` sem `purchase-orders.view` | S7 | Adicionado (consulta apenas) |
-| 7 | Chat sem link na sidebar | S3 | Adicionado `Chat Interno` na seção "Comunicação" |
-
-**Regra atualizada**: todo novo controller deve ter middleware de permissão no construtor, e toda nova role deve receber as permissões correspondentes no `PermissionSeeder`.
-
----
+## Início Rápido
 
 ```bash
-# Unit tests
-php artisan test --env=testing --testsuite=Unit
-
-# Feature tests (non-portal only)
-php artisan test --env=testing --testsuite=Feature --filter="!Portal"
-
-# Individual controller group
-php artisan test --env=testing --filter="DepartmentController|PetController|..."
-
-# Single test with verbose output
-php artisan test --env=testing --filter="DepartmentControllerTest::test_index" --verbose
+cp .env.example .env
+composer install
+npm install && npm run dev
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
 ```
 
-## Rules
-1. Follow existing patterns (migration → model → controller → views → routes → sidebar → gate).
-2. Verify: `php artisan route:list 2>&1 | grep -c 'Target class'` (must be 0)
-3. Syntax check: `php -l` on all new PHP files.
-4. Cache: `php artisan route:clear && composer dump-autoload` after changes.
-5. Portuguese labels for UI, English for code identifiers.
-6. `/portal` routes use `tutor` auth guard; existing routes use `web` guard.
+---
+
+## Plano de Build
+
+O plano detalhado de construção, fases e status de cada módulo está em [PLAN.md](./PLAN.md).
+
+---
+
+## Regra de Atualização
+
+Este README é mantido em **português brasileiro**. Ao fazer commit:
+1. Atualize apenas a linha `Tests:` com o número atual de testes do `PLAN.md`
+2. **NÃO** sobrescreva este arquivo com `cp PLAN.md README.md`
+3. Mantenha o formato, seção de funcionalidades e idioma
