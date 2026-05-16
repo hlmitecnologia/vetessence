@@ -1,4 +1,4 @@
-# VetEssence — Build Plan (v8)
+# VetEssence — Build Plan (v9)
 
 ## Context
 Laravel 8, AdminLTE 3.2, Livewire 2, Spatie Permissions, MySQL, Tailwind CSS, Alpine.js.
@@ -638,6 +638,217 @@ These came from analyzing what a practicing vet/receptionist touches every day t
 | 7 | Chat sem link na sidebar | S3 | Adicionado `Chat Interno` na seção "Comunicação" |
 
 **Regra atualizada**: todo novo controller deve ter middleware de permissão no construtor, e toda nova role deve receber as permissões correspondentes no `PermissionSeeder`.
+
+---
+
+## Phase T — 100% Cobertura do Dia a Dia Clínico
+
+**Status**: Aguardando aprovação
+
+Análise de gaps funcionais sob perspectiva veterinária. 12 itens organizados em 3 níveis de impacto.
+
+---
+
+### T1 — Timeline do Paciente
+
+**Por que**: Veterinário precisa abrir 5 telas diferentes para ver histórico completo do pet. Uma timeline unificada economiza tempo e evita decisões sem contexto completo.
+
+| Item | Descrição |
+|------|-----------|
+| Migrations | `add_event_type_to_*` (se necessário) |
+| Model | `PatientTimeline` (view/model que consolida) |
+| Controller | `PatientTimelineController` |
+| View | `pets/timeline.blade.php` com cards cronológicos agrupáveis por tipo |
+| Rotas | `GET /pets/{pet}/timeline` |
+| Gate | Reusa `pets.view` |
+| Testes | ~8 (Unit: 2, Feature: 6) |
+
+**Eventos na timeline**: consultas, vacinas, exames, internações, cirurgias, prescrições, pesar, óbito, triagem.
+
+---
+
+### T2 — Dedução Automática de Estoque
+
+**Por que**: Vacinar ou medicar sem dar baixa gera estoque defasado. A dedução automática elimina a movimentação manual e evita rupturas.
+
+| Item | Descrição |
+|------|-----------|
+| Migrations | `add_product_id_to_vaccinations` + `add_product_id_to_medical_record_procedures` |
+| Model | Ajustes em `Vaccination`, `MedicalRecord`, `StockMovement` |
+| Controller | Ajuste nos `store`/`update` de `VaccinationController`, `MedicalRecordController` |
+| Evento | `ProcedurePerformed` — escutado por `DeductStockListener` |
+| Service | `StockDeductionService` — valida estoque + cria `StockMovement` |
+| Testes | ~12 (Unit: 4, Feature: 8) |
+
+**Regras**: não permite deduzir se estoque insuficiente; exibe alerta; lote opcional.
+
+---
+
+### T3 — Calculadora de Dosagem
+
+**Por que**: Erro de dosagem é risco clínico real. Calculadora baseada em peso + espécie + fármaco reduz erro humano.
+
+| Item | Descrição |
+|------|-----------|
+| Migrations | Tabela `drug_formulary`: `id`, `drug`, `species`, `dosage_mg_kg`, `max_dose`, `route`, `notes` |
+| Models | `DrugFormulary` |
+| Controller | `DrugFormularyController` (CRUD) + `DrugFormularyController@calculate` (API) |
+| View | `drug-formulary/index`, `drug-formulary/calculator` (Livewire) |
+| Livewire | `DosageCalculator` — seleciona fármaco + espécie + peso → calcula dose |
+| Rotas | Resource + `POST /drug-formulary/calculate` |
+| Gates | `drug-formulary.view`, `.create`, `.edit`, `.delete` |
+| Testes | ~15 (Unit: 5, Feature: 10) |
+
+---
+
+### T4 — Lembrete Automático de Consultas
+
+**Por que**: Infra de WhatsApp/SMS já existe, mas não há comando que dispare lembretes de consulta automaticamente. Reduz absenteísmo.
+
+| Item | Descrição |
+|------|-----------|
+| Commands | `appointments:remind` — busca consultas do próximo dia, alimenta `CommunicationQueue` |
+| Schedule | Kernel: `$schedule->command('appointments:remind')->dailyAt('18:00')` |
+| Template | Modelo `appointment_reminder` existente em `CommunicationTemplate` |
+| Testes | ~6 (Feature: 6) |
+
+---
+
+### T5 — Portal do Tutor Completo
+
+**Por que**: Tutor hoje vê só consultas e faturas. Adicionar prontuários, exames e certificados torna o portal útil de verdade.
+
+| Item | Descrição |
+|------|-----------|
+| Views | `portal/medical-records/index`, `portal/exams/index`, `portal/prescriptions/index` |
+| Controllers | `Portal\MedicalRecordController`, `Portal\ExamController`, `Portal\PrescriptionController` |
+| Rotas | `/portal/medical-records`, `/portal/exams`, `/portal/prescriptions`, `/portal/certificates` |
+| PDF Download | Link para download de certificado de vacina no portal |
+| Testes | ~12 (Feature: 12) |
+
+---
+
+### T6 — Previsão de Vacinas a Vencer
+
+**Por que**: Lembrete individual é bom, mas visão geral de todos os pets com vacinas atrasadas ajuda a clínica a fazer campanhas e recall.
+
+| Item | Descrição |
+|------|-----------|
+| Controller | Extensão de `VaccinationController@forecast` |
+| View | `vaccinations/forecast.blade.php` — tabela com filtros por período, espécie, vacina |
+| Rota | `GET /vaccinations/forecast` |
+| Gate | Reusa `vaccinations.view` |
+| Testes | ~4 (Feature: 4) |
+
+---
+
+### T7 — Scanner de Código de Barras / QR
+
+**Por que**: Leitura por câmera agiliza entrada de produtos, localização de paciente por pulseira e verificação de receita.
+
+| Item | Descrição |
+|------|-----------|
+| JS lib | `html5-qrcode` via NPM ou CDN |
+| View | Modal de scanner reutilizável (`scanner.blade.php`) |
+| Livewire | `BarcodeScanner` — captura código, busca produto/pet/receita |
+| Rotas | `GET /scanner` |
+| Gate | `products.view` (para estoque) ou `prescriptions.view` (para receitas) |
+| Testes | ~6 (Feature: 6) |
+
+---
+
+### T8 — Tabela de Preços por Espécie/Porte
+
+**Por que**: Clínicas cobram diferente por espécie (canino vs felino) e porte (PP a GG). Preço fixo não atende.
+
+| Item | Descrição |
+|------|-----------|
+| Migrations | Tabela `service_price_tiers`: `id`, `service_id`, `species`, `size`, `price` |
+| Models | `ServicePriceTier` |
+| Controller | Ajuste em `ServiceController` para gerenciar tiers |
+| View | Aba "Tabela de Preços" no form de serviço — matriz espécie × porte |
+| Rotas | Resource aninhado `services/{service}/price-tiers` |
+| Gates | Reusa `services.edit` |
+| Testes | ~10 (Unit: 3, Feature: 7) |
+
+---
+
+### T9 — Transferência de Estoque entre Filiais
+
+**Por que**: Redes com múltiplas unidades precisam transferir produtos entre filiais sem perder rastreabilidade.
+
+| Item | Descrição |
+|------|-----------|
+| Migrations | `add_origin_branch_id` + `add_destination_branch_id` a `stock_movements` |
+| Controller | Extensão de `StockController@transfer` |
+| View | `stock/transfer.blade.php` — origem, destino, produtos, quantidades |
+| Rota | `POST /stock/transfer` |
+| Gate | `stock.transfer` |
+| Testes | ~6 (Unit: 2, Feature: 4) |
+
+---
+
+### T10 — Preferências de Notificação do Tutor
+
+**Por que**: Tutor que não quer SMS não deve receber. Cada tutor escolhe os canais que prefere.
+
+| Item | Descrição |
+|------|-----------|
+| Migrations | `add_notification_channels_to_tutors`: `notify_sms`, `notify_whatsapp`, `notify_email` |
+| Model | Ajuste em `Tutor` — scopes + accessors |
+| View | Checkboxes no form de tutor |
+| Service | Ajuste em `CommunicationProvider` para checar preferência |
+| Testes | ~6 (Unit: 2, Feature: 4) |
+
+---
+
+### T11 — Protocolos de Emergência
+
+**Por que**: Em emergência, tempo é crítico. Templates pré-preenchidos com conduta, medicamentos e doses aceleram o atendimento.
+
+| Item | Descrição |
+|------|-----------|
+| Migrations | Tabela `emergency_protocols`: `id`, `name`, `species`, `severity`, `protocol_json`, `is_active` |
+| Models | `EmergencyProtocol` |
+| Controller | `EmergencyProtocolController` (CRUD) |
+| View | `emergency-protocols/index`, `emergency-protocols/show` |
+| Integração | Botão "Abrir Protocolo" na triagem vermelha/laranja |
+| Gates | `emergency-protocols.view`, `.create`, `.edit`, `.delete` |
+| Testes | ~10 (Unit: 3, Feature: 7) |
+
+---
+
+### T12 — Dashboard Corporativo Multi-Unidade
+
+**Por que**: Gestores de redes precisam comparar desempenho entre filiais em uma só tela.
+
+| Item | Descrição |
+|------|-----------|
+| Controller | `CorporateDashboardController` |
+| View | `dashboard/corporate.blade.php` — cards comparativos, gráficos por filial |
+| Métricas | Faturamento (mês/ano), consultas realizadas, taxa de retorno, ocupação de leitos, vacinas aplicadas |
+| Gate | `corporate-dashboard.view` |
+| Testes | ~8 (Feature: 8) |
+
+---
+
+### Phase T Totals
+
+| Feature | Migrations | Models | Controllers | Livewire | Views | Tests | Status |
+|---------|-----------|--------|-------------|----------|-------|-------|--------|
+| T1 Timeline | — | 1 | 1 | — | 1 | 8 | Pendente |
+| T2 Auto Deduction | 2 | 0 | 0 (edit) | — | 0 | 12 | Pendente |
+| T3 Dosage Calculator | 1 | 1 | 1 | 1 | 2 | 15 | Pendente |
+| T4 Appointment Reminder | — | — | — | — | — | 6 | Pendente |
+| T5 Portal Completo | — | — | 3 | — | 3 | 12 | Pendente |
+| T6 Vax Forecast | — | — | 0 (edit) | — | 1 | 4 | Pendente |
+| T7 Barcode Scanner | — | — | — | 1 | 1 | 6 | Pendente |
+| T8 Price Tiers | 1 | 1 | 0 (edit) | — | 0 | 10 | Pendente |
+| T9 Stock Transfer | 1 | 0 | 0 (edit) | — | 1 | 6 | Pendente |
+| T10 Notification Prefs | 1 | 0 | — | — | 0 | 6 | Pendente |
+| T11 Emergency Protocols | 1 | 1 | 1 | — | 2 | 10 | Pendente |
+| T12 Corporate Dashboard | — | — | 1 | — | 1 | 8 | Pendente |
+| **Total** | **7** | **4** | **7 + 3 edit** | **2** | **12** | **~103** | |
 
 ---
 

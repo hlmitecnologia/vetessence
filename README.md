@@ -104,6 +104,10 @@ Tests: 293 Unit + 385 Feature = 678 total (0 failures)
 
 ---
 
+## Fase T — Planejada
+
+12 novos módulos para cobertura 100% do dia a dia clínico. [Detalhes no PLAN.md](./PLAN.md#phase-t--100-cobertura-do-dia-a-dia-clnico)
+
 ## Início Rápido
 
 ```bash
