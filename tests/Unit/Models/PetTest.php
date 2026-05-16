@@ -20,8 +20,20 @@ class PetTest extends TestCase
             'gender' => 'male', 'birth_date' => now()->subYears(2),
             'weight' => 25.50, 'color' => 'Dourado', 'is_active' => true,
             'created_at_branch_id' => $branch->id,
+            'microchip_number' => '1234-5678-9012-3456',
+            'microchip_date' => now()->subYear(),
+            'rg_number' => 'RG-12345',
+            'rg_issuer' => 'CFMV',
+            'coat' => 'short',
+            'size' => 'medium',
         ]);
-        $this->assertDatabaseHas('pets', ['name' => 'Rex', 'species' => 'canina']);
+        $this->assertDatabaseHas('pets', ['name' => 'Rex', 'microchip_number' => '1234-5678-9012-3456']);
+    }
+
+    public function test_microchip_casts()
+    {
+        $pet = Pet::factory()->create(['microchip_date' => '2024-01-15']);
+        $this->assertInstanceOf(\Illuminate\Support\Carbon::class, $pet->microchip_date);
     }
 
     public function test_tutors_relationship()

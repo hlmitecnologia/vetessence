@@ -24,7 +24,7 @@ class TreatmentPlanFactory extends Factory
             'description' => $this->faker->paragraph(),
             'total_estimated' => $this->faker->randomFloat(2, 100, 5000),
             'total_authorized' => $this->faker->randomFloat(2, 100, 5000),
-            'status' => 'draft',
+            'status' => 'pending',
             'vet_notes' => $this->faker->sentence(),
             'branch_id' => Branch::factory(),
         ];

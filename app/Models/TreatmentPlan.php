@@ -16,14 +16,34 @@ class TreatmentPlan extends Model
     protected $fillable = [
         'plan_number', 'pet_id', 'tutor_id', 'vet_id', 'appointment_id',
         'title', 'description', 'total_estimated', 'total_authorized',
-        'status', 'client_approved_at', 'client_notes', 'vet_notes', 'branch_id',
+        'status', 'client_approved_at', 'rejected_at', 'rejection_reason',
+        'client_notes', 'vet_notes', 'branch_id',
     ];
 
     protected $casts = [
         'client_approved_at' => 'datetime',
+        'rejected_at' => 'datetime',
         'total_estimated' => 'decimal:2',
         'total_authorized' => 'decimal:2',
     ];
+
+    public function scopePending($q) { return $q->where('status', 'pending'); }
+    public function scopeApproved($q) { return $q->where('status', 'approved'); }
+    public function scopeRejected($q) { return $q->where('status', 'rejected'); }
+
+    public function isPending(): bool { return $this->status === 'pending'; }
+    public function isApproved(): bool { return $this->status === 'approved'; }
+    public function isRejected(): bool { return $this->status === 'rejected'; }
+
+    public function approve(): void
+    {
+        $this->update(['status' => 'approved', 'client_approved_at' => now()]);
+    }
+
+    public function reject(string $reason = null): void
+    {
+        $this->update(['status' => 'rejected', 'rejected_at' => now(), 'rejection_reason' => $reason]);
+    }
 
     public static function generateNumber(): string
     {

@@ -102,6 +102,12 @@ class PermissionSeeder extends Seeder
             // Triage
             'triage.view', 'triage.create', 'triage.edit', 'triage.delete',
 
+            // Comissoes
+            'commissions.view', 'commissions.create', 'commissions.edit', 'commissions.delete',
+
+            // Conciliacao bancaria
+            'bank-reconciliation.view', 'bank-reconciliation.create', 'bank-reconciliation.edit', 'bank-reconciliation.delete',
+
             // Agenda
             'staff-schedules.view', 'staff-schedules.create', 'staff-schedules.edit', 'staff-schedules.delete',
             'schedules-on-call.view', 'schedules-on-call.create', 'schedules-on-call.edit', 'schedules-on-call.delete',
@@ -163,6 +169,8 @@ class PermissionSeeder extends Seeder
                 'diet-plans.view', 'diet-plans.create', 'diet-plans.edit',
                 'convenio-claims.view', 'convenio-claims.create', 'convenio-claims.edit',
                 'triage.view', 'triage.create', 'triage.edit',
+                'commissions.view', 'commissions.create', 'commissions.edit',
+                'bank-reconciliation.view', 'bank-reconciliation.create',
                 'communication.view',
                 'notification-logs.view',
                 'staff-notes.view', 'staff-notes.create',

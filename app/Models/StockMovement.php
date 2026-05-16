@@ -15,13 +15,15 @@ class StockMovement extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'product_id', 'type', 'quantity',
-        'balance_after', 'reference', 'notes', 'user_id', 'created_at', 'branch_id'
+        'product_id', 'type', 'quantity', 'batch_number', 'lot_number',
+        'expiry_date', 'balance_after', 'reference', 'notes',
+        'user_id', 'created_at', 'branch_id'
     ];
 
     protected $casts = [
         'quantity' => 'integer',
         'balance_after' => 'integer',
+        'expiry_date' => 'date',
         'created_at' => 'datetime',
     ];
 

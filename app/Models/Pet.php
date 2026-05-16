@@ -15,12 +15,13 @@ class Pet extends Model
 
     protected $fillable = [
         'name', 'species', 'breed', 'gender', 'birth_date', 'weight',
-        'color', 'microchip', 'photo', 'coat', 'size', 'is_active', 'notes',
-        'created_at_branch_id',
+        'color', 'microchip_number', 'microchip_date', 'rg_number', 'rg_issuer',
+        'coat', 'size', 'is_active', 'notes', 'created_at_branch_id',
     ];
 
     protected $casts = [
         'birth_date' => 'date',
+        'microchip_date' => 'date',
         'weight' => 'decimal:2',
         'is_active' => 'boolean',
     ];

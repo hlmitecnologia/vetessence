@@ -49,7 +49,7 @@ class TreatmentPlanController extends Controller
             'description' => 'nullable|string',
             'total_estimated' => 'nullable|numeric|min:0',
             'total_authorized' => 'nullable|numeric|min:0',
-            'status' => 'required|string|max:50',
+            'status' => 'required|in:pending,approved,rejected',
             'client_notes' => 'nullable|string',
             'vet_notes' => 'nullable|string',
             'items' => 'nullable|array',
@@ -109,7 +109,7 @@ class TreatmentPlanController extends Controller
             'description' => 'nullable|string',
             'total_estimated' => 'nullable|numeric|min:0',
             'total_authorized' => 'nullable|numeric|min:0',
-            'status' => 'required|string|max:50',
+            'status' => 'required|in:pending,approved,rejected',
             'client_approved_at' => 'nullable|date',
             'client_notes' => 'nullable|string',
             'vet_notes' => 'nullable|string',
@@ -165,5 +165,20 @@ class TreatmentPlanController extends Controller
         $treatmentPlan->delete();
 
         return redirect()->route('treatment-plans.index')->with('success', 'Plano de tratamento excluído!');
+    }
+
+    public function approve(TreatmentPlan $treatmentPlan)
+    {
+        $treatmentPlan->approve();
+        return redirect()->route('treatment-plans.show', $treatmentPlan)
+            ->with('success', 'Orçamento aprovado pelo tutor.');
+    }
+
+    public function reject(Request $request, TreatmentPlan $treatmentPlan)
+    {
+        $data = $request->validate(['rejection_reason' => 'nullable|string|max:1000']);
+        $treatmentPlan->reject($data['rejection_reason'] ?? null);
+        return redirect()->route('treatment-plans.show', $treatmentPlan)
+            ->with('error', 'Orçamento recusado.');
     }
 }

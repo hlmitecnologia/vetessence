@@ -123,6 +123,7 @@ Route::middleware(['auth'])->group(function () {
     ]);
 
     // Prescriptions
+    Route::get('r/{hash}', 'App\Http\Controllers\PrescriptionVerificationController@verify')->name('prescriptions.verify');
     Route::resource('prescriptions', 'App\Http\Controllers\PrescriptionController')->names([
         'index' => 'prescriptions.index',
         'create' => 'prescriptions.create',
@@ -299,6 +300,8 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'treatment-plans.update',
         'destroy' => 'treatment-plans.destroy',
     ]);
+    Route::put('treatment-plans/{treatmentPlan}/approve', 'App\Http\Controllers\TreatmentPlanController@approve')->name('treatment-plans.approve');
+    Route::put('treatment-plans/{treatmentPlan}/reject', 'App\Http\Controllers\TreatmentPlanController@reject')->name('treatment-plans.reject');
 
     // Consent Forms
     Route::resource('consent-forms', 'App\Http\Controllers\ConsentFormController')->names([

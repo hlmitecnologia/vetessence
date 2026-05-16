@@ -16,12 +16,24 @@ class Prescription extends Model
     protected $fillable = [
         'medical_record_id', 'medication', 'dosage', 'unit',
         'frequency', 'duration', 'route', 'instructions', 'batch',
-        'created_by', 'notes', 'digital_signature', 'signed_at', 'branch_id'
+        'created_by', 'notes', 'verification_hash', 'verified_at',
+        'digital_signature', 'signed_at', 'branch_id'
     ];
 
     protected $casts = [
         'signed_at' => 'datetime',
+        'verified_at' => 'datetime',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($prescription) {
+            if (empty($prescription->verification_hash)) {
+                $raw = $prescription->medication . '|' . ($prescription->dosage ?? '') . '|' . now()->toDateTimeString() . '|' . uniqid();
+                $prescription->verification_hash = hash('sha256', $raw);
+            }
+        });
+    }
 
     public function medicalRecord(): BelongsTo
     {

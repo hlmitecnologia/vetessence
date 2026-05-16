@@ -20,13 +20,22 @@ class ProductTest extends TestCase
             'stock' => 10,
             'min_stock' => 5,
             'is_active' => true,
+            'batch_number' => 'BATCH-001',
+            'lot_number' => 'LOT-2024-A',
         ]);
 
         $this->assertDatabaseHas('products', [
             'name' => 'Product A',
             'sku' => 'SKU001',
-            'is_active' => true,
+            'batch_number' => 'BATCH-001',
+            'lot_number' => 'LOT-2024-A',
         ]);
+    }
+
+    public function test_expiration_date_cast()
+    {
+        $product = Product::factory()->create(['expiration_date' => '2025-06-01']);
+        $this->assertInstanceOf(\Illuminate\Support\Carbon::class, $product->expiration_date);
     }
 
     public function test_isLowStock_accessor_returns_true_when_stock_below_min()

@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
-use App\Models\AppointmentService;
-use App\Models\Pet;
-use App\Models\Service;
-use App\Models\User;
 use App\Models\Role;
+use App\Models\User;
+use App\Events\AppointmentCompleted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -125,7 +123,12 @@ class AppointmentController extends Controller
             'reason' => 'nullable|string',
         ]);
 
+        $wasCompleted = $request->status === 'completed' && $appointment->status !== 'completed';
         $appointment->update($validated);
+
+        if ($wasCompleted) {
+            event(new AppointmentCompleted($appointment));
+        }
 
         return redirect()->route('appointments.index')->with('success', 'Consulta atualizada com sucesso!');
     }
@@ -170,7 +173,12 @@ class AppointmentController extends Controller
             'status' => 'required|in:scheduled,checked_in,waiting,in_progress,completed,cancelled,no_show',
         ]);
 
+        $wasCompleted = $request->status === 'completed' && $appointment->status !== 'completed';
         $appointment->update(['status' => $request->status]);
+
+        if ($wasCompleted) {
+            event(new AppointmentCompleted($appointment));
+        }
 
         return response()->json(['success' => true]);
     }
