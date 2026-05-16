@@ -1,4 +1,4 @@
-# VetEssence — Build Plan (v7)
+# VetEssence — Build Plan (v8)
 
 ## Context
 Laravel 8, AdminLTE 3.2, Livewire 2, Spatie Permissions, MySQL, Tailwind CSS, Alpine.js.
@@ -18,17 +18,20 @@ Brazilian Portuguese. Follow existing patterns: migration → model → controll
 ## Test Suite Status
 
 ```
-Tests:  267 Unit   +   337 Feature   =   604 total   (0 failures)
+Tests:  293 Unit   +   385 Feature   =   678 total   (0 failures)
 ```
 
 | Suite | Count | Notes |
 |-------|-------|-------|
-| Unit/Models | 267 | All models covered (incl. 7 new Phase P models + 4 regulatory models) |
-| Feature/Controllers | 272 | 52 controllers, all pre-existing failures resolved |
-| Feature/Commands | 22 | 10 commands (8 original + N1 AlertaEstoque + N2 lgpd:export/lgpd:anonymize) |
+| Unit/Models | 293 | All models covered (incl. 7 Phase P + 4 regulatory + R1–R4 + S3 chat + S7 orders) |
+| Feature/Controllers | 272 | 52 controllers |
+| Feature/Commands | 25 | 12 commands (original + N1 + N2 + Q1 AlertProductExpiry + Q7 ImportBankStatement + R3 AutoFileClaims) |
 | Feature/Integrations | 12 | 10 flow scenarios |
 | Feature/Api | 18 | Auth, Pet, Appointment endpoints |
-| Feature/Phase P | 25 | P1–P6 controller tests (PreAnestheticEvaluation, DietPlan, ConvenioClaim, TriageRecord) |
+| Feature/Phase P | 25 | P1–P6 controller tests |
+| Feature/Phase Q | 37 | Q1–Q7 feature tests (approval, auto-invoice, Rx verification) |
+| Feature/Rx/R4 | 6 | Prescription verification + public access + QR |
+| Feature/R3 | 6 | Insurance webhook + auto-file command |
 
 ---
 
@@ -491,6 +494,132 @@ These are **not** on the core roadmap. Each should be discussed and approved bef
 | 6 | **Tests**: Feature (public access, rate limit, QR generation) | test files |
 
 **Estimated tests**: ~6 | **Effort**: Medium
+
+---
+
+## Phase S — Real Veterinary Clinic Daily Workflow Gaps — ✅ Complete (7/7)
+
+These came from analyzing what a practicing vet/receptionist touches every day that's still missing.
+
+### S1 — Visual Calendar / Agenda
+
+**Why**: Receptionists and vets live in the agenda. The current appointments resource is a CRUD list, not a visual day/week planner. Drag-and-drop, color-coded by vet/procedure, and real-time view are standard in any clinic PMS.
+
+**Scope**:
+| # | Task | Details |
+|---|------|---------|
+| 1 | Create Livewire `AppointmentCalendar` component with day/week/month views | Livewire component + view |
+| 2 | Add drag-and-drop to reschedule (update time/vet) | Alpine.js Sortable or FullCalendar.io integration |
+| 3 | Color-code by procedure type, vet, or urgency | CSS classes per appointment type |
+| 4 | Add click-to-book from calendar (quick appointment creation) | modal/off-canvas form |
+| 5 | **Tests**: Livewire unit (render, data, interactions) | test files |
+
+**Estimated tests**: ~8 | **Effort**: Large (FullCalendar integration)
+
+### S2 — Live Dashboard with KPIs
+
+**Why**: The `/dashboard` route returns a blank page. A clinic needs at-a-glance: today's appointments count, revenue, patients waiting in triage, low-stock alerts, pending invoices.
+
+**Scope**:
+| # | Task | Details |
+|---|------|---------|
+| 1 | Create Livewire `Dashboard` component with stat cards | component + view |
+| 2 | Add today's appointment count (scheduled/in-progress/completed) | query + card |
+| 3 | Add today's revenue (paid invoices total) | query + card |
+| 4 | Add triage waiting count + link to board | query + card |
+| 5 | Add low-stock products alert | query + card |
+| 6 | Add pending invoices count | query + card |
+| 7 | **Tests**: Livewire unit (render, data queries) | test files |
+
+**Estimated tests**: ~6 | **Effort**: Medium
+
+### S3 — Internal Chat / Messaging
+
+**Why**: Staff Notes exist but are persistent records. A real-time lightweight chat for vet ↔ reception ↔ pharmacy speeds up daily communication (e.g., "Pet ready for discharge", "Authorize this medication").
+
+**Scope**:
+| # | Task | Details |
+|---|------|---------|
+| 1 | Create `chat_messages` table (sender_id, receiver_id, message, read_at, branch_id) | migration |
+| 2 | Create `ChatMessage` model + factory | model |
+| 3 | Create Livewire `ChatBox` component with polling | component + view |
+| 4 | Add unread badge to sidebar (per user) | sidebar edit |
+| 5 | **Tests**: Unit (model), Feature (send/read/unread) | test files |
+
+**Estimated tests**: ~8 | **Effort**: Medium
+
+### S4 — Vaccination Certificate PDF (CFMV Layout)
+
+**Why**: Rabies and polyvalent vaccination certificates need a CFMV-mandated layout with lot number, vet CRMV, next due date. Currently only the generic print view exists.
+
+**Scope**:
+| # | Task | Details |
+|---|------|---------|
+| 1 | Create `vaccinations/certificate-pdf.blade.php` with CFMV layout | PDF blade |
+| 2 | Add CRMV seal, lot number, next due date, vet signature block | template |
+| 3 | Wire download button on vaccination show view | view edit |
+| 4 | **Tests**: Feature (PDF download, content assertions) | test files |
+
+**Estimated tests**: ~4 | **Effort**: Small
+
+### S5 — WhatsApp / SMS Provider Integration
+
+**Why**: Communication queue exists but has no real provider. Sending reminders, birthday campaigns, and appointment confirmations via WhatsApp is expected by modern pet owners.
+
+**Scope**:
+| # | Task | Details |
+|---|------|---------|
+| 1 | Define `CommunicationProvider` interface (send, status) | `app/Services/Communication/CommunicationProvider.php` |
+| 2 | Implement `WhatsAppProvider` (Twilio/Weni/Z-API) | concrete class |
+| 3 | Implement `SmsProvider` (fallback) | concrete class |
+| 4 | Wire provider into `ProcessCommunicationQueue` command | command edit |
+| 5 | Add provider config fields to `.env` + config | config |
+| 6 | **Tests**: Unit (provider interface), Feature (command processes queue) | test files |
+
+**Estimated tests**: ~8 | **Effort**: Medium (depends on provider API)
+
+### S6 — Mobile-Responsive Vet Flow
+
+**Why**: Vets doing farm/home visits need a stripped-down mobile interface for prescriptions, medical records, and triage without the full AdminLTE sidebar.
+
+**Scope**:
+| # | Task | Details |
+|---|------|---------|
+| 1 | Create mobile-optimized layout (full-width, bottom nav, large touch targets) | `layouts/mobile.blade.php` |
+| 2 | Create simplified mobile views: triage, prescriptions, medical records | views |
+| 3 | Add mobile route prefix `/m` with separate middleware | routes |
+| 4 | **Tests**: Feature (mobile views render) | test files |
+
+**Estimated tests**: ~6 | **Effort**: Large
+
+### S7 — Purchase Orders (Inventory Procurement) — ✅ Complete
+
+**Why**: Inventory has stock tracking but no procurement workflow. Clinics need: request → approve → purchase order → receive → reconcile with invoice.
+
+**Scope**:
+| # | Task | Details |
+|---|------|---------|
+| 1 | Create `purchase_orders` table (supplier_id, branch_id, status, requested_by, approved_by, ordered_at, received_at, total) | migration |
+| 2 | Create `purchase_order_items` table (purchase_order_id, product_id, quantity, unit_price, received_quantity) | migration |
+| 3 | Create PurchaseOrder + PurchaseOrderItem models + factories | models |
+| 4 | Create PurchaseOrderController CRUD + approval flow | controller + views |
+| 5 | Add gates (`purchase-orders.*`) | `PermissionSeeder.php` |
+| 6 | **Tests**: Unit (models), Feature (CRUD, status transitions) | test files |
+
+**Estimated tests**: ~14 | **Effort**: Large
+
+### Phase S Totals
+
+| Feature | Migrations | Models | Controllers | Livewire | Views | Tests |
+|---------|-----------|--------|-------------|----------|-------|-------|
+| S1 Calendar | — | — | — | 1 | 1 | 8 | ✓ |
+| S2 Dashboard | — | — | — | 1 | 1 | 6 | ✓ |
+| S3 Chat | 1 | 1 | — | 1 | 1 | 8 | ✓ |
+| S4 Vax Cert PDF | — | — | 1 edit | — | 1 | 4 | ✓ |
+| S5 WhatsApp/SMS | — | — | 1 edit | — | — | 8 | ✓ |
+| S6 Mobile | — | — | — | — | 4 | 6 | ✓ |
+| S7 Purchase Orders | 2 | 2 | 1 | — | 4 | 14 | ✓ |
+| **Total** | **3** | **3** | **2+2 edit** | **3** | **12** | **~54** |
 
 ---
 

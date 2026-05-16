@@ -77,6 +77,12 @@ class AppServiceProvider extends ServiceProvider
 
         // Estoque
         Gate::define('estoque', fn($user) => $user->can('products.view'));
+        Gate::define('purchase-orders.view', fn($user) => $user->can('purchase-orders.view'));
+        Gate::define('purchase-orders.create', fn($user) => $user->can('purchase-orders.create'));
+        Gate::define('purchase-orders.edit', fn($user) => $user->can('purchase-orders.edit'));
+        Gate::define('purchase-orders.delete', fn($user) => $user->can('purchase-orders.delete'));
+        Gate::define('purchase-orders.approve', fn($user) => $user->can('purchase-orders.approve'));
+        Gate::define('purchase-orders.receive', fn($user) => $user->can('purchase-orders.receive'));
 
         // Equipamentos
         Gate::define('integracao-equipamentos', fn($user) => $user->can('lab-equipment.view'));
@@ -84,6 +90,7 @@ class AppServiceProvider extends ServiceProvider
         // Comunicacao
         Gate::define('notificacoes', fn($user) => $user->can('notification-logs.view'));
         Gate::define('nota-interna', fn($user) => $user->can('staff-notes.view'));
+        Gate::define('chat', fn($user) => $user->can('chat.view'));
 
         // Agenda
         Gate::define('agenda-equipe', fn($user) => $user->can('staff-schedules.view'));

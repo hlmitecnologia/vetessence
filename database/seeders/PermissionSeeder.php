@@ -108,6 +108,9 @@ class PermissionSeeder extends Seeder
             // Conciliacao bancaria
             'bank-reconciliation.view', 'bank-reconciliation.create', 'bank-reconciliation.edit', 'bank-reconciliation.delete',
 
+            // Chat
+            'chat.view', 'chat.create', 'chat.edit', 'chat.delete',
+
             // Agenda
             'staff-schedules.view', 'staff-schedules.create', 'staff-schedules.edit', 'staff-schedules.delete',
             'schedules-on-call.view', 'schedules-on-call.create', 'schedules-on-call.edit', 'schedules-on-call.delete',
@@ -118,6 +121,10 @@ class PermissionSeeder extends Seeder
             'lab-equipment.view', 'lab-equipment.create', 'lab-equipment.edit', 'lab-equipment.delete',
             'payment-gateways.view', 'payment-gateways.create', 'payment-gateways.edit', 'payment-gateways.delete',
             'configuracoes.view',
+
+            // Purchase Orders
+            'purchase-orders.view', 'purchase-orders.create', 'purchase-orders.edit', 'purchase-orders.delete',
+            'purchase-orders.approve', 'purchase-orders.receive',
         ];
 
         // Create all permissions
@@ -230,6 +237,8 @@ class PermissionSeeder extends Seeder
                 'suppliers.view', 'suppliers.create', 'suppliers.edit', 'suppliers.delete',
                 'categories.view', 'categories.create', 'categories.edit', 'categories.delete',
                 'controlled-substances.view', 'controlled-substances.create', 'controlled-substances.edit',
+                'purchase-orders.view', 'purchase-orders.create', 'purchase-orders.edit', 'purchase-orders.delete',
+                'purchase-orders.approve', 'purchase-orders.receive',
                 'notification-logs.view',
             ],
 

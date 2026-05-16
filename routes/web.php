@@ -512,6 +512,30 @@ Route::middleware(['auth'])->group(function () {
     ]);
     Route::post('staff-notes/{staffNote}/mark-read', 'App\Http\Controllers\StaffNoteController@markRead')->name('staff-notes.mark-read');
 
+    // Chat
+    Route::get('chat', function () { return view('chat.index'); })->name('chat.index')->middleware('can:chat');
+
+    // Mobile
+    Route::prefix('m')->name('mobile.')->group(function () {
+        Route::get('/', function () { return view('mobile.index'); })->name('index');
+        Route::get('/triage', function () { return view('mobile.triage'); })->name('triage');
+        Route::get('/prescriptions', function () { return view('mobile.prescriptions'); })->name('prescriptions');
+        Route::get('/records', function () { return view('mobile.records'); })->name('records');
+    });
+
+    // Purchase Orders
+    Route::prefix('purchase-orders')->name('purchase-orders.')->group(function () {
+        Route::get('/', 'App\Http\Controllers\PurchaseOrderController@index')->name('index');
+        Route::get('/create', 'App\Http\Controllers\PurchaseOrderController@create')->name('create');
+        Route::post('/', 'App\Http\Controllers\PurchaseOrderController@store')->name('store');
+        Route::get('/{purchaseOrder}', 'App\Http\Controllers\PurchaseOrderController@show')->name('show');
+        Route::get('/{purchaseOrder}/edit', 'App\Http\Controllers\PurchaseOrderController@edit')->name('edit');
+        Route::put('/{purchaseOrder}', 'App\Http\Controllers\PurchaseOrderController@update')->name('update');
+        Route::delete('/{purchaseOrder}', 'App\Http\Controllers\PurchaseOrderController@destroy')->name('destroy');
+        Route::post('/{purchaseOrder}/order', 'App\Http\Controllers\PurchaseOrderController@order')->name('order');
+        Route::post('/{purchaseOrder}/receive', 'App\Http\Controllers\PurchaseOrderController@receive')->name('receive');
+    });
+
     // Kennel Map
     Route::get('boardings/kennel-map', 'App\Http\Controllers\BoardingController@kennelMap')->name('boardings.kennel-map');
     Route::post('boardings/{boarding}/assign-kennel', 'App\Http\Controllers\BoardingController@assignKennel')->name('boardings.assign-kennel');

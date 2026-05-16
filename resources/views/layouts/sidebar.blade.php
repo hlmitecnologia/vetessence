@@ -231,6 +231,11 @@
                 <a href="{{ route('suppliers.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-truck w-5 mr-2"></i> Fornecedores
                 </a>
+                @can('purchase-orders.view')
+                <a href="{{ route('purchase-orders.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-shopping-cart w-5 mr-2"></i> Pedidos de Compra
+                </a>
+                @endcan
                 <a href="{{ route('controlled-substances.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-prescription-bottle w-5 mr-2"></i> Subst. Controladas
                 </a>

@@ -341,13 +341,21 @@
                             @endif
 
                         <!-- COMUNICAÇÃO -->
-                        @if(Gate::allows('notificacoes') || Gate::allows('nota-interna'))
-                        <li class="nav-item has-treeview {{ request()->routeIs('notification-logs.*') || request()->routeIs('staff-notes.*') ? 'menu-open' : '' }}">
+                        @if(Gate::allows('notificacoes') || Gate::allows('nota-interna') || Gate::allows('chat'))
+                        <li class="nav-item has-treeview {{ request()->routeIs('notification-logs.*') || request()->routeIs('staff-notes.*') || request()->routeIs('chat.*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-bullhorn"></i>
                                 <p>Comunicação <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
+                                @can('chat')
+                                <li class="nav-item">
+                                    <a href="{{ route('chat.index') }}" class="nav-link {{ request()->routeIs('chat.*') ? 'active' : '' }}">
+                                        <i class="fas fa-comments nav-icon"></i>
+                                        <p>Chat Interno <span id="chat-unread-badge" class="badge badge-info right" style="display:none;">0</span></p>
+                                    </a>
+                                </li>
+                                @endcan
                                 @can('nota-interna')
                                 <li class="nav-item">
                                     <a href="{{ route('staff-notes.index') }}" class="nav-link {{ request()->routeIs('staff-notes.*') ? 'active' : '' }}">

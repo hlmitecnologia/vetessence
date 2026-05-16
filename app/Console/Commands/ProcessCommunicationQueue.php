@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use App\Models\CommunicationQueue;
 use App\Services\EmailApiService;
+use App\Services\Communication\WhatsAppProvider;
+use App\Services\Communication\SmsProvider;
 use Illuminate\Console\Command;
 
 class ProcessCommunicationQueue extends Command
@@ -28,7 +30,12 @@ class ProcessCommunicationQueue extends Command
             return Command::SUCCESS;
         }
 
+        $whatsapp = new WhatsAppProvider();
+        $sms = new SmsProvider();
+
         foreach ($items as $item) {
+            $success = false;
+
             if ($item->channel === 'email') {
                 $tutorName = $item->tutor ? $item->tutor->name : 'Tutor';
                 $success = $email->send(
@@ -36,20 +43,21 @@ class ProcessCommunicationQueue extends Command
                     $item->destination,
                     $item->message_content
                 );
-
-                if ($success) {
-                    $item->update(['sent_at' => now(), 'status' => 'sent']);
-                    $sent++;
-                } else {
-                    $item->update(['status' => 'failed', 'error_message' => 'Email API rejected']);
-                    $failed++;
-                }
             } elseif ($item->channel === 'whatsapp') {
-                // WhatsApp is handled externally by the WAHA reminder service
-                $item->update(['status' => 'sent']);
-                $sent++;
+                $success = $whatsapp->send($item->destination, $item->message_content);
+            } elseif ($item->channel === 'sms') {
+                $success = $sms->send($item->destination, $item->message_content);
             } else {
                 $item->update(['status' => 'failed', 'error_message' => 'Unsupported channel']);
+                $failed++;
+                continue;
+            }
+
+            if ($success) {
+                $item->update(['sent_at' => now(), 'status' => 'sent']);
+                $sent++;
+            } else {
+                $item->update(['status' => 'failed', 'error_message' => 'Provider rejected']);
                 $failed++;
             }
         }
