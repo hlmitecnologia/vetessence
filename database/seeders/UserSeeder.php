@@ -18,6 +18,17 @@ class UserSeeder extends Seeder
         $estoqueRole = Role::where('slug', 'estoque')->first();
         $tutorRole = Role::where('slug', 'tutor')->first();
 
+        $superAdminRole = Role::where('slug', 'super-admin')->first();
+
+        // Super Admin - email: super@vet.com, password: super123
+        User::create([
+            'name' => 'Super Administrador',
+            'email' => 'super@vet.com',
+            'password' => Hash::make('super123'),
+            'role_id' => $superAdminRole?->id ?? $adminRole->id,
+            'is_active' => true,
+        ]);
+
         // Admin - email: admin@vet.com, password: admin123
         User::create([
             'name' => 'Administrador',

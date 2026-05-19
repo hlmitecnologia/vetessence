@@ -130,6 +130,22 @@ php artisan migrate --seed
 php artisan serve
 ```
 
+## Contas de Demonstração
+
+Após rodar `php artisan migrate --seed`, os seguintes usuários estarão disponíveis:
+
+| Perfil | Email | Senha |
+|--------|-------|-------|
+| Super Admin | `super@vet.com` | `super123` |
+| Admin | `admin@vet.com` | `admin123` |
+| Veterinário | `vet@vet.com` | `vet123` |
+| Veterinário | `vet2@vet.com` | `vet2123` |
+| Recepcionista | `recep@vet.com` | `recep123` |
+| Recepcionista | `recep2@vet.com` | `recep2123` |
+| Financeiro | `financeiro@vet.com` | `fin123` |
+| Estoque | `estoque@vet.com` | `est123` |
+| Tutor (portal) | `tutor@vet.com` | `tutor123` |
+
 ---
 
 ## Plano de Build
