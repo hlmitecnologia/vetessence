@@ -4,7 +4,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4><i class="fas fa-ambulance"></i> Protocolos de Emergencia</h4>
         @can('emergency-protocols.create')
-        <a href="{{ route('emergency-protocols.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Novo</a>
+        <button onclick="openCreateModal()" class="btn btn-primary"><i class="fas fa-plus"></i> Novo</button>
         @endcan
     </div>
     <form method="GET" class="row mb-3">
@@ -52,7 +52,7 @@
                 <div class="card-footer">
                     <a href="{{ route('emergency-protocols.show', $p) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Ver</a>
                     @can('emergency-protocols.edit')
-                    <a href="{{ route('emergency-protocols.edit', $p) }}" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                    <button onclick="openEditModal({{ $p->id }})" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
                     @endcan
                     @can('emergency-protocols.delete')
                     <form action="{{ route('emergency-protocols.destroy', $p) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
@@ -69,4 +69,38 @@
     </div>
     {{ $protocols->links() }}
 </div>
+
+<!-- EmergencyProtocol Modal -->
+<div class="modal fade" id="emergencyProtocolModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emergencyProtocolModalTitle">Novo Protocolo</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('emergency-protocol-form', key('emergency-protocol-form'))
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('modals')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Livewire.on('close-modal', function() { $('#emergencyProtocolModal').modal('hide'); });
+        Livewire.on('emergency-protocol-saved', function() { location.reload(); });
+    });
+    function openCreateModal() {
+        Livewire.dispatch('resetForm');
+        document.getElementById('emergencyProtocolModalTitle').textContent = 'Novo Protocolo';
+        $('#emergencyProtocolModal').modal('show');
+    }
+    function openEditModal(id) {
+        Livewire.dispatch('editEmergencyProtocol', { id: id });
+        document.getElementById('emergencyProtocolModalTitle').textContent = 'Editar Protocolo';
+        $('#emergencyProtocolModal').modal('show');
+    }
+</script>
+@endpush

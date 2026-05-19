@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pet;
 use App\Models\Referral;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ReferralController extends Controller
@@ -30,8 +32,8 @@ class ReferralController extends Controller
 
     public function create()
     {
-        $pets = \App\Models\Pet::with('tutors.user')->orderBy('name')->get();
-        $veterinarians = \App\Models\User::where('is_active', true)->orderBy('name')->get();
+        $pets = Pet::with('tutors.user')->orderBy('name')->get();
+        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
         return view('referrals.create', compact('pets', 'veterinarians'));
     }
 
@@ -68,8 +70,8 @@ class ReferralController extends Controller
 
     public function edit(Referral $referral)
     {
-        $pets = \App\Models\Pet::with('tutors.user')->orderBy('name')->get();
-        $veterinarians = \App\Models\User::where('is_active', true)->orderBy('name')->get();
+        $pets = Pet::with('tutors.user')->orderBy('name')->get();
+        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
         return view('referrals.edit', compact('referral', 'pets', 'veterinarians'));
     }
 

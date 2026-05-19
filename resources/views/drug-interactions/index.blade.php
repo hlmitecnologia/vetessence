@@ -5,9 +5,9 @@
     <div class="card-header">
         <h3 class="card-title">Interações Medicamentosas</h3>
         <div class="card-tools">
-            <a href="{{ route('drug-interactions.create') }}" class="btn btn-primary btn-sm">
+            <button onclick="openCreateModal()" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> Nova Interação
-            </a>
+            </button>
         </div>
     </div>
     <div class="card-body">
@@ -78,9 +78,9 @@
                         <a href="{{ route('drug-interactions.show', $interaction) }}" class="btn btn-action btn-info" title="Ver">
                             <i class="fas fa-eye"></i>
                         </a>
-                        <a href="{{ route('drug-interactions.edit', $interaction) }}" class="btn btn-action btn-primary" title="Editar">
+                        <button onclick="openEditModal({{ $interaction->id }})" class="btn btn-action btn-primary" title="Editar">
                             <i class="fas fa-edit"></i>
-                        </a>
+                        </button>
                         <form action="{{ route('drug-interactions.destroy', $interaction) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
@@ -101,4 +101,38 @@
         @endif
     </div>
 </div>
+
+<!-- DrugInteraction Modal -->
+<div class="modal fade" id="drugInteractionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="drugInteractionModalTitle">Nova Interação Medicamentosa</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('drug-interaction-form', key('drug-interaction-form'))
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('modals')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Livewire.on('close-modal', function() { $('#drugInteractionModal').modal('hide'); });
+        Livewire.on('drug-interaction-saved', function() { location.reload(); });
+    });
+    function openCreateModal() {
+        Livewire.dispatch('resetForm');
+        document.getElementById('drugInteractionModalTitle').textContent = 'Nova Interação Medicamentosa';
+        $('#drugInteractionModal').modal('show');
+    }
+    function openEditModal(id) {
+        Livewire.dispatch('editDrugInteraction', { id: id });
+        document.getElementById('drugInteractionModalTitle').textContent = 'Editar Interação Medicamentosa';
+        $('#drugInteractionModal').modal('show');
+    }
+</script>
+@endpush

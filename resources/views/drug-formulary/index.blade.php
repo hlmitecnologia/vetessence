@@ -3,7 +3,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4><i class="fas fa-pills"></i> Formulario de Farmacos</h4>
-        <a href="{{ route('drug-formulary.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Novo</a>
+        <button onclick="openCreateModal()" class="btn btn-primary"><i class="fas fa-plus"></i> Novo</button>
     </div>
     <div class="row">
         <div class="col-md-8">
@@ -21,7 +21,7 @@
                                 <td>{{ $f->route ?? '-' }}</td>
                                 <td>{!! $f->is_active ? '<span class="badge badge-success">Sim</span>' : '<span class="badge badge-secondary">Nao</span>' !!}</td>
                                 <td>
-                                    <a href="{{ route('drug-formulary.edit', $f) }}" class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i></a>
+                                    <button onclick="openEditModal({{ $f->id }})" class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i></button>
                                     <form action="{{ route('drug-formulary.destroy', $f) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
                                         @csrf @method('DELETE')
                                         <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
@@ -42,4 +42,38 @@
         </div>
     </div>
 </div>
+
+<!-- DrugFormulary Modal -->
+<div class="modal fade" id="drugFormularyModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="drugFormularyModalTitle">Novo Fármaco</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('drug-formulary-form', key('drug-formulary-form'))
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('modals')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Livewire.on('close-modal', function() { $('#drugFormularyModal').modal('hide'); });
+        Livewire.on('drug-formulary-saved', function() { location.reload(); });
+    });
+    function openCreateModal() {
+        Livewire.dispatch('resetForm');
+        document.getElementById('drugFormularyModalTitle').textContent = 'Novo Fármaco';
+        $('#drugFormularyModal').modal('show');
+    }
+    function openEditModal(id) {
+        Livewire.dispatch('editDrugFormulary', { id: id });
+        document.getElementById('drugFormularyModalTitle').textContent = 'Editar Fármaco';
+        $('#drugFormularyModal').modal('show');
+    }
+</script>
+@endpush

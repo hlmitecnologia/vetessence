@@ -30,7 +30,8 @@
         "@fullcalendar/timegrid": "^6.1.20",
         "chart.js": "^4.5.1",
         "flatpickr": "^4.6.13",
-        "select2": "^4.1.0-rc.0"
+        "select2": "^4.1.0-rc.0",
+        "sweetalert2": "^11.26.24"
     },
     "name": "vetessence",
     "version": "1.0.0",

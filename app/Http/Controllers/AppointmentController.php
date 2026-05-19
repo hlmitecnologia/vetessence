@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\AppointmentService;
+use App\Models\Pet;
 use App\Models\Role;
+use App\Models\Service;
 use App\Models\User;
 use App\Events\AppointmentCompleted;
 use Illuminate\Http\Request;

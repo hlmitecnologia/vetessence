@@ -7,9 +7,9 @@
             <div class="card-header">
                 <h3 class="card-title">Registros de Peso</h3>
                 <div class="card-tools">
-                    <a href="{{ route('weight-records.create') }}" class="btn btn-primary btn-sm">
+                    <button onclick="openCreateModal()" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Novo Registro
-                    </a>
+                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -44,6 +44,9 @@
                                 <td>{{ $record->measuredBy->name ?? '-' }}</td>
                                 <td class="text-truncate" style="max-width: 150px;">{{ $record->notes ?? '-' }}</td>
                                 <td>
+                                    <button onclick="openEditModal({{ $record->id }})" class="btn btn-action btn-primary" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
                                     <form action="{{ route('weight-records.destroy', $record) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
@@ -60,6 +63,21 @@
                 @else
                 <p class="text-center text-muted">Nenhum registro de peso encontrado.</p>
                 @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- WeightRecord Modal -->
+<div class="modal fade" id="weightRecordModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="weightRecordModalTitle">Novo Registro de Peso</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('weight-record-form', key('weight-record-form'))
             </div>
         </div>
     </div>
@@ -110,4 +128,23 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endif
+@endpush
+
+@push('modals')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Livewire.on('close-modal', function() { $('#weightRecordModal').modal('hide'); });
+        Livewire.on('weight-record-saved', function() { location.reload(); });
+    });
+    function openCreateModal() {
+        Livewire.dispatch('resetForm');
+        document.getElementById('weightRecordModalTitle').textContent = 'Novo Registro de Peso';
+        $('#weightRecordModal').modal('show');
+    }
+    function openEditModal(id) {
+        Livewire.dispatch('editWeightRecord', { id: id });
+        document.getElementById('weightRecordModalTitle').textContent = 'Editar Registro de Peso';
+        $('#weightRecordModal').modal('show');
+    }
+</script>
 @endpush

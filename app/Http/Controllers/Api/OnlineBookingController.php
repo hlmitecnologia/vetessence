@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Appointment;
 use App\Models\OnlineBooking;
 use Illuminate\Http\Request;
 
@@ -37,7 +38,7 @@ class OnlineBookingController extends Controller
         $request->validate(['date' => 'required|date']);
 
         $date = $request->date;
-        $existing = \App\Models\Appointment::whereDate('date', $date)->count();
+        $existing = Appointment::whereDate('date', $date)->count();
 
         $maxSlots = 20;
         $available = max(0, $maxSlots - $existing);

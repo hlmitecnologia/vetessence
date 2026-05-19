@@ -969,6 +969,28 @@ php artisan test --env=testing --filter="DepartmentController|PetController|..."
 php artisan test --env=testing --filter="DepartmentControllerTest::test_index" --verbose
 ```
 
+## Phase V — Modal CRUD + SweetAlert2
+
+**Decisão arquitetural (2026-05-19):** Todos os CRUDs de Tier 1 (simples) e Tier 2 (médios) foram convertidos para modal Bootstrap + Livewire form components. Tier 3 (complexos: consultas, faturas, prontuários, etc.) permanecem como páginas. Delete usa SweetAlert2 global via interceptação de `form[method=DELETE]`.
+
+### Padrão por módulo
+1. `app/Livewire/{Entity}Form.php` — Livewire component com `mount($id = null)` (create/edit), validação, `save()`, dispatches `close-modal` + `entity-saved`
+2. `resources/views/livewire/{entity}-form.blade.php` — form dentro de `<div>` (sem layout, apenas campos)
+3. `resources/views/{entity}/index.blade.php` — adiciona modal Bootstrap com `@livewire('{entity}-form')`, botões "Novo" e "Editar" abrem modal via Alpine `$wire.set()`
+4. Delete — removido `onclick` inline, herdado interceptador global SweetAlert2 no layout
+5. Views `create.blade.php` e `edit.blade.php` mantidas como fallback (rota ainda existe)
+
+### Módulos convertidos (27) ✅ Completo
+**Tier 1 (14):** Categories, Suppliers, BreedDefaults, CommunicationTemplates, ConsentTemplates, ClinicalReportTemplates, GroomingTemplates, VaccineProtocols, Convenios, Departments, Positions, VaccinationReminders, WeightRecords, DrugInteractions
+
+**Tier 2 (13):** Pets, Tutors, Services, Products, Users, ZoonoticDiseases, EmergencyProtocols, ConvenioClaims, PreAnestheticEvaluations, Triage, ControlledSubstances, DrugFormulary, PetDeathRecords
+
+**Tier 3 (mantido como páginas):** Appointments, Invoices, MedicalRecords, Prescriptions, Hospitalizations, PurchaseOrders, Boardings, Surgeries, Exams, LaboratoryOrders, ImagingExams, TherapySessions, AnesthesiaMonitorings
+
+**Livewire components criados:** 29 (`*Form.php`)  
+**Index views atualizados:** 27 com modal Bootstrap  
+**Delete:** interceptador global SweetAlert2 no layout (substitui `confirm()` nativo)
+
 ## Rules
 1. Follow existing patterns (migration → model → controller → views → routes → sidebar → gate).
 2. Verify: `php artisan route:list 2>&1 | grep -c 'Target class'` (must be 0)

@@ -5,9 +5,9 @@
     <div class="card-header">
         <h3 class="card-title">Modelos de Laudo Clínico</h3>
         <div class="card-tools">
-            <a href="{{ route('clinical-report-templates.create') }}" class="btn btn-primary btn-sm">
+            <button onclick="openCreateModal()" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> Novo Modelo
-            </a>
+            </button>
         </div>
     </div>
     <div class="card-body">
@@ -68,9 +68,9 @@
                         <a href="{{ route('clinical-report-templates.show', $template) }}" class="btn btn-action btn-info" title="Ver">
                             <i class="fas fa-eye"></i>
                         </a>
-                        <a href="{{ route('clinical-report-templates.edit', $template) }}" class="btn btn-action btn-primary" title="Editar">
+                        <button onclick="openEditModal({{ $template->id }})" class="btn btn-action btn-primary" title="Editar">
                             <i class="fas fa-edit"></i>
-                        </a>
+                        </button>
                         <form action="{{ route('clinical-report-templates.destroy', $template) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
@@ -91,4 +91,38 @@
         @endif
     </div>
 </div>
+
+<!-- ClinicalReportTemplate Modal -->
+<div class="modal fade" id="clinicalReportTemplateModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clinicalReportTemplateModalTitle">Novo Modelo de Laudo</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('clinical-report-template-form', key('clinical-report-template-form'))
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('modals')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Livewire.on('close-modal', function() { $('#clinicalReportTemplateModal').modal('hide'); });
+        Livewire.on('clinical-report-template-saved', function() { location.reload(); });
+    });
+    function openCreateModal() {
+        Livewire.dispatch('resetForm');
+        document.getElementById('clinicalReportTemplateModalTitle').textContent = 'Novo Modelo de Laudo';
+        $('#clinicalReportTemplateModal').modal('show');
+    }
+    function openEditModal(id) {
+        Livewire.dispatch('editClinicalReportTemplate', { id: id });
+        document.getElementById('clinicalReportTemplateModalTitle').textContent = 'Editar Modelo de Laudo';
+        $('#clinicalReportTemplateModal').modal('show');
+    }
+</script>
+@endpush

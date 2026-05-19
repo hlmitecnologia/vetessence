@@ -1,7 +1,9 @@
 @extends('layouts.adminlte', ['title' => 'Solicitações de Reembolso'])
 @section('content')
     <div class="card">
-        <div class="card-header"><a href="{{ route('convenio-claims.create') }}" class="btn btn-primary">Nova Solicitação</a></div>
+        <div class="card-header">
+            <button onclick="openCreateModal()" class="btn btn-primary">Nova Solicitação</button>
+        </div>
         <div class="card-body table-responsive">
             <table class="table table-bordered">
                 <thead><tr><th>Nº</th><th>Convênio</th><th>Pet</th><th>Solicitado</th><th>Aprovado</th><th>Status</th><th>Ações</th></tr></thead>
@@ -22,4 +24,38 @@
         </div>
         <div class="card-footer">{{ $claims->links() }}</div>
     </div>
+
+<!-- ConvenioClaim Modal -->
+<div class="modal fade" id="convenioClaimModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="convenioClaimModalTitle">Nova Solicitação</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('convenio-claim-form', key('convenio-claim-form'))
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('modals')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Livewire.on('close-modal', function() { $('#convenioClaimModal').modal('hide'); });
+        Livewire.on('convenio-claim-saved', function() { location.reload(); });
+    });
+    function openCreateModal() {
+        Livewire.dispatch('resetForm');
+        document.getElementById('convenioClaimModalTitle').textContent = 'Nova Solicitação';
+        $('#convenioClaimModal').modal('show');
+    }
+    function openEditModal(id) {
+        Livewire.dispatch('editConvenioClaim', { id: id });
+        document.getElementById('convenioClaimModalTitle').textContent = 'Editar Solicitação';
+        $('#convenioClaimModal').modal('show');
+    }
+</script>
+@endpush

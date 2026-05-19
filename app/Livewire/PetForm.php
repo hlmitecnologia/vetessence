@@ -2,7 +2,10 @@
 
 namespace App\Livewire;
 
+use App\Models\Pet;
+use App\Models\PetTutor;
 use App\Models\Tutor;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -10,6 +13,7 @@ class PetForm extends Component
 {
     use WithFileUploads;
 
+    public $petId;
     public $name = '';
     public $tutor_id = '';
     public $species = '';
@@ -22,7 +26,7 @@ class PetForm extends Component
     public $size = 'medium';
     public $photo;
     public $notes = '';
-    
+
     public $tutors = [];
     public $speciesOptions = [
         'canine' => 'Canino',
@@ -41,13 +45,52 @@ class PetForm extends Component
         'gender' => 'required|in:male,female',
     ];
 
-    public function mount($tutorId = null)
+    public function mount($id = null)
     {
         $this->tutors = Tutor::orderBy('name')->get();
-        if ($tutorId) {
-            $this->tutor_id = $tutorId;
-        }
         $this->updateBreeds();
+        if ($id) $this->load($id);
+    }
+
+    #[On('editPet')]
+    public function load($id)
+    {
+        $this->petId = $id;
+        $pet = Pet::with('tutors')->findOrFail($id);
+        $this->name = $pet->name;
+        $this->tutor_id = (string) ($pet->tutors->first()->id ?? '');
+        $this->species = $pet->species;
+        $this->breed = $pet->breed ?? '';
+        $this->gender = $pet->gender;
+        $this->birth_date = $pet->birth_date ? $pet->birth_date->format('Y-m-d') : '';
+        $this->weight = (string) ($pet->weight ?? '');
+        $this->color = $pet->color ?? '';
+        $this->microchip = $pet->microchip ?? '';
+        $this->size = $pet->size ?? 'medium';
+        $this->notes = $pet->notes ?? '';
+        $this->tutors = Tutor::orderBy('name')->get();
+        $this->updateBreeds();
+    }
+
+    #[On('resetForm')]
+    public function resetForm()
+    {
+        $this->petId = null;
+        $this->name = '';
+        $this->tutor_id = '';
+        $this->species = '';
+        $this->breed = '';
+        $this->gender = '';
+        $this->birth_date = '';
+        $this->weight = '';
+        $this->color = '';
+        $this->microchip = '';
+        $this->size = 'medium';
+        $this->photo = null;
+        $this->notes = '';
+        $this->tutors = Tutor::orderBy('name')->get();
+        $this->updateBreeds();
+        $this->resetValidation();
     }
 
     public function updatedSpecies($value)
@@ -72,10 +115,10 @@ class PetForm extends Component
     {
         $this->validate();
 
-        $pet = \App\Models\Pet::create([
+        $data = [
             'name' => $this->name,
             'species' => $this->species,
-            'breed' => $this->breed,
+            'breed' => $this->breed ?: null,
             'gender' => $this->gender,
             'birth_date' => $this->birth_date ?: null,
             'weight' => $this->weight ?: null,
@@ -84,17 +127,23 @@ class PetForm extends Component
             'size' => $this->size,
             'notes' => $this->notes ?: null,
             'is_active' => true,
-        ]);
+        ];
 
-        \App\Models\PetTutor::create([
-            'pet_id' => $pet->id,
-            'tutor_id' => $this->tutor_id,
-            'is_primary' => true,
-            'relationship' => 'proprietário',
-        ]);
+        if ($this->petId) {
+            Pet::findOrFail($this->petId)->update($data);
+            PetTutor::where('pet_id', $this->petId)->where('is_primary', true)->update(['tutor_id' => $this->tutor_id]);
+        } else {
+            $pet = Pet::create($data);
+            PetTutor::create([
+                'pet_id' => $pet->id,
+                'tutor_id' => $this->tutor_id,
+                'is_primary' => true,
+                'relationship' => 'proprietário',
+            ]);
+        }
 
-        session()->flash('success', 'Pet cadastrado com sucesso!');
-        return redirect()->route('pets.index');
+        $this->dispatch('pet-saved');
+        $this->dispatch('close-modal');
     }
 
     public function render()

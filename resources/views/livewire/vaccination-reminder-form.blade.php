@@ -1,0 +1,66 @@
+<div>
+    <form wire:submit.prevent="save">
+        <div class="form-group">
+            <label>Pet *</label>
+            <select wire:model="pet_id" class="form-control @error('pet_id') is-invalid @enderror" required>
+                <option value="">Selecione...</option>
+                @foreach($pets as $pet)
+                    <option value="{{ $pet->id }}">{{ $pet->name }}</option>
+                @endforeach
+            </select>
+            @error('pet_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
+        </div>
+
+        <div class="form-group">
+            <label>Vacina (Registro) *</label>
+            <select wire:model="vaccination_id" class="form-control @error('vaccination_id') is-invalid @enderror" required>
+                <option value="">Selecione...</option>
+                @foreach($vaccinations as $vac)
+                    <option value="{{ $vac->id }}">{{ $vac->vaccine }}</option>
+                @endforeach
+            </select>
+            @error('vaccination_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Data Agendada *</label>
+                    <input type="date" wire:model="scheduled_date" class="form-control @error('scheduled_date') is-invalid @enderror" required>
+                    @error('scheduled_date') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Status *</label>
+                    <select wire:model="status" class="form-control @error('status') is-invalid @enderror" required>
+                        <option value="pending">Pendente</option>
+                        <option value="sent">Enviado</option>
+                        <option value="failed">Falhou</option>
+                    </select>
+                    @error('status') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Canal</label>
+            <select wire:model="channel" class="form-control">
+                <option value="">Selecione...</option>
+                <option value="sms">SMS</option>
+                <option value="whatsapp">WhatsApp</option>
+                <option value="email">E-mail</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Observações</label>
+            <textarea wire:model="notes" class="form-control" rows="2" maxlength="500"></textarea>
+        </div>
+
+        <div class="text-right">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Salvar</button>
+        </div>
+    </form>
+</div>

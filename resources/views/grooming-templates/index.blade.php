@@ -5,7 +5,7 @@
     <div class="card-header">
         <h3 class="card-title">Templates de Banho/Tosa</h3>
         <div class="card-tools">
-            <a href="{{ route('grooming-templates.create') }}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Novo</a>
+            <button onclick="openCreateModal()" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Novo</button>
         </div>
     </div>
     <div class="card-body table-responsive p-0">
@@ -34,7 +34,7 @@
                     <td>{!! $t->is_active ? '<span class="badge badge-success">Sim</span>' : '<span class="badge badge-secondary">Não</span>' !!}</td>
                     <td>
                         <a href="{{ route('grooming-templates.show', $t) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
-                        <a href="{{ route('grooming-templates.edit', $t) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                        <button onclick="openEditModal({{ $t->id }})" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></button>
                         <form action="{{ route('grooming-templates.destroy', $t) }}" method="POST" class="d-inline">
                             @csrf @method('DELETE')
                             <button class="btn btn-danger btn-sm" onclick="return confirm('Confirmar?')"><i class="fas fa-trash"></i></button>
@@ -49,4 +49,38 @@
     </div>
     <div class="card-footer">{{ $templates->links() }}</div>
 </div>
+
+<!-- GroomingTemplate Modal -->
+<div class="modal fade" id="groomingTemplateModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="groomingTemplateModalTitle">Novo Template de Banho/Tosa</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('grooming-template-form', key('grooming-template-form'))
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('modals')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Livewire.on('close-modal', function() { $('#groomingTemplateModal').modal('hide'); });
+        Livewire.on('grooming-template-saved', function() { location.reload(); });
+    });
+    function openCreateModal() {
+        Livewire.dispatch('resetForm');
+        document.getElementById('groomingTemplateModalTitle').textContent = 'Novo Template de Banho/Tosa';
+        $('#groomingTemplateModal').modal('show');
+    }
+    function openEditModal(id) {
+        Livewire.dispatch('editGroomingTemplate', { id: id });
+        document.getElementById('groomingTemplateModalTitle').textContent = 'Editar Template de Banho/Tosa';
+        $('#groomingTemplateModal').modal('show');
+    }
+</script>
+@endpush

@@ -5,9 +5,9 @@
     <div class="card-header">
         <h3 class="card-title">Modelos de Comunicação</h3>
         <div class="card-tools">
-            <a href="{{ route('communication-templates.create') }}" class="btn btn-primary btn-sm">
+            <button onclick="openCreateModal()" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> Novo Modelo
-            </a>
+            </button>
         </div>
     </div>
     <div class="card-body">
@@ -54,9 +54,9 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('communication-templates.edit', $template) }}" class="btn btn-action btn-primary" title="Editar">
+                        <button onclick="openEditModal({{ $template->id }})" class="btn btn-action btn-primary" title="Editar">
                             <i class="fas fa-edit"></i>
-                        </a>
+                        </button>
                         <form action="{{ route('communication-templates.destroy', $template) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
@@ -74,4 +74,38 @@
         @endif
     </div>
 </div>
+
+<!-- CommunicationTemplate Modal -->
+<div class="modal fade" id="communicationTemplateModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="communicationTemplateModalTitle">Novo Modelo de Comunicação</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('communication-template-form', key('communication-template-form'))
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('modals')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Livewire.on('close-modal', function() { $('#communicationTemplateModal').modal('hide'); });
+        Livewire.on('communication-template-saved', function() { location.reload(); });
+    });
+    function openCreateModal() {
+        Livewire.dispatch('resetForm');
+        document.getElementById('communicationTemplateModalTitle').textContent = 'Novo Modelo de Comunicação';
+        $('#communicationTemplateModal').modal('show');
+    }
+    function openEditModal(id) {
+        Livewire.dispatch('editCommunicationTemplate', { id: id });
+        document.getElementById('communicationTemplateModalTitle').textContent = 'Editar Modelo de Comunicação';
+        $('#communicationTemplateModal').modal('show');
+    }
+</script>
+@endpush
