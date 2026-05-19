@@ -24,10 +24,13 @@ class TutorNotificationPreferencesTest extends ModuleTestCase
 
     public function test_can_update_via_controller()
     {
-        $tutor = Tutor::factory()->create();
+        $tutor = Tutor::factory()->create([
+            'name' => 'Test Tutor',
+            'cpf' => '529.982.247-25',
+        ]);
         $response = $this->put(route('tutors.update', $tutor), [
-            'name' => $tutor->name,
-            'cpf' => $tutor->cpf,
+            'name' => 'Test Tutor',
+            'cpf' => '529.982.247-25',
             'email' => $tutor->email,
             'phone' => $tutor->phone,
             'notify_whatsapp' => '0',

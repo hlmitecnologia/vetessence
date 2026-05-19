@@ -206,7 +206,7 @@ Every model tested for:
 |-------------|--------|
 | Digital medical records (Res. 875/2006) | ✅ Done |
 | Prescription print (Res. 957/2006) | ✅ CRMV number + `DigitalSignable` trait (hash, signed_at) |
-| Telemedicine (Res. 1465/2022) | ⚠️ Partial — needs digital signature validation |
+| Telemedicine (Res. 1465/2022) | ✅ Assinatura digital SHA-256 + verificação pública |
 | Health certificate (Res. 974/2006) | ✅ CRMV + digital signature on print view |
 
 ---
@@ -221,16 +221,16 @@ Every model tested for:
 - [x] Add API controller tests (Api/*)
 - [x] Add Auth controller tests (Auth/*)
 
-### O2. Missing Edge Cases
-- [ ] Soft delete tests on models with `SoftDeletes`
-- [ ] File upload tests (photo, exam files)
-- [ ] Validation rule tests per controller
-- [ ] Pagination tests on index endpoints
-- [ ] Empty state tests (no records)
+### O2. Missing Edge Cases ✅
+- [x] Soft delete tests on models with `SoftDeletes`
+- [x] File upload tests (photo, exam files)
+- [x] Validation rule tests per controller
+- [x] Pagination tests on index endpoints
+- [x] Empty state tests (no records)
 
-### O3. Performance Tests
-- [ ] N+1 query detection on index views
-- [ ] Pagination with large datasets
+### O3. Performance Tests ✅
+- [x] N+1 query detection on index views
+- [x] Pagination with large datasets
 
 ### O4. Pre-existing Schema–Model Mismatches ✅
 All 40+ missing columns added via 8 migrations across 10 tables:
@@ -871,18 +871,59 @@ Análise de gaps funcionais sob perspectiva veterinária. 12 itens organizados e
 | Item | Descrição |
 |------|-----------|
 | Rota | `/docs` com middleware `can:docs.view` (admin/veterinario) |
-| Controller | `DocController` (index + show) ou Livewire |
+| Controller | `DocController` (index + show) |
 | Views | `docs/index.blade.php` — sidebar de navegação, conteúdo em Markdown renderizado |
-| Conteúdo | 1. **Manual do Usuário** (fluxos: agendar consulta, lançar vacina, emitir receita, etc.) 2. **Manual Técnico** (arquitetura, módulos, permissões, varáveis de ambiente, deploy) 3. **Changelog** (histórico de versões baseado em commits) |
-| Armazenamento | Arquivos `.md` em `storage/docs/` ou diretório próprio `docs/` no projeto, renderizados com pacote Markdown (ex: `spatie/laravel-markdown`) |
-| Seed | Runner artisan `docs:publish` que copia `resources/docs/` para `storage/docs/` |
+| Conteúdo | Manual do Usuário (25 módulos), Manual Técnico (arquitetura, API, permissões, testes, deploy), Changelog |
+| Armazenamento | Arquivos `.md` em `resources/docs/`, publicados via `docs:publish` |
 | Gate | `docs.view` |
-| Testes | ~4 (Feature: access, render) |
+| Testes | 4 (Feature: access, render) |
+
+**Módulos documentados no Manual do Usuário (25):**
+
+| # | Módulo | Fluxos Cobertos |
+|---|--------|----------------|
+| 1 | Agenda | Agendar consulta, calendário visual, agendamento online, reagendar, cancelar |
+| 2 | Tutores | Cadastro, edição, histórico de comunicação, preferências de notificação |
+| 3 | Pets | Cadastro, microchip, timeline, registro de óbito, carteirinha |
+| 4 | Convênios | Cadastro, planos, faturamento de guias, claims automáticos |
+| 5 | Prontuários | SOAP, diagnóstico, plano terapêutico, anexos |
+| 6 | Prescrições | Receita digital, dosagem, verificação por QR code, impressão |
+| 7 | Vacinas | Aplicação, protocolos, certificado PDF (CFMV), lembretes, previsão de vencimento |
+| 8 | Exames | Pedido, coleta, resultado, laudo |
+| 9 | Laboratório | Pedidos, amostras, resultados |
+| 10 | Imagem | Raio-X, ultrassom, tomografia, laudos |
+| 11 | Cirurgias | Agendamento, checklist, monitoramento anestésico, avaliação pré-anestésica |
+| 12 | Internações | Registro, evolução clínica, prescrição diária, resumo de alta |
+| 13 | Farmácia | Produtos, categorias, fornecedores, preços por espécie |
+| 14 | Estoque | Movimentações, transferência entre filiais, ajuste, alerta de vencimento |
+| 15 | Pedidos de Compra | Rascunho → pedido → recebimento, aprovação |
+| 16 | Substâncias Controladas | Registro ANVISA, relatórios mensais/anuais, exportação CSV |
+| 17 | Financeiro | Faturas, pagamentos, gateway, comissões, conciliação bancária |
+| 18 | Relatórios | Financeiro, comissões, auditoria, CSVs exportáveis |
+| 19 | Comunicação | Chat interno, notas internas, fila de comunicação, modelos, WhatsApp/SMS |
+| 20 | Triagem | Painel Livewire, cores de gravidade, alerta sonoro, priorização |
+| 21 | Emergência | Protocolos de emergência, busca por espécie/gravidade |
+| 22 | Hospedagem | Check-in/check-out, tarefas diárias, banho e tosa |
+| 23 | Odontologia | Ficha odontológica, procedimentos |
+| 24 | Zoonoses | Cadastro, notificação, relatórios |
+| 25 | Portal do Tutor | Login, dashboard, prontuários, exames, receitas, agendamento |
+
+**Manual Técnico:**
+
+| Seção | Conteúdo |
+|-------|----------|
+| Arquitetura | Stack, estrutura de diretórios, escopo de dados, fluxo de middleware |
+| Módulos | Lista completa de 25 módulos com controllers e models |
+| Permissões | 10 papéis, 70+ permissões, tabela papel × permissão |
+| API | Endpoints públicos (/r/{hash}, /api/insurance/webhook), autenticação, rate limiting |
+| Testes | Suite completa (293 Unit + 403 Feature), DatabaseTransactions, como rodar |
+| Deploy | Pré-requisitos, passos, manutenção, auto-update |
+| Variáveis de Ambiente | Tabela completa com todas as variáveis |
 
 | Feature | Migrations | Models | Controllers | Commands | Views | Tests | Status |
 |---------|-----------|--------|-------------|----------|-------|-------|--------|
 | U1 Auto-Update | 1 | 1 | 1 | — | 2 | 4 | ✅ Feito |
-| U2 Rebranding | Pendente | Pendente | Pendente | — | Pendente | Pendente | Pendente |
+| U2 Rebranding | — | — | 1 | — | 1 | 6 | ✅ Feito |
 | U3 Documentação | — | — | 1 | 1 | 1 | 4 | ✅ Feito |
 
 ---

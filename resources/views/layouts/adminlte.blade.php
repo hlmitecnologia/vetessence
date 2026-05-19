@@ -4,7 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'VetEssence' }} - Sistema de Gestão Veterinária</title>
+    <title>{{ $title ?? branding('clinic_name', 'VetEssence') }} - {{ branding('clinic_name', 'VetEssence') }}</title>
+    <link rel="icon" type="image/x-icon" href="{{ branding_favicon_url() }}">
+    <style>{!! branding_css_vars() !!}</style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
@@ -15,7 +17,6 @@
         .btn-action i { margin: 0; }
     </style>
     @stack('styles')
-    @livewireStyles
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
@@ -608,7 +609,7 @@
         <!-- Footer -->
         <footer class="main-footer">
             <div class="float-right d-none d-sm-inline">
-                <strong>VetEssence</strong> v1.0
+                <strong>{{ branding('clinic_name', 'VetEssence') }}</strong> v1.0
             </div>
             <strong>&copy; {{ date('Y') }} Clínica Veterinária</strong>
         </footer>
@@ -653,6 +654,5 @@
             }
         });
     </script>
-    @livewireScripts
 </body>
 </html>

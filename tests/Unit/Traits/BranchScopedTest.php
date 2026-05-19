@@ -14,7 +14,7 @@ class BranchScopedTest extends TestCase
 
     public function test_global_scope_is_registered(): void
     {
-        $scopes = Appointment::getGlobalScopes();
+        $scopes = (new Appointment)->getGlobalScopes();
         $this->assertArrayHasKey(BranchScope::class, $scopes);
     }
 

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Process\Process;
 
 class DatabaseBackup extends Command
 {
@@ -21,25 +22,40 @@ class DatabaseBackup extends Command
         $username = $db['username'];
         $password = $db['password'];
 
-        $command = "mysqldump -h {$host} -P {$port} -u {$username} -p'{$password}' {$database}";
+        $path = storage_path("app/backups/{$filename}");
+
+        $process = new Process([
+            'mysqldump',
+            '-h', $host,
+            '-P', $port,
+            '-u', $username,
+            '-p' . $password,
+            $database,
+        ]);
+        $process->setTimeout(120);
+        $process->run();
 
         if ($this->option('compress')) {
             $filename .= '.gz';
-            $command .= ' | gzip';
+            $gz = gzopen($path . '.gz', 'w');
+            gzwrite($gz, $process->getOutput());
+            gzclose($gz);
+        } else {
+            file_put_contents($path, $process->getOutput());
         }
 
-        $command .= ' > ' . storage_path("app/backups/{$filename}");
-
-        $exitCode = 0;
-        $output = null;
-        exec($command, $output, $exitCode);
-
-        if ($exitCode === 0) {
+        if ($process->isSuccessful()) {
             $this->info("Backup created: {$filename}");
         } else {
-            $this->error('Backup failed.');
+            $this->error('Backup failed: ' . $process->getErrorOutput());
+
+            if (! $this->option('compress')) {
+                @unlink($path);
+            } else {
+                @unlink($path . '.gz');
+            }
         }
 
-        return $exitCode;
+        return $process->isSuccessful() ? 0 : 1;
     }
 }

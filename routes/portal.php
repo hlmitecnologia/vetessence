@@ -11,6 +11,7 @@ use App\Http\Controllers\Portal\InvoiceController;
 use App\Http\Controllers\Portal\MedicalRecordController;
 use App\Http\Controllers\Portal\ExamController;
 use App\Http\Controllers\Portal\PrescriptionController;
+use App\Http\Controllers\Portal\DocController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest:tutor')->group(function () {
@@ -47,4 +48,7 @@ Route::middleware('auth:tutor')->group(function () {
     Route::get('exams', [ExamController::class, 'index'])->name('portal.exams.index');
 
     Route::get('prescriptions', [PrescriptionController::class, 'index'])->name('portal.prescriptions.index');
+
+    Route::get('docs', [DocController::class, 'index'])->name('portal.docs.index');
+    Route::get('docs/{page}', [DocController::class, 'show'])->name('portal.docs.show');
 });

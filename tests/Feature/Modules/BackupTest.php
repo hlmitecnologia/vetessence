@@ -20,7 +20,14 @@ class BackupTest extends ModuleTestCase
 
     public function test_create()
     {
+        \Illuminate\Support\Facades\Artisan::shouldReceive('call')
+            ->with('backup:database')
+            ->once()
+            ->andReturn(0);
+        \Illuminate\Support\Facades\Artisan::shouldReceive('output')
+            ->andReturn('');
+
         $response = $this->get(route('backups.create'));
-        $response->assertRedirect();
+        $response->assertRedirect(route('backups.index'));
     }
 }

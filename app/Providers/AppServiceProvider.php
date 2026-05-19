@@ -32,87 +32,88 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Admin
-        Gate::define('admin', fn($user) => $user->can('admin.view'));
-        Gate::define('unidades', fn($user) => $user->can('branches.view'));
-        Gate::define('configuracoes', fn($user) => $user->can('configuracoes.view'));
+        Gate::define('admin', fn($user) => $user->hasPermissionTo('admin.view'));
+        Gate::define('unidades', fn($user) => $user->hasPermissionTo('branches.view'));
+        Gate::define('configuracoes', fn($user) => $user->hasPermissionTo('configuracoes.view'));
 
         // HR
-        Gate::define('departments.view', fn($user) => $user->can('departments.view'));
-        Gate::define('positions.view', fn($user) => $user->can('positions.view'));
-        Gate::define('employees.view', fn($user) => $user->can('employees.view'));
+        Gate::define('departments.view', fn($user) => $user->hasPermissionTo('departments.view'));
+        Gate::define('positions.view', fn($user) => $user->hasPermissionTo('positions.view'));
+        Gate::define('employees.view', fn($user) => $user->hasPermissionTo('employees.view'));
 
         // Cadastro
-        Gate::define('tutores', fn($user) => $user->can('tutors.view'));
-        Gate::define('pets', fn($user) => $user->can('pets.view'));
-        Gate::define('convenios', fn($user) => $user->can('convenios.view'));
+        Gate::define('tutores', fn($user) => $user->hasPermissionTo('tutors.view'));
+        Gate::define('pets', fn($user) => $user->hasPermissionTo('pets.view'));
+        Gate::define('convenios', fn($user) => $user->hasPermissionTo('convenios.view'));
 
         // Atendimento
-        Gate::define('atendimentos', fn($user) => $user->can('appointments.view'));
-        Gate::define('prontuarios', fn($user) => $user->can('medical-records.view'));
-        Gate::define('vacinas', fn($user) => $user->can('vaccinations.view'));
-        Gate::define('exames', fn($user) => $user->can('exams.view'));
-        Gate::define('cirurgias', fn($user) => $user->can('surgeries.view'));
-        Gate::define('prescricoes', fn($user) => $user->can('prescriptions.view'));
-        Gate::define('hospitalizacao', fn($user) => $user->can('hospitalizations.view'));
-        Gate::define('laboratorio', fn($user) => $user->can('laboratory.view'));
-        Gate::define('imagem', fn($user) => $user->can('imaging.view'));
-        Gate::define('referral', fn($user) => $user->can('referrals.view'));
-        Gate::define('parasitario', fn($user) => $user->can('parasite-controls.view'));
-        Gate::define('protocolo-vacinas', fn($user) => $user->can('vaccine-protocols.view'));
-        Gate::define('lembrete-vacinas', fn($user) => $user->can('vaccination-reminders.view'));
-        Gate::define('teleconsulta', fn($user) => $user->can('teleconsultations.view'));
-        Gate::define('agendamento-online', fn($user) => $user->can('online-bookings.view'));
-        Gate::define('interacao-medicamentosa', fn($user) => $user->can('drug-interactions.view'));
-        Gate::define('modelo-laudo', fn($user) => $user->can('clinical-report-templates.view'));
-        Gate::define('certificado-sanitario', fn($user) => $user->can('health-certificates.view'));
-        Gate::define('obito', fn($user) => $user->can('pet-death-records.view'));
-        Gate::define('servicos', fn($user) => $user->can('services.view'));
-        Gate::define('terapias', fn($user) => $user->can('therapy-sessions.view'));
-        Gate::define('hospedagem', fn($user) => $user->can('boardings.view'));
-        Gate::define('zoonoses', fn($user) => $user->can('zoonotic-diseases.view'));
+        Gate::define('atendimentos', fn($user) => $user->hasPermissionTo('appointments.view'));
+        Gate::define('prontuarios', fn($user) => $user->hasPermissionTo('medical-records.view'));
+        Gate::define('vacinas', fn($user) => $user->hasPermissionTo('vaccinations.view'));
+        Gate::define('exames', fn($user) => $user->hasPermissionTo('exams.view'));
+        Gate::define('cirurgias', fn($user) => $user->hasPermissionTo('surgeries.view'));
+        Gate::define('prescricoes', fn($user) => $user->hasPermissionTo('prescriptions.view'));
+        Gate::define('hospitalizacao', fn($user) => $user->hasPermissionTo('hospitalizations.view'));
+        Gate::define('laboratorio', fn($user) => $user->hasPermissionTo('laboratory.view'));
+        Gate::define('imagem', fn($user) => $user->hasPermissionTo('imaging.view'));
+        Gate::define('referral', fn($user) => $user->hasPermissionTo('referrals.view'));
+        Gate::define('parasitario', fn($user) => $user->hasPermissionTo('parasite-controls.view'));
+        Gate::define('protocolo-vacinas', fn($user) => $user->hasPermissionTo('vaccine-protocols.view'));
+        Gate::define('lembrete-vacinas', fn($user) => $user->hasPermissionTo('vaccination-reminders.view'));
+        Gate::define('teleconsulta', fn($user) => $user->hasPermissionTo('teleconsultations.view'));
+        Gate::define('agendamento-online', fn($user) => $user->hasPermissionTo('online-bookings.view'));
+        Gate::define('interacao-medicamentosa', fn($user) => $user->hasPermissionTo('drug-interactions.view'));
+        Gate::define('modelo-laudo', fn($user) => $user->hasPermissionTo('clinical-report-templates.view'));
+        Gate::define('certificado-sanitario', fn($user) => $user->hasPermissionTo('health-certificates.view'));
+        Gate::define('obito', fn($user) => $user->hasPermissionTo('pet-death-records.view'));
+        Gate::define('servicos', fn($user) => $user->hasPermissionTo('services.view'));
+        Gate::define('terapias', fn($user) => $user->hasPermissionTo('therapy-sessions.view'));
+        Gate::define('hospedagem', fn($user) => $user->hasPermissionTo('boardings.view'));
+        Gate::define('zoonoses', fn($user) => $user->hasPermissionTo('zoonotic-diseases.view'));
 
         // Financeiro
-        Gate::define('financeiro', fn($user) => $user->can('invoices.view'));
-        Gate::define('gateway-pagamento', fn($user) => $user->can('payment-gateways.view'));
+        Gate::define('financeiro', fn($user) => $user->hasPermissionTo('invoices.view'));
+        Gate::define('gateway-pagamento', fn($user) => $user->hasPermissionTo('payment-gateways.view'));
 
         // Estoque
-        Gate::define('estoque', fn($user) => $user->can('products.view'));
-        Gate::define('purchase-orders.view', fn($user) => $user->can('purchase-orders.view'));
-        Gate::define('purchase-orders.create', fn($user) => $user->can('purchase-orders.create'));
-        Gate::define('purchase-orders.edit', fn($user) => $user->can('purchase-orders.edit'));
-        Gate::define('purchase-orders.delete', fn($user) => $user->can('purchase-orders.delete'));
-        Gate::define('purchase-orders.approve', fn($user) => $user->can('purchase-orders.approve'));
-        Gate::define('purchase-orders.receive', fn($user) => $user->can('purchase-orders.receive'));
+        Gate::define('estoque', fn($user) => $user->hasPermissionTo('products.view'));
+        Gate::define('purchase-orders.view', fn($user) => $user->hasPermissionTo('purchase-orders.view'));
+        Gate::define('purchase-orders.create', fn($user) => $user->hasPermissionTo('purchase-orders.create'));
+        Gate::define('purchase-orders.edit', fn($user) => $user->hasPermissionTo('purchase-orders.edit'));
+        Gate::define('purchase-orders.delete', fn($user) => $user->hasPermissionTo('purchase-orders.delete'));
+        Gate::define('purchase-orders.approve', fn($user) => $user->hasPermissionTo('purchase-orders.approve'));
+        Gate::define('purchase-orders.receive', fn($user) => $user->hasPermissionTo('purchase-orders.receive'));
 
         // Fase T
-        Gate::define('drug-formulary.view', fn($user) => $user->can('drug-formulary.view'));
-        Gate::define('drug-formulary.create', fn($user) => $user->can('drug-formulary.create'));
-        Gate::define('drug-formulary.edit', fn($user) => $user->can('drug-formulary.edit'));
-        Gate::define('drug-formulary.delete', fn($user) => $user->can('drug-formulary.delete'));
-        Gate::define('stock.transfer', fn($user) => $user->can('stock.transfer'));
-        Gate::define('emergency-protocols.view', fn($user) => $user->can('emergency-protocols.view'));
-        Gate::define('emergency-protocols.create', fn($user) => $user->can('emergency-protocols.create'));
-        Gate::define('emergency-protocols.edit', fn($user) => $user->can('emergency-protocols.edit'));
-        Gate::define('emergency-protocols.delete', fn($user) => $user->can('emergency-protocols.delete'));
-        Gate::define('corporate-dashboard.view', fn($user) => $user->can('corporate-dashboard.view'));
-        Gate::define('system-update', fn($user) => $user->can('system-update'));
-        Gate::define('docs.view', fn($user) => $user->can('docs.view'));
+        Gate::define('drug-formulary.view', fn($user) => $user->hasPermissionTo('drug-formulary.view'));
+        Gate::define('drug-formulary.create', fn($user) => $user->hasPermissionTo('drug-formulary.create'));
+        Gate::define('drug-formulary.edit', fn($user) => $user->hasPermissionTo('drug-formulary.edit'));
+        Gate::define('drug-formulary.delete', fn($user) => $user->hasPermissionTo('drug-formulary.delete'));
+        Gate::define('stock.transfer', fn($user) => $user->hasPermissionTo('stock.transfer'));
+        Gate::define('emergency-protocols.view', fn($user) => $user->hasPermissionTo('emergency-protocols.view'));
+        Gate::define('emergency-protocols.create', fn($user) => $user->hasPermissionTo('emergency-protocols.create'));
+        Gate::define('emergency-protocols.edit', fn($user) => $user->hasPermissionTo('emergency-protocols.edit'));
+        Gate::define('emergency-protocols.delete', fn($user) => $user->hasPermissionTo('emergency-protocols.delete'));
+        Gate::define('corporate-dashboard.view', fn($user) => $user->hasPermissionTo('corporate-dashboard.view'));
+        Gate::define('system-update', fn($user) => $user->hasPermissionTo('system-update'));
+        Gate::define('branding', fn($user) => $user->hasPermissionTo('branding'));
+        Gate::define('docs.view', fn($user) => $user->hasPermissionTo('docs.view'));
 
         // Equipamentos
-        Gate::define('integracao-equipamentos', fn($user) => $user->can('lab-equipment.view'));
+        Gate::define('integracao-equipamentos', fn($user) => $user->hasPermissionTo('lab-equipment.view'));
 
         // Comunicacao
-        Gate::define('notificacoes', fn($user) => $user->can('notification-logs.view'));
-        Gate::define('nota-interna', fn($user) => $user->can('staff-notes.view'));
-        Gate::define('chat', fn($user) => $user->can('chat.view'));
+        Gate::define('notificacoes', fn($user) => $user->hasPermissionTo('notification-logs.view'));
+        Gate::define('nota-interna', fn($user) => $user->hasPermissionTo('staff-notes.view'));
+        Gate::define('chat', fn($user) => $user->hasPermissionTo('chat.view'));
 
         // Agenda
-        Gate::define('agenda-equipe', fn($user) => $user->can('staff-schedules.view'));
+        Gate::define('agenda-equipe', fn($user) => $user->hasPermissionTo('staff-schedules.view'));
 
         // Auditoria
-        Gate::define('auditoria', fn($user) => $user->can('audit-logs.view'));
+        Gate::define('auditoria', fn($user) => $user->hasPermissionTo('audit-logs.view'));
 
         // Backup
-        Gate::define('backup', fn($user) => $user->can('backups.view'));
+        Gate::define('backup', fn($user) => $user->hasPermissionTo('backups.view'));
     }
 }

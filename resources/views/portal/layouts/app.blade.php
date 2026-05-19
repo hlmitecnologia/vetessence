@@ -17,7 +17,10 @@
                     Vet<span class="text-gray-800">Essence</span>
                 </a>
                 @auth('tutor')
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('portal.docs.index') }}" class="text-sm text-gray-400 hover:text-blue-600 transition" title="Manual do Tutor">
+                        <i class="fas fa-question-circle text-lg"></i>
+                    </a>
                     <span class="text-sm text-gray-500 hidden sm:inline">{{ Auth::guard('tutor')->user()->name }}</span>
                     <form method="POST" action="{{ route('portal.logout') }}">
                         @csrf

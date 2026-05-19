@@ -32,7 +32,7 @@
                 CRMV<br>Conselho Regional<br>Medicina Veterinária
             </div>
             <h1>Certificado de Vacinação</h1>
-            <h2>{{ config('app.name', 'Clínica Veterinária') }} — {{ config('app.cnpj', '') }}</h2>
+            <h2>{{ branding('clinic_name', config('app.name', 'Clínica Veterinária')) }} — {{ config('app.cnpj', '') }}</h2>
             <p style="font-size: 9px; margin-top: 4px;">Emissão: {{ now()->format('d/m/Y') }}</p>
         </div>
 
@@ -84,7 +84,7 @@
         </div>
 
         <div class="footer">
-            <p>Documento gerado eletronicamente em {{ now()->format('d/m/Y H:i:s') }} — {{ config('app.name', 'VetEssence') }}</p>
+            <p>Documento gerado eletronicamente em {{ now()->format('d/m/Y H:i:s') }} — {{ branding('clinic_name', config('app.name', 'VetEssence')) }}</p>
         </div>
         <div class="disclaimer">
             <p>Este certificado é válido apenas com assinatura e carimbo do veterinário responsável, nos termos da Resolução CFMV nº 957/2006.</p>

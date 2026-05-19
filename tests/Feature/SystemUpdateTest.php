@@ -25,7 +25,10 @@ class SystemUpdateTest extends TestCase
     public function test_authorized_user_can_access()
     {
         $user = User::factory()->create();
-        $role = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'su-test', 'guard_name' => 'web']);
+        $role = \Spatie\Permission\Models\Role::firstOrCreate(
+            ['name' => 'su-test', 'guard_name' => 'web'],
+            ['slug' => 'su-test']
+        );
         $role->givePermissionTo(\Spatie\Permission\Models\Permission::firstOrCreate(['name' => 'system-update', 'guard_name' => 'web']));
         $user->assignRole($role);
 
@@ -35,7 +38,10 @@ class SystemUpdateTest extends TestCase
     public function test_token_can_be_saved()
     {
         $user = User::factory()->create();
-        $role = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'su-token-test', 'guard_name' => 'web']);
+        $role = \Spatie\Permission\Models\Role::firstOrCreate(
+            ['name' => 'su-token-test', 'guard_name' => 'web'],
+            ['slug' => 'su-token-test']
+        );
         $role->givePermissionTo(\Spatie\Permission\Models\Permission::firstOrCreate(['name' => 'system-update', 'guard_name' => 'web']));
         $user->assignRole($role);
 

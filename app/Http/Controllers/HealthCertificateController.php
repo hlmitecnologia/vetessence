@@ -117,8 +117,8 @@ class HealthCertificateController extends Controller
 
         $view = $healthCertificate->is_cvi ? 'health-certificates.cvi-pdf' : 'health-certificates.pdf';
         $filename = $healthCertificate->is_cvi
-            ? "cvi-{$healthCertificate->cvi_number}.pdf"
-            : "certificado-{$healthCertificate->certificate_number}.pdf";
+            ? "cvi-" . str_replace('/', '-', $healthCertificate->cvi_number) . ".pdf"
+            : "certificado-" . str_replace('/', '-', $healthCertificate->certificate_number) . ".pdf";
 
         $pdf = Pdf::loadView($view, compact('healthCertificate'));
         return $pdf->download($filename);

@@ -98,7 +98,7 @@
     </div>
 
     <div class="footer">
-        Documento gerado eletronicamente em {{ now()->format('d/m/Y H:i:s') }} - VetEssence Sistema de Gestão Veterinária
+        Documento gerado eletronicamente em {{ now()->format('d/m/Y H:i:s') }} - {{ branding('clinic_name', 'VetEssence') }} Sistema de Gestão Veterinária
     </div>
 </body>
 </html>

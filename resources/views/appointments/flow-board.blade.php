@@ -60,10 +60,11 @@
     </div>
     <div class="card-body">
         <div class="kanban-board">
-            @forelse($statuses as $status => $appointmentsList)
+            @forelse($statuses as $status)
+            @php $appointmentsList = $appointments[$status] ?? collect(); @endphp
             <div class="kanban-column">
                 <div class="kanban-column-header">
-                    {{ $status }}
+                    {{ ucfirst($status) }}
                     <span class="badge badge-secondary float-right">{{ $appointmentsList->count() }}</span>
                 </div>
                 @forelse($appointmentsList as $appointment)
@@ -77,14 +78,14 @@
                         <div><i class="fas fa-user-md"></i> {{ $appointment->vet->name ?? $appointment->user->name ?? 'Veterinário' }}</div>
                     </div>
                     <div class="card-actions">
-                        @foreach($statuses as $nextStatus => $val)
-                            @if($nextStatus !== $status)
+                        @foreach($statuses as $next)
+                            @if($next !== $status)
                             <form action="{{ route('appointments.update', $appointment) }}" method="POST">
                                 @csrf
                                 @method('PUT')
-                                <input type="hidden" name="status" value="{{ $nextStatus }}">
-                                <button type="submit" class="btn btn-action btn-sm btn-outline-secondary" title="Mover para {{ $nextStatus }}">
-                                    <i class="fas fa-arrow-right"></i> {{ $nextStatus }}
+                                <input type="hidden" name="status" value="{{ $next }}">
+                                <button type="submit" class="btn btn-action btn-sm btn-outline-secondary" title="Mover para {{ $next }}">
+                                    <i class="fas fa-arrow-right"></i> {{ $next }}
                                 </button>
                             </form>
                             @endif

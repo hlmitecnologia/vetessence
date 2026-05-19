@@ -6,7 +6,7 @@
     <p class="text-gray-500 text-sm">Bem-vindo ao Portal do Tutor</p>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <a href="{{ route('portal.pets.index') }}" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition">
         <div class="flex items-center gap-4">
             <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -39,6 +39,18 @@
             <div>
                 <p class="text-2xl font-bold text-gray-800">{{ $pendingInvoices }}</p>
                 <p class="text-sm text-gray-500">Faturas pendentes</p>
+            </div>
+        </div>
+    </a>
+
+    <a href="{{ route('portal.docs.index') }}" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-question-circle text-purple-600 text-xl"></i>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-800">Manual do Tutor</p>
+                <p class="text-sm text-gray-500">Tire suas dúvidas</p>
             </div>
         </div>
     </a>

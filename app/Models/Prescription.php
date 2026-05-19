@@ -17,7 +17,7 @@ class Prescription extends Model
         'medical_record_id', 'medication', 'dosage', 'unit',
         'frequency', 'duration', 'route', 'instructions', 'batch',
         'created_by', 'notes', 'verification_hash', 'verified_at',
-        'digital_signature', 'signed_at', 'branch_id'
+        'content_hash', 'digital_signature', 'signed_at', 'branch_id'
     ];
 
     protected $casts = [

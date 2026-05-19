@@ -24,10 +24,10 @@
             <tbody>
                 @foreach($files as $backup)
                 <tr>
-                    <td>{{ $backup->name ?? basename($backup->path ?? $backup) }}</td>
+                    <td>{{ $backup['name'] }}</td>
                     <td>
                         @php
-                            $size = $backup->size ?? (file_exists($backup->path ?? $backup) ? filesize($backup->path ?? $backup) : 0);
+                            $size = $backup['size'] ?? 0;
                             if ($size >= 1073741824) {
                                 $formatted = number_format($size / 1073741824, 2) . ' GB';
                             } elseif ($size >= 1048576) {
@@ -40,12 +40,12 @@
                         @endphp
                         {{ $formatted }}
                     </td>
-                    <td>{{ $backup->created_at->format('d/m/Y H:i') }}</td>
+                    <td>{{ \Carbon\Carbon::createFromTimestamp($backup['last_modified'])->format('d/m/Y H:i') }}</td>
                     <td>
-                        <a href="{{ route('backups.download', $backup) }}" class="btn btn-action btn-success" title="Download">
+                        <a href="{{ route('backups.download', $backup['name']) }}" class="btn btn-action btn-success" title="Download">
                             <i class="fas fa-download"></i>
                         </a>
-                        <form action="{{ route('backups.destroy', $backup) }}" method="POST" class="d-inline">
+                        <form action="{{ route('backups.destroy', $backup['name']) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este backup?')" class="btn btn-action btn-danger" title="Excluir">

@@ -40,7 +40,8 @@ class PrescriptionController extends Controller
 
         $validated['created_by'] = auth()->id();
 
-        Prescription::create($validated);
+        $prescription = Prescription::create($validated);
+        $prescription->sign();
 
         return redirect()->route('prescriptions.index')->with('success', 'Prescrição criada com sucesso!');
     }

@@ -178,7 +178,7 @@
         </div>
 
         <div class="footer">
-            <p>{{ config('app.name', 'VetEssence') }} — Sistema de Gestão Veterinária</p>
+            <p>{{ branding('clinic_name', config('app.name', 'VetEssence')) }} — Sistema de Gestão Veterinária</p>
             <p>Documento gerado em {{ now()->format('d/m/Y H:i:s') }} — Consulte a validade junto ao CRMV de sua jurisdição</p>
         </div>
     </div>

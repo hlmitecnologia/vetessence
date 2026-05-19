@@ -24,7 +24,10 @@ class CorporateDashboardTest extends TestCase
     public function test_authorized_user_can_access()
     {
         $user = User::factory()->create();
-        $role = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'corp-dash-test', 'guard_name' => 'web']);
+        $role = \Spatie\Permission\Models\Role::firstOrCreate(
+            ['name' => 'corp-dash-test', 'guard_name' => 'web'],
+            ['slug' => 'corp-dash-test']
+        );
         $role->givePermissionTo(\Spatie\Permission\Models\Permission::firstOrCreate(['name' => 'corporate-dashboard.view', 'guard_name' => 'web']));
         $user->assignRole($role);
 

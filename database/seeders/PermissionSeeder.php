@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Role as AppRole;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role as SpatieRole;
 
@@ -141,6 +142,9 @@ class PermissionSeeder extends Seeder
             // System Update
             'system-update',
 
+            // Branding
+            'branding',
+
             // Documentation
             'docs.view',
         ];
@@ -156,7 +160,9 @@ class PermissionSeeder extends Seeder
 
             'branch-admin' => $permissions, // all within branch scope
 
-            'veterinarian' => [
+            'admin' => $permissions,
+
+            'veterinario' => [
                 'tutors.view', 'tutors.create', 'tutors.edit',
                 'pets.view', 'pets.create', 'pets.edit',
                 'appointments.view', 'appointments.create', 'appointments.edit',
@@ -207,7 +213,7 @@ class PermissionSeeder extends Seeder
                 'emergency-protocols.view', 'emergency-protocols.create', 'emergency-protocols.edit', 'emergency-protocols.delete',
             ],
 
-            'receptionist' => [
+            'recepcionista' => [
                 'tutors.view', 'tutors.create', 'tutors.edit',
                 'pets.view', 'pets.create', 'pets.edit',
                 'appointments.view', 'appointments.create', 'appointments.edit',
@@ -229,7 +235,7 @@ class PermissionSeeder extends Seeder
                 'chat.view', 'chat.create',
             ],
 
-            'financial' => [
+            'financeiro' => [
                 'invoices.view', 'invoices.create', 'invoices.edit', 'invoices.delete',
                 'payments.view', 'payments.create', 'payments.edit',
                 'financial-reports.view', 'financial-reports.create',
@@ -257,7 +263,7 @@ class PermissionSeeder extends Seeder
                 'corporate-dashboard.view',
             ],
 
-            'stock-manager' => [
+            'estoque' => [
                 'products.view', 'products.create', 'products.edit', 'products.delete',
                 'stock.view', 'stock.create', 'stock.edit',
                 'suppliers.view', 'suppliers.create', 'suppliers.edit', 'suppliers.delete',
@@ -296,7 +302,16 @@ class PermissionSeeder extends Seeder
 
         // Create/update roles and assign permissions
         foreach ($rolePermissions as $slug => $perms) {
-            $role = SpatieRole::findOrCreate($slug, 'web');
+            // Check if role already exists by slug (created by RoleSeeder)
+            $existing = AppRole::where('slug', $slug)->first();
+            if ($existing) {
+                $role = SpatieRole::findById($existing->id);
+            } else {
+                $role = SpatieRole::findOrCreate($slug, 'web');
+                if (\Schema::hasColumn('roles', 'slug')) {
+                    $role->update(['slug' => $slug]);
+                }
+            }
             $role->syncPermissions($perms);
         }
     }

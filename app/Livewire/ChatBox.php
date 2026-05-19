@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use App\Models\ChatMessage;
 use App\Models\User;
@@ -15,8 +15,6 @@ class ChatBox extends Component
     public $newMessage = '';
     public $search = '';
     public $unreadCount = 0;
-
-    protected $listeners = ['refreshChat' => '$refresh'];
 
     public function mount()
     {
@@ -73,7 +71,7 @@ class ChatBox extends Component
         }
 
         $this->unreadCount = ChatMessage::unread(auth()->id())->count();
-        $this->dispatchBrowserEvent('unread-count', ['count' => $this->unreadCount]);
+        $this->dispatch('unread-count', count: $this->unreadCount);
 
         return view('livewire.chat-box', compact('users', 'messages'));
     }

@@ -806,7 +806,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('docs', 'App\Http\Controllers\DocController@index')->name('docs.index');
     Route::get('docs/{section}', 'App\Http\Controllers\DocController@show')->name('docs.show');
     Route::get('docs/{section}/{page}', 'App\Http\Controllers\DocController@show')->name('docs.page');
+
+    // Branding
+    Route::get('branding', 'App\Http\Controllers\BrandingController@index')->name('branding.index');
+    Route::put('branding', 'App\Http\Controllers\BrandingController@update')->name('branding.update');
 });
+
+// Digital signature verification (public, rate-limited)
+Route::get('verify/{model}/{id}', 'App\Http\Controllers\SignatureVerifyController@verify')
+    ->name('signature.verify')
+    ->middleware('throttle:30,1');
 
 // Insurance claim webhook (external callback, no auth)
 Route::post('api/insurance/webhook', 'App\Http\Controllers\InsuranceWebhookController')

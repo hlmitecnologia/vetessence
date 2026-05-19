@@ -24,7 +24,10 @@ class DocumentationTest extends TestCase
     public function test_authorized_user_can_access()
     {
         $user = User::factory()->create();
-        $role = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'docs-test', 'guard_name' => 'web']);
+        $role = \Spatie\Permission\Models\Role::firstOrCreate(
+            ['name' => 'docs-test', 'guard_name' => 'web'],
+            ['slug' => 'docs-test']
+        );
         $role->givePermissionTo(\Spatie\Permission\Models\Permission::firstOrCreate(['name' => 'docs.view', 'guard_name' => 'web']));
         $user->assignRole($role);
 
@@ -34,7 +37,10 @@ class DocumentationTest extends TestCase
     public function test_section_page_renders()
     {
         $user = User::factory()->create();
-        $role = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'docs-test2', 'guard_name' => 'web']);
+        $role = \Spatie\Permission\Models\Role::firstOrCreate(
+            ['name' => 'docs-test2', 'guard_name' => 'web'],
+            ['slug' => 'docs-test2']
+        );
         $role->givePermissionTo(\Spatie\Permission\Models\Permission::firstOrCreate(['name' => 'docs.view', 'guard_name' => 'web']));
         $user->assignRole($role);
 

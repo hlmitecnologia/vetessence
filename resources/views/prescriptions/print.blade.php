@@ -215,7 +215,7 @@
     @endif
 
     <div class="footer">
-        <p>Documento gerado em {{ now()->format('d/m/Y H:i:s') }} - {{ config('app.name', 'VetEssence') }}</p>
+        <p>Documento gerado em {{ now()->format('d/m/Y H:i:s') }} - {{ branding('clinic_name', config('app.name', 'VetEssence')) }}</p>
         <p>Este documento é válido apenas com assinatura e carrimbo do profissional responsável.</p>
     </div>
 </body>

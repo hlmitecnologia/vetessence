@@ -64,6 +64,7 @@ class MedicalRecordController extends Controller
         DB::beginTransaction();
         try {
             $record = MedicalRecord::create($validated);
+            $record->sign();
 
             if ($request->prescriptions) {
                 foreach ($request->prescriptions as $prescription) {

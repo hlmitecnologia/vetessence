@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'VetEssence Mobile') — VetEssence</title>
+    <title>@yield('title', branding('clinic_name', 'VetEssence') . ' Mobile') — {{ branding('clinic_name', 'VetEssence') }}</title>
+    <link rel="icon" type="image/x-icon" href="{{ branding_favicon_url() }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
     <style>
@@ -26,7 +27,7 @@
 </head>
 <body>
     <div class="mobile-header d-flex align-items-center justify-content-between">
-        <a href="{{ url('/m') }}" class="text-white"><i class="fas fa-paw"></i> VetEssence</a>
+        <a href="{{ url('/m') }}" class="text-white"><i class="fas fa-paw"></i> {{ branding('clinic_name', 'VetEssence') }}</a>
         <div>
             <a href="{{ route('logout') }}" class="text-white ml-3" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="fas fa-sign-out-alt"></i>

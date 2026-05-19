@@ -42,7 +42,8 @@ class BranchTest extends TestCase
         Branch::create(['name' => 'B', 'slug' => 'b', 'is_active' => false]);
         Branch::create(['name' => 'C', 'slug' => 'c', 'is_active' => true]);
 
-        $this->assertCount(2, Branch::active()->get());
+        $active = Branch::active()->whereIn('slug', ['a', 'b', 'c'])->get();
+        $this->assertCount(2, $active);
     }
 
     public function test_main_scope()
@@ -51,7 +52,8 @@ class BranchTest extends TestCase
         Branch::create(['name' => 'B', 'slug' => 'b', 'is_main' => false]);
         Branch::create(['name' => 'C', 'slug' => 'c', 'is_main' => true]);
 
-        $this->assertCount(2, Branch::main()->get());
+        $main = Branch::main()->whereIn('slug', ['a', 'b', 'c'])->get();
+        $this->assertCount(2, $main);
     }
 
     public function test_users_relationship()

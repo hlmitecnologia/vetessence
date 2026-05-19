@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -63,6 +64,9 @@ class DocController extends Controller
         }
 
         $markdown = file_get_contents($path);
+        $clinicName = $this->getClinicName();
+        $markdown = str_replace('VetEssence', $clinicName, $markdown);
+
         $html = Str::markdown($markdown);
 
         $html = preg_replace_callback(
@@ -75,5 +79,10 @@ class DocController extends Controller
         );
 
         return $html;
+    }
+
+    private function getClinicName(): string
+    {
+        return Setting::get('branding.clinic_name', 'VetEssence');
     }
 }

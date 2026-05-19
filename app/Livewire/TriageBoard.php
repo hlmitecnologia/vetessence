@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use App\Models\TriageRecord;
 use Livewire\Component;
@@ -12,8 +12,6 @@ class TriageBoard extends Component
 
     public $newRedIds = [];
     public $previousRedIds = [];
-
-    protected $listeners = ['refreshBoard' => '$refresh'];
 
     public function mount()
     {
@@ -58,7 +56,7 @@ class TriageBoard extends Component
         $currentRedIds = $this->getRedIds();
         $newRed = array_diff($currentRedIds, $this->previousRedIds);
         if (!empty($newRed)) {
-            $this->dispatchBrowserEvent('new-red-triage', ['ids' => array_values($newRed)]);
+            $this->dispatch('new-red-triage', ids: array_values($newRed));
         }
         $this->previousRedIds = $currentRedIds;
 

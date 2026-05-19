@@ -56,6 +56,26 @@
                 </dl>
             </div>
         </div>
+
+        @if($prescription->isSigned())
+        <div class="card card-success card-outline">
+            <div class="card-header">
+                <h5 class="card-title"><i class="fas fa-shield-alt text-success mr-1"></i>Assinatura Digital</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-2">Este documento foi assinado digitalmente.</p>
+                <p class="mb-1"><strong>Assinado em:</strong> {{ \Carbon\Carbon::parse($prescription->signed_at)->format('d/m/Y H:i:s') }}</p>
+                <p class="mb-2">
+                    <strong>Hash:</strong>
+                    <code class="text-dark">{{ $prescription->content_hash }}</code>
+                </p>
+                <a href="{{ route('signature.verify', ['model' => 'prescription', 'id' => $prescription->id]) }}" target="_blank" class="btn btn-outline-success btn-sm">
+                    <i class="fas fa-check-circle mr-1"></i>Verificar Assinatura
+                </a>
+            </div>
+        </div>
+        @endif
+    </div>
     </div>
     <div class="card-footer">
         <form action="{{ route('prescriptions.destroy', $prescription) }}" method="POST" class="d-inline">

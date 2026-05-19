@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'VetEssence' }} - Sistema de Gestão Veterinária</title>
+    <title>{{ $title ?? branding('clinic_name', 'VetEssence') }} - {{ branding('clinic_name', 'VetEssence') }}</title>
+    <link rel="icon" type="image/x-icon" href="{{ branding_favicon_url() }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
     @stack('styles')
-    @livewireStyles
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 </head>
 <body class="bg-gray-100">
@@ -104,14 +104,13 @@
             <!-- Footer -->
             <footer class="bg-white border-t px-6 py-4">
                 <p class="text-center text-sm text-gray-500">
-                    &copy; {{ date('Y') }} VetEssence - Sistema de Gestão Veterinária
+                    &copy; {{ date('Y') }} {{ branding('clinic_name', 'VetEssence') }}
                 </p>
             </footer>
         </div>
     </div>
 
     @stack('modals')
-    @livewireScripts
     <script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>
