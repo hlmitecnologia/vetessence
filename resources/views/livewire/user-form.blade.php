@@ -43,12 +43,11 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Perfil</label>
-                    <select wire:model="role_id" class="form-control">
-                        <option value="">Selecione...</option>
+                    <x-tom-select wire="role_id" :value="$role_id">
                         @foreach($roles as $role)
                             <option value="{{ $role->id }}">{{ $role->name }}</option>
                         @endforeach
-                    </select>
+                    </x-tom-select>
                 </div>
             </div>
             <div class="col-md-6">

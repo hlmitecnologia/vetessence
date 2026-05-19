@@ -5,22 +5,20 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Pet *</label>
-                    <select wire:model="pet_id" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
-                        <option value="">Selecione...</option>
+                    <x-tom-select wire="pet_id" :value="$pet_id" required>
                         @foreach($pets as $pet)
                         <option value="{{ $pet->id }}">{{ $pet->name }} - {{ $pet->tutors->first()->name ?? '' }}</option>
                         @endforeach
-                    </select>
+                    </x-tom-select>
                     @error('pet_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Veterinário *</label>
-                    <select wire:model="vet_id" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
-                        <option value="">Selecione...</option>
+                    <x-tom-select wire="vet_id" :value="$vet_id" required>
                         @foreach($veterinarians as $vet)
                         <option value="{{ $vet->id }}">{{ $vet->name }}</option>
                         @endforeach
-                    </select>
+                    </x-tom-select>
                     @error('vet_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
                 <div>
@@ -135,14 +133,13 @@
             @foreach($selectedDiseases as $index => $sd)
             <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
                 <div class="flex-1">
-                    <select wire:model="selectedDiseases.{{ $index }}.disease_id" class="w-full px-3 py-2 border rounded-lg text-sm">
-                        <option value="">Selecione uma doença...</option>
+                    <x-tom-select wire="selectedDiseases.{{ $index }}.disease_id" :value="$sd['disease_id'] ?? ''" placeholder="Selecione uma doença...">
                         @foreach($zoonoticDiseases as $disease)
                         <option value="{{ $disease->id }}">{{ $disease->name }}
                             @if($disease->is_notifiable) 🔔 @endif
                         </option>
                         @endforeach
-                    </select>
+                    </x-tom-select>
                 </div>
                 <label class="flex items-center space-x-2 text-sm whitespace-nowrap">
                     <input type="checkbox" wire:model="selectedDiseases.{{ $index }}.is_suspected" class="rounded text-yellow-500">

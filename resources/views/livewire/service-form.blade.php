@@ -10,12 +10,11 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Categoria</label>
-                    <select wire:model="category_id" class="form-control">
-                        <option value="">Selecione...</option>
+                    <x-tom-select wire="category_id" :value="$category_id">
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                         @endforeach
-                    </select>
+                    </x-tom-select>
                 </div>
             </div>
             <div class="col-md-6">

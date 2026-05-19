@@ -2,12 +2,11 @@
     <form wire:submit.prevent="save">
         <div class="form-group">
             <label>Pet *</label>
-            <select wire:model="pet_id" class="form-control @error('pet_id') is-invalid @enderror" required>
-                <option value="">Selecione...</option>
+            <x-tom-select wire="pet_id" :value="$pet_id" required>
                 @foreach($pets as $pet)
                     <option value="{{ $pet->id }}">{{ $pet->name }}</option>
                 @endforeach
-            </select>
+            </x-tom-select>
             @error('pet_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 

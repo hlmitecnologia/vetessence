@@ -12,9 +12,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap4.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
     <style>
         .btn-action { padding: 0.25rem 0.5rem; }
         .btn-action i { margin: 0; }
+        .ts-wrapper .ts-control { min-height: 38px; }
     </style>
     @stack('styles')
 </head>
@@ -620,6 +622,7 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     <script>
         // Legacy n() function for views that still call it
         window.n = function() { return true; };
@@ -654,7 +657,43 @@
             });
         });
 
+        function initTomSelects(container) {
+            container = container || document;
+            container.querySelectorAll('select.tom-select:not([data-ts-ready])').forEach(function(el) {
+                var wrapper = el.closest('.tom-select-wrapper');
+                var initialValue = wrapper ? wrapper.dataset.value : '';
+                if (initialValue) el.value = initialValue;
+
+                el.dataset.tsReady = '1';
+                new TomSelect(el, {
+                    maxOptions: 200,
+                    onChange: function(value) {
+                        var wireModel = el.dataset.wire;
+                        if (wireModel && window.Livewire) {
+                            var componentEl = el.closest('[wire\\:id]');
+                            if (componentEl) {
+                                var component = Livewire.find(componentEl.getAttribute('wire:id'));
+                                if (component) component.set(wireModel, value);
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        function destroyTomSelects(container) {
+            container = container || document;
+            container.querySelectorAll('.ts-wrapper').forEach(function(wrapper) {
+                if (wrapper.tomselect) wrapper.tomselect.destroy();
+            });
+            container.querySelectorAll('select.tom-select[data-ts-ready]').forEach(function(el) {
+                delete el.dataset.tsReady;
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            initTomSelects();
+
             if (typeof jQuery !== 'undefined' && typeof jQuery.fn.DataTable === 'function') {
                 jQuery('table.table-bordered').each(function() {
                     if (!jQuery(this).find('thead').length) return;
@@ -687,9 +726,26 @@
                             }
                         }
                     });
-                });
-            }
         });
+
+        // Livewire integration
+        document.addEventListener('livewire:initialized', function() {
+            Livewire.hook('morph.updated', function(params) {
+                setTimeout(function() {
+                    destroyTomSelects(params.el);
+                    initTomSelects(params.el);
+                }, 0);
+            });
+        });
+
+        // Bootstrap modal integration
+        if (typeof jQuery !== 'undefined') {
+            jQuery(document).on('shown.bs.modal', '.modal', function() {
+                initTomSelects(this);
+            });
+        }
+
+        @stack('scripts')
     </script>
 </body>
 </html>

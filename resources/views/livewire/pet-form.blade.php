@@ -8,12 +8,11 @@
 
         <div class="form-group">
             <label>Tutor Responsável *</label>
-            <select wire:model="tutor_id" class="form-control @error('tutor_id') is-invalid @enderror" required>
-                <option value="">Selecione...</option>
+            <x-tom-select wire="tutor_id" :value="$tutor_id" required>
                 @foreach($tutors as $tutor)
                 <option value="{{ $tutor->id }}">{{ $tutor->name }}</option>
                 @endforeach
-            </select>
+            </x-tom-select>
             @error('tutor_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 

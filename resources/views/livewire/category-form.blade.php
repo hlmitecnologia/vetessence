@@ -23,12 +23,11 @@
 
         <div class="form-group">
             <label>Categoria Pai</label>
-            <select wire:model="parent_id" class="form-control">
-                <option value="">Nenhuma (raiz)</option>
+            <x-tom-select wire="parent_id" :value="$parent_id" placeholder="Nenhuma (raiz)">
                 @foreach($parentCategories as $cat)
                 <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                 @endforeach
-            </select>
+            </x-tom-select>
         </div>
 
         <div class="text-right">

@@ -2,25 +2,23 @@
     <form wire:submit.prevent="save">
         <div class="form-group">
             <label>Vínculo Convênio/Pet *</label>
-            <select wire:model="convenio_pet_id" class="form-control @error('convenio_pet_id') is-invalid @enderror" required>
-                <option value="">Selecione...</option>
+            <x-tom-select wire="convenio_pet_id" :value="$convenio_pet_id" required>
                 @foreach($convenioPets as $cp)
                     <option value="{{ $cp->id }}">
                         {{ optional($cp->convenio)->name ?? 'N/A' }} - {{ optional($cp->pet)->name ?? 'N/A' }}
                     </option>
                 @endforeach
-            </select>
+            </x-tom-select>
             @error('convenio_pet_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
         <div class="form-group">
             <label>Fatura</label>
-            <select wire:model="invoice_id" class="form-control">
-                <option value="">Selecione...</option>
+            <x-tom-select wire="invoice_id" :value="$invoice_id">
                 @foreach($invoices as $inv)
                     <option value="{{ $inv->id }}">#{{ $inv->id }} - R$ {{ number_format($inv->total, 2, ',', '.') }}</option>
                 @endforeach
-            </select>
+            </x-tom-select>
         </div>
 
         <div class="form-group">
