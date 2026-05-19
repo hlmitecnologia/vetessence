@@ -9,6 +9,11 @@ class VaccineProtocolSeeder extends Seeder
 {
     public function run()
     {
+        if (VaccineProtocol::count() > 0) {
+            $this->command->info('Vaccine protocols already seeded. Skipping.');
+            return;
+        }
+
         $protocols = [
             // === CANINE ===
             ['species' => 'canine', 'vaccine_name' => 'V8 (Polivalente)', 'age_start_weeks' => 6, 'age_end_weeks' => 8, 'is_initial' => true, 'dose_number' => 1, 'booster_interval_months' => null, 'is_core' => true, 'notes' => '1ª dose da série filhote. Protege contra cinomose, parvovirose, adenovírus, parainfluenza e coronavírus.'],
@@ -43,4 +48,5 @@ class VaccineProtocolSeeder extends Seeder
 
         $this->command->info('Seeded ' . count($protocols) . ' vaccine protocols.');
     }
+
 }

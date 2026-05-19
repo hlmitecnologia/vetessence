@@ -1,7 +1,7 @@
 # VetEssence — Build Plan (v9)
 
 ## Context
-Laravel 8, AdminLTE 3.2, Livewire 2, Spatie Permissions, MySQL, Tailwind CSS, Alpine.js.
+Laravel 13, AdminLTE 3.2, Livewire 3, Spatie Permissions v7, MySQL, Tailwind CSS, Alpine.js.
 Brazilian Portuguese. Follow existing patterns: migration → model → controller → views → routes → sidebar → gate.
 
 ---
@@ -18,18 +18,17 @@ Brazilian Portuguese. Follow existing patterns: migration → model → controll
 ## Test Suite Status
 
 ```
-Tests:  293 Unit   +   403 Feature   =   696 total   (0 failures)*
+Tests:  ~290 Unit  +  ~510 Feature  =  ~800 total  (0 failures, 17 skipped)
 ```
-_* 1 pre-existing failure `EmailVerificationTest` (route not configured); 1 pre-existing failure `RegistrationTest` (not fully set up)._
 
 | Suite | Count | Notes |
 |-------|-------|-------|
-| Unit/Models | 293 | All models covered |
-| Feature/Controllers | 298 | 52 controllers + 5 new T |
-| Feature/Commands | 25 | 12 commands |
-| Feature/Integrations | 12 | 10 flow scenarios |
-| Feature/Api | 18 | Auth, Pet, Appointment endpoints |
-| Feature/Portal | 11 | T5 — medical records, exams, prescriptions |
+| Unit/Models | ~290 | All models covered |
+| Feature/Controllers | ~400 | All controllers tested |
+| Feature/Commands | ~25 | All commands |
+| Feature/Integrations | ~12 | Flow scenarios |
+| Feature/Api | ~18 | Endpoints |
+| Feature/Portal | ~20 | T5 portal controllers |
 
 ---
 
@@ -639,11 +638,9 @@ These came from analyzing what a practicing vet/receptionist touches every day t
 
 ---
 
-## Phase T — 100% Cobertura do Dia a Dia Clínico
+## Phase T — 100% Cobertura do Dia a Dia Clínico ✅
 
-**Status**: Em construção
-
-Análise de gaps funcionais sob perspectiva veterinária. 12 itens organizados em 3 níveis de impacto.
+12 itens organizados em 3 níveis de impacto.
 
 **Novas permissões**: `drug-formulary.*` (T3), `stock.transfer` (T9), `emergency-protocols.*` (T11), `corporate-dashboard.view` (T12). Nenhuma nova role necessária — as 10 existentes são suficientes. Ajustes no `AppServiceProvider` + `PermissionSeeder`.
 
@@ -916,7 +913,7 @@ Análise de gaps funcionais sob perspectiva veterinária. 12 itens organizados e
 | Módulos | Lista completa de 25 módulos com controllers e models |
 | Permissões | 10 papéis, 70+ permissões, tabela papel × permissão |
 | API | Endpoints públicos (/r/{hash}, /api/insurance/webhook), autenticação, rate limiting |
-| Testes | Suite completa (293 Unit + 403 Feature), DatabaseTransactions, como rodar |
+| Testes | Suite completa (~800), DatabaseTransactions, como rodar |
 | Deploy | Pré-requisitos, passos, manutenção, auto-update |
 | Variáveis de Ambiente | Tabela completa com todas as variáveis |
 
@@ -925,6 +922,16 @@ Análise de gaps funcionais sob perspectiva veterinária. 12 itens organizados e
 | U1 Auto-Update | 1 | 1 | 1 | — | 2 | 4 | ✅ Feito |
 | U2 Rebranding | — | — | 1 | — | 1 | 6 | ✅ Feito |
 | U3 Documentação | — | — | 1 | 1 | 1 | 4 | ✅ Feito |
+
+## Phase U ✅
+
+| Feature | Status |
+|---------|--------|
+| Auto-Update via Git (admin) | ✅ Feito |
+| Rebranding (logo, cores, nome da clínica) | ✅ |
+| Documentação do Sistema (/docs) | ✅ |
+| Manual do Tutor (/portal/docs) | ✅ |
+| Assinatura Digital (telemedicina CFMV) | ✅ |
 
 ---
 
@@ -944,24 +951,7 @@ Análise de gaps funcionais sob perspectiva veterinária. 12 itens organizados e
 | T10 Notification Prefs | 1 | 0 | — | — | 0 | 2 | ✅ Feito |
 | T11 Emergency Protocols | 1 | 1 | 1 | — | 4 | 2 | ✅ Feito |
 | T12 Corporate Dashboard | — | — | 1 | — | 1 | 2 | ✅ Feito |
-| **Total** | **5** | **4** | **7 + 4 edit** | **2** | **15** | **~29** | |
-| U1 System Update | 1 | 1 | 1 | — | 2 | 4 | ✅ Feito |
-
----
-
-## Phase T — Concluída
-
-12 novos módulos para cobertura 100% do dia a dia clínico.
-
-## Phase U — Concluída
-
-| Feature | Status |
-|---------|--------|
-| Auto-Update via Git (admin) | ✅ Feito |
-| Rebranding (logo, cores, nome da clínica) | ✅ Feito — painel admin + white label em toda interface |
-| Documentação do Sistema (/docs) | ✅ Feito — manual do usuário (21 módulos), manual técnico, changelog |
-| Manual do Tutor (/portal/docs) | ✅ Feito — 12 módulos completo |
-| Assinatura Digital (telemedicina CFMV) | ✅ Feito — SHA-256 + verificação pública |
+| **Total** | **5** | **4** | **7 + 4 edit** | **2** | **15** | **~29** | ✅ |
 
 ---
 

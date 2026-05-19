@@ -20,85 +20,28 @@ class UserSeeder extends Seeder
 
         $superAdminRole = Role::where('slug', 'super-admin')->first();
 
-        // Super Admin - email: super@vet.com, password: super123
-        User::create([
-            'name' => 'Super Administrador',
-            'email' => 'super@vet.com',
-            'password' => Hash::make('super123'),
-            'role_id' => $superAdminRole?->id ?? $adminRole->id,
-            'is_active' => true,
-        ]);
+        $users = [
+            ['name' => 'Super Administrador', 'email' => 'super@vet.com', 'password' => 'super123', 'role' => $superAdminRole ?? $adminRole],
+            ['name' => 'Administrador', 'email' => 'admin@vet.com', 'password' => 'admin123', 'role' => $adminRole],
+            ['name' => 'Dr. João Silva', 'email' => 'vet@vet.com', 'password' => 'vet123', 'role' => $vetRole],
+            ['name' => 'Dra. Ana Costa', 'email' => 'vet2@vet.com', 'password' => 'vet2123', 'role' => $vetRole],
+            ['name' => 'Paula Recepcionista', 'email' => 'recep@vet.com', 'password' => 'recep123', 'role' => $recepRole],
+            ['name' => 'Carlos Recepcionista', 'email' => 'recep2@vet.com', 'password' => 'recep2123', 'role' => $recepRole],
+            ['name' => 'Carlos Financeiro', 'email' => 'financeiro@vet.com', 'password' => 'fin123', 'role' => $financeiroRole],
+            ['name' => 'Ana Estoque', 'email' => 'estoque@vet.com', 'password' => 'est123', 'role' => $estoqueRole],
+            ['name' => 'Maria Tutor', 'email' => 'tutor@vet.com', 'password' => 'tutor123', 'role' => $tutorRole],
+        ];
 
-        // Admin - email: admin@vet.com, password: admin123
-        User::create([
-            'name' => 'Administrador',
-            'email' => 'admin@vet.com',
-            'password' => Hash::make('admin123'),
-            'role_id' => $adminRole->id,
-            'is_active' => true,
-        ]);
-
-        // Veterinário - email: vet@vet.com, password: vet123
-        User::create([
-            'name' => 'Dr. João Silva',
-            'email' => 'vet@vet.com',
-            'password' => Hash::make('vet123'),
-            'role_id' => $vetRole->id,
-            'is_active' => true,
-        ]);
-
-        // Veterinário 2 - email: vet2@vet.com, password: vet2123
-        User::create([
-            'name' => 'Dra. Ana Costa',
-            'email' => 'vet2@vet.com',
-            'password' => Hash::make('vet2123'),
-            'role_id' => $vetRole->id,
-            'is_active' => true,
-        ]);
-
-        // Recepcionista - email: recep@vet.com, password: recep123
-        User::create([
-            'name' => 'Paula Recepcionista',
-            'email' => 'recep@vet.com',
-            'password' => Hash::make('recep123'),
-            'role_id' => $recepRole->id,
-            'is_active' => true,
-        ]);
-
-        // Recepcionista 2 - email: recep2@vet.com, password: recep2123
-        User::create([
-            'name' => 'Carlos Recepcionista',
-            'email' => 'recep2@vet.com',
-            'password' => Hash::make('recep2123'),
-            'role_id' => $recepRole->id,
-            'is_active' => true,
-        ]);
-
-        // Financeiro - email: financeiro@vet.com, password: fin123
-        User::create([
-            'name' => 'Carlos Financeiro',
-            'email' => 'financeiro@vet.com',
-            'password' => Hash::make('fin123'),
-            'role_id' => $financeiroRole->id,
-            'is_active' => true,
-        ]);
-
-        // Estoque - email: estoque@vet.com, password: est123
-        User::create([
-            'name' => 'Ana Estoque',
-            'email' => 'estoque@vet.com',
-            'password' => Hash::make('est123'),
-            'role_id' => $estoqueRole->id,
-            'is_active' => true,
-        ]);
-
-        // Tutor - email: tutor@vet.com, password: tutor123
-        User::create([
-            'name' => 'Maria Tutor',
-            'email' => 'tutor@vet.com',
-            'password' => Hash::make('tutor123'),
-            'role_id' => $tutorRole->id,
-            'is_active' => true,
-        ]);
+        foreach ($users as $user) {
+            User::firstOrCreate(
+                ['email' => $user['email']],
+                [
+                    'name' => $user['name'],
+                    'password' => Hash::make($user['password']),
+                    'role_id' => $user['role']->id,
+                    'is_active' => true,
+                ]
+            );
+        }
     }
 }

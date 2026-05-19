@@ -809,7 +809,12 @@ class ZoonosisSeeder extends Seeder
         ];
 
         foreach ($diseases as $disease) {
-            ZoonoticDisease::create($disease);
+            ZoonoticDisease::firstOrCreate(
+                ['slug' => $disease['slug']],
+                $disease
+            );
         }
+
+        $this->command->info('Seeded ' . count($diseases) . ' zoonotic diseases.');
     }
 }
