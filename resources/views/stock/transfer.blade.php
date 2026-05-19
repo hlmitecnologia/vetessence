@@ -8,11 +8,11 @@
             <div class="card-body">
                 <div class="form-group">
                     <label>Produto</label>
-                    <select name="product_id" class="form-control" required>
+                    <x-tom-select name="product_id" :value="old('product_id')" required>
                         @foreach($products as $p)
                             <option value="{{ $p->id }}">{{ $p->name }} (estoque: {{ $p->stock }})</option>
                         @endforeach
-                    </select>
+                    </x-tom-select>
                 </div>
                 <div class="form-group">
                     <label>Quantidade</label>
@@ -20,19 +20,19 @@
                 </div>
                 <div class="form-group">
                     <label>Origem</label>
-                    <select name="from_branch_id" class="form-control" required>
+                    <x-tom-select name="from_branch_id" :value="old('from_branch_id')" required>
                         @foreach($branches as $b)
                             <option value="{{ $b->id }}">{{ $b->name }}</option>
                         @endforeach
-                    </select>
+                    </x-tom-select>
                 </div>
                 <div class="form-group">
                     <label>Destino</label>
-                    <select name="to_branch_id" class="form-control" required>
+                    <x-tom-select name="to_branch_id" :value="old('to_branch_id')" required>
                         @foreach($branches as $b)
                             <option value="{{ $b->id }}">{{ $b->name }}</option>
                         @endforeach
-                    </select>
+                    </x-tom-select>
                 </div>
                 <div class="form-group">
                     <label>Observações</label>

@@ -43,36 +43,33 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="pet_id">Pet *</label>
-                        <select name="pet_id" class="form-control @error('pet_id') is-invalid @enderror" required>
-                            <option value="">Selecione</option>
+                        <x-tom-select name="pet_id" :value="old('pet_id')" required>
                             @foreach($pets as $pet)
                                 <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>{{ $pet->name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                         @error('pet_id')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="vet_id">Veterinário *</label>
-                        <select name="vet_id" class="form-control @error('vet_id') is-invalid @enderror" required>
-                            <option value="">Selecione</option>
+                        <x-tom-select name="vet_id" :value="old('vet_id')" required>
                             @foreach($vets as $vet)
                                 <option value="{{ $vet->id }}" {{ old('vet_id') == $vet->id ? 'selected' : '' }}>{{ $vet->name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                         @error('vet_id')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="tutor_id">Tutor (usuário do sistema)</label>
-                        <select name="tutor_id" class="form-control">
-                            <option value="">Selecione</option>
+                        <x-tom-select name="tutor_id" :value="old('tutor_id')">
                             @foreach(\App\Models\User::where('is_active', true)->orderBy('name')->get() as $user)
                                 <option value="{{ $user->id }}" {{ old('tutor_id') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                     </div>
                 </div>
             </div>

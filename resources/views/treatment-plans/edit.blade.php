@@ -24,12 +24,11 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="pet_id">Pet *</label>
-                        <select name="pet_id" id="pet_id" class="form-control @error('pet_id') is-invalid @enderror" required>
-                            <option value="">Selecione</option>
+                        <x-tom-select name="pet_id" id="pet_id" :value="old('pet_id', $plan->pet_id)" required>
                             @foreach($pets as $pet)
                                 <option value="{{ $pet->id }}" {{ old('pet_id', $plan->pet_id) == $pet->id ? 'selected' : '' }}>{{ $pet->name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                         @error('pet_id')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
@@ -38,12 +37,11 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="tutor_id">Tutor</label>
-                        <select name="tutor_id" id="tutor_id" class="form-control @error('tutor_id') is-invalid @enderror">
-                            <option value="">Selecione</option>
+                        <x-tom-select name="tutor_id" id="tutor_id" :value="old('tutor_id', $plan->tutor_id)">
                             @foreach($tutors as $tutor)
                                 <option value="{{ $tutor->id }}" {{ old('tutor_id', $plan->tutor_id) == $tutor->id ? 'selected' : '' }}>{{ $tutor->name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                         @error('tutor_id')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror

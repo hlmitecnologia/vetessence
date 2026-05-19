@@ -16,14 +16,13 @@
         <div class="card-body">
             <div class="form-group">
                 <label for="user_id">Funcionário *</label>
-                <select name="user_id" id="user_id" class="form-control @error('user_id') is-invalid @enderror" required>
-                    <option value="">Selecione um funcionário</option>
+                <x-tom-select name="user_id" id="user_id" :value="old('user_id', $staffSchedule->user_id)" required>
                     @foreach($users as $user)
                         <option value="{{ $user->id }}" {{ old('user_id', $staffSchedule->user_id) == $user->id ? 'selected' : '' }}>
                             {{ $user->name }}
                         </option>
                     @endforeach
-                </select>
+                </x-tom-select>
                 @error('user_id')
                     <span class="invalid-feedback">{{ $message }}</span>
                 @enderror

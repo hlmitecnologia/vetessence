@@ -58,12 +58,11 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="radiologist_id">Radiologista</label>
-                        <select name="radiologist_id" id="radiologist_id" class="form-control">
-                            <option value="">Selecione</option>
+                        <x-tom-select name="radiologist_id" id="radiologist_id" :value="old('radiologist_id', $exam->radiologist_id)">
                             @foreach($veterinarians as $vet)
                                 <option value="{{ $vet->id }}" {{ old('radiologist_id', $exam->radiologist_id) == $vet->id ? 'selected' : '' }}>{{ $vet->name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                     </div>
                 </div>
             </div>

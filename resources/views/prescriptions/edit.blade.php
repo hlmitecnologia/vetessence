@@ -16,14 +16,13 @@
         <div class="card-body">
             <div class="form-group">
                 <label for="medical_record_id">Prontuário *</label>
-                <select name="medical_record_id" id="medical_record_id" class="form-control @error('medical_record_id') is-invalid @enderror" required>
-                    <option value="">Selecione um prontuário</option>
+                <x-tom-select name="medical_record_id" id="medical_record_id" :value="old('medical_record_id', $prescription->medical_record_id)" required>
                     @foreach($medicalRecords as $record)
                         <option value="{{ $record->id }}" {{ old('medical_record_id', $prescription->medical_record_id) == $record->id ? 'selected' : '' }}>
                             {{ $record->pet->name ?? 'Pet' }} - {{ $record->date->format('d/m/Y') }}
                         </option>
                     @endforeach
-                </select>
+                </x-tom-select>
                 @error('medical_record_id')
                     <span class="invalid-feedback">{{ $message }}</span>
                 @enderror

@@ -8,12 +8,11 @@
             @csrf
             <div class="form-group">
                 <label>Pet *</label>
-                <select name="pet_id" class="form-control" required>
-                    <option value="">Selecione</option>
+                <x-tom-select name="pet_id" :value="old('pet_id')" required>
                     @foreach($pets as $pet)
                     <option value="{{ $pet->id }}">{{ $pet->name }}</option>
                     @endforeach
-                </select>
+                </x-tom-select>
             </div>
             <div class="form-group">
                 <label>Tipo *</label>
@@ -33,12 +32,11 @@
             </div>
             <div class="form-group">
                 <label>Terapeuta</label>
-                <select name="therapist_id" class="form-control">
-                    <option value="">Selecione</option>
+                <x-tom-select name="therapist_id" :value="old('therapist_id')">
                     @foreach($therapists as $t)
                     <option value="{{ $t->id }}">{{ $t->name }}</option>
                     @endforeach
-                </select>
+                </x-tom-select>
             </div>
             <div class="form-group">
                 <label>Duração (minutos)</label>

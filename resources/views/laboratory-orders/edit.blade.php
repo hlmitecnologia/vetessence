@@ -24,11 +24,11 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="pet_id">Pet *</label>
-                        <select name="pet_id" id="pet_id" class="form-control" required>
+                        <x-tom-select name="pet_id" id="pet_id" :value="old('pet_id', $order->pet_id)" required>
                             @foreach($pets as $pet)
                                 <option value="{{ $pet->id }}" {{ old('pet_id', $order->pet_id) == $pet->id ? 'selected' : '' }}>{{ $pet->name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                     </div>
                 </div>
                 <div class="col-md-4">

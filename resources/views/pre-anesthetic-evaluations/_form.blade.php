@@ -1,7 +1,6 @@
-<div class="form-group"><label>Pet</label><select name="pet_id" class="form-control" required>
-    <option value="">Selecione</option>
+<div class="form-group"><label>Pet</label><x-tom-select name="pet_id" :value="old('pet_id', $preAnestheticEvaluation->pet_id ?? '')" required>
     @foreach($pets as $pet)<option value="{{ $pet->id }}" {{ old('pet_id', $preAnestheticEvaluation->pet_id ?? '') == $pet->id ? 'selected' : '' }}>{{ $pet->name }} - {{ optional($pet->tutors->first())->name }}</option>@endforeach
-</select></div>
+</x-tom-select></div>
 <div class="form-group"><label>ASA Score</label>
     <select name="asa_score" class="form-control" required>
         @for($i=1;$i<=6;$i++)<option value="{{ $i }}" {{ old('asa_score', $preAnestheticEvaluation->asa_score ?? '') == $i ? 'selected' : '' }}>ASA {{ $i }}</option>@endfor

@@ -8,11 +8,11 @@
             <div class="card-body">
                 <div class="form-group">
                     <label>Fornecedor</label>
-                    <select name="supplier_id" class="form-control" required>
+                    <x-tom-select name="supplier_id" :value="old('supplier_id', $purchaseOrder->supplier_id)" required>
                         @foreach($suppliers as $s)
                             <option value="{{ $s->id }}" {{ $purchaseOrder->supplier_id == $s->id ? 'selected' : '' }}>{{ $s->name }}</option>
                         @endforeach
-                    </select>
+                    </x-tom-select>
                 </div>
                 <div class="form-group">
                     <label>Observações</label>

@@ -19,32 +19,29 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group mb-0">
-                        <select name="department_id" class="form-control">
-                            <option value="">Todos Departamentos</option>
+                        <x-tom-select name="department_id" :value="request('department_id')">
                             @foreach($departments as $id => $name)
                             <option value="{{ $id }}" {{ request('department_id') == $id ? 'selected' : '' }}>{{ $name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group mb-0">
-                        <select name="position_id" class="form-control">
-                            <option value="">Todos Cargos</option>
+                        <x-tom-select name="position_id" :value="request('position_id')">
                             @foreach($positions as $id => $name)
                             <option value="{{ $id }}" {{ request('position_id') == $id ? 'selected' : '' }}>{{ $name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group mb-0">
-                        <select name="branch_id" class="form-control">
-                            <option value="">Todas Unidades</option>
+                        <x-tom-select name="branch_id" :value="request('branch_id')">
                             @foreach($branches as $id => $name)
                             <option value="{{ $id }}" {{ request('branch_id') == $id ? 'selected' : '' }}>{{ $name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                     </div>
                 </div>
                 <div class="col-md-2">

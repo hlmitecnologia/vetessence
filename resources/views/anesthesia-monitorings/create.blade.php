@@ -17,14 +17,13 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="surgery_id">Cirurgia *</label>
-                        <select name="surgery_id" id="surgery_id" class="form-control @error('surgery_id') is-invalid @enderror" required>
-                            <option value="">Selecione uma cirurgia</option>
+                        <x-tom-select name="surgery_id" id="surgery_id" :value="old('surgery_id')" required>
                             @foreach($surgeries as $surgery)
                                 <option value="{{ $surgery->id }}" {{ old('surgery_id') == $surgery->id ? 'selected' : '' }}>
                                     {{ $surgery->pet->name ?? 'Pet' }} - {{ $surgery->surgery_type }} ({{ $surgery->scheduled_date->format('d/m/Y') }})
                                 </option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                         @error('surgery_id')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
@@ -33,12 +32,11 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="vet_id">Veterinário Responsável</label>
-                        <select name="vet_id" id="vet_id" class="form-control">
-                            <option value="">Selecione</option>
+                        <x-tom-select name="vet_id" id="vet_id" :value="old('vet_id')">
                             @foreach($veterinarians as $vet)
                                 <option value="{{ $vet->id }}" {{ old('vet_id') == $vet->id ? 'selected' : '' }}>{{ $vet->name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                     </div>
                 </div>
             </div>

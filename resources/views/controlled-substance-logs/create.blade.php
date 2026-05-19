@@ -15,14 +15,13 @@
         <div class="card-body">
             <div class="form-group">
                 <label for="controlled_substance_id">Substância *</label>
-                <select name="controlled_substance_id" id="controlled_substance_id" class="form-control @error('controlled_substance_id') is-invalid @enderror" required>
-                    <option value="">Selecione</option>
+                <x-tom-select name="controlled_substance_id" id="controlled_substance_id" :value="old('controlled_substance_id', $selectedSubstanceId ?? '')" required>
                     @foreach($substances as $s)
                         <option value="{{ $s->id }}" {{ old('controlled_substance_id', $selectedSubstanceId ?? '') == $s->id ? 'selected' : '' }}>
                             {{ $s->name }} (Estoque: {{ number_format($s->current_stock, 2, ',', '.') }} {{ $s->unit }})
                         </option>
                     @endforeach
-                </select>
+                </x-tom-select>
                 @error('controlled_substance_id')
                     <span class="invalid-feedback">{{ $message }}</span>
                 @enderror
@@ -62,23 +61,21 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="pet_id">Pet (para saídas)</label>
-                        <select name="pet_id" id="pet_id" class="form-control">
-                            <option value="">Selecione</option>
+                        <x-tom-select name="pet_id" id="pet_id" :value="old('pet_id')">
                             @foreach($pets as $pet)
                                 <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>{{ $pet->name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="witness_id">Testemunha *</label>
-                        <select name="witness_id" id="witness_id" class="form-control @error('witness_id') is-invalid @enderror" required>
-                            <option value="">Selecione</option>
+                        <x-tom-select name="witness_id" id="witness_id" :value="old('witness_id')" required>
                             @foreach($users as $user)
                                 <option value="{{ $user->id }}" {{ old('witness_id') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                         @error('witness_id')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror

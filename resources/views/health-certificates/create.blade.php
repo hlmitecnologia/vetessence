@@ -15,12 +15,11 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="pet_id">Pet *</label>
-                        <select name="pet_id" id="pet_id" class="form-control" required>
-                            <option value="">Selecione</option>
+                        <x-tom-select name="pet_id" id="pet_id" :value="old('pet_id')" required>
                             @foreach($pets as $pet)
                                 <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>{{ $pet->name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -59,12 +58,11 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="issuer_vet_id">Veterinário Emissor *</label>
-                        <select name="issuer_vet_id" id="issuer_vet_id" class="form-control" required>
-                            <option value="">Selecione</option>
+                        <x-tom-select name="issuer_vet_id" id="issuer_vet_id" :value="old('issuer_vet_id')" required>
                             @foreach($veterinarians as $vet)
                                 <option value="{{ $vet->id }}" {{ old('issuer_vet_id') == $vet->id ? 'selected' : '' }}>{{ $vet->name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                     </div>
                 </div>
             </div>

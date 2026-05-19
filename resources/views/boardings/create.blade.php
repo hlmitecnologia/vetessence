@@ -15,12 +15,11 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="pet_id">Pet *</label>
-                        <select name="pet_id" id="pet_id" class="form-control @error('pet_id') is-invalid @enderror" required>
-                            <option value="">Selecione</option>
+                        <x-tom-select name="pet_id" id="pet_id" :value="old('pet_id')" required>
                             @foreach($pets as $pet)
                                 <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>{{ $pet->name }} ({{ optional($pet->tutor)->name ?? 'Sem tutor' }})</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                         @error('pet_id')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>

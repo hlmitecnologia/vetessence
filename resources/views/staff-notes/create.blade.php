@@ -36,12 +36,11 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="assigned_to">Atribuir a</label>
-                        <select name="assigned_to" id="assigned_to" class="form-control @error('assigned_to') is-invalid @enderror">
-                            <option value="">Todos (comunicado geral)</option>
+                        <x-tom-select name="assigned_to" id="assigned_to" :value="old('assigned_to')">
                             @foreach($users as $user)
                                 <option value="{{ $user->id }}" {{ old('assigned_to') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                         @error('assigned_to')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>

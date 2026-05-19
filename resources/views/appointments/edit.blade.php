@@ -16,24 +16,24 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Pet *</label>
-                <select name="pet_id" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                <x-tom-select name="pet_id" :value="old('pet_id', $appointment->pet_id)" required>
                     @foreach($pets as $pet)
                     <option value="{{ $pet->id }}" {{ $appointment->pet_id == $pet->id ? 'selected' : '' }}>
                         {{ $pet->name }}
                     </option>
                     @endforeach
-                </select>
+                </x-tom-select>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Veterinário *</label>
-                <select name="vet_id" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                <x-tom-select name="vet_id" :value="old('vet_id', $appointment->vet_id)" required>
                     @foreach($veterinarians as $vet)
                     <option value="{{ $vet->id }}" {{ $appointment->vet_id == $vet->id ? 'selected' : '' }}>
                         {{ $vet->name }}
                     </option>
                     @endforeach
-                </select>
+                </x-tom-select>
             </div>
 
             <div>

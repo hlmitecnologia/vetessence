@@ -8,11 +8,11 @@
             @csrf @method('PUT')
             <div class="form-group">
                 <label>Pet *</label>
-                <select name="pet_id" class="form-control" required>
+                <x-tom-select name="pet_id" :value="old('pet_id', $therapySession->pet_id)" required>
                     @foreach($pets as $pet)
                     <option value="{{ $pet->id }}" {{ $therapySession->pet_id == $pet->id ? 'selected' : '' }}>{{ $pet->name }}</option>
                     @endforeach
-                </select>
+                </x-tom-select>
             </div>
             <div class="form-group">
                 <label>Tipo *</label>
@@ -31,12 +31,11 @@
             </div>
             <div class="form-group">
                 <label>Terapeuta</label>
-                <select name="therapist_id" class="form-control">
-                    <option value="">Selecione</option>
+                <x-tom-select name="therapist_id" :value="old('therapist_id', $therapySession->therapist_id)">
                     @foreach($therapists as $t)
                     <option value="{{ $t->id }}" {{ $therapySession->therapist_id == $t->id ? 'selected' : '' }}>{{ $t->name }}</option>
                     @endforeach
-                </select>
+                </x-tom-select>
             </div>
             <div class="row">
                 <div class="col-md-6">
