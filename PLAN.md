@@ -949,6 +949,22 @@ Análise de gaps funcionais sob perspectiva veterinária. 12 itens organizados e
 
 ---
 
+## Phase T — Concluída
+
+12 novos módulos para cobertura 100% do dia a dia clínico.
+
+## Phase U — Concluída
+
+| Feature | Status |
+|---------|--------|
+| Auto-Update via Git (admin) | ✅ Feito |
+| Rebranding (logo, cores, nome da clínica) | ✅ Feito — painel admin + white label em toda interface |
+| Documentação do Sistema (/docs) | ✅ Feito — manual do usuário (21 módulos), manual técnico, changelog |
+| Manual do Tutor (/portal/docs) | ✅ Feito — 12 módulos completo |
+| Assinatura Digital (telemedicina CFMV) | ✅ Feito — SHA-256 + verificação pública |
+
+---
+
 ```bash
 # Unit tests
 php artisan test --env=testing --testsuite=Unit

@@ -103,22 +103,6 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 Tests: 800 total, 1259 assertions, 0 failures, 17 skipped
 ```
 
----
-
-## Fase T — Concluída
-
-12 novos módulos para cobertura 100% do dia a dia clínico. [Detalhes no PLAN.md](./PLAN.md#phase-t--100-cobertura-do-dia-a-dia-clnico)
-
-## Fase U — Concluída
-
-| Feature | Status |
-|---------|--------|
-| Auto-Update via Git (admin) | ✅ Feito |
-| Rebranding (logo, cores, nome da clínica) | ✅ Feito — painel admin + white label em toda interface |
-| Documentação do Sistema (/docs) | ✅ Feito — manual do usuário (21 módulos), manual técnico, changelog |
-| Manual do Tutor (/portal/docs) | ✅ Feito — 12 módulos completo |
-| Assinatura Digital (telemedicina CFMV) | ✅ Feito — SHA-256 + verificação pública |
-
 ## Início Rápido
 
 ```bash
