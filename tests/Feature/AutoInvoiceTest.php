@@ -3,10 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Appointment;
+use App\Models\Invoice;
 use App\Models\Pet;
 use App\Models\Tutor;
 use App\Models\User;
 use App\Events\AppointmentCompleted;
+use App\Listeners\GenerateInvoiceFromAppointment;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -98,5 +100,42 @@ class AutoInvoiceTest extends TestCase
         $this->assertDatabaseMissing('invoices', [
             'pet_id' => $pet->id,
         ]);
+    }
+
+    public function test_invoice_status_is_pending()
+    {
+        $user = User::factory()->create();
+        $pet = Pet::factory()->create();
+        $tutor = Tutor::factory()->create();
+        $pet->tutors()->attach($tutor->id, ['is_primary' => true]);
+
+        $appointment = Appointment::factory()->create([
+            'pet_id' => $pet->id,
+            'vet_id' => $user->id,
+            'status' => 'in_progress',
+        ]);
+
+        $this->actingAs($user);
+        $this->put(route('appointments.update', $appointment), [
+            'pet_id' => $pet->id,
+            'vet_id' => $user->id,
+            'date' => now()->format('Y-m-d'),
+            'time' => '10:00',
+            'type' => 'consulta',
+            'status' => 'completed',
+        ]);
+
+        $invoice = Invoice::where('pet_id', $pet->id)->first();
+        $this->assertNotNull($invoice);
+        $this->assertEquals('pending', $invoice->status);
+    }
+
+    public function test_listener_is_attached_to_event()
+    {
+        Event::fake();
+        Event::assertListening(
+            AppointmentCompleted::class,
+            GenerateInvoiceFromAppointment::class,
+        );
     }
 }

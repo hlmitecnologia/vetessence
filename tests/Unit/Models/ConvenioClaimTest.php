@@ -42,4 +42,22 @@ class ConvenioClaimTest extends TestCase
         ConvenioClaim::factory()->create(['status' => 'filed', 'claim_number' => 'CLM-1002']);
         $this->assertEquals(1, ConvenioClaim::where('status', 'draft')->count());
     }
+
+    public function test_amount_requested_stored()
+    {
+        $claim = ConvenioClaim::factory()->create(['amount_requested' => 1500.50]);
+        $this->assertDatabaseHas('convenio_claims', ['id' => $claim->id]);
+        $this->assertNotNull($claim->amount_requested);
+    }
+
+    public function test_invoice_relationship()
+    {
+        $invoice = Invoice::factory()->create();
+        $cp = ConvenioPet::factory()->create();
+        $claim = ConvenioClaim::factory()->create([
+            'convenio_pet_id' => $cp->id,
+            'invoice_id' => $invoice->id,
+        ]);
+        $this->assertInstanceOf(Invoice::class, $claim->invoice);
+    }
 }

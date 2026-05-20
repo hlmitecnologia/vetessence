@@ -4,6 +4,7 @@ namespace Tests\Unit\Models;
 
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\NfseInvoice;
 use App\Models\Pet;
 use App\Models\Tutor;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -101,5 +102,34 @@ class InvoiceTest extends TestCase
 
         $this->assertStringContainsString('FAT', $number);
         $this->assertStringContainsString(date('Y'), $number);
+    }
+
+    public function test_nfse_invoice_relationship()
+    {
+        $nfseInvoice = NfseInvoice::factory()->create();
+        $invoice = Invoice::factory()->create(['nfse_invoice_id' => $nfseInvoice->id]);
+        $this->assertInstanceOf(NfseInvoice::class, $invoice->nfseInvoice);
+        $this->assertEquals($nfseInvoice->id, $invoice->nfseInvoice->id);
+    }
+
+    public function test_nfse_status_fillable()
+    {
+        $tutor = Tutor::factory()->create();
+        $pet = Pet::factory()->create();
+        Invoice::create([
+            'invoice_number' => 'FAT-2026-NFSE',
+            'tutor_id' => $tutor->id,
+            'pet_id' => $pet->id,
+            'subtotal' => 100,
+            'total' => 100,
+            'status' => 'pending',
+            'due_date' => now(),
+            'nfse_status' => 'none',
+        ]);
+
+        $this->assertDatabaseHas('invoices', [
+            'invoice_number' => 'FAT-2026-NFSE',
+            'nfse_status' => 'none',
+        ]);
     }
 }

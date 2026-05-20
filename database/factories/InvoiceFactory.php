@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Branch;
 use App\Models\Invoice;
 use App\Models\Tutor;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -20,6 +21,7 @@ class InvoiceFactory extends Factory
             'total' => $total,
             'status' => $this->faker->randomElement(['pending', 'paid', 'cancelled']),
             'due_date' => now()->addDays(30),
+            'branch_id' => Branch::factory(),
         ];
     }
 }

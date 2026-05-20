@@ -68,4 +68,17 @@ class PetTest extends TestCase
         $pet = Pet::factory()->create(['created_at_branch_id' => $branch->id]);
         $this->assertInstanceOf(Branch::class, $pet->createdAtBranch);
     }
+
+    public function test_rg_number_fillable()
+    {
+        $pet = Pet::factory()->create(['rg_number' => 'RG-99999', 'rg_issuer' => 'SSP']);
+        $this->assertDatabaseHas('pets', ['rg_number' => 'RG-99999', 'rg_issuer' => 'SSP']);
+    }
+
+    public function test_microchip_date_fillable()
+    {
+        $pet = Pet::factory()->create(['microchip_date' => '2025-06-01']);
+        $this->assertDatabaseHas('pets', ['microchip_number' => $pet->microchip_number]);
+        $this->assertInstanceOf(\Illuminate\Support\Carbon::class, $pet->microchip_date);
+    }
 }

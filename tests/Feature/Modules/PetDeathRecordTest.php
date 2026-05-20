@@ -36,6 +36,26 @@ class PetDeathRecordTest extends ModuleTestCase
         $this->assertDatabaseHas('pet_death_records', ['pet_id' => $pet->id, 'cause' => 'natural causes']);
     }
 
+    public function test_create_validates_required_fields()
+    {
+        $response = $this->post(route('pet-death-records.store'), []);
+        $response->assertSessionHasErrors(['pet_id', 'death_date']);
+    }
+
+    public function test_show()
+    {
+        $tutor = Tutor::factory()->create();
+        $pet = Pet::factory()->create();
+        $pet->tutors()->attach($tutor->id, ['is_primary' => true]);
+        $record = PetDeathRecord::factory()->create([
+            'pet_id' => $pet->id,
+            'registered_by' => auth()->id(),
+        ]);
+
+        $response = $this->get(route('pet-death-records.show', $record));
+        $response->assertOk();
+    }
+
     public function test_destroy_removes_record()
     {
         $tutor = Tutor::factory()->create();

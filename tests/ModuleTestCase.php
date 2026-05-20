@@ -38,9 +38,9 @@ abstract class ModuleTestCase extends TestCase
         return $user;
     }
 
-    protected function loginAs(string $roleSlug): User
+    protected function loginAs(string $roleSlug, array $overrides = []): User
     {
-        $user = $this->makeUser($roleSlug);
+        $user = $this->makeUser($roleSlug, $overrides);
         $this->actingAs($user);
         return $user;
     }
