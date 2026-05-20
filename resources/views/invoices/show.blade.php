@@ -122,6 +122,72 @@
             </div>
         </div>
         @endif
+
+        {{-- NFSe --}}
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-file-invoice"></i> NFSe</h3>
+            </div>
+            <div class="card-body text-center">
+                @php
+                    $nfseLabels = ['none' => 'Não emitida', 'pending' => 'Pendente', 'issued' => 'Emitida', 'cancelled' => 'Cancelada'];
+                    $nfseColors = ['none' => 'secondary', 'pending' => 'warning', 'issued' => 'success', 'cancelled' => 'secondary'];
+                @endphp
+                <span class="badge badge-{{ $nfseColors[$invoice->nfse_status ?? 'none'] ?? 'secondary' }}" style="font-size: 14px;">
+                    {{ $nfseLabels[$invoice->nfse_status ?? 'none'] ?? $invoice->nfse_status }}
+                </span>
+
+                @if($invoice->nfse_status === 'issued' && $invoice->nfseInvoice)
+                <hr>
+                <p class="mb-1"><strong>Nº NFSe:</strong> {{ $invoice->nfseInvoice->nfse_number ?? '-' }}</p>
+                <p class="mb-1"><strong>Código:</strong> {{ $invoice->nfseInvoice->nfse_code ?? '-' }}</p>
+                <p class="mb-1"><strong>RPS:</strong> {{ $invoice->nfseInvoice->rps_number ?? '-' }}</p>
+                @if($invoice->nfseInvoice->verification_code)
+                <p class="mb-1"><strong>Código Verificação:</strong> {{ $invoice->nfseInvoice->verification_code }}</p>
+                @endif
+                <hr>
+                <div class="btn-group">
+                    @if($invoice->nfseInvoice->nfse_url_xml)
+                    <a href="{{ route('nfse.download-xml', $invoice->nfseInvoice) }}" class="btn btn-sm btn-default" target="_blank">
+                        <i class="fas fa-file-code"></i> XML
+                    </a>
+                    @endif
+                    @if($invoice->nfseInvoice->nfse_url_pdf)
+                    <a href="{{ route('nfse.download-pdf', $invoice->nfseInvoice) }}" class="btn btn-sm btn-default" target="_blank">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </a>
+                    @endif
+                </div>
+                @endif
+
+                @can('nfse.emit')
+                @if(($invoice->nfse_status ?? 'none') === 'none' && $hasNfseConfig)
+                <hr>
+                <form action="{{ route('nfse.emitir', $invoice) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-success btn-block">
+                        <i class="fas fa-file-invoice"></i> Emitir NFSe
+                    </button>
+                </form>
+                @endif
+                @endcan
+
+                @can('nfse.cancel')
+                @if($invoice->nfse_status === 'issued' && $invoice->nfseInvoice && $invoice->nfseInvoice->issuance_date && $invoice->nfseInvoice->issuance_date->diffInHours(now()) <= 24)
+                <hr>
+                <form action="{{ route('nfse.cancelar', $invoice) }}" method="POST" onsubmit="return confirm('Confirmar cancelamento da NFSe?')">
+                    @csrf
+                    <div class="form-group">
+                        <input type="text" name="motivo" class="form-control form-control-sm" placeholder="Motivo do cancelamento" required>
+                    </div>
+                    <button type="submit" class="btn btn-danger btn-block">
+                        <i class="fas fa-ban"></i> Cancelar NFSe
+                    </button>
+                </form>
+                @endif
+                @endcan
+            </div>
+        </div>
     </div>
 </div>
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\NfseConfig;
 use App\Models\Pet;
 use App\Models\Tutor;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class InvoiceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Invoice::with(['tutor', 'pet']);
+        $query = Invoice::with(['tutor', 'pet', 'nfseInvoice']);
 
         if ($request->status) {
             $query->where('status', $request->status);
@@ -29,7 +30,10 @@ class InvoiceController extends Controller
 
         $invoices = $query->orderBy('created_at', 'desc')->paginate(20);
 
-        return view('invoices.index', compact('invoices'));
+        $hasNfseConfig = NfseConfig::where('branch_id', auth()->user()->branch_id)
+            ->where('is_active', true)->exists();
+
+        return view('invoices.index', compact('invoices', 'hasNfseConfig'));
     }
 
     public function create(Request $request)
@@ -96,8 +100,12 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        $invoice->load(['tutor', 'pet', 'items', 'creator']);
-        return view('invoices.show', compact('invoice'));
+        $invoice->load(['tutor', 'pet', 'items', 'creator', 'nfseInvoice']);
+
+        $hasNfseConfig = NfseConfig::where('branch_id', auth()->user()->branch_id)
+            ->where('is_active', true)->exists();
+
+        return view('invoices.show', compact('invoice', 'hasNfseConfig'));
     }
 
     public function generatePix(Invoice $invoice)

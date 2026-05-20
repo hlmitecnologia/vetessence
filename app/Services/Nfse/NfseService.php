@@ -2,6 +2,7 @@
 
 namespace App\Services\Nfse;
 
+use App\Models\CommunicationQueue;
 use App\Models\Invoice;
 use App\Models\NfseConfig;
 use App\Models\NfseInvoice;
@@ -45,6 +46,8 @@ class NfseService
                 'nfse_status' => 'issued',
                 'nfse_invoice_id' => $nfseInvoice->id,
             ]);
+
+            $this->notifyTutor($invoice, $nfseInvoice);
         }
 
         return $result;
@@ -87,5 +90,22 @@ class NfseService
         return NfseConfig::where('branch_id', $branchId)
             ->where('is_active', true)
             ->first();
+    }
+
+    protected function notifyTutor(Invoice $invoice, NfseInvoice $nfseInvoice): void
+    {
+        if (!$invoice->tutor || !$invoice->tutor->email) {
+            return;
+        }
+
+        CommunicationQueue::create([
+            'branch_id' => $invoice->branch_id,
+            'tutor_id' => $invoice->tutor_id,
+            'pet_id' => $invoice->pet_id,
+            'channel' => 'email',
+            'destination' => $invoice->tutor->email,
+            'message_content' => "NFSe emitida: {$nfseInvoice->nfse_number} - Fatura {$invoice->invoice_number}. Acesse o sistema para visualizar o XML e PDF.",
+            'status' => 'pending',
+        ]);
     }
 }

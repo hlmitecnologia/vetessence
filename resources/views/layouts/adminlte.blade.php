@@ -447,6 +447,14 @@
                                     </a>
                                 </li>
                                 @endcan
+                                @can('nfse-config.edit')
+                                <li class="nav-item">
+                                    <a href="{{ route('nfse.config') }}" class="nav-link {{ request()->routeIs('nfse.config') ? 'active' : '' }}">
+                                        <i class="fas fa-cog nav-icon"></i>
+                                        <p>Config. NFSe</p>
+                                    </a>
+                                </li>
+                                @endcan
                             </ul>
                         </li>
                         @endif

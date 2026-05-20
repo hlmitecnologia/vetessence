@@ -6,6 +6,9 @@ use App\Models\Invoice;
 use App\Models\NfseInvoice;
 use App\Services\Nfse\NfseService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
 class NfseController extends Controller
 {
@@ -82,5 +85,69 @@ class NfseController extends Controller
         }
 
         return redirect($nfseInvoice->nfse_url_pdf);
+    }
+
+    public function exportForm()
+    {
+        return view('nfse.export');
+    }
+
+    public function export(Request $request)
+    {
+        $validated = $request->validate([
+            'date_from' => 'required|date',
+            'date_to' => 'required|date|after_or_equal:date_from',
+            'branch_id' => 'nullable|exists:branches,id',
+        ]);
+
+        $query = NfseInvoice::where('status', 'issued')->whereNotNull('nfse_url_xml');
+
+        $query->whereDate('issuance_date', '>=', $validated['date_from']);
+        $query->whereDate('issuance_date', '<=', $validated['date_to']);
+
+        if ($branchId = $validated['branch_id'] ?? null) {
+            $query->where('branch_id', $branchId);
+        }
+
+        $nfseInvoices = $query->get();
+
+        if ($nfseInvoices->isEmpty()) {
+            return back()->with('error', 'Nenhuma NFSe encontrada para exportar.');
+        }
+
+        $exportDir = 'nfse/exports';
+        Storage::makeDirectory($exportDir);
+
+        $zipPath = storage_path("app/{$exportDir}/nfse-export-" . now()->format('YmdHis') . '.zip');
+        $zip = new ZipArchive;
+
+        if ($zip->open($zipPath, ZipArchive::CREATE) !== true) {
+            return back()->with('error', 'Falha ao criar arquivo ZIP.');
+        }
+
+        $downloaded = 0;
+
+        foreach ($nfseInvoices as $nfse) {
+            try {
+                $response = Http::timeout(30)->get($nfse->nfse_url_xml);
+
+                if ($response->successful()) {
+                    $filename = "nfse-{$nfse->nfse_number}-{$nfse->branch_id}.xml";
+                    $zip->addFromString($filename, $response->body());
+                    $downloaded++;
+                }
+            } catch (\Exception $e) {
+                //
+            }
+        }
+
+        $zip->close();
+
+        if ($downloaded === 0) {
+            unlink($zipPath);
+            return back()->with('error', 'Falha ao baixar os XMLs.');
+        }
+
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 }

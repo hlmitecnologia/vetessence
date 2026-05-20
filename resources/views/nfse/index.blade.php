@@ -6,6 +6,11 @@
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">NFSe Emitidas</h3>
+        <div class="card-tools">
+            <a href="{{ route('nfse.export-form') }}" class="btn btn-sm btn-success">
+                <i class="fas fa-file-export"></i> Exportar XMLs
+            </a>
+        </div>
     </div>
     <div class="card-body">
         <form method="GET" class="form-inline mb-3">

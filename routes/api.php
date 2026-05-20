@@ -95,3 +95,6 @@ Route::prefix('v1')->group(function () {
 
     });
 });
+
+// NFSe Webhooks (no auth - called by Webmania)
+Route::post('/webhooks/nfse/{branch}', \App\Http\Controllers\Api\NfseWebhookController::class);

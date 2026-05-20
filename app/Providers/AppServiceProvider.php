@@ -11,7 +11,10 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        //
+        $this->app->bind(
+            \App\Services\Nfse\NfseProvider::class,
+            \App\Services\Nfse\WebmaniaProvider::class,
+        );
     }
 
     public function boot()
