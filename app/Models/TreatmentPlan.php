@@ -27,13 +27,18 @@ class TreatmentPlan extends Model
         'total_authorized' => 'decimal:2',
     ];
 
-    public function scopePending($q) { return $q->where('status', 'pending'); }
+    public function scopePending($q) { return $q->where('status', 'pending_approval'); }
     public function scopeApproved($q) { return $q->where('status', 'approved'); }
     public function scopeRejected($q) { return $q->where('status', 'rejected'); }
 
-    public function isPending(): bool { return $this->status === 'pending'; }
+    public function isPending(): bool { return $this->status === 'pending_approval'; }
     public function isApproved(): bool { return $this->status === 'approved'; }
     public function isRejected(): bool { return $this->status === 'rejected'; }
+
+    public function isDraft(): bool { return $this->status === 'draft'; }
+    public function isInProgress(): bool { return $this->status === 'in_progress'; }
+    public function isCompleted(): bool { return $this->status === 'completed'; }
+    public function isCancelled(): bool { return $this->status === 'cancelled'; }
 
     public function approve(): void
     {

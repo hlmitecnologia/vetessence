@@ -12,7 +12,7 @@ class BankTransaction extends Model
 
     protected $fillable = [
         'bank_account_id', 'external_id', 'description', 'amount',
-        'transaction_date', 'type', 'status', 'notes',
+        'transaction_date', 'type', 'status', 'notes', 'invoice_id',
     ];
 
     protected $casts = [
@@ -23,6 +23,11 @@ class BankTransaction extends Model
     public function bankAccount(): BelongsTo
     {
         return $this->belongsTo(BankAccount::class);
+    }
+
+    public function invoice(): BelongsTo
+    {
+        return $this->belongsTo(Invoice::class);
     }
 
     public function scopePending($q) { return $q->where('status', 'pending'); }

@@ -84,4 +84,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Appointment::class, 'created_by');
     }
+
+    public function commissionRates(): HasMany
+    {
+        return $this->hasMany(CommissionRate::class);
+    }
+
+    public function commissionLogs(): HasMany
+    {
+        return $this->hasMany(CommissionLog::class);
+    }
 }

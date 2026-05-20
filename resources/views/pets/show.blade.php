@@ -52,6 +52,18 @@
                     <span>{{ $pet->microchip }}</span>
                 </div>
                 @endif
+                @if($pet->microchip_date)
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Data Microchip:</span>
+                    <span>{{ $pet->microchip_date->format('d/m/Y') }}</span>
+                </div>
+                @endif
+                @if($pet->rg_number)
+                <div class="flex justify-between">
+                    <span class="text-gray-500">RG Animal:</span>
+                    <span>{{ $pet->rg_number }} @if($pet->rg_issuer)({{ $pet->rg_issuer }})@endif</span>
+                </div>
+                @endif
             </div>
 
             <div class="mt-6 space-y-2">

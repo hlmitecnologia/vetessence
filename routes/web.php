@@ -176,6 +176,29 @@ Route::middleware(['auth'])->group(function () {
     Route::post('invoices/{invoice}/nfse-emitir', 'App\Http\Controllers\NfseController@emitir')->name('nfse.emitir');
     Route::post('invoices/{invoice}/nfse-cancelar', 'App\Http\Controllers\NfseController@cancelar')->name('nfse.cancelar');
 
+    // Bank Reconciliation
+    Route::resource('bank-accounts', 'App\Http\Controllers\BankAccountController')->names([
+        'index' => 'bank-accounts.index',
+        'create' => 'bank-accounts.create',
+        'store' => 'bank-accounts.store',
+        'show' => 'bank-accounts.show',
+        'edit' => 'bank-accounts.edit',
+        'update' => 'bank-accounts.update',
+        'destroy' => 'bank-accounts.destroy',
+    ]);
+    Route::get('bank-reconciliation', 'App\Http\Controllers\BankReconciliationController@index')->name('bank-reconciliation.index');
+    Route::post('bank-reconciliation/{bankTransaction}/match', 'App\Http\Controllers\BankReconciliationController@match')->name('bank-reconciliation.match');
+    Route::post('bank-reconciliation/{bankTransaction}/unmatch', 'App\Http\Controllers\BankReconciliationController@unmatch')->name('bank-reconciliation.unmatch');
+    Route::get('bank-reconciliation/{bankAccount}/suggest', 'App\Http\Controllers\BankReconciliationController@suggest')->name('bank-reconciliation.suggest');
+
+    // Commissions
+    Route::get('commissions', 'App\Http\Controllers\CommissionController@index')->name('commissions.index');
+    Route::get('commissions/{commissionLog}', 'App\Http\Controllers\CommissionController@show')->name('commissions.show');
+    Route::post('commissions/{commissionLog}/mark-paid', 'App\Http\Controllers\CommissionController@markPaid')->name('commissions.mark-paid');
+    Route::get('commissions/rates/list', 'App\Http\Controllers\CommissionController@rates')->name('commissions.rates');
+    Route::post('commissions/rates', 'App\Http\Controllers\CommissionController@ratesStore')->name('commissions.rates-store');
+    Route::delete('commissions/rates/{commissionRate}', 'App\Http\Controllers\CommissionController@ratesDestroy')->name('commissions.rates-destroy');
+
     // Products
     Route::resource('products', 'App\Http\Controllers\ProductController')->names([
         'index' => 'products.index',

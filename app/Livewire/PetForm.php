@@ -23,6 +23,9 @@ class PetForm extends Component
     public $weight = '';
     public $color = '';
     public $microchip = '';
+    public $microchip_date = '';
+    public $rg_number = '';
+    public $rg_issuer = '';
     public $size = 'medium';
     public $photo;
     public $notes = '';
@@ -66,6 +69,9 @@ class PetForm extends Component
         $this->weight = (string) ($pet->weight ?? '');
         $this->color = $pet->color ?? '';
         $this->microchip = $pet->microchip ?? '';
+        $this->microchip_date = $pet->microchip_date ? $pet->microchip_date->format('Y-m-d') : '';
+        $this->rg_number = $pet->rg_number ?? '';
+        $this->rg_issuer = $pet->rg_issuer ?? '';
         $this->size = $pet->size ?? 'medium';
         $this->notes = $pet->notes ?? '';
         $this->tutors = Tutor::orderBy('name')->get();
@@ -85,6 +91,9 @@ class PetForm extends Component
         $this->weight = '';
         $this->color = '';
         $this->microchip = '';
+        $this->microchip_date = '';
+        $this->rg_number = '';
+        $this->rg_issuer = '';
         $this->size = 'medium';
         $this->photo = null;
         $this->notes = '';
@@ -124,6 +133,9 @@ class PetForm extends Component
             'weight' => $this->weight ?: null,
             'color' => $this->color ?: null,
             'microchip' => $this->microchip ?: null,
+            'microchip_date' => $this->microchip_date ?: null,
+            'rg_number' => $this->rg_number ?: null,
+            'rg_issuer' => $this->rg_issuer ?: null,
             'size' => $this->size,
             'notes' => $this->notes ?: null,
             'is_active' => true,

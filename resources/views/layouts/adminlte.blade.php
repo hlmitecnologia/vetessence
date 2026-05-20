@@ -339,9 +339,25 @@
                                     </a>
                                 </li>
                                 @endcan
+                                @can('bank-reconciliation.view')
+                                <li class="nav-item">
+                                    <a href="{{ route('bank-reconciliation.index') }}" class="nav-link {{ request()->routeIs('bank-reconciliation.*') || request()->routeIs('bank-accounts.*') ? 'active' : '' }}">
+                                        <i class="fas fa-handshake nav-icon"></i>
+                                        <p>Conciliação Bancária</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('commissions.view')
+                                <li class="nav-item">
+                                    <a href="{{ route('commissions.index') }}" class="nav-link {{ request()->routeIs('commissions.*') ? 'active' : '' }}">
+                                        <i class="fas fa-percentage nav-icon"></i>
+                                        <p>Comissões</p>
+                                    </a>
+                                </li>
+                                @endcan
                             </ul>
                         </li>
-                            @endif
+                        @endif
 
                         <!-- COMUNICAÇÃO -->
                         @if(Gate::allows('notificacoes') || Gate::allows('nota-interna') || Gate::allows('chat'))
@@ -412,8 +428,8 @@
                         @endcan
 
                         <!-- FINANCEIRO -->
-                        @if(Gate::allows('financeiro') || Gate::allows('gateway-pagamento') || Gate::allows('nfse.view'))
-                        <li class="nav-item has-treeview {{ request()->routeIs('invoices.*') || request()->routeIs('reports.*') || request()->routeIs('payment-gateways.*') || request()->routeIs('nfse.*') ? 'menu-open' : '' }}">
+                        @if(Gate::allows('financeiro') || Gate::allows('gateway-pagamento') || Gate::allows('nfse.view') || Gate::allows('bank-reconciliation.view'))
+                        <li class="nav-item has-treeview {{ request()->routeIs('invoices.*') || request()->routeIs('reports.*') || request()->routeIs('payment-gateways.*') || request()->routeIs('nfse.*') || request()->routeIs('bank-reconciliation.*') || request()->routeIs('bank-accounts.*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-dollar-sign"></i>
                                 <p>Financeiro <i class="right fas fa-angle-left"></i></p>

@@ -68,6 +68,27 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Lote</label>
+                    <input type="text" wire:model="batch_number" class="form-control" placeholder="Nº do lote">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Partida</label>
+                    <input type="text" wire:model="lot_number" class="form-control" placeholder="Nº da partida">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Validade</label>
+                    <input type="date" wire:model="expiration_date" class="form-control">
+                </div>
+            </div>
+        </div>
+
         <div class="form-group">
             <div class="custom-control custom-switch">
                 <input type="checkbox" wire:model="is_active" class="custom-control-input" id="prodIsActive">

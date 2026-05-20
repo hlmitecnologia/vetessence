@@ -26,6 +26,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         \App\Events\InvoicePaid::class => [
             \App\Listeners\EmitirNfseOnPaid::class,
+            \App\Listeners\CalculateCommissionOnPaid::class,
         ],
     ];
 

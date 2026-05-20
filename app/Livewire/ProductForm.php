@@ -18,6 +18,9 @@ class ProductForm extends Component
     public $cost_price = '';
     public $sale_price = '';
     public $stock = '';
+    public $batch_number = '';
+    public $lot_number = '';
+    public $expiration_date = '';
     public $is_active = true;
 
     public $categories = [];
@@ -53,6 +56,9 @@ class ProductForm extends Component
         $this->cost_price = (string) $product->cost_price;
         $this->sale_price = (string) $product->sale_price;
         $this->stock = (string) $product->stock;
+        $this->batch_number = $product->batch_number ?? '';
+        $this->lot_number = $product->lot_number ?? '';
+        $this->expiration_date = $product->expiration_date ? $product->expiration_date->format('Y-m-d') : '';
         $this->is_active = $product->is_active;
         $this->categories = Category::where('type', 'product')->orderBy('name')->get();
         $this->suppliers = Supplier::orderBy('name')->get();
@@ -69,6 +75,9 @@ class ProductForm extends Component
         $this->cost_price = '';
         $this->sale_price = '';
         $this->stock = '';
+        $this->batch_number = '';
+        $this->lot_number = '';
+        $this->expiration_date = '';
         $this->is_active = true;
         $this->categories = Category::where('type', 'product')->orderBy('name')->get();
         $this->suppliers = Supplier::orderBy('name')->get();
@@ -91,6 +100,9 @@ class ProductForm extends Component
             'cost_price' => $this->cost_price,
             'sale_price' => $this->sale_price,
             'stock' => $this->stock,
+            'batch_number' => $this->batch_number ?: null,
+            'lot_number' => $this->lot_number ?: null,
+            'expiration_date' => $this->expiration_date ?: null,
             'is_active' => $this->is_active,
         ];
 

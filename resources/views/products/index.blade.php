@@ -17,8 +17,10 @@
                 <tr>
                     <th>SKU</th>
                     <th>Produto</th>
+                    <th>Lote</th>
                     <th>Estoque</th>
                     <th>Preço</th>
+                    <th>Validade</th>
                     <th>Status</th>
                     <th style="width: 120px;">Ações</th>
                 </tr>
@@ -33,8 +35,22 @@
                             <span class="text-danger"><i class="fas fa-exclamation-triangle"></i> Baixo</span>
                         @endif
                     </td>
+                    <td>{{ $prod->batch_number ?? $prod->lot_number ?? '-' }}</td>
                     <td class="{{ $prod->isLowStock ? 'text-danger font-weight-bold' : '' }}">{{ $prod->stock }}</td>
                     <td>R$ {{ number_format($prod->sale_price, 2, ',', '.') }}</td>
+                    <td>
+                        @if($prod->expiration_date)
+                            @php $diff = now()->diffInDays($prod->expiration_date, false); @endphp
+                            <span class="badge {{ $diff <= 0 ? 'badge-danger' : ($diff <= 30 ? 'badge-warning' : 'badge-secondary') }}">
+                                {{ $prod->expiration_date->format('d/m/Y') }}
+                                @if($diff <= 0) <i class="fas fa-times-circle"></i> Vencido
+                                @elseif($diff <= 30) <i class="fas fa-clock"></i> {{ $diff }}d
+                                @endif
+                            </span>
+                        @else
+                            -
+                        @endif
+                    </td>
                     <td>
                         @if($prod->is_active)
                             <span class="badge badge-success">Ativo</span>

@@ -92,14 +92,39 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Microchip</label>
-                    <input type="text" wire:model="microchip" class="form-control">
+                    <input type="text" wire:model="microchip" class="form-control" placeholder="Nº do microchip">
                 </div>
             </div>
         </div>
 
-        <div class="form-group">
-            <label>Observações</label>
-            <textarea wire:model="notes" class="form-control" rows="2"></textarea>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Data do Microchip</label>
+                    <input type="date" wire:model="microchip_date" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>RG Animal</label>
+                    <input type="text" wire:model="rg_number" class="form-control" placeholder="Registro Geral do Animal">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Órgão Emissor RG</label>
+                    <input type="text" wire:model="rg_issuer" class="form-control" placeholder="Ex: CFMV">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Observações</label>
+                    <textarea wire:model="notes" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
         </div>
 
         <div class="text-right">

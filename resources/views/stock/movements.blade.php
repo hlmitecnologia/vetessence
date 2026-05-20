@@ -13,6 +13,7 @@
                     <th>Data</th>
                     <th>Produto</th>
                     <th>Tipo</th>
+                    <th>Lote</th>
                     <th>Qtd</th>
                     <th>Saldo</th>
                     <th>Responsável</th>
@@ -30,6 +31,7 @@
                         @endphp
                         <span class="badge {{ $typeColors[$mov->type] ?? 'badge-secondary' }}">{{ $typeLabels[$mov->type] ?? $mov->type }}</span>
                     </td>
+                    <td>{{ $mov->batch_number ?? $mov->lot_number ?? '-' }}</td>
                     <td class="{{ $mov->type === 'entry' ? 'text-success' : 'text-danger' }}">
                         {{ $mov->type === 'entry' ? '+' : '-' }}{{ abs($mov->quantity) }}
                     </td>
