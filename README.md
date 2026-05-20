@@ -40,6 +40,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 
 ### Financeiro
 - **Faturas** — Faturamento de serviços/produtos com controle de pagamentos
+- **NFSe** — Nota Fiscal de Serviços Eletrônica integrada via Webmania®, emissão manual ou automática ao faturar, cancelamento, download XML/PDF
 - **Pagamentos** — Multi-forma (dinheiro, cartão, PIX via gateway), parcelamentos
 - **Conciliação Bancária** — Importação de extrato e correspondência automática
 - **Comissões** — Cálculo de comissão por procedimento ou produto por veterinário/funcionário
@@ -88,7 +89,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 |--------|-----------|
 | Backend | Laravel 13, PHP 8.4 |
 | Frontend | AdminLTE 3.2, Tailwind CSS, Alpine.js |
-| Componentes | Livewire 3, FullCalendar 6, Chart.js |
+| Componentes | Livewire 3, FullCalendar 6, Chart.js, TomSelect 2.3.1 |
 | Banco | MySQL |
 | Autenticação | Laravel Breeze, Spatie Permissions |
 | PDF | Dompdf (barryvdh/laravel-dompdf) |
