@@ -81,4 +81,24 @@ class TreatmentPlanControllerTest extends ModuleTestCase
         $response->assertRedirect();
         $this->assertDatabaseMissing('treatment_plans', ['id' => $plan->id]);
     }
+
+    public function test_approve()
+    {
+        $plan = TreatmentPlan::factory()->create(['status' => 'pending_approval']);
+
+        $response = $this->put(route('treatment-plans.approve', $plan));
+        $response->assertRedirect();
+        $this->assertEquals('approved', $plan->fresh()->status);
+    }
+
+    public function test_reject()
+    {
+        $plan = TreatmentPlan::factory()->create(['status' => 'pending_approval']);
+
+        $response = $this->put(route('treatment-plans.reject', $plan), [
+            'rejection_reason' => 'Cliente recusou orçamento',
+        ]);
+        $response->assertRedirect();
+        $this->assertEquals('rejected', $plan->fresh()->status);
+    }
 }

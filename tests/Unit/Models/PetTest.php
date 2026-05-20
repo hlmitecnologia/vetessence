@@ -27,7 +27,7 @@ class PetTest extends TestCase
             'coat' => 'short',
             'size' => 'medium',
         ]);
-        $this->assertDatabaseHas('pets', ['name' => 'Rex', 'microchip_number' => '1234-5678-9012-3456']);
+        $this->assertDatabaseHas('pets', ['name' => 'Rex', 'microchip_number' => '1234-5678-9012-3456', 'rg_number' => 'RG-12345', 'rg_issuer' => 'CFMV']);
     }
 
     public function test_microchip_casts()

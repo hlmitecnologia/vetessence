@@ -22,6 +22,7 @@ class ProductTest extends TestCase
             'is_active' => true,
             'batch_number' => 'BATCH-001',
             'lot_number' => 'LOT-2024-A',
+            'expiration_date' => '2026-12-31',
         ]);
 
         $this->assertDatabaseHas('products', [
@@ -29,6 +30,7 @@ class ProductTest extends TestCase
             'sku' => 'SKU001',
             'batch_number' => 'BATCH-001',
             'lot_number' => 'LOT-2024-A',
+            'expiration_date' => '2026-12-31',
         ]);
     }
 
