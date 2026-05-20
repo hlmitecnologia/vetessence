@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('backup:cleanup --keep=30')->dailyAt('02:00');
         $schedule->command('queue:process')->everyMinute();
         $schedule->command('staff:remind')->dailyAt('18:00');
+        $schedule->command('nfse:emit-pending')->everyTenMinutes();
     }
 
     /**

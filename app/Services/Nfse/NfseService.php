@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Services\Nfse;
+
+use App\Models\Invoice;
+use App\Models\NfseConfig;
+use App\Models\NfseInvoice;
+
+class NfseService
+{
+    public function __construct(
+        protected NfseProvider $provider,
+    ) {}
+
+    public function emitir(Invoice $invoice): NfseResult
+    {
+        $config = $this->getConfig($invoice->branch_id);
+
+        if (!$config) {
+            return NfseResult::error('NFS-e não configurada para esta unidade.');
+        }
+
+        if ($invoice->nfse_status !== 'none') {
+            return NfseResult::error('Esta fatura já possui uma NFS-e emitida ou em processo.');
+        }
+
+        $result = $this->provider->emitir($config, $invoice);
+
+        if ($result->success) {
+            $nfseInvoice = NfseInvoice::create([
+                'branch_id' => $invoice->branch_id,
+                'invoice_id' => $invoice->id,
+                'nfse_number' => $result->nfseNumber,
+                'nfse_code' => $result->nfseCode,
+                'nfse_url_xml' => $result->xmlUrl,
+                'nfse_url_pdf' => $result->pdfUrl,
+                'rps_number' => $result->rpsNumber,
+                'status' => 'issued',
+                'issuance_date' => now(),
+                'verification_code' => $result->verificationCode,
+                'provider_response' => json_encode($result->rawResponse),
+            ]);
+
+            $invoice->update([
+                'nfse_status' => 'issued',
+                'nfse_invoice_id' => $nfseInvoice->id,
+            ]);
+        }
+
+        return $result;
+    }
+
+    public function cancelar(Invoice $invoice, string $motivo): NfseResult
+    {
+        $config = $this->getConfig($invoice->branch_id);
+
+        if (!$config) {
+            return NfseResult::error('NFS-e não configurada para esta unidade.');
+        }
+
+        $nfseInvoice = $invoice->nfseInvoice;
+
+        if (!$nfseInvoice || $nfseInvoice->status !== 'issued') {
+            return NfseResult::error('NFS-e não encontrada ou já cancelada.');
+        }
+
+        if ($nfseInvoice->issuance_date && $nfseInvoice->issuance_date->diffInHours(now()) > 24) {
+            return NfseResult::error('Prazo de cancelamento de 24h excedido. Solicite o cancelamento junto à prefeitura.');
+        }
+
+        $result = $this->provider->cancelar($config, $nfseInvoice->nfse_number, $motivo);
+
+        if ($result->success) {
+            $nfseInvoice->update([
+                'status' => 'cancelled',
+                'cancelled_at' => now(),
+            ]);
+
+            $invoice->update(['nfse_status' => 'cancelled']);
+        }
+
+        return $result;
+    }
+
+    public function getConfig(int $branchId): ?NfseConfig
+    {
+        return NfseConfig::where('branch_id', $branchId)
+            ->where('is_active', true)
+            ->first();
+    }
+}

@@ -147,6 +147,10 @@ class PermissionSeeder extends Seeder
 
             // Documentation
             'docs.view',
+
+            // NFSe
+            'nfse.view', 'nfse.emit', 'nfse.cancel',
+            'nfse-config.edit',
         ];
 
         // Create all permissions
@@ -246,6 +250,7 @@ class PermissionSeeder extends Seeder
                 'payment-gateways.view', 'payment-gateways.create', 'payment-gateways.edit',
                 'notification-logs.view',
                 'purchase-orders.view',
+                'nfse.view', 'nfse.emit',
             ],
 
             'super-financial' => [
@@ -261,6 +266,7 @@ class PermissionSeeder extends Seeder
                 'branches.view',
                 'purchase-orders.view',
                 'corporate-dashboard.view',
+                'nfse.view', 'nfse.emit', 'nfse.cancel',
             ],
 
             'estoque' => [

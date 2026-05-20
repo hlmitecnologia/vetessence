@@ -412,15 +412,15 @@
                         @endcan
 
                         <!-- FINANCEIRO -->
-                        @if(Gate::allows('financeiro') || Gate::allows('gateway-pagamento'))
-                        <li class="nav-item has-treeview {{ request()->routeIs('invoices.*') || request()->routeIs('reports.*') || request()->routeIs('payment-gateways.*') ? 'menu-open' : '' }}">
+                        @if(Gate::allows('financeiro') || Gate::allows('gateway-pagamento') || Gate::allows('nfse.view'))
+                        <li class="nav-item has-treeview {{ request()->routeIs('invoices.*') || request()->routeIs('reports.*') || request()->routeIs('payment-gateways.*') || request()->routeIs('nfse.*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-dollar-sign"></i>
                                 <p>Financeiro <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('invoices.index') }}" class="nav-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}">
+                                    <a href="{{ route('invoices.index') }}" class="nav-link {{ request()->routeIs('invoices.index') ? 'active' : '' }}">
                                         <i class="fas fa-file-invoice-dollar nav-icon"></i>
                                         <p>Faturas</p>
                                     </a>
@@ -436,6 +436,14 @@
                                     <a href="{{ route('payment-gateways.index') }}" class="nav-link {{ request()->routeIs('payment-gateways.*') ? 'active' : '' }}">
                                         <i class="fas fa-credit-card nav-icon"></i>
                                         <p>Gateways de Pagamento</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('nfse.view')
+                                <li class="nav-item">
+                                    <a href="{{ route('nfse.index') }}" class="nav-link {{ request()->routeIs('nfse.index') || request()->routeIs('nfse.show') ? 'active' : '' }}">
+                                        <i class="fas fa-file-invoice nav-icon"></i>
+                                        <p>NFSe</p>
                                     </a>
                                 </li>
                                 @endcan

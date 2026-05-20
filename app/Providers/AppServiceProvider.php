@@ -115,5 +115,11 @@ class AppServiceProvider extends ServiceProvider
 
         // Backup
         Gate::define('backup', fn($user) => $user->hasPermissionTo('backups.view'));
+
+        // NFSe
+        Gate::define('nfse.view', fn($user) => $user->hasPermissionTo('nfse.view'));
+        Gate::define('nfse.emit', fn($user) => $user->hasPermissionTo('nfse.emit'));
+        Gate::define('nfse.cancel', fn($user) => $user->hasPermissionTo('nfse.cancel'));
+        Gate::define('nfse-config.edit', fn($user) => $user->hasPermissionTo('nfse-config.edit'));
     }
 }

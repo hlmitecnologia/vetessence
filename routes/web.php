@@ -164,6 +164,16 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('invoices/{invoice}/pix', 'App\Http\Controllers\InvoiceController@generatePix')->name('invoices.pix');
 
+    // NFSe
+    Route::get('nfse', 'App\Http\Controllers\NfseController@index')->name('nfse.index');
+    Route::get('nfse/{nfseInvoice}', 'App\Http\Controllers\NfseController@show')->name('nfse.show');
+    Route::post('invoices/{invoice}/nfse-emitir', 'App\Http\Controllers\NfseController@emitir')->name('nfse.emitir');
+    Route::post('invoices/{invoice}/nfse-cancelar', 'App\Http\Controllers\NfseController@cancelar')->name('nfse.cancelar');
+    Route::get('nfse/{nfseInvoice}/xml', 'App\Http\Controllers\NfseController@downloadXml')->name('nfse.download-xml');
+    Route::get('nfse/{nfseInvoice}/pdf', 'App\Http\Controllers\NfseController@downloadPdf')->name('nfse.download-pdf');
+    Route::get('nfse/config', 'App\Http\Controllers\NfseConfigController@edit')->name('nfse.config');
+    Route::put('nfse/config', 'App\Http\Controllers\NfseConfigController@update')->name('nfse.config.update');
+
     // Products
     Route::resource('products', 'App\Http\Controllers\ProductController')->names([
         'index' => 'products.index',
