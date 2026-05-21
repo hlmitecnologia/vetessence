@@ -413,11 +413,8 @@ apt install -y nginx mysql-server-8.0 redis-server supervisor \
 add-apt-repository -y ppa:ondrej/php
 apt update
 apt install -y php8.4-fpm php8.4-cli php8.4-common \
-  php8.4-bcmath php8.4-ctype php8.4-fileinfo php8.4-gd \
-  php8.4-intl php8.4-json php8.4-mbstring php8.4-mysql \
-  php8.4-openssl php8.4-pdo php8.4-tokenizer php8.4-xml \
-  php8.4-zip php8.4-curl php8.4-xmlreader php8.4-xmlwriter \
-  php8.4-simplexml php8.4-redis
+  php8.4-bcmath php8.4-gd php8.4-intl php8.4-mbstring \
+  php8.4-mysql php8.4-xml php8.4-zip php8.4-curl php8.4-redis
 
 # Composer
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
