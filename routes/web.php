@@ -842,6 +842,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('docs/{section}', 'App\Http\Controllers\DocController@show')->name('docs.show');
     Route::get('docs/{section}/{page}', 'App\Http\Controllers\DocController@show')->name('docs.page');
 
+    // Documentation diagrams (BPMN SVGs)
+    Route::get('docs/diagrams/{file}', function (string $file) {
+        $path = storage_path('docs/diagrams/' . basename($file));
+        if (!file_exists($path)) {
+            abort(404);
+        }
+        return response()->file($path, ['Content-Type' => 'image/svg+xml']);
+    })->name('docs.diagrams');
+
     // Branding
     Route::get('branding', 'App\Http\Controllers\BrandingController@index')->name('branding.index');
     Route::put('branding', 'App\Http\Controllers\BrandingController@update')->name('branding.update');
