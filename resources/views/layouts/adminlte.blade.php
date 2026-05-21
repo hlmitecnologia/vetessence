@@ -610,6 +610,14 @@
                                     </a>
                                 </li>
                                 @endcan
+                                @can('docs.view')
+                                <li class="nav-item">
+                                    <a href="{{ route('docs.index') }}" class="nav-link {{ request()->routeIs('docs.*') ? 'active' : '' }}">
+                                        <i class="fas fa-book nav-icon"></i>
+                                        <p>Documentação</p>
+                                    </a>
+                                </li>
+                                @endcan
                             </ul>
                         </li>
                         @endcan
