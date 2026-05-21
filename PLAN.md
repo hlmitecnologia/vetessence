@@ -1145,3 +1145,289 @@ php artisan test --env=testing --filter="DepartmentControllerTest::test_index" -
 - **Regime Tributário**:影响 o cálculo do ISS (retenção na fonte, alíquota). Configurado por branch em `nfse_configs`.
 - **Sistema Nacional NFS-e**: obrigatório para todos os municípios desde jan/2026 (Padrão Nacional de NFS-e). Webmania® já suporta.
 - **Armazenamento**: XML deve ser guardado por no mínimo 5 anos (art. 195 do CTN). `nfse_invoices` mantém URL do XML no provedor + export opcional para storage local.
+
+---
+
+## Phase X — Diagramas BPMN 2.0 para Manuais do Usuário
+
+**Objetivo:** Adicionar diagramas de processo BPMN 2.0 nos manuais do usuário (29 módulos) e manual técnico, como imagens SVG interativas com modal lightbox.
+
+### X1 — Ferramenta e Formato
+
+| Decisão | Opção Escolhida | Motivo |
+|---------|----------------|--------|
+| Formato | **SVG** (exportado do Draw.io) | BPMN 2.0 verdadeiro, texto XML versionável, renderiza nativo no markdown |
+| Ferramenta | **Draw.io (diagrams.net)** | Gratuito, offline/online, palette BPMN 2.0 built-in, exporta SVG puro |
+| Armazenamento | `resources/docs/diagrams/` | Mesmo diretório dos .md, versionado no Git |
+| Exibição | `![](diagrams/nome.svg)` + JS lightbox | Imagem inline no PDF/markdown, clica pra abrir modal fullscreen |
+| Lightbox | Bootstrap Modal + JS custom | AdminLTE já tem Bootstrap, sem dependência extra |
+
+### X2 — Diretório e Convenção
+
+```
+resources/docs/diagrams/
+├── macro-fluxo-sistema.svg          # Visão geral: todos os módulos e suas conexões
+├── matriz-perfis.svg                # RACI: perfil × funcionalidade
+├── 05-fluxo-prontuario.svg          # Criação SOAP + Aprovação orçamento
+├── 06-fluxo-prescricao.svg          # Prescrição + Verificação QR Code
+├── 07-fluxo-vacina.svg              # Aplicação + Protocolo + Lembrete + Recall
+├── 08-fluxo-exame.svg               # Solicitação → Coleta → Resultado
+├── 09-fluxo-laboratorio.svg         # Pedido laboratorial + Equipamento integrado
+├── 10-fluxo-imagem.svg              # Laudo de imagem
+├── 11-fluxo-cirurgia.svg            # Agendamento + Checklist + Anestesia
+├── 12-fluxo-internacao.svg          # Internação → Evolução → Alta
+├── 13-fluxo-farmacia.svg            # Produto → Venda → Baixa estoque
+├── 14-fluxo-estoque.svg             # Pedido compra → Recebimento → Conciliação
+├── 14-fluxo-substancias.svg         # Substância controlada ANVISA
+├── 15-fluxo-fatura.svg              # Fatura → Recebimento → NFSe → Comissão
+├── 15-fluxo-conciliacao.svg         # Conciliação bancária
+├── 16-fluxo-agendamento.svg         # Agendamento online/presencial → Consulta
+├── 17-fluxo-tutor-pet.svg           # Cadastro tutor + pet + Timeline
+├── 18-fluxo-convenio.svg            # Faturamento convênio + Claims + CVI
+├── 22-fluxo-lgpd.svg                # Solicitação LGPD (acesso/exclusão/anonimização)
+├── 23-fluxo-notificacao.svg         # Envio de notificação multicanal
+├── 24-fluxo-chat.svg                # Mensagem tutor ↔ clínica
+├── 25-fluxo-autoupdate.svg          # Auto-update do sistema
+├── 26-fluxo-emergencia.svg          # Ativação de protocolo de emergência
+├── 28-fluxo-triagem.svg             # Triagem Manchester → Atendimento
+├── 29-fluxo-hospedagem.svg          # Check-in → Tarefas → Check-out
+├── 30-fluxo-odontologia.svg         # Procedimento odontológico
+└── 31-fluxo-zoonoses.svg            # Notificação compulsória
+```
+
+**Nomenclatura:** `{numero}-fluxo-{modulo}.svg` — o número facilita associação com o arquivo do manual (ex: `05-fluxo-prontuario.svg` para `05-prontuarios.md`).
+
+### X3 — Elementos BPMN Utilizados em Cada Diagrama
+
+| Elemento | Representação | Significado |
+|----------|--------------|-------------|
+| **Pool** | Retângulo com label | Ator principal do processo (ex: "Clínica") |
+| **Lane** | Faixa horizontal dentro do pool | Perfil de usuário (ex: "Recepcionista", "Veterinário", "Financeiro") |
+| **Evento de Início** | Círculo verde | Onde o processo começa |
+| **Evento de Fim** | Círculo vermelho | Onde o processo termina |
+| **Tarefa** | Retângulo com bordas arredondadas | Atividade realizada por um ator |
+| **Subprocesso** | Retângulo com bordas duplas | Processo detalhado em outro diagrama |
+| **Gateway Exclusivo** | Losango com X | Decisão (um caminho) |
+| **Gateway Paralelo** | Losango com + | Atividades em paralelo |
+| **Evento Intermediário** | Círculo duplo | Mensagem, temporizador, link |
+| **Fluxo de Sequência** | Seta contínua | Ordem das atividades |
+| **Fluxo de Mensagem** | Seta tracejada | Comunicação entre pools diferentes |
+| **Associação** | Linha pontilhada | Artefato ou anotação ligado a uma atividade |
+| **Pool de Sistema** | Pool separado | Processos automáticos (comandos, listeners, jobs) |
+
+### X4 — Processos por Módulo (29 Diagramas)
+
+#### X4.1 — Macro-Fluxo do Sistema
+**Arquivo:** `macro-fluxo-sistema.svg`  
+**Referenciado em:** `resources/docs/index.md`  
+**Lanes:** Sistema, Tutor, Recepcionista, Veterinário, Financeiro, Estoque  
+**Fluxo:** Cadastro Tutor/Pet → Agendamento → Consulta → Prontuário → Prescrição/Vacina/Exame → Fatura → NFSe/Comissão → Conciliação  
+**Gateways:** Paralelo (serviços múltiplos na consulta), Exclusivo (com/sem convênio)
+
+#### X4.2 — Matriz de Perfis (RACI)
+**Arquivo:** `matriz-perfis.svg`  
+**Referenciado em:** `resources/docs/technical-manual/index.md`  
+**Tabela visual:** Responsável, Aprovador, Consultado, Informado por funcionalidade e perfil
+
+#### X4.3 — Prontuário (05)
+**Arquivo:** `05-fluxo-prontuario.svg`  
+**Pools:** Clínica, Tutor (via Portal)  
+**Lanes:** Veterinário (lane principal)  
+**Fluxo:** Criar SOAP → [Gateway: plano de tratamento?] → Sim → Criar Plano → Tutor aprova/rejeita → [Aprovado?] → Executar → Não → Prescrever  
+**Eventos:** Início (abrir ficha do pet), Fim (prontuário salvo), Intermediário (notificação ao tutor)
+
+#### X4.4 — Prescrição (06)
+**Arquivo:** `06-fluxo-prescricao.svg`  
+**Lanes:** Veterinário, Tutor, Sistema  
+**Fluxo:** Selecionar pet → Adicionar medicamentos (fármaco, dose, frequência) → [Controlado?] → Sim → Validar ANVISA → Gerar QR Code → Salvar → [Gateway: imprimir?] → PDF com QR Code → Tutor verifica `/r/{hash}`  
+**Eventos:** Intermediário (hash SHA-256 gerado), Temporizador (validade expirada)
+
+#### X4.5 — Vacina (07)
+**Arquivo:** `07-fluxo-vacina.svg`  
+**Lanes:** Veterinário, Recepcionista, Sistema  
+**Fluxo:** Selecionar pet + vacina → [Protocolo ativo?] → Sim → Sugerir próxima dose → Informar lote + validade → Aplicar → [Gateway: estoque integrado?] → Deduzir automaticamente → Gerar certificado PDF → [Lembrete configurado?] → Agendar próxima notificação  
+**Paralelo:** Recall campaigns (`recall:process`) + Previsão de vencimento
+
+#### X4.6 — Exame (08)
+**Arquivo:** `08-fluxo-exame.svg`  
+**Lanes:** Veterinário, Recepcionista, Sistema  
+**Fluxo:** Solicitar exame → [Tipo?] → Laboratório / Imagem → Coleta → Processamento → Resultado → Laudo → Liberar para tutor
+
+#### X4.7 — Laboratório (09)
+**Arquivo:** `09-fluxo-laboratorio.svg`  
+**Lanes:** Veterinário, Técnico, Sistema  
+**Fluxo:** Pedido → Coleta (amostra) → [Equipamento integrado?] → Importação automática → Parâmetros → Laudo → Liberar  
+**Subprocesso:** Integração HL7/REST com equipamento
+
+#### X4.8 — Imagem (10)
+**Arquivo:** `10-fluxo-imagem.svg`  
+**Lanes:** Veterinário, Radiologista  
+**Fluxo:** Solicitar → Upload imagens (DICOM/JPEG) → Laudo → Assinatura digital → Associar ao prontuário
+
+#### X4.9 — Cirurgia (11)
+**Arquivo:** `11-fluxo-cirurgia.svg`  
+**Lanes:** Veterinário, Recepcionista, Sistema  
+**Fluxo:** Agendar → Checklist pré-operatório → [Avaliação pré-anestésica OK?] → Sim → Realizar cirurgia → Registrar transoperatório → Pós-operatório → Alta  
+**Gateway Paralelo:** Anestesia, Equipe, Sala, Consentimento
+
+#### X4.10 — Internação (12)
+**Arquivo:** `12-fluxo-internacao.svg`  
+**Lanes:** Veterinário, Enfermeiro, Sistema  
+**Fluxo:** Registrar entrada → [Tipo: UTI/Enfermaria/Isolamento?] → Evolução diária → Prescrição diária → [Gateway: alta médica?] → Sim → Resumo de alta → [Gateway: óbito?] → Registrar causa mortis  
+**Evento Temporizador:** Prescrição diária automática
+
+#### X4.11 — Farmácia (13)
+**Arquivo:** `13-fluxo-farmacia.svg`  
+**Lanes:** Estoque, Sistema  
+**Fluxo:** Cadastrar produto (SKU, lote, validade, preço) → [Controlado?] → Marcar ANVISA → [Gateway: venda/uso?] → Venda: debitar estoque → Uso clínico: registrar consumo  
+**Subprocesso:** Calculadora de dosagem (link para formulário de fármacos)
+
+#### X4.12 — Estoque (14)
+**Arquivo principal:** `14-fluxo-estoque.svg`  
+**Arquivo secundário:** `14-fluxo-substancias.svg`  
+**Lanes (principal):** Estoque, Financeiro, Admin  
+**Fluxo:** Criar pedido de compra (draft) → [Gateway: valor > limite?] → Aprovação → Ordered → [Gateway: recebimento parcial?] → Parcial → Total → Conciliação  
+**Fluxo controladas:** Compra → Registro ANVISA → Saída → Relatório mensal
+
+#### X4.13 — Financeiro (15)
+**Arquivo principal:** `15-fluxo-fatura.svg`  
+**Arquivo secundário:** `15-fluxo-conciliacao.svg`  
+**Lanes (fatura):** Financeiro, Sistema, Tutor, Webmania®  
+**Fluxo:** Fatura gerada (manual ou auto após consulta) → Receber pagamento → [Gateway: NFSe ativa?] → Emitir NFSe (via Webmania®) → [Comissão configurada?] → Calcular comissão → Tutor recebe e-mail com XML/PDF  
+**Fluxo conciliação:** Importar extrato (OFX/QIF/CSV) → Sugerir correspondências → [Gateway: match automático?] → Conciliar → Reconcilied / Unmatched → Ajuste manual
+
+#### X4.14 — Agendamento (16)
+**Arquivo:** `16-fluxo-agendamento.svg`  
+**Lanes:** Tutor (portal), Recepcionista, Veterinário, Sistema  
+**Fluxo:** [Origem?] → Portal: tutor agenda online → Clínica: recepcionista agenda → Confirmar → [Gateway: lembrete?] → Notificar 24h e 2h antes → Tutor confirma/reagenda → Consulta → [Gateway: concluída?] → Gerar fatura automaticamente  
+**Pool de Sistema:** Comando `appointments:remind` + Fila de comunicação  
+**Evento Temporizador:** Lembrete automático (dailyAt 18h)
+
+#### X4.15 — Tutor e Pet (17)
+**Arquivo:** `17-fluxo-tutor-pet.svg`  
+**Lanes:** Recepcionista, Sistema, Tutor  
+**Fluxo:** Cadastrar tutor (CPF único) → Cadastrar pet (vinculado) → [Gateway: microchip?] → Registrar número + data → [Múltiplos tutores?] → Adicionar vínculos → Timeline unificada  
+**Subprocesso:** Registro de óbito (causa, autorização, cremação, memorial)
+
+#### X4.16 — Convênio (18)
+**Arquivo:** `18-fluxo-convenio.svg`  
+**Lanes:** Financeiro, Sistema, Porto Seguro (API)  
+**Fluxo:** Cadastrar convênio + tabela → Realizar atendimento → [Gateway: conveniado?] → Faturar → Emitir guia → [Auto-claim ativo?] → Enviar claim via API → Webhook → Status (aprovado/rejeitado/glosado)  
+**Subprocesso:** CVI (requisitos, microchip, validade, CRMV)
+
+#### X4.17 — LGPD (22)
+**Arquivo:** `22-fluxo-lgpd.svg`  
+**Lanes:** Tutor, Admin/Sistema  
+**Fluxo:** Tutor solicita: acesso / correção / exclusão / portabilidade → Sistema processa → [Gateway: tipo?] → Exportar JSON (lgpd:export) / Anonimizar (lgpd:anonymize) → Auditoria registrada
+
+#### X4.18 — Notificação (23)
+**Arquivo:** `23-fluxo-notificacao.svg`  
+**Lanes:** Sistema, Tutor  
+**Fluxo:** Evento dispara (consulta, vacina, aniversário, campanha) → Verificar preferências do tutor → [Gateway: canal?] → WhatsApp (prioritário) → SMS (fallback) → E-mail → Registrar em CommunicationQueue → Processar → Log de entrega
+
+#### X4.19 — Chat (24)
+**Arquivo:** `24-fluxo-chat.svg`  
+**Lanes:** Tutor, Clínica  
+**Fluxo:** Tutor envia mensagem → Sistema notifica clínica → Funcionário visualiza → Responde → Tutor recebe → [Gateway: anexo?] → Validar tamanho (10MB max) → Anexar
+
+#### X4.20 — Auto-Update (25)
+**Arquivo:** `25-fluxo-autoupdate.svg`  
+**Lanes:** Admin, Sistema, GitHub  
+**Fluxo:** Admin clica "Verificar Atualizações" → Sistema consulta GitHub → [Gateway: atualização disponível?] → Sim → Admin clica "Aplicar" → `php artisan down` → `git pull` → `php artisan migrate` → Limpa cache → `php artisan up` → Log
+
+#### X4.21 — Emergência (26)
+**Arquivo:** `26-fluxo-emergencia.svg`  
+**Lanes:** Veterinário, Sistema  
+**Fluxo:** Pet chega em emergência → Buscar protocolo por espécie + gravidade → Abrir protocolo → Seguir procedimentos → Registrar no prontuário
+
+#### X4.22 — Triagem (28)
+**Arquivo:** `28-fluxo-triagem.svg`  
+**Lanes:** Recepcionista, Veterinário, Sistema  
+**Fluxo:** Pet chega → Registrar triagem (queixa, sinais vitais) → Classificar Manchester (cor) → [Gateway: cor?] → Vermelho: alerta sonoro + atendimento imediato → Laranja/Amarelo: fila + tempo espera → Verde/Azul: aguardar → [Gateway: tempo máximo?] → Escalar prioridade → [Gateway: protocolo relevante?] → Sugerir protocolo → Atendimento → Finalizar triagem  
+**Evento Temporizador:** Polling a cada 5s para atualização
+
+#### X4.23 — Hospedagem (29)
+**Arquivo:** `29-fluxo-hospedagem.svg`  
+**Lanes:** Recepcionista, Veterinário, Sistema  
+**Fluxo:** Check-in → Verificar vacinas → [OK?] → Alocar acomodação → [Gateway: banho/tosa?] → Agendar grooming → Tarefas diárias (alimentação, medicação, passeio) → [Gateway: intercorrência?] → Notificar veterinário → Check-out → Gerar fatura
+
+#### X4.24 — Odontologia (30)
+**Arquivo:** `30-fluxo-odontologia.svg`  
+**Lanes:** Veterinário, Sistema  
+**Fluxo:** Abrir odontograma → [Gateway: dente afetado?] → Registrar condição (tártaro, fratura, ausente) → [Procedimento?] → Limpeza/Extração/Restauração → Raio-X pré-extração?] → Obrigatório → Laudo → Prescrição pós-operatória
+
+#### X4.25 — Zoonoses (31)
+**Arquivo:** `31-fluxo-zoonoses.svg`  
+**Lanes:** Veterinário, Sistema, Vigilância Sanitária  
+**Fluxo:** Diagnosticar zoonose → [Gateway: notificação compulsória?] → Raiva: imediata (24h) → Leptospirose: 24h → Leishmaniose: semanal → Gerar formulário oficial → Notificar órgão → Registrar protocolo → Relatório epidemiológico
+
+### X5 — Lightbox Modal para Diagramas
+
+**Implementação:** Adicionar ao `resources/views/docs/index.blade.php`, bloco `@push('scripts')`:
+
+```blade
+@push('scripts')
+<script>
+document.querySelectorAll('.docs-content img[src$=".svg"]').forEach(img => {
+    img.style.cursor = 'pointer';
+    img.addEventListener('click', function() {
+        const modal = document.createElement('div');
+        modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
+        modal.innerHTML = '<img src="' + this.src + '" style="max-width:95vw;max-height:95vh;object-fit:contain;background:#fff;border-radius:4px;box-shadow:0 0 30px rgba(0,0,0,0.5);">';
+        modal.addEventListener('click', () => modal.remove());
+        document.body.appendChild(modal);
+    });
+});
+</script>
+@endpush
+```
+
+**Comportamento:**
+- Clique no SVG → modal fullscreen com fundo escuro
+- Imagem centralizada com `max-width:95vw` e `max-height:95vh`
+- Scroll e zoom nativos do navegador (Ctrl+Scroll, pinch)
+- Clique fora ou no fundo escuro → fecha modal
+- Zero dependências externas (JS puro)
+
+### X6 — Como Referenciar nos Manuais
+
+Cada arquivo `.md` no final da seção principal terá:
+
+```markdown
+---
+
+## Diagrama do Processo
+
+![Fluxo de Prontuário](diagrams/05-fluxo-prontuario.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+```
+
+### X7 — Tasks de Implementação
+
+| # | Task | Responsável | Artefatos |
+|---|------|------------|-----------|
+| 1 | Instalar/abrir Draw.io, criar diretório `resources/docs/diagrams/` | Dev | Diretório criado |
+| 2 | Criar `macro-fluxo-sistema.svg` — visão geral com todos os módulos | Dev | SVG |
+| 3 | Criar `matriz-perfis.svg` — RACI perfil × funcionalidade | Dev | SVG |
+| 4–30 | Criar 28 diagramas de processo (um por módulo, conforme X4) | Dev | 28 SVGs |
+| 31 | Adicionar lightbox JS em `resources/views/docs/index.blade.php` | Dev | Código JS |
+| 32 | Adicionar referência `![](diagrams/...)` + legenda no final de cada `.md` | Dev | 29 arquivos .md editados |
+| 33 | Publicar (`docs:publish`) e verificar renderização | Dev | Teste manual |
+| 34 | Verificar responsividade e zoom em mobile | Dev | Teste manual |
+
+### X8 — Total de Diagramas
+
+| Tipo | Quantidade |
+|------|:----------:|
+| Visão geral | 1 (macro-fluxo) |
+| Matriz perfis | 1 (RACI) |
+| Processos por módulo | 27 |
+| **Total** | **29 SVG** |
+
+### X9 — Observações
+
+- SVGs são vetoriais — não perdem qualidade com zoom, ocupam pouco espaço, e são texto XML puro (diff friendly)
+- Draw.io salva no formato `.drawio.svg` (SVG puro com metadados editáveis) — permite reabrir e editar no Draw.io
+- Para editar um diagrama existente: abra o `.svg` no Draw.io → ele reconhece os metadados → edite → salve
+- Alternativa ao Draw.io: **bpmn.io** (web-based, BPMN 2.0 nativo, exporta SVG) pode ser usado em paralelo
+- Caso prefira não depender de ferramenta gráfica, Mermaid.js com `flowchart` + `subgraph` como swimlanes é uma alternativa simplificada (mas não BPMN 2.0 verdadeiro)

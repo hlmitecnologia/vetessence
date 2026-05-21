@@ -36,6 +36,32 @@
 </div>
 @endsection
 
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.docs-content img[src$=".svg"]').forEach(function(img) {
+        img.style.cursor = 'pointer';
+        img.title = 'Clique para ampliar';
+        img.addEventListener('click', function() {
+            var modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
+            var closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '&times;';
+            closeBtn.style.cssText = 'position:absolute;top:20px;right:30px;color:#fff;font-size:40px;background:none;border:none;cursor:pointer;z-index:10000;font-weight:bold;';
+            closeBtn.addEventListener('click', function(e) { e.stopPropagation(); modal.remove(); });
+            var imgEl = document.createElement('img');
+            imgEl.src = this.src;
+            imgEl.style.cssText = 'max-width:95vw;max-height:95vh;object-fit:contain;background:#fff;border-radius:4px;box-shadow:0 0 30px rgba(0,0,0,0.5);';
+            modal.appendChild(imgEl);
+            modal.appendChild(closeBtn);
+            modal.addEventListener('click', function() { modal.remove(); });
+            document.body.appendChild(modal);
+        });
+    });
+});
+</script>
+@endpush
+
 @push('styles')
 <style>
 .docs-content h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
