@@ -215,7 +215,6 @@ class PermissionSeeder extends Seeder
                 'chat.view', 'chat.create', 'chat.edit', 'chat.delete',
                 'drug-formulary.view', 'drug-formulary.create', 'drug-formulary.edit',
                 'emergency-protocols.view', 'emergency-protocols.create', 'emergency-protocols.edit', 'emergency-protocols.delete',
-                'docs.view',
             ],
 
             'recepcionista' => [
@@ -238,7 +237,6 @@ class PermissionSeeder extends Seeder
                 'vaccination-reminders.view',
                 'triage.view', 'triage.create',
                 'chat.view', 'chat.create',
-                'docs.view',
             ],
 
             'financeiro' => [
@@ -253,7 +251,6 @@ class PermissionSeeder extends Seeder
                 'notification-logs.view',
                 'purchase-orders.view',
                 'nfse.view', 'nfse.emit',
-                'docs.view',
             ],
 
             'super-financial' => [
@@ -270,7 +267,6 @@ class PermissionSeeder extends Seeder
                 'purchase-orders.view',
                 'corporate-dashboard.view',
                 'nfse.view', 'nfse.emit', 'nfse.cancel',
-                'docs.view',
             ],
 
             'estoque' => [
@@ -285,7 +281,6 @@ class PermissionSeeder extends Seeder
                 'stock.transfer',
                 'emergency-protocols.view', 'emergency-protocols.create', 'emergency-protocols.edit',
                 'notification-logs.view',
-                'docs.view',
             ],
 
             'human-resources' => [
@@ -295,7 +290,6 @@ class PermissionSeeder extends Seeder
                 'users.view',
                 'staff-schedules.view',
                 'schedules-on-call.view',
-                'docs.view',
             ],
 
             'tutor' => [
@@ -305,9 +299,9 @@ class PermissionSeeder extends Seeder
             'auditor' => [],
         ];
 
-        // Add all view-only permissions to auditor
+        // Add all view-only permissions to auditor (except docs and branding)
         foreach ($permissions as $perm) {
-            if (str_ends_with($perm, '.view') || str_ends_with($perm, '.delete')) {
+            if (!in_array($perm, ['docs.view', 'branding']) && (str_ends_with($perm, '.view') || str_ends_with($perm, '.delete'))) {
                 $rolePermissions['auditor'][] = $perm;
             }
         }
