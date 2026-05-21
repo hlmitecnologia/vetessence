@@ -49,10 +49,7 @@ Route::middleware('auth:tutor')->group(function () {
 
     Route::get('prescriptions', [PrescriptionController::class, 'index'])->name('portal.prescriptions.index');
 
-    Route::get('docs', [DocController::class, 'index'])->name('portal.docs.index');
-    Route::get('docs/{page}', [DocController::class, 'show'])->name('portal.docs.show');
-
-    // Tutor manual diagrams
+    // Tutor manual diagrams — must be before generic {page}
     Route::get('docs/diagrams/{file}', function (string $file) {
         $path = storage_path('docs/diagrams/' . basename($file));
         if (!file_exists($path)) {
@@ -60,4 +57,7 @@ Route::middleware('auth:tutor')->group(function () {
         }
         return response()->file($path, ['Content-Type' => 'image/svg+xml']);
     })->name('portal.docs.diagrams');
+
+    Route::get('docs', [DocController::class, 'index'])->name('portal.docs.index');
+    Route::get('docs/{page}', [DocController::class, 'show'])->name('portal.docs.show');
 });
