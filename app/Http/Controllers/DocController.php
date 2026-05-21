@@ -24,7 +24,7 @@ class DocController extends Controller
     {
         $file = $page ? "{$section}/{$page}" : $section;
         $sidebar = $this->buildSidebar();
-        $content = $this->renderFile($file);
+        $content = $this->renderFile($file, $section);
         return view('docs.index', compact('sidebar', 'content'));
     }
 
@@ -55,7 +55,7 @@ class DocController extends Controller
         ];
     }
 
-    private function renderFile(string $file): string
+    private function renderFile(string $file, ?string $section = null): string
     {
         $path = storage_path("docs/{$file}.md");
 
@@ -81,6 +81,15 @@ class DocController extends Controller
             },
             $html
         );
+
+        if ($section) {
+            $base = url("/docs/{$section}");
+            $html = preg_replace(
+                '/(<(?:a|img)\s+(?:[^>]*?\s)?(?:href|src))="(?!https?:\/\/|\/\/|\/|#)([^"]*)"/i',
+                '$1="' . $base . '/$2"',
+                $html
+            );
+        }
 
         return $html;
     }
