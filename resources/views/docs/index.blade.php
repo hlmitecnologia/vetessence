@@ -27,6 +27,13 @@
         </div>
         <div class="col-md-9">
             <div class="card">
+                <div class="card-header">
+                    @if(request()->route()->getName() !== 'docs.index')
+                        <a href="{{ route('docs.index') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Voltar ao índice
+                        </a>
+                    @endif
+                </div>
                 <div class="card-body docs-content">
                     {!! $content !!}
                 </div>
