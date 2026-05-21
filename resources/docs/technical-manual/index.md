@@ -564,6 +564,8 @@ php artisan event:cache
 
 #### 3.3. Nginx — Virtual Host
 
+**Passo 1 — Configuração inicial (porta 80 apenas):**
+
 ```nginx
 # /etc/nginx/sites-available/vetessence
 server {
@@ -618,6 +620,77 @@ ln -s /etc/nginx/sites-available/vetessence /etc/nginx/sites-enabled/
 rm /etc/nginx/sites-enabled/default
 nginx -t && systemctl restart nginx
 ```
+
+**Passo 2 — Após executar `certbot --nginx`:**
+
+O Certbot altera automaticamente o virtual host para incluir SSL e redirecionamento HTTP → HTTPS. O resultado final será equivalente a:
+
+```nginx
+# /etc/nginx/sites-available/vetessence
+
+# Redirecionamento HTTP → HTTPS
+server {
+    listen 80;
+    server_name seu-dominio.com;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name seu-dominio.com;
+    root /var/www/vetessence/public;
+
+    index index.php;
+
+    charset utf-8;
+    client_max_body_size 50M;
+
+    # SSL (gerado pelo Certbot)
+    ssl_certificate     /etc/letsencrypt/live/seu-dominio.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/seu-dominio.com/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    # Segurança
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+
+    # Gzip
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript image/svg+xml;
+    gzip_min_length 256;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+
+    location ~ \.env$ {
+        deny all;
+    }
+
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|woff2?)$ {
+        expires 365d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    access_log /var/log/nginx/vetessence_access.log;
+    error_log  /var/log/nginx/vetessence_error.log;
+}
+```
+
+> **Nota:** O Certbot cria os arquivos `options-ssl-nginx.conf` e `ssl-dhparams.pem` em `/etc/letsencrypt/`. A renovação automática via snap mantém esses arquivos atualizados. Não edite manualmente os caminhos dos certificados — o Certbot os gerencia.
 
 #### 3.4. PHP-FPM (Produção)
 
