@@ -60,6 +60,10 @@ class DocController extends Controller
         $path = storage_path("docs/{$file}.md");
 
         if (!file_exists($path)) {
+            $path = storage_path("docs/{$file}/index.md");
+        }
+
+        if (!file_exists($path)) {
             return "<div class='alert alert-warning'>Documento nao encontrado: <code>{$file}.md</code></div>";
         }
 
