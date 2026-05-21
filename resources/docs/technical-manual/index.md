@@ -869,6 +869,8 @@ php artisan vendor:publish --tag=livewire:assets --force
 
 ### 5. Auto-Update
 
+#### 5.1. Atualização via painel
+
 Admin pode atualizar via painel em **Configurações > Atualizar Sistema**.
 Requer token GitHub configurado e `exec()` habilitado no servidor.
 
@@ -882,6 +884,17 @@ php artisan vendor:publish --tag=livewire:assets --force
 php artisan optimize:clear
 php artisan up
 ```
+
+#### 5.2. Forçar sincronização (quando há conflitos locais)
+
+Se o servidor tiver modificações locais (ex.: assets do Livewire republicados) que impeçam o `git pull`, force a sobrescrita com o remoto:
+
+```bash
+git fetch origin
+git reset --hard origin/main
+```
+
+> **Atenção:** `git reset --hard` descarta **todas** as alterações locais não comitadas. Execute apenas quando tiver certeza de que não há dados locais a preservar. Após o reset, siga os passos de manutenção (migrate, publish, cache).
 
 ### 6. .env — Variáveis Essenciais
 
