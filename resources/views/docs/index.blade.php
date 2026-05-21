@@ -46,7 +46,7 @@
 @push('scripts')
 (function() {
     function bindSvgLightbox() {
-        document.querySelectorAll('.docs-content img[src$=".svg"]').forEach(function(img) {
+        document.querySelectorAll('.docs-content img[src*="/docs/imagem/"], .docs-content svg').forEach(function(img) {
             img.style.cursor = 'pointer';
             img.title = img.title || 'Clique para ampliar';
             if (img.dataset.lightboxBound) return;

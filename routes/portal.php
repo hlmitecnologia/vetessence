@@ -28,9 +28,10 @@ Route::middleware('guest:tutor')->group(function () {
     Route::post('reset-password', [ResetPasswordController::class, 'store'])->name('portal.password.update');
 });
 
-// Documentation diagrams — outside auth group so SVG images load, must be before docs/{page}
-Route::get('docs/diagrams/{file}', function (string $file) {
-    $path = storage_path('docs/diagrams/' . basename($file));
+// Documentation diagrams — slug sem extensão para nginx não interceptar
+Route::get('docs/imagem/{slug}', function (string $slug) {
+    $slug = basename($slug);
+    $path = storage_path("docs/diagrams/{$slug}.svg");
     if (!file_exists($path)) {
         abort(404);
     }

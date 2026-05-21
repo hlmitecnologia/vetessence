@@ -88,8 +88,8 @@ class DocController extends Controller
                 function ($m) use ($section) {
                     $url = $m[2];
                     if (str_starts_with($url, '../diagrams/')) {
-                        $url = substr($url, 3);
-                        $prefix = url('/docs');
+                        $url = preg_replace('#\.svg$#i', '', basename($url));
+                        $prefix = url('/docs/imagem');
                     } else {
                         $prefix = $section !== '' ? url("/docs/{$section}") : url('/docs');
                     }

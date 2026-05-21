@@ -41,9 +41,10 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
-// Documentation diagrams (BPMN SVGs) — outside auth group so SVG images load in all pages
-Route::get('docs/diagrams/{file}', function (string $file) {
-    $path = storage_path('docs/diagrams/' . basename($file));
+// Documentation diagrams (BPMN SVGs) — slug sem extensão para nginx não interceptar
+Route::get('docs/imagem/{slug}', function (string $slug) {
+    $slug = basename($slug);
+    $path = storage_path("docs/diagrams/{$slug}.svg");
     if (!file_exists($path)) {
         abort(404);
     }
