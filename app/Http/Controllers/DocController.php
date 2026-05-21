@@ -16,7 +16,7 @@ class DocController extends Controller
     public function index()
     {
         $sidebar = $this->buildSidebar();
-        $content = $this->renderFile('index');
+        $content = $this->renderFile('index', '');
         return view('docs.index', compact('sidebar', 'content'));
     }
 
@@ -82,11 +82,19 @@ class DocController extends Controller
             $html
         );
 
-        if ($section) {
-            $base = url("/docs/{$section}");
-            $html = preg_replace(
+        if ($section !== null) {
+            $html = preg_replace_callback(
                 '/(<(?:a|img)\s+(?:[^>]*?\s)?(?:href|src))="(?!https?:\/\/|\/\/|\/|#)([^"]*)"/i',
-                '$1="' . $base . '/$2"',
+                function ($m) use ($section) {
+                    $url = $m[2];
+                    if (str_starts_with($url, '../diagrams/')) {
+                        $url = substr($url, 3);
+                        $prefix = url('/docs');
+                    } else {
+                        $prefix = $section !== '' ? url("/docs/{$section}") : url('/docs');
+                    }
+                    return $m[1] . '="' . $prefix . '/' . $url . '"';
+                },
                 $html
             );
         }
