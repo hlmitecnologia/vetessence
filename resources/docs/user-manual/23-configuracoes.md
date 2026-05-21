@@ -15,10 +15,10 @@
    - **Token de atualização**: Para auto-update via Git
 
 ### Token de Atualização
-- Necessário para realizar auto-update do sistema
-- Gere um token seguro em **Configurações > Sistema**
+- Necessário para realizar auto-update do sistema via GitHub
+- Configure em **Configurações > Sistema**
+- Armazenado com segurança na tabela `settings`
 - O token valida requisições de atualização
-- Guarde em local seguro
 
 ## Integrações
 
@@ -78,14 +78,35 @@ As integrações são configuradas via **arquivo `.env`** na raiz do sistema (ac
 1. Acesse **Financeiro > Gateways de Pagamento**
 2. Clique em **Novo**
 3. Configure:
-   - **Provedor**: Mercado Pago, PagSeguro, Stripe
+   - **Provedor**: Mercado Pago, PagSeguro, Stripe, PIX
    - **Chave pública**
    - **Chave secreta**
    - **Webhook secret** (para notificações)
+   - **Webhook URL** (URL de callback)
    - **Modo de teste** (sandbox)
 4. Clique em **Salvar**
 
-> **Nota**: O cadastro do gateway está implementado. A chamada real para a SDK do provedor está em desenvolvimento.
+> **Nota**: O cadastro do gateway está implementado. A chamada real para a SDK do provedor está em desenvolvimento (stub).
+
+### NFSe (Webmania®)
+1. Acesse **Financeiro > NFSe > Configurações**
+2. Configure por filial:
+   - **CNPJ do prestador**
+   - **Município IBGE** (código da cidade)
+   - **Regime tributário**: MEI, Simples Nacional, Lucro Presumido
+   - **Série** das notas
+   - **Ambiente**: Homologação ou Produção
+3. Credenciais Webmania®:
+   - `WEBMANIA_APP_ID` — ID do aplicativo
+   - `WEBMANIA_APP_SECRET` — Segredo (mascarado na UI)
+   - `WEBMANIA_CONSUMER_KEY` — Chave do consumidor
+   - `WEBMANIA_CONSUMER_SECRET` — Segredo do consumidor (mascarado)
+4. Cada filial tem sua própria configuração (1 por filial)
+5. Ative a configuração para começar a emitir notas
+
+**Provider**: Webmania® ([https://webmania.com.br](https://webmania.com.br))
+**Uso**: Emissão de NFSe a partir de faturas de serviço.
+**Arquitetura**: Adapter Pattern — pode ser trocado sem alterar regras de negócio.
 
 ### Convênios (Porto Seguro)
 | Variável | Descrição | Onde configurar |
@@ -93,30 +114,37 @@ As integrações são configuradas via **arquivo `.env`** na raiz do sistema (ac
 | `PORTO_SEGURO_API_URL` | URL base da API Porto Seguro | `.env` |
 | `PORTO_SEGURO_API_KEY` | Chave de API | `.env` |
 
-**Uso**: Envio automático de claims de convênio.
+**Uso**: Envio automático de claims de convênio (`claims:auto-file`).
 
 ### Equipamentos de Laboratório
 1. Acesse **Configurações > Equipamentos de Laboratório**
 2. Clique em **Novo**
 3. Configure:
    - **Tipo de equipamento**
-   - **Protocolo** (REST, HL7, FHIR)
-   - **URL de conexão**
+   - **Protocolo** (REST, HL7, FHIR, Custom)
+   - **URL de conexão** (endpoint)
    - **Chave de API**
-   - **IP e porta** (para conexão direta)
+   - **IP e porta** (para conexão direta HL7)
 4. Clique em **Salvar**
 
-**Uso**: Recebimento automático de resultados de exames.
+**Uso**: Recebimento automático de resultados de exames via webhook `POST /api/v1/lab-equipment/{id}/receive`.
+**Status**: Consulta via `GET /api/v1/lab-equipment/{id}/status`.
 
-## Personalização
+## Personalização (Rebranding U2)
 
 ### Identidade Visual
 1. Acesse **Configurações > Identidade Visual**
 2. Configure:
    - **Nome da clínica** (exibido no título, sidebar e documentos)
    - **Cor primária** (usada na sidebar e botões principais)
-   - **Logotipo** (upload PNG, JPG ou SVG)
+   - **Logotipo** (upload PNG, JPG ou SVG — salvo em `storage/app/public/branding/`)
    - **Favicon** (ícone da aba do navegador)
+3. A personalização afeta:
+   - Sidebar (cor de fundo)
+   - Título do sistema (brand-text)
+   - Tela de login
+   - Cabeçalhos de documentos (PDF)
+4. Permissão necessária: `branding` (admin only)
 
 ### Impressão
 - **Header**: Texto exibido no topo dos documentos
@@ -128,15 +156,33 @@ As integrações são configuradas via **arquivo `.env`** na raiz do sistema (ac
 - Configure período de retenção
 - Exporte logs
 
-## Atualização do Sistema
+## Atualização do Sistema (Auto-Update U1)
+
+### Como Funciona
 1. Acesse **Configurações > Atualização do Sistema**
-2. Configure o **token de atualização**
+2. Configure:
+   - **Token de atualização** (token de acesso pessoal do GitHub)
+   - **Repositório** (ex: `hectordufau/vetessence`)
+   - **Branch** (ex: `main`)
 3. Clique em **Verificar Atualizações** para checar GitHub
 4. Se disponível, clique em **Aplicar Atualização**
-5. O sistema:
-   - Coloca em manutenção
-   - Executa `git pull`
-   - Roda migrações
-   - Limpa cache
-   - Reativa o sistema
-6. Histórico de atualizações é mantido com data, versão e status
+
+### Fluxo de Atualização
+1. Sistema entra em modo de manutenção (`php artisan down`)
+2. Executa `git pull` usando o token de acesso
+3. Roda migrações pendentes (`php artisan migrate`)
+4. Limpa cache (config, route, view)
+5. Reativa o sistema (`php artisan up`)
+6. Histórico de atualizações é registrado (data, versão, status)
+
+### Segurança
+- Permissão `system-update` (super-admin apenas)
+- Token armazenado na tabela `settings`
+- Sistema faz backup antes de atualizar (recomendado backup manual)
+- Merge conflicts podem interromper o processo
+
+### Requisitos
+- Servidor com `exec()` habilitado
+- Git instalado no servidor
+- Permissão de escrita na pasta do projeto
+- Token GitHub com permissão de leitura do repositório

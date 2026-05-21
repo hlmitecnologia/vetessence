@@ -34,12 +34,34 @@
   - **Próxima dose**: Quando chegar a data programada
   - **Vacinas anuais**: Lembrete 30 dias antes do vencimento
 - Canais: WhatsApp, SMS, E-mail (conforme preferência do tutor)
+- Comando `vaccines:remind` dispara lembretes automaticamente
 
 ## Previsão de Vacinas a Vencer
 1. Acesse **Clínico > Previsão de Vacinas**
 2. Filtre por **espécie** e **dias para vencer**
 3. Visualize lista de vacinas próximas ao vencimento
 4. Use para campanhas de recall
+5. Exporte a lista para CSV
+
+## Campanhas de Recall
+1. Acesse **Clínico > Campanhas de Recall**
+2. Selecione o **tipo de vacina** e **período**
+3. O sistema lista todos os pets com vacinas atrasadas
+4. Clique em **Enviar Lembrete** para disparar notificações em massa
+5. Comando `recall:process` executa campanhas automaticamente
+
+## Protocolos de Vacinação
+1. Acesse **Clínico > Protocolos de Vacinação**
+2. Crie protocolos por **espécie** (ex: filhote canino, felino adulto)
+3. Defina as vacinas, idades e intervalos entre doses
+4. Ao aplicar, o sistema sugere a **próxima dose** conforme o protocolo
+5. Configure **lembretes automáticos** baseados no protocolo
+
+## Vacinação Remota (Lembretes Programados)
+- Configure regras de lembrete por vacina
+- Defina **dias de antecedência** para alerta
+- Escolha **canais** de notificação (WhatsApp, SMS, E-mail)
+- Lembretes são processados pelo comando `vaccines:remind`
 
 ## Regras de Negócio
 - Vacinas múltiplas podem ter intervalo mínimo entre doses

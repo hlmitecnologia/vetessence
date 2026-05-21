@@ -870,47 +870,49 @@ These came from analyzing what a practicing vet/receptionist touches every day t
 | Rota | `/docs` com middleware `can:docs.view` (admin/veterinario) |
 | Controller | `DocController` (index + show) |
 | Views | `docs/index.blade.php` — sidebar de navegação, conteúdo em Markdown renderizado |
-| Conteúdo | Manual do Usuário (25 módulos), Manual Técnico (arquitetura, API, permissões, testes, deploy), Changelog |
+| Conteúdo | Manual do Usuário (29 módulos), Manual Técnico (arquitetura, API, permissões, testes, deploy), Changelog |
 | Armazenamento | Arquivos `.md` em `resources/docs/`, publicados via `docs:publish` |
 | Gate | `docs.view` |
 | Testes | 4 (Feature: access, render) |
 
-**Módulos documentados no Manual do Usuário (25):**
+**Módulos documentados no Manual do Usuário (29 módulos, arquivos 05–31):**
 
-| # | Módulo | Fluxos Cobertos |
-|---|--------|----------------|
-| 1 | Agenda | Agendar consulta, calendário visual, agendamento online, reagendar, cancelar |
-| 2 | Tutores | Cadastro, edição, histórico de comunicação, preferências de notificação |
-| 3 | Pets | Cadastro, microchip, timeline, registro de óbito, carteirinha |
-| 4 | Convênios | Cadastro, planos, faturamento de guias, claims automáticos |
-| 5 | Prontuários | SOAP, diagnóstico, plano terapêutico, anexos |
-| 6 | Prescrições | Receita digital, dosagem, verificação por QR code, impressão |
-| 7 | Vacinas | Aplicação, protocolos, certificado PDF (CFMV), lembretes, previsão de vencimento |
-| 8 | Exames | Pedido, coleta, resultado, laudo |
-| 9 | Laboratório | Pedidos, amostras, resultados |
-| 10 | Imagem | Raio-X, ultrassom, tomografia, laudos |
-| 11 | Cirurgias | Agendamento, checklist, monitoramento anestésico, avaliação pré-anestésica |
-| 12 | Internações | Registro, evolução clínica, prescrição diária, resumo de alta |
-| 13 | Farmácia | Produtos, categorias, fornecedores, preços por espécie |
-| 14 | Estoque | Movimentações, transferência entre filiais, ajuste, alerta de vencimento |
-| 15 | Pedidos de Compra | Rascunho → pedido → recebimento, aprovação |
-| 16 | Substâncias Controladas | Registro ANVISA, relatórios mensais/anuais, exportação CSV |
-| 17 | Financeiro | Faturas, pagamentos, gateway, comissões, conciliação bancária |
-| 18 | Relatórios | Financeiro, comissões, auditoria, CSVs exportáveis |
-| 19 | Comunicação | Chat interno, notas internas, fila de comunicação, modelos, WhatsApp/SMS |
-| 20 | Triagem | Painel Livewire, cores de gravidade, alerta sonoro, priorização |
-| 21 | Emergência | Protocolos de emergência, busca por espécie/gravidade |
-| 22 | Hospedagem | Check-in/check-out, tarefas diárias, banho e tosa |
-| 23 | Odontologia | Ficha odontológica, procedimentos |
-| 24 | Zoonoses | Cadastro, notificação, relatórios |
-| 25 | Portal do Tutor | Login, dashboard, prontuários, exames, receitas, agendamento |
+| # | Arquivo | Módulo | Fluxos Cobertos |
+|---|---------|--------|----------------|
+| 5 | `05-prontuarios` | Prontuários | SOAP, diagnóstico, plano terapêutico, aprovação de orçamento, dietas, consentimento, anexos |
+| 6 | `06-prescricoes` | Prescrições | Receita digital, dosagem, verificação por QR code, impressão, substâncias controladas |
+| 7 | `07-vacinas` | Vacinas | Aplicação, protocolos, certificado PDF (CFMV), lembretes, previsão de vencimento, recall |
+| 8 | `08-exames` | Exames | Pedido, coleta, resultado, laudo |
+| 9 | `09-laboratorio` | Laboratório | Pedidos, amostras, parâmetros, equipamentos integrados |
+| 10 | `10-imagem` | Imagem | Raio-X, ultrassom, tomografia, laudos com assinatura digital |
+| 11 | `11-cirurgias` | Cirurgias | Agendamento, checklist, avaliação pré-anestésica, transoperatório, pós-operatório |
+| 12 | `12-internacoes` | Internações | Registro, evolução clínica, prescrição diária, resumo de alta |
+| 13 | `13-farmacia` | Farmácia | Produtos, categorias, fornecedores, calculadora de dosagem, lotes e validade |
+| 14 | `14-estoque` | Estoque | Movimentações, pedidos de compra, substâncias controladas, scanner, transferência |
+| 15 | `15-financeiro` | Financeiro | Faturas, pagamentos, NFSe, comissões, conciliação bancária, auto-faturamento |
+| 16 | `16-agendamento` | Agendamento | Calendário visual (FullCalendar), agendamento online, recorrente, lembretes, senhas |
+| 17 | `17-tutores-pets` | Tutores e Pets | Cadastro, microchip/RG, timeline, registro de óbito, portal do tutor |
+| 18 | `18-convenios` | Convênios | Cadastro, tabelas, guias, faturamento, claims, CVI |
+| 19 | `19-usuarios-permissoes` | Usuários e Permissões | 11 funções, 160+ permissões, gerenciamento |
+| 20 | `20-multi-filiais` | Multi-filiais | Estrutura, corporate dashboard, transferências, isolamento |
+| 21 | `21-relatorios` | Relatórios | Clínicos, financeiros, estoque, comissões, exportação PDF/Excel |
+| 22 | `22-auditoria-lgpd` | Auditoria e LGPD | Trilha de auditoria, direitos do titular, consentimento, anonimização |
+| 23 | `23-notificacoes` | Notificações | Canais WhatsApp/SMS/E-mail, preferências do tutor, campanhas, lembretes |
+| 24 | `24-chat` | Chat | Mensagens tutor ↔ clínica, anexos, notificações |
+| 25 | `25-configuracoes` | Configurações | Sistema, integrações (WhatsApp, SMS, NFSe, Gateway, Lab), rebranding, auto-update |
+| 26 | `26-emergencias` | Emergências | Protocolos de emergência, busca por espécie/categoria/gravidade |
+| 27 | `27-mobile` | Mobile | Interface responsiva, modo mobile /m, atalhos teclado, acessibilidade |
+| 28 | `28-triagem` | Triagem | Painel Livewire, classificação Manchester (vermelho/laranja/amarelo/verde/azul), tempo real |
+| 29 | `29-hospedagem` | Hospedagem | Boarding, check-in/out, tarefas diárias, banho e tosa, cálculo de diárias |
+| 30 | `30-odontologia` | Odontologia | Odontograma, procedimentos, classificação periodontal, raio-X odontológico |
+| 31 | `31-zoonoses` | Zoonoses | Cadastro, notificação compulsória (raiva, leptospirose, etc.), relatórios epidemiológicos |
 
 **Manual Técnico:**
 
 | Seção | Conteúdo |
 |-------|----------|
 | Arquitetura | Stack, estrutura de diretórios, escopo de dados, fluxo de middleware |
-| Módulos | Lista completa de 25 módulos com controllers e models |
+| Módulos | Lista completa de 29 módulos com controllers e models |
 | Permissões | 10 papéis, 70+ permissões, tabela papel × permissão |
 | API | Endpoints públicos (/r/{hash}, /api/insurance/webhook), autenticação, rate limiting |
 | Testes | Suite completa (~800), DatabaseTransactions, como rodar |

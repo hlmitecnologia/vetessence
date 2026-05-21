@@ -5,14 +5,24 @@
 - **SMS**: Mensagens de texto
 - **E-mail**: Envio de e-mails transacionais
 
-## Preferências do Tutor
-- Cada tutor configura seus canais preferidos
-- Acesse o cadastro do tutor ou o Portal do Tutor
-- Opções:
-  - Notificações via **WhatsApp**
-  - Notificações via **SMS**
-  - Notificações via **E-mail**
-  - **Não deseja receber notificações**
+## Preferências do Tutor (T10)
+
+### Configurar Preferências
+1. Acesse o cadastro do tutor > **Preferências de Notificação**
+2. Opções de canal (escolha um ou mais):
+   - [ ] Notificações via **WhatsApp**
+   - [ ] Notificações via **SMS**
+   - [ ] Notificações via **E-mail**
+   - [ ] **Não deseja receber notificações**
+3. O tutor também pode configurar pelo **Portal do Tutor**
+4. O sistema respeita as preferências ao enviar notificações
+
+### Hierarquia de Canais
+1. WhatsApp (prioridade máxima)
+2. SMS (fallback se WhatsApp falhar)
+3. E-mail (último recurso)
+- Limite de 2 SMS/dia por tutor
+- Após 3 falhas consecutivas, canal é desativado temporariamente
 
 ## Tipos de Notificação
 

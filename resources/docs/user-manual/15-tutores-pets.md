@@ -34,8 +34,11 @@
    - **Porte**: Pequeno, Médio, Grande, Gigante
    - **Pelagem / Cor**
    - **Data de nascimento** (ou idade aproximada)
-   - **Microchip** / Registro
-   - **Castrado?**
+    - **Microchip**: Número do microchip
+    - **Data do Microchip**: Data de implantação
+    - **RG Animal** (Registro Geral Animal)
+    - **Órgão Emissor do RG** (CRMV, órgão competente)
+    - **Castrado?**
    - **Foto** do pet
 5. Informações complementares:
    - **Alergias**
@@ -49,9 +52,62 @@
 - Acesse o pet, seção **Tutores**
 - Adicione tutores adicionais com vínculo (pai, mãe, responsável)
 
+## Timeline do Paciente
+
+A Timeline do Paciente consolida todo o histórico do pet em uma única tela cronológica:
+
+1. Acesse o pet > **Timeline**
+2. Visualize eventos em ordem cronológica reversa:
+   - **Consultas** (prontuários)
+   - **Vacinas** aplicadas
+   - **Exames** solicitados e resultados
+   - **Cirurgias** realizadas
+   - **Internações** (entrada e alta)
+   - **Prescrições** emitidas
+   - **Triagens** realizadas
+   - **Óbito** (se aplicável)
+   - **Pesagem** e evolução de peso
+3. Filtre por **tipo de evento** e **período**
+4. Pesquise por **diagnóstico** ou **procedimento**
+5. Clique em qualquer evento para ver detalhes completos
+
+## Óbito e Cremação (Pet Death Records)
+
+### Registrar Óbito
+
+1. Acesse o pet > **Registrar Óbito**
+2. Preencha:
+   - **Data e hora** do óbito
+   - **Causa** (diagnóstico)
+   - **Veterinário responsável** pelo atestado
+   - **Autorizado por** (responsável que autorizou)
+   - **Documento de autorização** (anexo)
+3. Informações de cremação (opcional):
+   - **Tipo**: Cremação individual, Cremação coletiva, Sem cremação
+   - **Data de retirada das cinzas**
+   - **Observações**
+4. **Texto de memorial** (homenagem opcional)
+5. Clique em **Salvar**
+
+### Efeitos do Registro
+
+- Pet é marcado como falecido (não aparece em buscas ativas)
+- Histórico médico é preservado (LGPD: apenas anonimização)
+- Óbito registrado na timeline do paciente
+- Agendamentos futuros são cancelados automaticamente
+
+### Visualizar Registro
+
+1. Acesse o pet > **Registro de Óbito**
+2. Visualize:
+   - Causa e data do óbito
+   - Documentos de autorização
+   - Informações de cremação
+   - Memorial
+
 ## Histórico do Pet
 - Acesse a ficha do pet
-- **Timeline do Paciente**: Prontuários, vacinas, exames, cirurgias, internações
+- **Timeline do Paciente**: Prontuários, vacinas, exames, cirurgias, internações, triagens, óbito
 - Filtre por período e tipo de evento
 - Pesquise por diagnóstico ou procedimento
 

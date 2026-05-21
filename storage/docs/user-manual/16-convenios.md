@@ -60,8 +60,70 @@
 - Procedimentos mais realizados por convênio
 - Demonstrativo de valores a receber
 
+## Claims de Convênio (Insurance Claims)
+
+### Registrar Claim
+
+1. Acesse **Financeiro > Convênios > Claims**
+2. Clique em **Novo Claim**
+3. Preencha:
+   - **Convênio**
+   - **Pet** e **tutor**
+   - **Valor solicitado**
+   - **Procedimentos** cobertos
+   - **Data do atendimento**
+4. Clique em **Salvar**
+
+### Acompanhamento
+
+- **Status**: Pendente, Aprovado, Rejeitado
+- **Valor aprovado** (pode ser diferente do solicitado)
+- **Data de resposta** da operadora
+- **Observações** do convênio
+
+### Auto-Envio (Porto Seguro)
+
+1. Configure a API Porto Seguro em **Configurações > Integrações**
+2. Comando `claims:auto-file` envia claims pendentes automaticamente
+3. O sistema recebe **webhook** com atualização de status via `POST /api/insurance/webhook`
+
+## Certificado Veterinário Internacional (CVI)
+
+### Emitir CVI
+
+1. Acesse **Clínico > Atestados de Saúde**
+2. Na aba **CVI**, clique em **Novo CVI**
+3. Preencha:
+   - **Pet**
+   - **Destino**: País, cidade
+   - **Meio de transporte**: Aéreo, Marítimo, Terrestre
+   - **Data de embarque**
+   - **CRMV do emissor**
+   - **Checklist de requisitos**: Vacinas, exames, microchip, etc.
+4. Clique em **Salvar**
+
+### Requisitos Obrigatórios
+
+- [ ] Microchip implantado e lido
+- [ ] Vacina antirrábica em dia
+- [ ] Exames sorológicos (se país exigir)
+- [ ] Tratamento antiparasitário
+- [ ] Atestado de saúde clínica
+- [ ] Guia de transporte autorizada
+
+### Validade
+- CVI tem validade configurável (padrão: 10 dias para embarque)
+- Após vencimento, novo CVI deve ser emitido
+- Número do CVI segue padrão CRMV
+
+## Permissões
+- `convenio-claims.view/create/edit/delete` — Claims de convênio
+- CVI reusa permissões de `health-certificates.*`
+
 ## Regras de Negócio
 - Cada convênio pode ter tabela própria de valores
 - Autorização prévia para procedimentos específicos
 - Guias têm numeração sequencial por convênio
 - Prazo para envio de faturamento conforme contrato
+- Claims podem ser enviados automaticamente via API Porto Seguro
+- CVI exige microchip obrigatório (verificação automática)

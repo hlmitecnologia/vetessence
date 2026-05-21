@@ -29,26 +29,55 @@
 ### Agendamento Rápido
 - Na ficha do pet, clique em **Agendar**
 - Os dados do pet e tutor são preenchidos automaticamente
+- Abre modal rápido sem sair da tela do pet
 
 ### Agendamento Recorrente
-- Configure retornos automáticos
-- Ex: curativo a cada 48h, reavaliação em 7 dias
-- Defina frequência e número de repetições
+- Agende retornos automáticos de uma só vez
+- Ex: curativo a cada 48h por 5 vezes, reavaliação em 7 dias
+- Defina **frequência** (diária, semanal, quinzenal, mensal, customizada) e **número de repetições**
+- O sistema gera todos os compromissos automaticamente
+- Comando `appointments:generate-recurring` gera em lote
+
+## Agendamento Online (Portal do Tutor)
+
+### Para o Tutor
+1. Acesse o **Portal do Tutor**
+2. Clique em **Agendar Consulta**
+3. Selecione **pet**, **tipo de serviço**, **profissional** e **horário**
+4. Confirme o agendamento
+5. Receba confirmação por WhatsApp/SMS/E-mail
+
+### Para a Clínica
+- Agendamentos online aparecem como **pendentes**
+- Recepcionista confirma ou reagenda conforme disponibilidade
+- Limite de agendamentos online por dia (configurável)
+
+## Calendário Visual (FullCalendar)
+1. Acesse **Agenda > Calendário**
+2. Visualização: **Dia**, **Semana**, **Mês**
+3. Compromissos coloridos por tipo/profissional
+4. **Arraste e solte** para reagendar
+5. **Clique** em horário vazio para novo agendamento
+6. **Filtros**: Profissional, filial, tipo, status
 
 ## Controle de Conflitos
 - O sistema alerta se o profissional já tem compromisso no horário
 - Alerta de horário de almoço/intervalo
 - Limite de agendamentos por período (configurável)
+- Bloqueio de horários (folga, feriado, reunião)
 
 ## Lembretes Automáticos
 - **24h antes**: Aviso por WhatsApp/SMS/E-mail
-- **2h antes**: Lembrete no WhatsApp
-- O tutor pode confirmar ou solicitar reagendamento
+- **2h antes**: Lembrete no horário
+- O tutor pode **confirmar** ou **solicitar reagendamento** pelo link
+- Comando `appointments:remind` processa lembretes diariamente às 18h
 
 ## Reagendamento e Cancelamento
-- Arraste o compromisso para novo horário no calendário
-- Cancelamento registra motivo
+- Arraste o compromisso para novo horário no calendário (drag & drop)
+- Cancelamento registra **motivo**
+- Cancelamento com < 2h pode gerar taxa
 - Histórico de alterações mantido
+- Tutor pode reagendar via portal com até 24h de antecedência
 
 ## Relatórios
 - **Taxa de comparecimento** por profissional

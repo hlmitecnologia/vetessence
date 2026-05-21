@@ -36,15 +36,50 @@
 - Classifique produtos por categoria (Medicamentos, Insumos, Rações, etc.)
 - Categorias são configuradas em **Configurações > Categorias**
 
-## Calculadora de Dosagem
-1. Acesse o **Formulário de Fármacos** no menu Clínico
-2. Selecione **espécie** e **fármaco**
-3. Informe o **peso do animal**
-4. O sistema calcula a dose em mg
-5. Respeita a **dose máxima** configurada
+## Calculadora de Dosagem (Livewire)
+
+1. Acesse **Clínico > Calculadora de Dosagem**
+2. Selecione:
+   - **Fármaco** (do formulário)
+   - **Espécie**: Cão, Gato, Equino, etc.
+   - **Peso do animal** (kg)
+3. O sistema calcula:
+   - **Dose em mg** por administração
+   - **Frequência** recomendada
+   - **Dose máxima** para a espécie
+   - **Volume** (se solução injetável)
+4. Clique em **Copiar para Prescrição** para usar na receita
+
+### Formulário de Fármacos (Drug Formulary)
+
+- Cadastre fármacos por **espécie** e **faixa de peso**
+- Configure: dosagem (mg/kg), dose máxima, via de administração, observações
+- Interface de busca rápida por nome do fármaco
+- Atualize doses conforme literatura
+
+## Lotes e Validade
+
+### Registrar Lote
+1. Ao receber produtos, informe:
+   - **Número do lote**
+   - **Data de fabricação**
+   - **Data de validade**
+2. O sistema bloqueia **produtos vencidos** para venda/uso
+3. Alerta de **produtos próximos ao vencimento** (configurável: 30, 60, 90 dias)
+
+### Alerta de Vencimento
+- Comando `products:alert-expiry` verifica lotes próximos ao vencimento
+- Notificação no dashboard
+- Destaque visual (badge amarelo/vermelho) nos produtos
+
+## Pedidos de Compra (Farmacia)
+- Consulte o módulo específico **Estoque > Pedidos de Compra**
+- Crie pedidos para reposição de estoque
+- Aprovação, recebimento e conciliação
 
 ## Regras de Negócio
 - Produtos controlados exigem receituário ANVISA
 - Preço de venda não pode ser menor que o de custo (alerta)
 - Estoque mínimo gera notificação
 - Lotes vencidos não podem ser utilizados
+- Calculadora de dosagem é apenas referencial — não substitui julgamento clínico

@@ -28,19 +28,25 @@ O VetEssence suporta múltiplas filiais (unidades) com:
 - Preços e taxas específicos
 
 ## Dashboard Corporativo
-- Acesse **Dashboard Corporativo**
-- Visualize indicadores de todas as filiais:
-  - Total de agendamentos (hoje/semana/mês)
-  - Receita total e por filial
-  - Pets ativos
-  - Faturamento mensal (gráfico Chart.js)
-  - Top 5 filiais por faturamento
+
+1. Acesse **Dashboard Corporativo** (permissão: `corporate-dashboard.view`)
+2. Visualize indicadores consolidados de todas as filiais:
+   - **Agendamentos**: Total do dia/semana/mês por filial
+   - **Receita**: Faturamento total e por filial (gráfico Chart.js)
+   - **Pets ativos**: Total de pets cadastrados por filial
+   - **Faturamento mensal**: Gráfico comparativo mês a mês
+   - **Top 5 filiais**: Ranking por faturamento
+   - **Ocupação**: Taxa de ocupação de leitos por filial (se aplicável)
+   - **Vacinas**: Aplicações realizadas por filial
+3. Filtre por **período** (mês, trimestre, ano)
+4. Apenas super-admin, admin, super-financial e branch-admin têm acesso
 
 ## Usuários por Filial
-- Cada usuário tem uma **filial principal** (home branch)
-- Usuários Admin têm acesso global (home branch = null)
+- Cada usuário tem uma **filial principal** (home branch) no campo `branch_id`
+- Usuários com `branch_id = null` têm **acesso global** (super-admin, auditor, HR)
 - Usuários Branch Admin gerenciam apenas sua filial
 - Relatórios podem ser filtrados por filial
+- Usuários só veem dados operacionais da própria filial (exceto acesso global)
 
 ## Transferência entre Filiais
 - Estoque pode ser transferido entre filiais
