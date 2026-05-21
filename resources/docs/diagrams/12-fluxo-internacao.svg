@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500">
+<defs><marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#000"/></marker></defs>
 <switch><g transform="translate(0.5,0.5)">
 
 
@@ -44,7 +45,25 @@ Retorno</text>
 Tutor</text>
 <rect x="200" y="382.0" width="140" height="46" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="270.0" y="405.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Recebe
 Notificações</text>
-<ellipse cx="1161.0" cy="110.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="1161.0" cy="110.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="1161.0" y="133.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Fim</text></g>
+<ellipse cx="1161.0" cy="110.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="1161.0" cy="110.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="1161.0" y="133.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Fim</text>
+<path d="M 51 121 L 51 190 L 211 190 L 211 259" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 211 281 L 211 331.5 L 270 331.5 L 270 382" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+<path d="M 222 270 L 296 270 L 296 190 L 370 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 440 167 L 440 150 L 440 150 L 440 133" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 510 110 L 540 110 L 540 110 L 570 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 570 110 L 540 110 L 540 190 L 510 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 624 110 L 682 110 L 682 110 L 740 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 794 110 L 847 110 L 847 110 L 900 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 794 110 L 847 110 L 847 110 L 900 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 794 110 L 847 110 L 847 110 L 900 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 794 110 L 847 110 L 847 270 L 900 270" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 970 133 L 970 196 L 1091 196 L 1091 259" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 970 133 L 970 196 L 1091 196 L 1091 259" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 970 133 L 970 196 L 1091 196 L 1091 259" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1040 270 L 1060 270 L 1060 270 L 1080 270" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1080 270 L 710 270 L 710 405 L 340 405" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+<path d="M 1091 259 L 1091 190 L 1161 190 L 1161 121" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+</g>
 <foreignObject width="1200" height="500"><div xmlns="http://www.w3.org/1999/xhtml"><mxfile host="Generator" modified="2026-05-21T07:35:39.399367" agent="BPMN-PHASEX" version="24.0.5" type="device"><diagram id="12-fluxo-internacao.svg" name="Page-1"><mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" page="0" pageWidth="1200" pageHeight="500" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="c363" value="Fluxo de Internação" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontStyle=1" vertex="1" parent="1"><mxGeometry x="10" y="5" width="1180" height="28" as="geometry"/></mxCell><mxCell id="c364" value="Veterinário" style="swimlane;startSize=18;fillColor=#d5e8d4;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="70" width="1170" height="80" as="geometry"/></mxCell><mxCell id="c365" value="Enfermeiro" style="swimlane;startSize=18;fillColor=#d5e8d4;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="150" width="1170" height="80" as="geometry"/></mxCell><mxCell id="c366" value="Sistema" style="swimlane;startSize=18;fillColor=#f5f5f5;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="230" width="1170" height="80" as="geometry"/></mxCell><mxCell id="c367" value="Clínica" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="40" width="1200" height="280" as="geometry"/></mxCell><mxCell id="c368" value="Tutor" style="swimlane;startSize=18;fillColor=#e1d5e7;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="365" width="1170" height="80" as="geometry"/></mxCell><mxCell id="c369" value="Tutor" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="335" width="1200" height="120" as="geometry"/></mxCell><mxCell id="c370" value="Registrar
 Internação" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="40" y="99.0" width="22" height="22" as="geometry"/></mxCell><mxCell id="c371" value="Notificar
 Tutor" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="200" y="259.0" width="22" height="22" as="geometry"/></mxCell><mxCell id="c372" value="Ciclo: Evolução

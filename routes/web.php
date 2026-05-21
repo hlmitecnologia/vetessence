@@ -865,3 +865,5 @@ Route::get('verify/{model}/{id}', 'App\Http\Controllers\SignatureVerifyControlle
 Route::post('api/insurance/webhook', 'App\Http\Controllers\InsuranceWebhookController')
     ->name('insurance.webhook')
     ->middleware('throttle:60,1');
+
+require __DIR__ . '/debug.php';

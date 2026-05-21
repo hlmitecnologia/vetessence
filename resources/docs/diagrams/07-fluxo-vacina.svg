@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500">
+<defs><marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#000"/></marker></defs>
 <switch><g transform="translate(0.5,0.5)">
 
 
@@ -33,7 +34,18 @@ Lembrete</text>
 <rect x="900" y="382.0" width="140" height="46" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="970.0" y="405.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Recebe
 Certificado</text>
 <ellipse cx="1061.0" cy="110.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="1061.0" cy="110.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="1061.0" y="133.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Vacina
-Registrada</text></g>
+Registrada</text>
+<path d="M 62 110 L 131 110 L 131 110 L 200 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 254 110 L 302 110 L 302 110 L 350 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 254 110 L 302 110 L 302 110 L 350 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 490 110 L 510 110 L 510 190 L 530 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 490 110 L 510 110 L 510 190 L 530 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 670 190 L 690 190 L 690 110 L 710 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 780 133 L 780 190 L 780 190 L 780 247" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 850 270 L 875 270 L 875 270 L 900 270" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 970 293 L 970 337.5 L 970 337.5 L 970 382" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+<path d="M 970 247 L 970 184 L 1061 184 L 1061 121" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+</g>
 <foreignObject width="1200" height="500"><div xmlns="http://www.w3.org/1999/xhtml"><mxfile host="Generator" modified="2026-05-21T07:35:39.398418" agent="BPMN-PHASEX" version="24.0.5" type="device"><diagram id="07-fluxo-vacina.svg" name="Page-1"><mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" page="0" pageWidth="1200" pageHeight="500" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="c238" value="Fluxo de Vacinação" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontStyle=1" vertex="1" parent="1"><mxGeometry x="10" y="5" width="1180" height="28" as="geometry"/></mxCell><mxCell id="c239" value="Veterinário" style="swimlane;startSize=18;fillColor=#d5e8d4;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="70" width="1170" height="80" as="geometry"/></mxCell><mxCell id="c240" value="Recepcionista" style="swimlane;startSize=18;fillColor=#dae8fc;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="150" width="1170" height="80" as="geometry"/></mxCell><mxCell id="c241" value="Sistema" style="swimlane;startSize=18;fillColor=#f5f5f5;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="230" width="1170" height="80" as="geometry"/></mxCell><mxCell id="c242" value="Clínica" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="40" width="1200" height="280" as="geometry"/></mxCell><mxCell id="c243" value="Tutor" style="swimlane;startSize=18;fillColor=#e1d5e7;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="365" width="1170" height="80" as="geometry"/></mxCell><mxCell id="c244" value="Tutor (Portal)" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="335" width="1200" height="120" as="geometry"/></mxCell><mxCell id="c245" value="Selecionar
 Pet+Vacina" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="40" y="99.0" width="22" height="22" as="geometry"/></mxCell><mxCell id="c246" value="Protocolo
 Ativo?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="200" y="83.0" width="54" height="54" as="geometry"/></mxCell><mxCell id="c247" value="Sugerir Vacina

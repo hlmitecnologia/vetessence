@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="400" viewBox="0 0 1100 400">
+<defs><marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#000"/></marker></defs>
 <switch><g transform="translate(0.5,0.5)">
 
 
@@ -40,7 +41,21 @@ Atualização</text>
 Restaurar Backup</text>
 <rect x="1300" y="222.0" width="140" height="46" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="1370.0" y="245.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Registrar
 Histórico</text>
-<ellipse cx="1411.0" cy="110.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="1411.0" cy="110.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="1411.0" y="133.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Fim</text></g>
+<ellipse cx="1411.0" cy="110.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="1411.0" cy="110.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="1411.0" y="133.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Fim</text>
+<path d="M 62 110 L 141 110 L 141 110 L 220 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 360 110 L 390 110 L 390 110 L 420 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 490 133 L 490 245 L 490 245 L 490 357" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 490 357 L 490 312.5 L 490 312.5 L 490 268" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 560 245 L 590 245 L 590 245 L 620 245" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 674 245 L 737 245 L 737 110 L 800 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 940 110 L 950 110 L 950 110 L 960 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1030 133 L 1030 177.5 L 1030 177.5 L 1030 222" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1100 245 L 1120 245 L 1120 245 L 1140 245" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1194 245 L 1247 245 L 1247 245 L 1300 245" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1194 245 L 1247 245 L 1247 245 L 1300 245" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1370 222 L 1370 171.5 L 1411 171.5 L 1411 121" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1300 245 L 830 245 L 830 110 L 360 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+</g>
 <foreignObject width="1100" height="400"><div xmlns="http://www.w3.org/1999/xhtml"><mxfile host="Generator" modified="2026-05-21T07:35:39.401650" agent="BPMN-PHASEX" version="24.0.5" type="device"><diagram id="25-fluxo-autoupdate.svg" name="Page-1"><mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" page="0" pageWidth="1100" pageHeight="400" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="c752" value="Fluxo de Auto-Update e Configurações" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontStyle=1" vertex="1" parent="1"><mxGeometry x="10" y="5" width="1080" height="28" as="geometry"/></mxCell><mxCell id="c753" value="Admin" style="swimlane;startSize=18;fillColor=#f8cecc;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="70" width="1070" height="80" as="geometry"/></mxCell><mxCell id="c754" value="Admin" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="40" width="1100" height="120" as="geometry"/></mxCell><mxCell id="c755" value="Sistema" style="swimlane;startSize=18;fillColor=#f5f5f5;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="205" width="1070" height="80" as="geometry"/></mxCell><mxCell id="c756" value="Sistema" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="175" width="1100" height="120" as="geometry"/></mxCell><mxCell id="c757" value="GitHub" style="swimlane;startSize=18;fillColor=#f5f5f5;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="340" width="1070" height="80" as="geometry"/></mxCell><mxCell id="c758" value="GitHub" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="310" width="1100" height="120" as="geometry"/></mxCell><mxCell id="c759" value="Configurações
 &gt; Atualização" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="40" y="99.0" width="22" height="22" as="geometry"/></mxCell><mxCell id="c760" value="Configurar
 Token+Repo+Branch" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="220" y="87.0" width="140" height="46" as="geometry"/></mxCell><mxCell id="c761" value="Verificar

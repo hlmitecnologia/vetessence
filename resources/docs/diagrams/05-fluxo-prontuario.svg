@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="400" viewBox="0 0 1100 400">
+<defs><marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#000"/></marker></defs>
 <switch><g transform="translate(0.5,0.5)">
 
 
@@ -33,7 +34,19 @@ Plano</text>
 <ellipse cx="981.0" cy="110.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="981.0" cy="110.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="981.0" y="133.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Prontuário
 Salvo</text>
 <ellipse cx="531.0" cy="110.0" rx="11.0" ry="11.0" fill="#fff" stroke="#000" stroke-width="2"/><ellipse cx="531.0" cy="110.0" rx="7.0" ry="7.0" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="2,2"/><text x="531.0" y="133.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Notificação
-ao Tutor</text></g>
+ao Tutor</text>
+<path d="M 62 110 L 91 110 L 91 110 L 120 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 260 110 L 285 110 L 285 110 L 310 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 470 110 L 495 110 L 495 110 L 520 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 574 110 L 612 110 L 612 110 L 650 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 730 137 L 730 179.5 L 720 179.5 L 720 222" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+<path d="M 790 245 L 820 245 L 820 110 L 850 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 904 110 L 937 110 L 937 110 L 970 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 850 110 L 820 110 L 820 110 L 790 110" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+<path d="M 970 110 L 981 110 L 981 110 L 992 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 650 110 L 596 110 L 596 110 L 542 110" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+<path d="M 542 110 L 531 110 L 531 110 L 520 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+</g>
 <foreignObject width="1100" height="400"><div xmlns="http://www.w3.org/1999/xhtml"><mxfile host="Generator" modified="2026-05-21T07:35:39.397979" agent="BPMN-PHASEX" version="24.0.5" type="device"><diagram id="05-fluxo-prontuario.svg" name="Page-1"><mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" page="0" pageWidth="1100" pageHeight="400" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="c182" value="Fluxo de Prontuário (SOAP)" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontStyle=1" vertex="1" parent="1"><mxGeometry x="10" y="5" width="1080" height="28" as="geometry"/></mxCell><mxCell id="c183" value="Veterinário" style="swimlane;startSize=18;fillColor=#d5e8d4;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="70" width="1070" height="80" as="geometry"/></mxCell><mxCell id="c184" value="Clínica" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="40" width="1100" height="120" as="geometry"/></mxCell><mxCell id="c185" value="Tutor" style="swimlane;startSize=18;fillColor=#e1d5e7;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="205" width="1070" height="80" as="geometry"/></mxCell><mxCell id="c186" value="Tutor (Portal)" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="175" width="1100" height="120" as="geometry"/></mxCell><mxCell id="c187" value="Abrir ficha do pet" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="40" y="99.0" width="22" height="22" as="geometry"/></mxCell><mxCell id="c188" value="Preencher SOAP
 (S+O+A+P)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="120" y="87.0" width="140" height="46" as="geometry"/></mxCell><mxCell id="c189" value="Adicionar
 Anexos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#000;container=1;collapsible=0;" vertex="1" parent="1"><mxGeometry x="310" y="83.0" width="160" height="54" as="geometry"/></mxCell><mxCell id="c190" value="Plano de

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="350" viewBox="0 0 1100 350">
+<defs><marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#000"/></marker></defs>
 <switch><g transform="translate(0.5,0.5)">
 
 
@@ -23,7 +24,14 @@ Digital</text>
 Prontuário</text>
 <rect x="450" y="302.0" width="140" height="46" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="520.0" y="325.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Visualiza
 Resultado</text>
-<ellipse cx="1011.0" cy="110.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="1011.0" cy="110.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="1011.0" y="133.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Fim</text></g>
+<ellipse cx="1011.0" cy="110.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="1011.0" cy="110.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="1011.0" y="133.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Fim</text>
+<path d="M 62 110 L 156 110 L 156 190 L 250 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 390 190 L 420 190 L 420 190 L 450 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 590 190 L 620 190 L 620 190 L 650 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 672 190 L 736 190 L 736 110 L 800 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 650 190 L 620 190 L 620 325 L 590 325" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+<path d="M 940 110 L 970 110 L 970 110 L 1000 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+</g>
 <foreignObject width="1100" height="350"><div xmlns="http://www.w3.org/1999/xhtml"><mxfile host="Generator" modified="2026-05-21T07:35:39.398973" agent="BPMN-PHASEX" version="24.0.5" type="device"><diagram id="10-fluxo-imagem.svg" name="Page-1"><mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" page="0" pageWidth="1100" pageHeight="350" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="c313" value="Fluxo de Imagem (Raio-X, US, Tomografia)" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontStyle=1" vertex="1" parent="1"><mxGeometry x="10" y="5" width="1080" height="28" as="geometry"/></mxCell><mxCell id="c314" value="Veterinário" style="swimlane;startSize=18;fillColor=#d5e8d4;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="70" width="1070" height="80" as="geometry"/></mxCell><mxCell id="c315" value="Radiologista" style="swimlane;startSize=18;fillColor=#dae8fc;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="150" width="1070" height="80" as="geometry"/></mxCell><mxCell id="c316" value="Clínica" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="40" width="1100" height="200" as="geometry"/></mxCell><mxCell id="c317" value="Tutor" style="swimlane;startSize=18;fillColor=#e1d5e7;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="285" width="1070" height="80" as="geometry"/></mxCell><mxCell id="c318" value="Tutor" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="255" width="1100" height="120" as="geometry"/></mxCell><mxCell id="c319" value="Solicitar
 Exame de Imagem" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="40" y="99.0" width="22" height="22" as="geometry"/></mxCell><mxCell id="c320" value="Upload DICOM
 + Região Anatômica" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="250" y="167.0" width="140" height="46" as="geometry"/></mxCell><mxCell id="c321" value="Redigir Laudo

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1300" height="600" viewBox="0 0 1300 600">
+<defs><marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#000"/></marker></defs>
 <switch><g transform="translate(0.5,0.5)">
 
 
@@ -59,7 +60,28 @@ paga</text>
 <rect x="1050" y="652.0" width="140" height="46" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="1120.0" y="675.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Transação
 Bancária</text>
 <rect x="1050" y="247.0" width="140" height="46" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="1120.0" y="270.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Reconcilied</text>
-<ellipse cx="1511.0" cy="190.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="1511.0" cy="190.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="1511.0" y="213.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Fim</text></g>
+<ellipse cx="1511.0" cy="190.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="1511.0" cy="190.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="1511.0" y="213.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Fim</text>
+<path d="M 62 190 L 131 190 L 131 190 L 200 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 270 213 L 270 297.5 L 270 297.5 L 270 382" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 270 382 L 270 299.5 L 427 299.5 L 427 217" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 454 190 L 517 190 L 517 270 L 580 270" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 602 270 L 676 270 L 676 270 L 750 270" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 804 270 L 852 270 L 852 190 L 900 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 954 190 L 1002 190 L 1002 190 L 1050 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1120 213 L 1120 365 L 1120 365 L 1120 517" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1120 517 L 1120 405 L 1120 405 L 1120 293" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1190 270 L 1210 270 L 1210 405 L 1230 405" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+<path d="M 804 270 L 852 270 L 852 190 L 900 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 954 190 L 1002 190 L 1002 190 L 1050 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1190 190 L 1210 190 L 1210 190 L 1230 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1370 190 L 1375 190 L 1375 190 L 1380 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 804 270 L 852 270 L 852 190 L 900 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 927 217 L 927 434.5 L 1120 434.5 L 1120 652" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1120 652 L 1120 472.5 L 1120 472.5 L 1120 293" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1190 190 L 1345 190 L 1345 190 L 1500 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1520 190 L 1510 190 L 1510 190 L 1500 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1190 270 L 1345 270 L 1345 190 L 1500 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+</g>
 <foreignObject width="1300" height="600"><div xmlns="http://www.w3.org/1999/xhtml"><mxfile host="Generator" modified="2026-05-21T07:35:39.400015" agent="BPMN-PHASEX" version="24.0.5" type="device"><diagram id="15-fluxo-fatura.svg" name="Page-1"><mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" page="0" pageWidth="1300" pageHeight="600" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="c475" value="Fluxo de Faturamento, NFSe e Comissões" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontStyle=1" vertex="1" parent="1"><mxGeometry x="10" y="5" width="1280" height="28" as="geometry"/></mxCell><mxCell id="c476" value="Veterinário" style="swimlane;startSize=18;fillColor=#d5e8d4;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="70" width="1270" height="80" as="geometry"/></mxCell><mxCell id="c477" value="Financeiro" style="swimlane;startSize=18;fillColor=#ffe6cc;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="150" width="1270" height="80" as="geometry"/></mxCell><mxCell id="c478" value="Sistema" style="swimlane;startSize=18;fillColor=#f5f5f5;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="230" width="1270" height="80" as="geometry"/></mxCell><mxCell id="c479" value="Clínica" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="40" width="1300" height="280" as="geometry"/></mxCell><mxCell id="c480" value="Tutor" style="swimlane;startSize=18;fillColor=#e1d5e7;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="365" width="1270" height="80" as="geometry"/></mxCell><mxCell id="c481" value="Tutor" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="335" width="1300" height="120" as="geometry"/></mxCell><mxCell id="c482" value="Webmania" style="swimlane;startSize=18;fillColor=#ffe6cc;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="500" width="1270" height="80" as="geometry"/></mxCell><mxCell id="c483" value="Webmania®" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="470" width="1300" height="120" as="geometry"/></mxCell><mxCell id="c484" value="Banco" style="swimlane;startSize=18;fillColor=#ffe6cc;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="635" width="1270" height="80" as="geometry"/></mxCell><mxCell id="c485" value="Banco" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="605" width="1300" height="120" as="geometry"/></mxCell><mxCell id="c486" value="Fatura
 Gerada" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="40" y="179.0" width="22" height="22" as="geometry"/></mxCell><mxCell id="c487" value="Adicionar
 Itens/Serviços" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="200" y="167.0" width="140" height="46" as="geometry"/></mxCell><mxCell id="c488" value="Pagar

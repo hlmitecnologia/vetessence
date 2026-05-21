@@ -37,29 +37,39 @@
 @endsection
 
 @push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.docs-content img[src$=".svg"]').forEach(function(img) {
-        img.style.cursor = 'pointer';
-        img.title = 'Clique para ampliar';
-        img.addEventListener('click', function() {
-            var modal = document.createElement('div');
-            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
-            var closeBtn = document.createElement('button');
-            closeBtn.innerHTML = '&times;';
-            closeBtn.style.cssText = 'position:absolute;top:20px;right:30px;color:#fff;font-size:40px;background:none;border:none;cursor:pointer;z-index:10000;font-weight:bold;';
-            closeBtn.addEventListener('click', function(e) { e.stopPropagation(); modal.remove(); });
-            var imgEl = document.createElement('img');
-            imgEl.src = this.src;
-            imgEl.style.cssText = 'max-width:95vw;max-height:95vh;object-fit:contain;background:#fff;border-radius:4px;box-shadow:0 0 30px rgba(0,0,0,0.5);';
-            modal.appendChild(imgEl);
-            modal.appendChild(closeBtn);
-            modal.addEventListener('click', function() { modal.remove(); });
-            document.body.appendChild(modal);
+(function() {
+    function bindSvgLightbox() {
+        document.querySelectorAll('.docs-content img[src$=".svg"]').forEach(function(img) {
+            img.style.cursor = 'pointer';
+            img.title = img.title || 'Clique para ampliar';
+            if (img.dataset.lightboxBound) return;
+            img.dataset.lightboxBound = '1';
+            img.addEventListener('click', function() {
+                var modal = document.createElement('div');
+                modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
+                var closeBtn = document.createElement('button');
+                closeBtn.innerHTML = '&times;';
+                closeBtn.style.cssText = 'position:absolute;top:20px;right:30px;color:#fff;font-size:40px;background:none;border:none;cursor:pointer;z-index:10000;font-weight:bold;';
+                closeBtn.addEventListener('click', function(e) { e.stopPropagation(); modal.remove(); });
+                var imgEl = document.createElement('img');
+                imgEl.src = this.src;
+                imgEl.style.cssText = 'max-width:95vw;max-height:95vh;object-fit:contain;background:#fff;border-radius:4px;box-shadow:0 0 30px rgba(0,0,0,0.5);';
+                modal.appendChild(imgEl);
+                modal.appendChild(closeBtn);
+                modal.addEventListener('click', function() { modal.remove(); });
+                document.body.appendChild(modal);
+            });
         });
-    });
-});
-</script>
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bindSvgLightbox);
+    } else {
+        bindSvgLightbox();
+    }
+
+    document.addEventListener('livewire:initialized', bindSvgLightbox);
+})();
 @endpush
 
 @push('styles')
@@ -67,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .docs-content h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
 .docs-content h2 { font-size: 1.35rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; }
 .docs-content h3 { font-size: 1.15rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; }
-.docs-content h4 { font-size: 1.05rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; }
+.docs-content h4 { font-size: 1.05rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; }
 .docs-content p { margin-bottom: 0.75rem; line-height: 1.6; }
 .docs-content ul, .docs-content ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
 .docs-content li { margin-bottom: 0.25rem; }
@@ -82,5 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .docs-content a:hover { color: #4338ca; }
 .docs-content blockquote { border-left: 4px solid #6366f1; padding-left: 1rem; margin-left: 0; color: #6b7280; }
 .docs-content strong { font-weight: 600; }
+.docs-content img { max-width: 100%; height: auto; }
+.docs-content svg { max-width: 100%; height: auto; }
 </style>
 @endpush

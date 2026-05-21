@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="500" viewBox="0 0 1100 500">
+<defs><marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#000"/></marker></defs>
 <switch><g transform="translate(0.5,0.5)">
 
 
@@ -39,7 +40,22 @@ Auditoria</text>
 até 15 dias</text>
 <rect x="420" y="382.0" width="140" height="46" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="490.0" y="405.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Auditar
 Logs</text>
-<ellipse cx="861.0" cy="325.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="861.0" cy="325.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="861.0" y="348.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Fim</text></g>
+<ellipse cx="861.0" cy="325.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="861.0" cy="325.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="861.0" y="348.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Fim</text>
+<path d="M 51 121 L 51 209.5 L 247 209.5 L 247 298" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 274 325 L 347 325 L 347 325 L 420 325" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 274 325 L 347 325 L 347 245 L 420 245" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 274 325 L 347 325 L 347 325 L 420 325" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 274 325 L 347 325 L 347 325 L 420 325" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 274 325 L 347 325 L 347 245 L 420 245" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 560 325 L 605 325 L 605 325 L 650 325" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 560 245 L 605 245 L 605 325 L 650 325" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 560 325 L 605 325 L 605 325 L 650 325" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 560 325 L 605 325 L 605 325 L 650 325" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 560 245 L 605 245 L 605 325 L 650 325" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 720 302 L 720 217.5 L 720 217.5 L 720 133" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 720 133 L 720 223.5 L 861 223.5 L 861 314" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 560 405 L 605 405 L 605 325 L 650 325" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+</g>
 <foreignObject width="1100" height="500"><div xmlns="http://www.w3.org/1999/xhtml"><mxfile host="Generator" modified="2026-05-21T07:35:39.401130" agent="BPMN-PHASEX" version="24.0.5" type="device"><diagram id="22-fluxo-lgpd.svg" name="Page-1"><mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" page="0" pageWidth="1100" pageHeight="500" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="c657" value="Fluxo de Auditoria e LGPD" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontStyle=1" vertex="1" parent="1"><mxGeometry x="10" y="5" width="1080" height="28" as="geometry"/></mxCell><mxCell id="c658" value="Tutor" style="swimlane;startSize=18;fillColor=#e1d5e7;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="70" width="1070" height="80" as="geometry"/></mxCell><mxCell id="c659" value="Tutor" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="40" width="1100" height="120" as="geometry"/></mxCell><mxCell id="c660" value="Admin" style="swimlane;startSize=18;fillColor=#f8cecc;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="205" width="1070" height="80" as="geometry"/></mxCell><mxCell id="c661" value="Sistema" style="swimlane;startSize=18;fillColor=#f5f5f5;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="285" width="1070" height="80" as="geometry"/></mxCell><mxCell id="c662" value="Auditor" style="swimlane;startSize=18;fillColor=#e1d5e7;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="365" width="1070" height="80" as="geometry"/></mxCell><mxCell id="c663" value="Clínica" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="175" width="1100" height="280" as="geometry"/></mxCell><mxCell id="c664" value="Solicitar
 Direito LGPD" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="40" y="99.0" width="22" height="22" as="geometry"/></mxCell><mxCell id="c665" value="Tipo de
 Solicitação?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="220" y="298.0" width="54" height="54" as="geometry"/></mxCell><mxCell id="c666" value="Exportar

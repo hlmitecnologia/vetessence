@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500">
+<defs><marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#000"/></marker></defs>
 <switch><g transform="translate(0.5,0.5)">
 
 
@@ -37,7 +38,21 @@ Transoperatório</text>
 + Prescrição</text>
 <ellipse cx="961.0" cy="270.0" rx="11.0" ry="11.0" fill="#fff" stroke="#000" stroke-width="2"/><ellipse cx="961.0" cy="270.0" rx="7.0" ry="7.0" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="2,2"/><text x="961.0" y="293.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Notificar
 Tutor</text>
-<ellipse cx="1111.0" cy="190.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="1111.0" cy="190.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="1111.0" y="213.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Alta</text></g>
+<ellipse cx="1111.0" cy="190.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="1111.0" cy="190.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="1111.0" y="213.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Alta</text>
+<path d="M 62 110 L 156 110 L 156 110 L 250 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 304 110 L 362 110 L 362 190 L 420 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 277 137 L 277 259.5 L 490 259.5 L 490 382" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 304 110 L 362 110 L 362 190 L 420 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 560 190 L 590 190 L 590 190 L 620 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 490 382 L 490 299.5 L 647 299.5 L 647 217" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 560 190 L 590 190 L 590 190 L 620 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 674 190 L 727 190 L 727 190 L 780 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 920 190 L 935 190 L 935 190 L 950 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 920 190 L 935 190 L 935 190 L 950 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1020 213 L 1020 236 L 961 236 L 961 259" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 1090 190 L 1095 190 L 1095 190 L 1100 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 950 270 L 755 270 L 755 405 L 560 405" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+</g>
 <foreignObject width="1200" height="500"><div xmlns="http://www.w3.org/1999/xhtml"><mxfile host="Generator" modified="2026-05-21T07:35:39.399141" agent="BPMN-PHASEX" version="24.0.5" type="device"><diagram id="11-fluxo-cirurgia.svg" name="Page-1"><mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" page="0" pageWidth="1200" pageHeight="500" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="c332" value="Fluxo de Cirurgia" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontStyle=1" vertex="1" parent="1"><mxGeometry x="10" y="5" width="1180" height="28" as="geometry"/></mxCell><mxCell id="c333" value="Recepcionista" style="swimlane;startSize=18;fillColor=#dae8fc;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="70" width="1170" height="80" as="geometry"/></mxCell><mxCell id="c334" value="Veterinário" style="swimlane;startSize=18;fillColor=#d5e8d4;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="150" width="1170" height="80" as="geometry"/></mxCell><mxCell id="c335" value="Sistema" style="swimlane;startSize=18;fillColor=#f5f5f5;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="230" width="1170" height="80" as="geometry"/></mxCell><mxCell id="c336" value="Clínica" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="40" width="1200" height="280" as="geometry"/></mxCell><mxCell id="c337" value="Tutor" style="swimlane;startSize=18;fillColor=#e1d5e7;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="365" width="1170" height="80" as="geometry"/></mxCell><mxCell id="c338" value="Tutor" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="335" width="1200" height="120" as="geometry"/></mxCell><mxCell id="c339" value="Recepcionista
 Agenda" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="40" y="99.0" width="22" height="22" as="geometry"/></mxCell><mxCell id="c340" value="Pré-OP
 Checklist" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="250" y="83.0" width="54" height="54" as="geometry"/></mxCell><mxCell id="c341" value="Avaliação
