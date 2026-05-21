@@ -463,6 +463,8 @@ npm install && npm run build
 
 # 2.5. Configurar Laravel
 php artisan key:generate
+php artisan livewire:publish
+php artisan vendor:publish --tag=livewire:assets --force
 php artisan migrate --seed
 php artisan storage:link
 php artisan docs:publish
@@ -547,6 +549,8 @@ sed -i "s/APP_DEBUG=.*/APP_DEBUG=false/" .env
 composer install --no-dev --optimize-autoloader
 npm install && npm run build
 php artisan key:generate
+php artisan livewire:publish
+php artisan vendor:publish --tag=livewire:assets --force
 php artisan migrate --seed
 php artisan storage:link
 php artisan docs:publish
@@ -844,11 +848,23 @@ curl https://seu-dominio.com/up
 
 ### 4. Manutenção
 
+Após atualizar o Livewire via `composer update`, republicar os assets:
+
+```bash
+php artisan livewire:publish
+php artisan vendor:publish --tag=livewire:assets --force
+php artisan optimize:clear
+```
+
+Manutenção geral:
+
 ```bash
 php artisan down              # Modo manutenção
 php artisan up                # Reativar
 php artisan optimize:clear    # Limpar cache após alterações
 php artisan docs:publish      # Republicar documentação
+php artisan livewire:publish  # Republicar config/assets Livewire
+php artisan vendor:publish --tag=livewire:assets --force
 ```
 
 ### 5. Auto-Update
@@ -861,6 +877,8 @@ Fluxo executado pelo sistema:
 php artisan down
 git pull https://token@github.com/hectordufau/vetessence.git
 php artisan migrate --force
+php artisan livewire:publish
+php artisan vendor:publish --tag=livewire:assets --force
 php artisan optimize:clear
 php artisan up
 ```
