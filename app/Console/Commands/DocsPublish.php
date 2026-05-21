@@ -20,13 +20,13 @@ class DocsPublish extends Command
             return 1;
         }
 
-        // Publish markdown + diagrams to storage
+        // Publish markdown + diagrams to storage (Laravel serves via routes)
         if (File::isDirectory($dest)) {
             File::cleanDirectory($dest);
         }
         File::copyDirectory($source, $dest);
 
-        // Clean up public/docs/ if it exists (conflicts with nginx)
+        // Remove public/docs/ so nginx passes all /docs* requests to Laravel
         $publicDocs = public_path('docs');
         if (File::isDirectory($publicDocs)) {
             File::deleteDirectory($publicDocs);

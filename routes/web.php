@@ -41,6 +41,15 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
+// Documentation diagrams (BPMN SVGs) — outside auth group so SVG images load in all pages
+Route::get('docs/diagrams/{file}', function (string $file) {
+    $path = storage_path('docs/diagrams/' . basename($file));
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    return response()->file($path, ['Content-Type' => 'image/svg+xml']);
+})->name('docs.diagrams');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -837,19 +846,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('system-update/apply', 'App\Http\Controllers\SystemUpdateController@apply')->name('system-update.apply');
     Route::get('system-update/history', 'App\Http\Controllers\SystemUpdateController@history')->name('system-update.history');
 
-    // Documentation diagrams (BPMN SVGs) — must be before generic {section}/{page}
-    Route::get('docs/diagrams/{file}', function (string $file) {
-        $path = storage_path('docs/diagrams/' . basename($file));
-        if (!file_exists($path)) {
-            abort(404);
-        }
-        return response()->file($path, ['Content-Type' => 'image/svg+xml']);
-    })->name('docs.diagrams');
-
     // Documentation
     Route::get('docs', 'App\Http\Controllers\DocController@index')->name('docs.index');
     Route::get('docs/{section}', 'App\Http\Controllers\DocController@show')->name('docs.show');
     Route::get('docs/{section}/{page}', 'App\Http\Controllers\DocController@show')->name('docs.page');
+
 
     // Branding
     Route::get('branding', 'App\Http\Controllers\BrandingController@index')->name('branding.index');

@@ -28,6 +28,15 @@ Route::middleware('guest:tutor')->group(function () {
     Route::post('reset-password', [ResetPasswordController::class, 'store'])->name('portal.password.update');
 });
 
+// Documentation diagrams — outside auth group so SVG images load, must be before docs/{page}
+Route::get('docs/diagrams/{file}', function (string $file) {
+    $path = storage_path('docs/diagrams/' . basename($file));
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    return response()->file($path, ['Content-Type' => 'image/svg+xml']);
+})->name('portal.docs.diagrams');
+
 Route::middleware('auth:tutor')->group(function () {
     Route::post('logout', [LoginController::class, 'destroy'])->name('portal.logout');
 
@@ -48,15 +57,6 @@ Route::middleware('auth:tutor')->group(function () {
     Route::get('exams', [ExamController::class, 'index'])->name('portal.exams.index');
 
     Route::get('prescriptions', [PrescriptionController::class, 'index'])->name('portal.prescriptions.index');
-
-    // Tutor manual diagrams — must be before generic {page}
-    Route::get('docs/diagrams/{file}', function (string $file) {
-        $path = storage_path('docs/diagrams/' . basename($file));
-        if (!file_exists($path)) {
-            abort(404);
-        }
-        return response()->file($path, ['Content-Type' => 'image/svg+xml']);
-    })->name('portal.docs.diagrams');
 
     Route::get('docs', [DocController::class, 'index'])->name('portal.docs.index');
     Route::get('docs/{page}', [DocController::class, 'show'])->name('portal.docs.show');
