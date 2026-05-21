@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="800" viewBox="0 0 1300 800">
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="860" viewBox="-30 -30 1360 860">
 <switch><g transform="translate(0.5,0.5)"><rect x="10" y="5" width="1280" height="28" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="650.0" y="19.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Matriz de Perfis (RACI)</text>
 <rect x="160" y="40" width="100" height="28" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="210.0" y="54.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Super Admin</text>
 <rect x="260" y="40" width="100" height="28" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="310.0" y="54.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Admin</text>
