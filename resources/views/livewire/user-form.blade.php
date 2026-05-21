@@ -52,6 +52,20 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
+                    <label>Unidade</label>
+                    <x-tom-select wire="branch_id" :value="$branch_id">
+                        <option value="">Todas as unidades</option>
+                        @foreach($branches as $branch)
+                            <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                        @endforeach
+                    </x-tom-select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
                     <div class="custom-control custom-switch mt-4">
                         <input type="checkbox" wire:model="is_active" class="custom-control-input" id="userIsActive">
                         <label class="custom-control-label" for="userIsActive">Ativo</label>

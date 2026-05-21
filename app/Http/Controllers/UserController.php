@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -32,7 +33,8 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::orderBy('name')->get();
-        return view('users.create', compact('roles'));
+        $branches = Branch::orderBy('name')->get();
+        return view('users.create', compact('roles', 'branches'));
     }
 
     public function store(Request $request)
@@ -43,6 +45,7 @@ class UserController extends Controller
             'password' => 'required|min:8|confirmed',
             'phone' => 'nullable|string|max:20',
             'role_id' => 'nullable|exists:roles,id',
+            'branch_id' => 'nullable|exists:branches,id',
             'is_active' => 'boolean',
         ]);
 
@@ -51,6 +54,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'phone' => $validated['phone'] ?? null,
+            'branch_id' => $validated['branch_id'] ?? null,
             'is_active' => $request->boolean('is_active', true),
         ]);
 
@@ -73,7 +77,8 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $roles = Role::orderBy('name')->get();
-        return view('users.edit', compact('user', 'roles'));
+        $branches = Branch::orderBy('name')->get();
+        return view('users.edit', compact('user', 'roles', 'branches'));
     }
 
     public function update(Request $request, User $user)
@@ -84,12 +89,14 @@ class UserController extends Controller
             'password' => 'nullable|min:8|confirmed',
             'phone' => 'nullable|string|max:20',
             'role_id' => 'nullable|exists:roles,id',
+            'branch_id' => 'nullable|exists:branches,id',
             'is_active' => 'boolean',
         ]);
 
         $user->name = $validated['name'];
         $user->email = $validated['email'];
         $user->phone = $validated['phone'] ?? null;
+        $user->branch_id = $validated['branch_id'] ?? null;
         $user->is_active = $request->boolean('is_active', true);
 
         if (!empty($validated['password'])) {

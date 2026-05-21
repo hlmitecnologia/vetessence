@@ -18,6 +18,7 @@
                     <th>Nome</th>
                     <th>Email</th>
                     <th>Perfil</th>
+                    <th>Unidade</th>
                     <th>Status</th>
                     <th style="width: 100px;">Ações</th>
                 </tr>
@@ -35,6 +36,7 @@
                     </td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->role->name ?? '-' }}</td>
+                    <td>{{ $user->branch->name ?? 'Todas' }}</td>
                     <td>
                         @if($user->is_active)
                             <span class="badge badge-success">Ativo</span>

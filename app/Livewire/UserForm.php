@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Branch;
 use App\Models\User;
 use App\Models\Role;
 use Livewire\Attributes\On;
@@ -17,9 +18,11 @@ class UserForm extends Component
     public $password_confirmation = '';
     public $phone = '';
     public $role_id = '';
+    public $branch_id = '';
     public $is_active = true;
 
     public $roles = [];
+    public $branches = [];
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -27,12 +30,14 @@ class UserForm extends Component
         'password' => 'required|min:8|confirmed',
         'phone' => 'nullable|string|max:20',
         'role_id' => 'nullable|exists:roles,id',
+        'branch_id' => 'nullable|exists:branches,id',
         'is_active' => 'boolean',
     ];
 
     public function mount($id = null)
     {
         $this->roles = Role::orderBy('name')->get();
+        $this->branches = Branch::orderBy('name')->get();
         if ($id) $this->load($id);
     }
 
@@ -45,10 +50,12 @@ class UserForm extends Component
         $this->email = $user->email;
         $this->phone = $user->phone ?? '';
         $this->role_id = (string) ($user->role_id ?? '');
+        $this->branch_id = (string) ($user->branch_id ?? '');
         $this->is_active = $user->is_active;
         $this->password = '';
         $this->password_confirmation = '';
         $this->roles = Role::orderBy('name')->get();
+        $this->branches = Branch::orderBy('name')->get();
     }
 
     #[On('resetForm')]
@@ -61,8 +68,10 @@ class UserForm extends Component
         $this->password_confirmation = '';
         $this->phone = '';
         $this->role_id = '';
+        $this->branch_id = '';
         $this->is_active = true;
         $this->roles = Role::orderBy('name')->get();
+        $this->branches = Branch::orderBy('name')->get();
         $this->resetValidation();
     }
 
@@ -73,6 +82,7 @@ class UserForm extends Component
             'email' => 'required|email|unique:users,email,' . ($this->userId ?: 'NULL'),
             'phone' => 'nullable|string|max:20',
             'role_id' => 'nullable|exists:roles,id',
+            'branch_id' => 'nullable|exists:branches,id',
             'is_active' => 'boolean',
         ];
 
@@ -93,6 +103,7 @@ class UserForm extends Component
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
+            'branch_id' => $this->branch_id ?: null,
             'is_active' => $this->is_active,
         ];
 
