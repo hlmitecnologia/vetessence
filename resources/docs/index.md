@@ -5,7 +5,7 @@ Bem-vindo à documentação completa do sistema de gestão veterinária **VetEss
 ## Seções
 
 ### 👤 Manual do Usuário
-Guias práticos para o dia a dia na clínica — 29 módulos (arquivos 05–31) contemplando todos os fluxos operacionais.
+Guias práticos para o dia a dia na clínica — 25 módulos (arquivos 01–25) contemplando todos os fluxos operacionais.
 
 ### 🔧 Manual Técnico
 Documentação para desenvolvedores e administradores — arquitetura, API, permissões, testes, deploy.

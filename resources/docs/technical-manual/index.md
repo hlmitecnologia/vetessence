@@ -123,36 +123,34 @@ CRUDs de Tier 1 e Tier 2 usam modais Bootstrap + Livewire form components:
 | V   | Modal CRUD + SweetAlert2 (29 Livewire form components) | ✅ |
 | W   | NFSe (Nota Fiscal de Serviços Eletrônica) | ✅ |
 
-### Módulos do Sistema (29 módulos no Manual do Usuário)
+### Módulos do Sistema (25 módulos no Manual do Usuário)
 | # | Módulo | Descrição |
 |---|--------|-----------|
-| 5  | Prontuários | SOAP, planos de tratamento, aprovação, dietas, consentimento |
-| 6  | Prescrições | Receita digital, dosagem, verificação QR code, impressão |
-| 7  | Vacinas | Aplicação, protocolos, certificado PDF, lembretes, previsão, recall |
-| 8  | Exames | Solicitação, coleta, resultado, laudo |
-| 9  | Laboratório | Pedidos, amostras, parâmetros, equipamentos integrados |
-| 10 | Imagem | Raio-X, ultrassom, tomografia, laudos |
-| 11 | Cirurgias | Agendamento, checklist, anestesia, transoperatório |
-| 12 | Internações | Registro, evolução, prescrição diária, alta |
-| 13 | Farmácia | Produtos, categorias, fornecedores, calculadora dosagem, lotes |
-| 14 | Estoque | Movimentações, pedidos compra, substâncias controladas, scanner |
-| 15 | Financeiro | Faturas, recebimentos, NFSe, comissões, conciliação bancária |
-| 16 | Agendamento | Calendário visual, agendamento online, recorrente, lembretes |
-| 17 | Tutores e Pets | Cadastro, microchip/RG, timeline, óbito, portal |
-| 18 | Convênios | Cadastro, tabelas, guias, faturamento, claims, CVI |
-| 19 | Usuários e Permissões | 11 funções, 160+ permissões |
-| 20 | Multi-filiais | Estrutura, corporate dashboard, transferências |
-| 21 | Relatórios | Clínicos, financeiros, estoque, exportação |
-| 22 | Auditoria e LGPD | Trilha auditoria, direitos titular, anonimização |
-| 23 | Notificações | Canais, preferências tutor, campanhas |
-| 24 | Chat | Mensagens tutor ↔ clínica, anexos |
-| 25 | Configurações | Sistema, integrações, identidade visual, auto-update |
-| 26 | Emergências | Protocolos de emergência por espécie/gravidade |
-| 27 | Mobile | Interface responsiva, modo mobile /m |
-| 28 | Triagem | Painel Livewire, classificação Manchester, tempo real |
-| 29 | Hospedagem | Boarding, check-in/out, tarefas, banho e tosa |
-| 30 | Odontologia | Odontograma, procedimentos, periodontia |
-| 31 | Zoonoses | Cadastro, notificação compulsória, relatórios |
+| 01 | Prontuários | SOAP, planos de tratamento, aprovação, dietas, consentimento |
+| 02 | Prescrições | Receita digital, dosagem, verificação QR code, impressão |
+| 03 | Vacinas | Aplicação, protocolos, certificado PDF, lembretes, previsão, recall |
+| 04 | Exames | Solicitação, coleta, resultado, laudo, laboratório, imagem |
+| 05 | Cirurgias | Agendamento, checklist, anestesia, transoperatório |
+| 06 | Internações | Registro, evolução, prescrição diária, alta |
+| 07 | Farmácia | Produtos, categorias, fornecedores, calculadora dosagem, lotes |
+| 08 | Estoque | Movimentações, pedidos compra, substâncias controladas, scanner |
+| 09 | Financeiro | Faturas, recebimentos, NFSe, comissões, conciliação bancária |
+| 10 | Agendamento | Calendário visual, agendamento online, recorrente, lembretes |
+| 11 | Tutores e Pets | Cadastro, microchip/RG, timeline, óbito, portal |
+| 12 | Convênios | Cadastro, tabelas, guias, faturamento, claims, CVI |
+| 13 | Usuários e Permissões | 11 funções, 160+ permissões |
+| 14 | Multi-filiais | Estrutura, corporate dashboard, transferências |
+| 15 | Relatórios | Clínicos, financeiros, estoque, exportação |
+| 16 | Auditoria e LGPD | Trilha auditoria, direitos titular, anonimização |
+| 17 | Notificações | Canais, preferências tutor, campanhas |
+| 18 | Chat | Mensagens tutor ↔ clínica, anexos |
+| 19 | Configurações | Sistema, integrações, identidade visual, auto-update |
+| 20 | Emergências | Protocolos de emergência por espécie/gravidade |
+| 21 | Mobile | Interface responsiva, modo mobile /m |
+| 22 | Triagem | Painel Livewire, classificação Manchester, tempo real |
+| 23 | Hospedagem | Boarding, check-in/out, tarefas, banho e tosa |
+| 24 | Odontologia | Odontograma, procedimentos, periodontia |
+| 25 | Zoonoses | Cadastro, notificação compulsória, relatórios |
 
 ---
 
@@ -923,7 +921,7 @@ Para variáveis de integração (WhatsApp, NFSe, PIX, etc.), veja a seção [Int
 - **Tutor route**: `/portal/docs` (autenticado como tutor)
 - **Controllers**: `DocController` + `Portal\DocController`
 - **Conteúdo**:
-  - Manual do Usuário: 29 módulos (05 a 31)
+  - Manual do Usuário: 25 módulos (01 a 25)
   - Manual Técnico: Este documento
   - Changelog
   - Manual do Tutor: 13 tópicos

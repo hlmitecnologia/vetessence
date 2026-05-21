@@ -20,13 +20,13 @@ class DocsPublish extends Command
             return 1;
         }
 
+        if (File::isDirectory($dest)) {
+            File::cleanDirectory($dest);
+        }
+
         File::copyDirectory($source, $dest);
 
-        $count = 0;
-        $files = File::allFiles($dest);
-        foreach ($files as $file) {
-            $count++;
-        }
+        $count = count(File::allFiles($dest));
 
         $this->info("Documentation published: {$count} files to {$dest}");
         return 0;

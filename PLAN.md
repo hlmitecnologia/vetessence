@@ -875,37 +875,35 @@ These came from analyzing what a practicing vet/receptionist touches every day t
 | Gate | `docs.view` |
 | Testes | 4 (Feature: access, render) |
 
-**Módulos documentados no Manual do Usuário (29 módulos, arquivos 05–31):**
+**Módulos documentados no Manual do Usuário (25 módulos, arquivos 01–25):**
 
 | # | Arquivo | Módulo | Fluxos Cobertos |
 |---|---------|--------|----------------|
-| 5 | `05-prontuarios` | Prontuários | SOAP, diagnóstico, plano terapêutico, aprovação de orçamento, dietas, consentimento, anexos |
-| 6 | `06-prescricoes` | Prescrições | Receita digital, dosagem, verificação por QR code, impressão, substâncias controladas |
-| 7 | `07-vacinas` | Vacinas | Aplicação, protocolos, certificado PDF (CFMV), lembretes, previsão de vencimento, recall |
-| 8 | `08-exames` | Exames | Pedido, coleta, resultado, laudo |
-| 9 | `09-laboratorio` | Laboratório | Pedidos, amostras, parâmetros, equipamentos integrados |
-| 10 | `10-imagem` | Imagem | Raio-X, ultrassom, tomografia, laudos com assinatura digital |
-| 11 | `11-cirurgias` | Cirurgias | Agendamento, checklist, avaliação pré-anestésica, transoperatório, pós-operatório |
-| 12 | `12-internacoes` | Internações | Registro, evolução clínica, prescrição diária, resumo de alta |
-| 13 | `13-farmacia` | Farmácia | Produtos, categorias, fornecedores, calculadora de dosagem, lotes e validade |
-| 14 | `14-estoque` | Estoque | Movimentações, pedidos de compra, substâncias controladas, scanner, transferência |
-| 15 | `15-financeiro` | Financeiro | Faturas, pagamentos, NFSe, comissões, conciliação bancária, auto-faturamento |
-| 16 | `16-agendamento` | Agendamento | Calendário visual (FullCalendar), agendamento online, recorrente, lembretes, senhas |
-| 17 | `17-tutores-pets` | Tutores e Pets | Cadastro, microchip/RG, timeline, registro de óbito, portal do tutor |
-| 18 | `18-convenios` | Convênios | Cadastro, tabelas, guias, faturamento, claims, CVI |
-| 19 | `19-usuarios-permissoes` | Usuários e Permissões | 11 funções, 160+ permissões, gerenciamento |
-| 20 | `20-multi-filiais` | Multi-filiais | Estrutura, corporate dashboard, transferências, isolamento |
-| 21 | `21-relatorios` | Relatórios | Clínicos, financeiros, estoque, comissões, exportação PDF/Excel |
-| 22 | `22-auditoria-lgpd` | Auditoria e LGPD | Trilha de auditoria, direitos do titular, consentimento, anonimização |
-| 23 | `23-notificacoes` | Notificações | Canais WhatsApp/SMS/E-mail, preferências do tutor, campanhas, lembretes |
-| 24 | `24-chat` | Chat | Mensagens tutor ↔ clínica, anexos, notificações |
-| 25 | `25-configuracoes` | Configurações | Sistema, integrações (WhatsApp, SMS, NFSe, Gateway, Lab), rebranding, auto-update |
-| 26 | `26-emergencias` | Emergências | Protocolos de emergência, busca por espécie/categoria/gravidade |
-| 27 | `27-mobile` | Mobile | Interface responsiva, modo mobile /m, atalhos teclado, acessibilidade |
-| 28 | `28-triagem` | Triagem | Painel Livewire, classificação Manchester (vermelho/laranja/amarelo/verde/azul), tempo real |
-| 29 | `29-hospedagem` | Hospedagem | Boarding, check-in/out, tarefas diárias, banho e tosa, cálculo de diárias |
-| 30 | `30-odontologia` | Odontologia | Odontograma, procedimentos, classificação periodontal, raio-X odontológico |
-| 31 | `31-zoonoses` | Zoonoses | Cadastro, notificação compulsória (raiva, leptospirose, etc.), relatórios epidemiológicos |
+| 1 | `01-prontuarios` | Prontuários | SOAP, diagnóstico, plano terapêutico, aprovação de orçamento, dietas, consentimento, anexos |
+| 2 | `02-prescricoes` | Prescrições | Receita digital, dosagem, verificação por QR code, impressão, substâncias controladas |
+| 3 | `03-vacinas` | Vacinas | Aplicação, protocolos, certificado PDF (CFMV), lembretes, previsão de vencimento, recall |
+| 4 | `04-exames` | Exames | Pedido, coleta, resultado, laudo, laboratório, imagem |
+| 5 | `05-cirurgias` | Cirurgias | Agendamento, checklist, avaliação pré-anestésica, transoperatório, pós-operatório |
+| 6 | `06-internacoes` | Internações | Registro, evolução clínica, prescrição diária, resumo de alta |
+| 7 | `07-farmacia` | Farmácia | Produtos, categorias, fornecedores, calculadora de dosagem, lotes e validade |
+| 8 | `08-estoque` | Estoque | Movimentações, pedidos de compra, substâncias controladas, scanner, transferência |
+| 9 | `09-financeiro` | Financeiro | Faturas, pagamentos, NFSe, comissões, conciliação bancária, auto-faturamento |
+| 10 | `10-agendamento` | Agendamento | Calendário visual (FullCalendar), agendamento online, recorrente, lembretes, senhas |
+| 11 | `11-tutores-pets` | Tutores e Pets | Cadastro, microchip/RG, timeline, registro de óbito, portal do tutor |
+| 12 | `12-convenios` | Convênios | Cadastro, tabelas, guias, faturamento, claims, CVI |
+| 13 | `13-usuarios-e-permissoes` | Usuários e Permissões | 11 funções, 160+ permissões, gerenciamento |
+| 14 | `14-multi-filiais` | Multi-filiais | Estrutura, corporate dashboard, transferências, isolamento |
+| 15 | `15-relatorios` | Relatórios | Clínicos, financeiros, estoque, comissões, exportação PDF/Excel |
+| 16 | `16-auditoria-lgpd` | Auditoria e LGPD | Trilha de auditoria, direitos do titular, consentimento, anonimização |
+| 17 | `17-notificacoes` | Notificações | Canais WhatsApp/SMS/E-mail, preferências do tutor, campanhas, lembretes |
+| 18 | `18-chat` | Chat | Mensagens tutor ↔ clínica, anexos, notificações |
+| 19 | `19-configuracoes` | Configurações | Sistema, integrações (WhatsApp, SMS, NFSe, Gateway, Lab), rebranding, auto-update |
+| 20 | `20-emergencias` | Emergências | Protocolos de emergência, busca por espécie/categoria/gravidade |
+| 21 | `21-mobile-acessibilidade` | Mobile | Interface responsiva, modo mobile /m, atalhos teclado, acessibilidade |
+| 22 | `22-triagem` | Triagem | Painel Livewire, classificação Manchester (vermelho/laranja/amarelo/verde/azul), tempo real |
+| 23 | `23-hospedagem` | Hospedagem | Boarding, check-in/out, tarefas diárias, banho e tosa, cálculo de diárias |
+| 24 | `24-odontologia` | Odontologia | Odontograma, procedimentos, classificação periodontal, raio-X odontológico |
+| 25 | `25-zoonoses` | Zoonoses | Cadastro, notificação compulsória (raiva, leptospirose, etc.), relatórios epidemiológicos |
 
 **Manual Técnico:**
 
@@ -1195,7 +1193,7 @@ resources/docs/diagrams/
 └── 31-fluxo-zoonoses.svg            # Notificação compulsória
 ```
 
-**Nomenclatura:** `{numero}-fluxo-{modulo}.svg` — o número facilita associação com o arquivo do manual (ex: `05-fluxo-prontuario.svg` para `05-prontuarios.md`).
+**Nomenclatura:** `{numero}-fluxo-{modulo}.svg` — o número facilita associação com o arquivo do manual (ex: `01-fluxo-prontuario.svg` para `01-prontuarios.md`).
 
 ### X3 — Elementos BPMN Utilizados em Cada Diagrama
 
