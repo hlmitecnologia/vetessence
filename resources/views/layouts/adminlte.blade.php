@@ -35,6 +35,13 @@
                         <i class="far fa-user"></i> {{ Auth::user()->name ?? 'Usuário' }}
                     </a>
                 </li>
+                @can('docs.view')
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('docs.index') }}">
+                        <i class="fas fa-book"></i> Manual
+                    </a>
+                </li>
+                @endcan
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="fas fa-sign-out-alt"></i> Sair
