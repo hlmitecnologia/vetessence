@@ -398,36 +398,400 @@ php artisan test --filter="PetControllerTest::test_index" --verbose
 
 ## Deploy
 
-### Pré-requisitos
-- PHP 8.4+
-- MySQL 8+
-- Composer
-- Node.js (para assets)
-- Git
-- Extensões PHP: bcmath, ctype, json, mbstring, openssl, PDO, tokenizer, xml, gd, zip
+### 1. Preparação do Servidor (comum a demo e produção)
 
-### Passos
 ```bash
+# Atualizar SO
+apt update && apt upgrade -y
+
+# Instalar dependências do sistema
+apt install -y nginx mysql-server-8.0 redis-server supervisor \
+  git curl wget unzip gnupg2 certbot python3-certbot-nginx \
+  fail2ban ufw
+
+# PHP 8.4 (Ondrej PPA)
+add-apt-repository -y ppa:ondrej/php
+apt update
+apt install -y php8.4-fpm php8.4-cli php8.4-common \
+  php8.4-bcmath php8.4-ctype php8.4-fileinfo php8.4-gd \
+  php8.4-intl php8.4-json php8.4-mbstring php8.4-mysql \
+  php8.4-openssl php8.4-pdo php8.4-tokenizer php8.4-xml \
+  php8.4-zip php8.4-curl php8.4-xmlreader php8.4-xmlwriter \
+  php8.4-simplexml php8.4-redis
+
+# Composer
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+php -r "unlink('composer-setup.php');"
+
+# Node.js 20+
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt install -y nodejs
+
+# Firewall
+ufw allow 22/tcp
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw --force enable
+```
+
+---
+
+### 2. Instalação de Demonstração (servidor único)
+
+Aplicável quando app e banco rodam na mesma máquina (mínimo 2 GB RAM, 1 core).
+
+```bash
+# 2.1. Configurar MySQL
+mysql -u root -p <<SQL
+CREATE DATABASE vetessence CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'vetessence'@'localhost' IDENTIFIED BY 'SUA_SENHA_AQUI';
+GRANT ALL PRIVILEGES ON vetessence.* TO 'vetessence'@'localhost';
+FLUSH PRIVILEGES;
+SQL
+
+# 2.2. Clonar e instalar
+cd /var/www
 git clone https://github.com/hectordufau/vetessence.git
 cd vetessence
 cp .env.example .env
-composer install --no-dev
+
+# 2.3. Ajustar .env (editar manualmente ou via sed)
+sed -i "s/DB_DATABASE=.*/DB_DATABASE=vetessence/" .env
+sed -i "s/DB_USERNAME=.*/DB_USERNAME=vetessence/" .env
+sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=SUA_SENHA_AQUI/" .env
+
+# 2.4. Instalar dependências e buildar
+composer install --no-dev --optimize-autoloader
+npm install && npm run build
+
+# 2.5. Configurar Laravel
+php artisan key:generate
+php artisan migrate --seed
+php artisan storage:link
+php artisan docs:publish
+
+# 2.6. Permissões
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+
+# 2.7. Configurar Nginx (ver exemplo abaixo)
+# 2.8. Configurar PHP-FPM para ambiente demo
+sed -i 's/pm.max_children =.*/pm.max_children = 6/' /etc/php/8.4/fpm/pool.d/www.conf
+sed -i 's/pm.start_servers =.*/pm.start_servers = 2/' /etc/php/8.4/fpm/pool.d/www.conf
+sed -i 's/pm.min_spare_servers =.*/pm.min_spare_servers = 1/' /etc/php/8.4/fpm/pool.d/www.conf
+sed -i 's/pm.max_spare_servers =.*/pm.max_spare_servers = 3/' /etc/php/8.4/fpm/pool.d/www.conf
+systemctl restart php8.4-fpm
+
+# 2.9. HTTPS (se houver domínio)
+certbot --nginx -d seu-dominio.com
+```
+
+---
+
+### 3. Instalação de Produção (2 servidores)
+
+#### 3.1. Servidor de Banco de Dados
+
+```bash
+# Instalar MySQL
+apt install -y mysql-server-8.0
+
+# Editar /etc/mysql/mysql.conf.d/mysqld.cnf
+cat >> /etc/mysql/mysql.conf.d/mysqld.cnf <<'EOF'
+[mysqld]
+bind-address = 0.0.0.0
+max_connections = 500
+innodb_buffer_pool_size = 12G        # 70-80% da RAM (16 GB)
+innodb_log_file_size = 1G
+innodb_flush_log_at_trx_commit = 2
+innodb_flush_method = O_DIRECT
+innodb_file_per_table = 1
+query_cache_type = 0
+tmp_table_size = 256M
+max_heap_table_size = 256M
+EOF
+
+systemctl restart mysql
+
+# Criar banco e usuário com acesso do servidor app
+mysql -u root <<SQL
+CREATE DATABASE vetessence CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'vetessence'@'IP_DO_SERVIDOR_APP' IDENTIFIED BY 'SENHA_FORTE';
+GRANT ALL PRIVILEGES ON vetessence.* TO 'vetessence'@'IP_DO_SERVIDOR_APP';
+FLUSH PRIVILEGES;
+SQL
+
+# Firewall: liberar apenas app server
+ufw allow from IP_DO_SERVIDOR_APP to any port 3306
+```
+
+#### 3.2. Servidor de Aplicação
+
+```bash
+# 3.2.1. Clonar e instalar (mesmo que demo)
+cd /var/www
+git clone https://github.com/hectordufau/vetessence.git
+cd vetessence
+cp .env.example .env
+
+# 3.2.2. .env para produção
+sed -i "s/DB_HOST=.*/DB_HOST=IP_DO_SERVIDOR_BANCO/" .env
+sed -i "s/DB_DATABASE=.*/DB_DATABASE=vetessence/" .env
+sed -i "s/DB_USERNAME=.*/DB_USERNAME=vetessence/" .env
+sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=SENHA_FORTE/" .env
+sed -i "s/QUEUE_CONNECTION=.*/QUEUE_CONNECTION=redis/" .env
+sed -i "s/CACHE_DRIVER=.*/CACHE_DRIVER=redis/" .env
+sed -i "s/SESSION_DRIVER=.*/SESSION_DRIVER=redis/" .env
+sed -i "s/REDIS_HOST=.*/REDIS_HOST=127.0.0.1/" .env
+sed -i "s/APP_ENV=.*/APP_ENV=production/" .env
+sed -i "s/APP_DEBUG=.*/APP_DEBUG=false/" .env
+
+# 3.2.3. Dependências
+composer install --no-dev --optimize-autoloader
 npm install && npm run build
 php artisan key:generate
 php artisan migrate --seed
 php artisan storage:link
 php artisan docs:publish
+
+# 3.2.4. Permissões
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+
+# 3.2.5. Otimização Laravel
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
 ```
 
-### Manutenção
+#### 3.3. Nginx — Virtual Host
+
+```nginx
+# /etc/nginx/sites-available/vetessence
+server {
+    listen 80;
+    server_name seu-dominio.com;
+    root /var/www/vetessence/public;
+
+    index index.php;
+
+    charset utf-8;
+    client_max_body_size 50M;
+
+    # Gzip
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript image/svg+xml;
+    gzip_min_length 256;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+
+    location ~ \.env$ {
+        deny all;
+    }
+
+    # Cache de assets estáticos
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|woff2?)$ {
+        expires 365d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Logs
+    access_log /var/log/nginx/vetessence_access.log;
+    error_log  /var/log/nginx/vetessence_error.log;
+}
+```
+
+Ativar e reiniciar:
 ```bash
-php artisan down  # Modo manutenção
-php artisan up    # Reativar
+ln -s /etc/nginx/sites-available/vetessence /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default
+nginx -t && systemctl restart nginx
 ```
 
-### Auto-Update
+#### 3.4. PHP-FPM (Produção)
+
+```bash
+# Editar /etc/php/8.4/fpm/pool.d/www.conf
+# Para servidor com 8 GB RAM e 4 cores:
+#   pm = dynamic
+#   pm.max_children = 16
+#   pm.start_servers = 4
+#   pm.min_spare_servers = 2
+#   pm.max_spare_servers = 8
+#   pm.max_requests = 500
+
+sed -i 's/pm.max_children =.*/pm.max_children = 16/' /etc/php/8.4/fpm/pool.d/www.conf
+sed -i 's/pm.start_servers =.*/pm.start_servers = 4/' /etc/php/8.4/fpm/pool.d/www.conf
+sed -i 's/pm.min_spare_servers =.*/pm.min_spare_servers = 2/' /etc/php/8.4/fpm/pool.d/www.conf
+sed -i 's/pm.max_spare_servers =.*/pm.max_spare_servers = 8/' /etc/php/8.4/fpm/pool.d/www.conf
+
+systemctl restart php8.4-fpm
+```
+
+#### 3.5. Redis
+
+```bash
+# /etc/redis/redis.conf
+sed -i 's/# maxmemory <bytes>/maxmemory 1gb/' /etc/redis/redis.conf
+sed -i 's/# maxmemory-policy noeviction/maxmemory-policy allkeys-lru/' /etc/redis/redis.conf
+systemctl restart redis-server
+```
+
+#### 3.6. Supervisor — Workers de Fila
+
+```ini
+# /etc/supervisor/conf.d/vetessence-worker.conf
+[program:vetessence-queue]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/vetessence/artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=4
+redirect_stderr=true
+stdout_logfile=/var/log/vetessence/queue-worker.log
+stopwaitsecs=3600
+```
+
+```bash
+mkdir -p /var/log/vetessence
+supervisorctl reread
+supervisorctl update
+supervisorctl start all
+```
+
+#### 3.7. SSL com Let's Encrypt
+
+```bash
+certbot --nginx -d seu-dominio.com --non-interactive --agree-tos -m admin@seu-dominio.com
+
+# Renovação automática (systemd timer já vem configurado)
+certbot renew --dry-run
+```
+
+#### 3.8. Segurança
+
+```bash
+# fail2ban para Nginx
+cat > /etc/fail2ban/jail.local <<'EOF'
+[nginx-http-auth]
+enabled  = true
+port     = http,https
+filter   = nginx-http-auth
+logpath  = /var/log/nginx/*error.log
+maxretry = 5
+findtime = 600
+bantime  = 3600
+EOF
+systemctl restart fail2ban
+
+# Desabilitar root SSH
+sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+systemctl restart sshd
+
+# Permissões restritas
+chmod 640 /var/www/vetessence/.env
+```
+
+#### 3.9. Backup
+
+```bash
+# Script de backup diário (/usr/local/bin/backup-vetessence.sh)
+#!/bin/bash
+BACKUP_DIR="/backups/vetessence"
+DATE=$(date +%Y%m%d_%H%M%S)
+mkdir -p "$BACKUP_DIR"
+
+# Banco
+mysqldump --single-transaction --routines --events \
+  -u vetessence -p'SENHA' vetessence | gzip > "$BACKUP_DIR/db_$DATE.sql.gz"
+
+# Storage (arquivos enviados)
+rsync -a /var/www/vetessence/storage/app "$BACKUP_DIR/storage_$DATE/"
+
+# Reter 30 dias
+find "$BACKUP_DIR" -name "db_*.sql.gz" -mtime +30 -delete
+find "$BACKUP_DIR" -name "storage_*" -mtime +30 -exec rm -rf {} \;
+```
+
+```bash
+chmod +x /usr/local/bin/backup-vetessence.sh
+echo "0 3 * * * root /usr/local/bin/backup-vetessence.sh" > /etc/cron.d/vetessence-backup
+```
+
+#### 3.10. Monitoramento (opcional)
+
+```bash
+# Verificar workers
+supervisorctl status
+
+# Logs da aplicação
+tail -f /var/www/vetessence/storage/logs/laravel.log
+
+# Health check
+curl https://seu-dominio.com/up
+```
+
+> **Nota:** O endpoint `/up` retorna HTTP 200 se o servidor estiver operacional, sem exigir autenticação. Útil para health checks de balanceadores.
+
+---
+
+### 4. Manutenção
+
+```bash
+php artisan down              # Modo manutenção
+php artisan up                # Reativar
+php artisan optimize:clear    # Limpar cache após alterações
+php artisan docs:publish      # Republicar documentação
+```
+
+### 5. Auto-Update
+
 Admin pode atualizar via painel em **Configurações > Atualizar Sistema**.
 Requer token GitHub configurado e `exec()` habilitado no servidor.
+
+Fluxo executado pelo sistema:
+```bash
+php artisan down
+git pull https://token@github.com/hectordufau/vetessence.git
+php artisan migrate --force
+php artisan optimize:clear
+php artisan up
+```
+
+### 6. .env — Variáveis Essenciais
+
+As variáveis abaixo **devem** ser configuradas antes de iniciar:
+
+| Variável | Obrigatório | Descrição |
+|----------|-------------|-----------|
+| `APP_URL` | Sim | URL completa do sistema (ex: `https://vetessence.com.br`) |
+| `DB_HOST` | Sim | Host do MySQL (local ou remoto) |
+| `DB_DATABASE` | Sim | Nome do banco |
+| `DB_USERNAME` | Sim | Usuário do banco |
+| `DB_PASSWORD` | Sim | Senha do banco |
+| `QUEUE_CONNECTION` | Sim* | `sync` (demo) ou `redis` (produção) |
+| `SESSION_DRIVER` | Sim* | `file` (demo) ou `redis` (produção) |
+| `REDIS_HOST` | Produção | Host do Redis (usualmente `127.0.0.1`) |
+
+Para variáveis de integração (WhatsApp, NFSe, PIX, etc.), veja a seção [Integrações](#integrações).
 
 ---
 
