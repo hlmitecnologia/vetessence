@@ -59,9 +59,8 @@
 </div>
 @endsection
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#drugFormularyModal').modal('hide'); });
         Livewire.on('drug-formulary-saved', function() { location.reload(); });
     });
@@ -75,5 +74,4 @@
         document.getElementById('drugFormularyModalTitle').textContent = 'Editar Fármaco';
         $('#drugFormularyModal').modal('show');
     }
-</script>
 @endpush

@@ -108,9 +108,8 @@
 </div>
 @endsection
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#clinicalReportTemplateModal').modal('hide'); });
         Livewire.on('clinical-report-template-saved', function() { location.reload(); });
     });
@@ -124,5 +123,4 @@
         document.getElementById('clinicalReportTemplateModalTitle').textContent = 'Editar Modelo de Laudo';
         $('#clinicalReportTemplateModal').modal('show');
     }
-</script>
 @endpush

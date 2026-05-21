@@ -92,9 +92,8 @@
 </div>
 @endsection
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#productModal').modal('hide'); });
         Livewire.on('product-saved', function() { location.reload(); });
     });
@@ -108,5 +107,4 @@
         document.getElementById('productModalTitle').textContent = 'Editar Produto';
         $('#productModal').modal('show');
     }
-</script>
 @endpush

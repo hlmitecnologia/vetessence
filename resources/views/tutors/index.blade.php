@@ -66,6 +66,9 @@
     </div>
 </div>
 
+@endsection
+
+@push('modals')
 <!-- Tutor Modal -->
 <div class="modal fade" id="tutorModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -80,23 +83,21 @@
         </div>
     </div>
 </div>
-@endsection
+@endpush
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        Livewire.on('close-modal', function() { $('#tutorModal').modal('hide'); });
-        Livewire.on('tutor-saved', function() { location.reload(); });
-    });
-    function openCreateModal() {
-        Livewire.dispatch('resetForm');
-        document.getElementById('tutorModalTitle').textContent = 'Novo Tutor';
-        $('#tutorModal').modal('show');
-    }
-    function openEditModal(id) {
-        Livewire.dispatch('editTutor', { id: id });
-        document.getElementById('tutorModalTitle').textContent = 'Editar Tutor';
-        $('#tutorModal').modal('show');
-    }
-</script>
+@push('scripts')
+document.addEventListener('livewire:initialized', function() {
+    Livewire.on('close-modal', function() { $('#tutorModal').modal('hide'); });
+    Livewire.on('tutor-saved', function() { location.reload(); });
+});
+function openCreateModal() {
+    Livewire.dispatch('resetForm');
+    document.getElementById('tutorModalTitle').textContent = 'Novo Tutor';
+    $('#tutorModal').modal('show');
+}
+function openEditModal(id) {
+    Livewire.dispatch('editTutor', { id: id });
+    document.getElementById('tutorModalTitle').textContent = 'Editar Tutor';
+    $('#tutorModal').modal('show');
+}
 @endpush

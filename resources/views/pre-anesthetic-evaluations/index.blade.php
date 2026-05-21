@@ -41,9 +41,8 @@
 </div>
 @endsection
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#preAnestheticEvaluationModal').modal('hide'); });
         Livewire.on('pre-anesthetic-evaluation-saved', function() { location.reload(); });
     });
@@ -57,5 +56,4 @@
         document.getElementById('preAnestheticEvaluationModalTitle').textContent = 'Editar Avaliação';
         $('#preAnestheticEvaluationModal').modal('show');
     }
-</script>
 @endpush

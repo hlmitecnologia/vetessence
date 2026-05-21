@@ -102,9 +102,8 @@
 </div>
 @endsection
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#zoonoticDiseaseModal').modal('hide'); });
         Livewire.on('zoonotic-disease-saved', function() { location.reload(); });
     });
@@ -118,5 +117,4 @@
         document.getElementById('zoonoticDiseaseModalTitle').textContent = 'Editar Doença Zoonótica';
         $('#zoonoticDiseaseModal').modal('show');
     }
-</script>
 @endpush

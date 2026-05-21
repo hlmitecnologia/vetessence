@@ -89,7 +89,9 @@
         @endif
     </div>
 </div>
+@endsection
 
+@push('modals')
 <!-- VaccineProtocol Modal -->
 <div class="modal fade" id="vaccineProtocolModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -104,11 +106,10 @@
         </div>
     </div>
 </div>
-@endsection
+@endpush
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#vaccineProtocolModal').modal('hide'); });
         Livewire.on('vaccine-protocol-saved', function() { location.reload(); });
     });
@@ -122,5 +123,4 @@
         document.getElementById('vaccineProtocolModalTitle').textContent = 'Editar Protocolo';
         $('#vaccineProtocolModal').modal('show');
     }
-</script>
 @endpush

@@ -130,9 +130,8 @@ document.addEventListener('DOMContentLoaded', function() {
 @endif
 @endpush
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#weightRecordModal').modal('hide'); });
         Livewire.on('weight-record-saved', function() { location.reload(); });
     });
@@ -146,5 +145,4 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('weightRecordModalTitle').textContent = 'Editar Registro de Peso';
         $('#weightRecordModal').modal('show');
     }
-</script>
 @endpush

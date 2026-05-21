@@ -69,7 +69,9 @@
     </div>
     {{ $protocols->links() }}
 </div>
+@endsection
 
+@push('modals')
 <!-- EmergencyProtocol Modal -->
 <div class="modal fade" id="emergencyProtocolModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -84,11 +86,10 @@
         </div>
     </div>
 </div>
-@endsection
+@endpush
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#emergencyProtocolModal').modal('hide'); });
         Livewire.on('emergency-protocol-saved', function() { location.reload(); });
     });
@@ -102,5 +103,4 @@
         document.getElementById('emergencyProtocolModalTitle').textContent = 'Editar Protocolo';
         $('#emergencyProtocolModal').modal('show');
     }
-</script>
 @endpush

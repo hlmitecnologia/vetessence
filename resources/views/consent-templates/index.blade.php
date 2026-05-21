@@ -75,9 +75,8 @@
 </div>
 @endsection
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#consentTemplateModal').modal('hide'); });
         Livewire.on('consent-template-saved', function() { location.reload(); });
     });
@@ -91,5 +90,4 @@
         document.getElementById('consentTemplateModalTitle').textContent = 'Editar Modelo de Termo';
         $('#consentTemplateModal').modal('show');
     }
-</script>
 @endpush

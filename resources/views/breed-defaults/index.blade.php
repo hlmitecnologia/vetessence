@@ -66,9 +66,8 @@
 </div>
 @endsection
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#breedDefaultModal').modal('hide'); });
         Livewire.on('breed-default-saved', function() { location.reload(); });
     });
@@ -82,5 +81,4 @@
         document.getElementById('breedDefaultModalTitle').textContent = 'Editar Padrão de Raça';
         $('#breedDefaultModal').modal('show');
     }
-</script>
 @endpush

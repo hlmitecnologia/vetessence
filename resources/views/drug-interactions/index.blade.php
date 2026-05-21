@@ -101,7 +101,9 @@
         @endif
     </div>
 </div>
+@endsection
 
+@push('modals')
 <!-- DrugInteraction Modal -->
 <div class="modal fade" id="drugInteractionModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -116,11 +118,10 @@
         </div>
     </div>
 </div>
-@endsection
+@endpush
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#drugInteractionModal').modal('hide'); });
         Livewire.on('drug-interaction-saved', function() { location.reload(); });
     });
@@ -134,5 +135,4 @@
         document.getElementById('drugInteractionModalTitle').textContent = 'Editar Interação Medicamentosa';
         $('#drugInteractionModal').modal('show');
     }
-</script>
 @endpush

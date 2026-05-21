@@ -46,7 +46,9 @@
         @endif
     </div>
 </div>
+@endsection
 
+@push('modals')
 <!-- Supplier Modal -->
 <div class="modal fade" id="supplierModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -61,11 +63,10 @@
         </div>
     </div>
 </div>
-@endsection
+@endpush
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#supplierModal').modal('hide'); });
         Livewire.on('supplier-saved', function() { location.reload(); });
     });
@@ -79,5 +80,4 @@
         document.getElementById('supplierModalTitle').textContent = 'Editar Fornecedor';
         $('#supplierModal').modal('show');
     }
-</script>
 @endpush

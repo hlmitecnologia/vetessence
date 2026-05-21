@@ -49,7 +49,9 @@
         @endif
     </div>
 </div>
+@endsection
 
+@push('modals')
 <!-- Position Modal -->
 <div class="modal fade" id="positionModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -64,11 +66,10 @@
         </div>
     </div>
 </div>
-@endsection
+@endpush
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#positionModal').modal('hide'); });
         Livewire.on('position-saved', function() { location.reload(); });
     });
@@ -82,5 +83,4 @@
         document.getElementById('positionModalTitle').textContent = 'Editar Cargo';
         $('#positionModal').modal('show');
     }
-</script>
 @endpush

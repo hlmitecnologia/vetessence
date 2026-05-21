@@ -74,7 +74,9 @@
         @endif
     </div>
 </div>
+@endsection
 
+@push('modals')
 <!-- CommunicationTemplate Modal -->
 <div class="modal fade" id="communicationTemplateModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -89,11 +91,10 @@
         </div>
     </div>
 </div>
-@endsection
+@endpush
 
-@push('modals')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+    document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#communicationTemplateModal').modal('hide'); });
         Livewire.on('communication-template-saved', function() { location.reload(); });
     });
@@ -107,5 +108,4 @@
         document.getElementById('communicationTemplateModalTitle').textContent = 'Editar Modelo de Comunicação';
         $('#communicationTemplateModal').modal('show');
     }
-</script>
 @endpush
