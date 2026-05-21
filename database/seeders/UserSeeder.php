@@ -15,8 +15,11 @@ class UserSeeder extends Seeder
         $vetRole = Role::where('slug', 'veterinario')->first();
         $recepRole = Role::where('slug', 'recepcionista')->first();
         $financeiroRole = Role::where('slug', 'financeiro')->first();
+        $superFinRole = Role::where('slug', 'super-financial')->first();
         $estoqueRole = Role::where('slug', 'estoque')->first();
+        $hrRole = Role::where('slug', 'human-resources')->first();
         $tutorRole = Role::where('slug', 'tutor')->first();
+        $auditorRole = Role::where('slug', 'auditor')->first();
 
         $superAdminRole = Role::where('slug', 'super-admin')->first();
 
@@ -28,7 +31,10 @@ class UserSeeder extends Seeder
             ['name' => 'Paula Recepcionista', 'email' => 'recep@vet.com', 'password' => 'recep123', 'role' => $recepRole],
             ['name' => 'Carlos Recepcionista', 'email' => 'recep2@vet.com', 'password' => 'recep2123', 'role' => $recepRole],
             ['name' => 'Carlos Financeiro', 'email' => 'financeiro@vet.com', 'password' => 'fin123', 'role' => $financeiroRole],
+            ['name' => 'Daniel Super Financeiro', 'email' => 'superfin@vet.com', 'password' => 'superfin123', 'role' => $superFinRole],
             ['name' => 'Ana Estoque', 'email' => 'estoque@vet.com', 'password' => 'est123', 'role' => $estoqueRole],
+            ['name' => 'Paula RH', 'email' => 'rh@vet.com', 'password' => 'rh123', 'role' => $hrRole],
+            ['name' => 'Jorge Auditor', 'email' => 'auditor@vet.com', 'password' => 'auditor123', 'role' => $auditorRole],
             ['name' => 'Maria Tutor', 'email' => 'tutor@vet.com', 'password' => 'tutor123', 'role' => $tutorRole],
         ];
 
