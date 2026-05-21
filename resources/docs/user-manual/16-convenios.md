@@ -127,3 +127,10 @@
 - Prazo para envio de faturamento conforme contrato
 - Claims podem ser enviados automaticamente via API Porto Seguro
 - CVI exige microchip obrigatório (verificação automática)
+
+---
+
+## Diagrama do Processo
+
+![Convênio, Claims e CVI](../diagrams/18-fluxo-convenio.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

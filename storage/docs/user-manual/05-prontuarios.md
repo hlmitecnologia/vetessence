@@ -75,3 +75,10 @@
 - O prontuário não pode ser excluído após 24h (auditoria)
 - O tutor tem acesso apenas de leitura via portal
 - Alterações são registradas na trilha de auditoria
+
+---
+
+## Diagrama do Processo
+
+![Prontuário (SOAP)](../diagrams/05-fluxo-prontuario.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

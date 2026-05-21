@@ -65,3 +65,10 @@
 - Exclusão de dados pessoais não afeta registros clínicos (são anonimizados)
 - Solicitações LGPD devem ser respondidas em até 15 dias
 - Relatório de impacto à proteção de dados (RIPD) disponível
+
+---
+
+## Diagrama do Processo
+
+![Auditoria e LGPD](../diagrams/22-fluxo-lgpd.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

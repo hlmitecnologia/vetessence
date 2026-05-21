@@ -55,3 +55,10 @@
 - Relatórios financeiros e de estoque exigem permissão específica
 - Dados de tutores/pets respeitam LGPD
 - Relatórios podem ser filtrados por filial
+
+---
+
+## Diagrama do Processo
+
+![Relatórios](../diagrams/21-fluxo-relatorio.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

@@ -67,3 +67,10 @@
 - Vacinas múltiplas podem ter intervalo mínimo entre doses
 - O certificado é um documento legal (CFMV)
 - Vacinas de raiva e outras obrigatórias têm notificação especial
+
+---
+
+## Diagrama do Processo
+
+![Vacinação](../diagrams/07-fluxo-vacina.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

@@ -75,3 +75,10 @@
 - Limite de 2 SMS por dia por tutor
 - WhatsApp tem prioridade sobre outros canais
 - Falha após 3 tentativas desativa temporariamente o canal
+
+---
+
+## Diagrama do Processo
+
+![Notificações](../diagrams/23-fluxo-notificacao.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

@@ -134,3 +134,17 @@
 - Apenas admin, estoque e super-financial podem fazer ajustes
 - Substâncias controladas têm rastreamento lote-a-lote
 - Transferência só pode ser feita entre filiais do mesmo grupo
+
+---
+
+## Diagrama do Processo
+
+![Estoque e Pedidos de Compra](../diagrams/14-fluxo-estoque.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+
+---
+
+## Diagrama do Processo
+
+![Substâncias Controladas](../diagrams/14-fluxo-substancias.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

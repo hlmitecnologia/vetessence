@@ -44,3 +44,17 @@ Guia prático para utilização do VetEssence no dia a dia da clínica.
 - **Financeiro**: Financeiro > Contas a Receber
 - **NFSe**: Financeiro > NFSe
 - **Portal do Tutor**: `/portal`
+
+---
+
+## Diagrama do Processo
+
+![Macro-Fluxo do Sistema](../diagrams/macro-fluxo-sistema.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+
+---
+
+## Diagrama do Processo
+
+![Matriz de Perfis RACI](../diagrams/matriz-perfis.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

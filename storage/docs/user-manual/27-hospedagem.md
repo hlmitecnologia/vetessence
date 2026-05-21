@@ -96,3 +96,10 @@ O módulo de hospedagem gerencia check-in, check-out, tarefas diárias, banho e 
 - Qualquer intercorrência veterinária gera notificação ao tutor
 - Tutor pode visitar o pet durante o horário comercial
 - Check-out fora do horário combinado pode gerar taxa adicional
+
+---
+
+## Diagrama do Processo
+
+![Hospedagem/Boarding](../diagrams/29-fluxo-hospedagem.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

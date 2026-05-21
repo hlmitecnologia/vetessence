@@ -41,3 +41,10 @@
 - Óbito durante internação gera registro de causa mortis
 - Apenas veterinários podem prescrever durante internação
 - Evoluções são registradas na timeline do paciente
+
+---
+
+## Diagrama do Processo
+
+![Internação](../diagrams/12-fluxo-internacao.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

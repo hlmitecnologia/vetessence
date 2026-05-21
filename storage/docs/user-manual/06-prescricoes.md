@@ -38,3 +38,10 @@
 - A validade da receita é configurável por tipo de medicamento
 - O QR code de verificação é público (rate-limited: 10 req/min)
 - Apenas veterinários podem emitir prescrições
+
+---
+
+## Diagrama do Processo
+
+![Prescrição com QR Code](../diagrams/06-fluxo-prescricao.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

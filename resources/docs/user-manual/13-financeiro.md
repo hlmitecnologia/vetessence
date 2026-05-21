@@ -222,3 +222,17 @@ Quando uma consulta é marcada como **concluída**, o sistema gera automaticamen
 - NFSe só pode ser emitida se filial tiver configuração fiscal ativa
 - Comissões são calculadas apenas na primeira liquidação da fatura
 - Conciliação bancária sugere correspondências, mas requer confirmação manual
+
+---
+
+## Diagrama do Processo
+
+![Faturamento, NFSe e Comissões](../diagrams/15-fluxo-fatura.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+
+---
+
+## Diagrama do Processo
+
+![Conciliação Bancária](../diagrams/15-fluxo-conciliacao.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

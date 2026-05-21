@@ -95,3 +95,24 @@
 - O prazo para liberação de resultado é configurável por tipo
 - Equipamentos de laboratório integrados importam resultados automaticamente
 - Laudos de imagem exigem assinatura digital do veterinário
+
+---
+
+## Diagrama do Processo
+
+![Exame](../diagrams/08-fluxo-exame.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+
+---
+
+## Diagrama do Processo
+
+![Laboratório](../diagrams/09-fluxo-laboratorio.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+
+---
+
+## Diagrama do Processo
+
+![Imagem](../diagrams/10-fluxo-imagem.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

@@ -42,3 +42,10 @@ O chat permite comunicação em tempo real entre tutores e a clínica, diretamen
 - Anexos têm limite de 10MB cada
 - Chat não substitui canais de emergência
 - Histórico pode ser exportado pelo tutor (LGPD)
+
+---
+
+## Diagrama do Processo
+
+![Chat](../diagrams/24-fluxo-chat.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

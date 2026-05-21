@@ -47,3 +47,10 @@
 - Cirurgias exigem avaliação pré-anestésica obrigatória
 - Termo de consentimento deve ser assinado digitalmente
 - Apenas veterinários podem registrar cirurgias
+
+---
+
+## Diagrama do Processo
+
+![Cirurgia](../diagrams/11-fluxo-cirurgia.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

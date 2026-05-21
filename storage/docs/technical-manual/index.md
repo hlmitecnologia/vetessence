@@ -415,3 +415,17 @@ Requer token GitHub configurado e `exec()` habilitado no servidor.
   - Manual Técnico: Este documento
   - Changelog
   - Manual do Tutor: 13 tópicos
+
+---
+
+## Diagrama do Processo
+
+![Matriz de Perfis RACI](../diagrams/matriz-perfis.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+
+---
+
+## Diagrama do Processo
+
+![Recursos Humanos](../diagrams/rh-fluxo-admissao.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

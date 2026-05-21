@@ -127,3 +127,10 @@ A Timeline do Paciente consolida todo o histórico do pet em uma única tela cro
 - Pets podem ser transferidos entre tutores
 - Histórico médico nunca é excluído
 - Tutor pode solicitar exclusão de dados (LGPD)
+
+---
+
+## Diagrama do Processo
+
+![Cadastro de Tutor e Pet](../diagrams/17-fluxo-tutor-pet.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

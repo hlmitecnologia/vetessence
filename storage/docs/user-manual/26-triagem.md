@@ -78,3 +78,10 @@ O painel de triagem é uma interface em tempo real para classificação de risco
 - Paciente vermelho não pode ficar sem atendimento por mais de 15 min (alerta)
 - Triagem pode ser feita por recepcionista treinada (permissão `triage.create`)
 - Histórico completo de triagens fica na timeline do paciente
+
+---
+
+## Diagrama do Processo
+
+![Triagem Manchester](../diagrams/28-fluxo-triagem.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

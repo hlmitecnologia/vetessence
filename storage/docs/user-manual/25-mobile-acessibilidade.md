@@ -37,3 +37,10 @@
 - Navegadores: Chrome, Firefox, Edge, Safari (2 últimas versões)
 - Aplicação web progressiva (PWA): Instalável no celular
 - Notificações push no navegador
+
+---
+
+## Diagrama do Processo
+
+![Mobile](../diagrams/27-fluxo-mobile.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

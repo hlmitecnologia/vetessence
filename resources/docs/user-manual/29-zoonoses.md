@@ -57,3 +57,10 @@ Doenças de notificação obrigatória:
 - Histórico de zoonoses do pet fica na timeline
 - Relatórios epidemiológicos podem ser solicitados pela vigilância
 - Dados de zoonoses são anonimizados para relatórios públicos (LGPD)
+
+---
+
+## Diagrama do Processo
+
+![Zoonoses](../diagrams/31-fluxo-zoonoses.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

@@ -186,3 +186,10 @@ As integrações são configuradas via **arquivo `.env`** na raiz do sistema (ac
 - Git instalado no servidor
 - Permissão de escrita na pasta do projeto
 - Token GitHub com permissão de leitura do repositório
+
+---
+
+## Diagrama do Processo
+
+![Auto-Update e Configurações](../diagrams/25-fluxo-autoupdate.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

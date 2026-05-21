@@ -70,3 +70,10 @@ O odontograma é uma representação gráfica dos dentes do animal:
 - Raio-X odontológico é obrigatório antes de extrações
 - Histórico odontológico faz parte da timeline do paciente
 - Procedimentos são registrados com data e profissional responsável
+
+---
+
+## Diagrama do Processo
+
+![Odontologia](../diagrams/30-fluxo-odontologia.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

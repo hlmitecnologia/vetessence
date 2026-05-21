@@ -83,3 +83,10 @@
 - Estoque mínimo gera notificação
 - Lotes vencidos não podem ser utilizados
 - Calculadora de dosagem é apenas referencial — não substitui julgamento clínico
+
+---
+
+## Diagrama do Processo
+
+![Farmácia](../diagrams/13-fluxo-farmacia.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

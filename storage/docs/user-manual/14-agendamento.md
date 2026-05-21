@@ -95,3 +95,10 @@
 - Profissionais podem definir horários de bloqueio (folga, feriado)
 - O agendamento não sobrepõe horários de profissionais
 - Tutor pode reagendar via portal com até 24h de antecedência
+
+---
+
+## Diagrama do Processo
+
+![Agendamento e Consulta](../diagrams/16-fluxo-agendamento.svg)
+*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*

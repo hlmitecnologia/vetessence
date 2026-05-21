@@ -1217,149 +1217,281 @@ resources/docs/diagrams/
 
 ### X4 — Processos por Módulo (29 Diagramas)
 
+**Convenção de Perfis (Lanes):** Cada diagrama usa as lanes dos perfis que efetivamente participam do processo. A matriz completa de 11 perfis está no diagrama `matriz-perfis.svg` (RACI). Abaixo, a lista de lanes por diagrama:
+
+| # | Perfil | Slug | Onde aparece como lane |
+|---|--------|------|----------------------|
+| 1 | Super Admin | `super-admin` | X4.12 (aprovação), X4.20 (auto-update) |
+| 2 | Admin | `admin` | X4.12, X4.17, X4.20, X4.25 (config geral) |
+| 3 | Branch Admin | `branch-admin` | X4.12 (aprovação local), X4.20 |
+| 4 | Veterinário | `veterinario` | X4.3–X4.12, X4.14, X4.16, X4.21–X4.22, X4.24–X4.25 |
+| 5 | Recepcionista | `recepcionista` | X4.5–X4.6, X4.9, X4.14–X4.15, X4.22–X4.23 |
+| 6 | Financeiro | `financeiro` | X4.12–X4.13, X4.16, X4.18 |
+| 7 | Super Financial | `super-financial` | X4.13 (conciliação multi-filial) |
+| 8 | Estoque | `estoque` | X4.11–X4.12 |
+| 9 | RH | `human-resources` | X4.26 (admissão/escala) |
+| 10 | Tutor | `tutor` | **Todos os diagramas com interação com tutor** (ver abaixo) |
+| 11 | Auditor | `auditor` | X4.17 (auditoria LGPD) |
+
 #### X4.1 — Macro-Fluxo do Sistema
 **Arquivo:** `macro-fluxo-sistema.svg`  
 **Referenciado em:** `resources/docs/index.md`  
-**Lanes:** Sistema, Tutor, Recepcionista, Veterinário, Financeiro, Estoque  
-**Fluxo:** Cadastro Tutor/Pet → Agendamento → Consulta → Prontuário → Prescrição/Vacina/Exame → Fatura → NFSe/Comissão → Conciliação  
-**Gateways:** Paralelo (serviços múltiplos na consulta), Exclusivo (com/sem convênio)
+**Pools:** Clínica (com lanes), Tutor (pool separado), Sistema (pool separado)  
+**Lanes (pool Clínica):** Recepcionista, Veterinário, Financeiro, Estoque  
+**Fluxo:** Tutor solicita/cadastra → Recepcionista agenda → [Consulta] → Veterinário faz prontuário → [Gateway: serviços?] → Prescrição / Vacina / Exame / Cirurgia → Financeiro fatura → [Gateway: NFSe?] → Emite NFSe + Comissão → Conciliação  
+**Gateways:** Paralelo (serviços múltiplos na consulta), Exclusivo (com/sem convênio)  
+**Fluxos de Mensagem:** Tutor → Clínica (agendamento, chat), Clínica → Tutor (notificações, resultados)
 
 #### X4.2 — Matriz de Perfis (RACI)
 **Arquivo:** `matriz-perfis.svg`  
 **Referenciado em:** `resources/docs/technical-manual/index.md`  
-**Tabela visual:** Responsável, Aprovador, Consultado, Informado por funcionalidade e perfil
+**Estrutura:** Tabela visual funcionalidade × perfil com RACI (Responsável, Aprovador, Consultado, Informado)  
+**11 colunas:** Todos os perfis do sistema  
+**30+ linhas:** Cada módulo do manual
 
 #### X4.3 — Prontuário (05)
 **Arquivo:** `05-fluxo-prontuario.svg`  
 **Pools:** Clínica, Tutor (via Portal)  
-**Lanes:** Veterinário (lane principal)  
-**Fluxo:** Criar SOAP → [Gateway: plano de tratamento?] → Sim → Criar Plano → Tutor aprova/rejeita → [Aprovado?] → Executar → Não → Prescrever  
-**Eventos:** Início (abrir ficha do pet), Fim (prontuário salvo), Intermediário (notificação ao tutor)
+**Lanes (Clínica):** Veterinário  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Veterinário abre ficha do pet → Preenche SOAP (S: subjetivo, O: objetivo, A: avaliação, P: plano) → Adiciona anexos (imagens, PDFs) → [Gateway: criou plano de tratamento?] → Sim → Plano status `pending` → **Tutor aprova ou rejeita via Portal** → [Aprovado?] → Sim: Veterinário executa plano → Não: Veterinário ajusta → Registrar → Prescrever (se necessário)  
+**Eventos:** Início (selecionar pet), Fim (prontuário salvo), Intermediário (notificação push ao tutor sobre aprovação pendente), Intermediário (notificação ao veterinário sobre decisão do tutor)  
+**Subprocessos:** Plano de Tratamento (detalhado), Anexos, Dietas Prescritas, Termo de Consentimento
 
 #### X4.4 — Prescrição (06)
 **Arquivo:** `06-fluxo-prescricao.svg`  
-**Lanes:** Veterinário, Tutor, Sistema  
-**Fluxo:** Selecionar pet → Adicionar medicamentos (fármaco, dose, frequência) → [Controlado?] → Sim → Validar ANVISA → Gerar QR Code → Salvar → [Gateway: imprimir?] → PDF com QR Code → Tutor verifica `/r/{hash}`  
-**Eventos:** Intermediário (hash SHA-256 gerado), Temporizador (validade expirada)
+**Pools:** Clínica, Tutor  
+**Lanes (Clínica):** Veterinário, Sistema  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Veterinário seleciona pet → Adiciona medicamentos (fármaco, dose, frequência, duração, via) → [Gateway: substância controlada?] → Sim → Valida receituário ANVISA (azul/amarelo) → Gera **hash SHA-256** → Codifica em **QR Code** no PDF → Salva prescrição → [Gateway: imprimir?] → PDF formatado (cabeçalho clínica, dados pet, assinatura CRMV, QR code) → Tutor recebe PDF (via WhatsApp/e-mail) → Tutor ou terceiro escaneia QR code → Acessa `/r/{hash}` → **Verifica autenticidade publicamente**  
+**Eventos:** Intermediário (hash SHA-256 gerado e registrado), Temporizador (validade da receita expirada — configurável por tipo)  
+**Pool Público:** Rota `/r/{hash}` fora do auth, rate-limited 10 req/min
 
 #### X4.5 — Vacina (07)
 **Arquivo:** `07-fluxo-vacina.svg`  
-**Lanes:** Veterinário, Recepcionista, Sistema  
-**Fluxo:** Selecionar pet + vacina → [Protocolo ativo?] → Sim → Sugerir próxima dose → Informar lote + validade → Aplicar → [Gateway: estoque integrado?] → Deduzir automaticamente → Gerar certificado PDF → [Lembrete configurado?] → Agendar próxima notificação  
-**Paralelo:** Recall campaigns (`recall:process`) + Previsão de vencimento
+**Pools:** Clínica, Tutor, Sistema (automático)  
+**Lanes (Clínica):** Veterinário, Recepcionista  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Veterinário seleciona pet → [Gateway: protocolo de vacinação ativo para espécie?] → Sim → Sistema sugere vacina, dose, intervalo → Não → Manual → Informa lote + validade (estoque integrado? → dedução automática) → Aplica → Gera **certificado PDF** layout CFMV → Tutor recebe certificado (impresso/digital) → [Gateway: próxima dose programada?] → Sistema agenda lembrete automático  
+**Paralelo (sistema):** Comando `vaccines:remind` → ProcessCommunicationQueue → WhatsApp/SMS/E-mail → Tutor recebe lembrete  
+**Paralelo (sistema):** Comando `recall:process` → Campanha de recall → Tutor recebe notificação  
+**Pool Sistema:** Previsão de vencimento (filtro por espécie + dias) + Relatório de vacinas atrasadas
 
 #### X4.6 — Exame (08)
 **Arquivo:** `08-fluxo-exame.svg`  
-**Lanes:** Veterinário, Recepcionista, Sistema  
-**Fluxo:** Solicitar exame → [Tipo?] → Laboratório / Imagem → Coleta → Processamento → Resultado → Laudo → Liberar para tutor
+**Pools:** Clínica, Tutor  
+**Lanes (Clínica):** Veterinário, Recepcionista, Sistema  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Veterinário solicita exame (tipo, instruções) → [Gateway: tipo?] → **Laboratório**: aguarda coleta → Coleta (amostra: sangue/urina/fezes/swab) → Processamento → Parâmetros → Laudo → **Imagem**: upload DICOM/JPEG → Laudo → Assinatura digital → [Gateway: ambos?] → Paralelo → Resultado liberado → **Tutor visualiza via Portal** → Notificação push ao tutor  
+**Eventos:** Início (solicitação), Intermediário (coleta registrada), Intermediário (resultado liberado), Fim (tutor notificado)
 
 #### X4.7 — Laboratório (09)
 **Arquivo:** `09-fluxo-laboratorio.svg`  
-**Lanes:** Veterinário, Técnico, Sistema  
-**Fluxo:** Pedido → Coleta (amostra) → [Equipamento integrado?] → Importação automática → Parâmetros → Laudo → Liberar  
-**Subprocesso:** Integração HL7/REST com equipamento
+**Pools:** Clínica, Tutor  
+**Lanes (Clínica):** Veterinário, Técnico de Laboratório, Sistema  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Veterinário faz pedido → Técnico registra coleta (data, hora, profissional, tipo amostra, acondicionamento) → [Gateway: equipamento integrado?] → Sim → **Importação automática** via webhook HL7/REST → Não → Lançamento manual dos parâmetros → Laudo + conclusão → **Libera resultado** → Tutor visualiza no Portal  
+**Subprocesso:** Integração com equipamento (HL7, FHIR, REST) — endpoint `POST /api/v1/lab-equipment/{id}/receive`  
+**Pool Equipamento:** Webhook público para push de resultados
 
 #### X4.8 — Imagem (10)
 **Arquivo:** `10-fluxo-imagem.svg`  
-**Lanes:** Veterinário, Radiologista  
-**Fluxo:** Solicitar → Upload imagens (DICOM/JPEG) → Laudo → Assinatura digital → Associar ao prontuário
+**Pools:** Clínica, Tutor  
+**Lanes (Clínica):** Veterinário, Radiologista  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Veterinário solicita exame de imagem (RX/US/Tomografia/Ressonância) + região anatômica → Radiologista faz upload das imagens (DICOM/JPEG/PNG) → Redige laudo (descrição, conclusão, recomendações) → **Assina digitalmente** → Associa ao prontuário do pet → **Tutor visualiza via Portal**  
+**Regras:** Laudo de imagem SEMPRE exige assinatura digital do veterinário
 
 #### X4.9 — Cirurgia (11)
 **Arquivo:** `11-fluxo-cirurgia.svg`  
-**Lanes:** Veterinário, Recepcionista, Sistema  
-**Fluxo:** Agendar → Checklist pré-operatório → [Avaliação pré-anestésica OK?] → Sim → Realizar cirurgia → Registrar transoperatório → Pós-operatório → Alta  
-**Gateway Paralelo:** Anestesia, Equipe, Sala, Consentimento
+**Pools:** Clínica, Tutor  
+**Lanes (Clínica):** Veterinário (cirurgião), Recepcionista, Sistema  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Recepcionista agenda cirurgia (pet, tutor, tipo, cirurgião, sala, equipe) → **Gateway Paralelo obrigatório:**  
+  → Avaliação pré-anestésica (ASA, exames, jejum, hidratação)  
+  → Termo de consentimento **assinado pelo tutor**  
+  → Checklist cirúrgico (exames pré-OP, protocolo antibiótico)  
+  → [Todas as condições OK?] → Sim → Veterinário realiza cirurgia → Registra transoperatório (parâmetros, medicações, intercorrências) → Pós-operatório (analgesia, prescrição) → **Tutor notificado** → Retorno agendado  
+**Eventos:** Intermediário (tutor assina consentimento digital), Temporizador (retorno automático)  
+**Pool Anestesia:** Subprocesso com parâmetros a cada 5-15 min
 
 #### X4.10 — Internação (12)
 **Arquivo:** `12-fluxo-internacao.svg`  
-**Lanes:** Veterinário, Enfermeiro, Sistema  
-**Fluxo:** Registrar entrada → [Tipo: UTI/Enfermaria/Isolamento?] → Evolução diária → Prescrição diária → [Gateway: alta médica?] → Sim → Resumo de alta → [Gateway: óbito?] → Registrar causa mortis  
-**Evento Temporizador:** Prescrição diária automática
+**Pools:** Clínica, Tutor  
+**Lanes (Clínica):** Veterinário, Enfermeiro/Técnico, Sistema  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Veterinário registra internação (motivo, tipo: UTI/Enfermaria/Isolamento) → **Tutor notificado da admissão** → **Ciclo diário:** Enfermeiro registra evolução (sinais vitais, estado geral, dieta, medicações) → Veterinário faz prescrição diária → [Gateway: alta médica?] → Não → Continua ciclo → Sim → **Gateway Paralelo:** Resumo de alta + Prescrição de alta + Orientações + Retorno agendado → **Tutor notificado da alta** → [Gateway: óbito?] → Registrar causa mortis na timeline  
+**Eventos:** Temporizador (prescrição diária automática se não registrada até horário limite)  
+**Fluxo de Mensagem:** Sistema → Tutor (notificação de admissão, evolução crítica, alta)
 
 #### X4.11 — Farmácia (13)
 **Arquivo:** `13-fluxo-farmacia.svg`  
-**Lanes:** Estoque, Sistema  
-**Fluxo:** Cadastrar produto (SKU, lote, validade, preço) → [Controlado?] → Marcar ANVISA → [Gateway: venda/uso?] → Venda: debitar estoque → Uso clínico: registrar consumo  
-**Subprocesso:** Calculadora de dosagem (link para formulário de fármacos)
+**Pools:** Clínica, Sistema  
+**Lanes (Clínica):** Estoque, Veterinário  
+**Lanes (Sistema):** Sistema  
+**Fluxo:** Estoque cadastra produto (nome, SKU, código barras, categoria, fabricante, preço custo/venda, unidade, estoque mínimo) → [Gateway: controlado ANVISA?] → Sim → Marca como controlado, lote obrigatório → [Lote?] → Registra lote + validade → [Gateway: preço por espécie?] → Configura tiers → [Gateway: venda ou uso clínico?] → **Venda**: debita estoque → **Uso clínico**: veterinário registra consumo no prontuário → Alerta se estoque < mínimo  
+**Subprocesso:** Calculadora de dosagem → Veterinário seleciona fármaco + espécie + peso → Sistema calcula dose (mg) + frequência + dose máxima  
+**Eventos:** Alerta de vencimento (comando `products:alert-expiry`), Alerta de estoque baixo (dashboard)
 
-#### X4.12 — Estoque (14)
+#### X4.12 — Estoque e Pedidos de Compra (14)
 **Arquivo principal:** `14-fluxo-estoque.svg`  
 **Arquivo secundário:** `14-fluxo-substancias.svg`  
-**Lanes (principal):** Estoque, Financeiro, Admin  
-**Fluxo:** Criar pedido de compra (draft) → [Gateway: valor > limite?] → Aprovação → Ordered → [Gateway: recebimento parcial?] → Parcial → Total → Conciliação  
-**Fluxo controladas:** Compra → Registro ANVISA → Saída → Relatório mensal
+**Pools:** Clínica, Fornecedor  
+**Lanes (Clínica):** Estoque, Financeiro, Admin/Super-Admin/Branch-Admin  
+**Fluxo principal (Pedido de Compra):** Estoque cria pedido (draft) → Adiciona itens (produto + qtd + preço) → Total calculado → [Gateway: valor > limite?] → Sim → **Aprovação necessária** (Admin/Branch-Admin/Super-Admin) → [Aprovado?] → Sim → Status `ordered` → Não → Rejeitado (volta a draft com justificativa) → Pedido enviado ao fornecedor → [Recebimento parcial?] → Sim → `partial` → Não → `received` → Estoque dá entrada com lotes + validades → **Conciliação** (confere valores e quantidades) → Pedido finalizado  
+**Fluxo controladas (secundário):** Compra de substância controlada → Registro de entrada (lote, validade, quantidade) → **Toda saída auditada** (quem, quando, para qual pet/prescrição) → Relatório mensal ANVISA (exportação CSV) → Relatório anual → Envio à ANVISA
 
-#### X4.13 — Financeiro (15)
+#### X4.13 — Financeiro, NFSe, Comissões e Conciliação (15)
 **Arquivo principal:** `15-fluxo-fatura.svg`  
 **Arquivo secundário:** `15-fluxo-conciliacao.svg`  
-**Lanes (fatura):** Financeiro, Sistema, Tutor, Webmania®  
-**Fluxo:** Fatura gerada (manual ou auto após consulta) → Receber pagamento → [Gateway: NFSe ativa?] → Emitir NFSe (via Webmania®) → [Comissão configurada?] → Calcular comissão → Tutor recebe e-mail com XML/PDF  
-**Fluxo conciliação:** Importar extrato (OFX/QIF/CSV) → Sugerir correspondências → [Gateway: match automático?] → Conciliar → Reconcilied / Unmatched → Ajuste manual
+**Pools:** Clínica, Tutor, Webmania® (provedor NFSe), Banco  
+**Lanes (Clínica):** Financeiro, Super-Financial, Sistema, Veterinário  
+**Lanes (Tutor):** Tutor  
+**Fluxo Fatura/NFSe/Comissões:** Fatura gerada (manual ou auto após consulta concluída) → Adiciona itens (serviços/produtos) → [Gateway: pagamento?] → Tutor paga (dinheiro/cartão/PIX/boleto) → Fatura status `paid` → **Evento InvoicePaid dispara três paralelos:**  
+  → ① [Gateway: NFSe configurada?] → `EmitirNfseOnPaid` listener → `NfseService::emitir()` → Webmania® emite NFSe → `nfse_invoice` salva (XML, PDF, número) → `nfse_status = issued` → Tutor recebe e-mail com XML+PDF  
+  → ② [Gateway: comissão configurada para vet?] → Calcula comissão (rate × base) → `commission_log` status `pending` → Financeiro visualiza relatório → Marca como `paid`  
+  → ③ [Gateway: conciliação automática?] → Transação bancária correspondente → `reconciled`  
+**Fluxo Conciliação (secundário):** Financeiro/Super-Financial importa extrato (OFX/QIF/CSV) → Sistema processa transações → **Sugere correspondências** (valor ±R$0,01 + data próxima) → [Match automático?] → Sim → `reconciled` → Não → Manual: usuário arrasta transação bancária para lançamento → Confirma → `reconciled` / `unmatched`  
+**Pool Webmania®:** API externa (não controlada pelo sistema)
 
-#### X4.14 — Agendamento (16)
+#### X4.14 — Agendamento e Consulta (16)
 **Arquivo:** `16-fluxo-agendamento.svg`  
-**Lanes:** Tutor (portal), Recepcionista, Veterinário, Sistema  
-**Fluxo:** [Origem?] → Portal: tutor agenda online → Clínica: recepcionista agenda → Confirmar → [Gateway: lembrete?] → Notificar 24h e 2h antes → Tutor confirma/reagenda → Consulta → [Gateway: concluída?] → Gerar fatura automaticamente  
-**Pool de Sistema:** Comando `appointments:remind` + Fila de comunicação  
-**Evento Temporizador:** Lembrete automático (dailyAt 18h)
+**Pools:** Clínica, Tutor (Portal), Sistema  
+**Lanes (Clínica):** Recepcionista, Veterinário  
+**Lanes (Tutor):** Tutor  
+**Lanes (Sistema):** Sistema  
+**Fluxo principal:** [Gateway: origem?] → **Portal**: tutor acessa `/portal`, seleciona pet + serviço + profissional + horário → Agendamento criado como `pending` → **Presencial**: Recepcionista abre calendário, seleciona horário, preenche dados → [Gateway: tutor confirmou?] → Sim → `confirmed` → **Evento Temporizador:** Lembrete 24h antes → Tutor recebe WhatsApp → Confirma ou reagenda → **Evento Temporizador:** Lembrete 2h antes → Consulta realizada → [Gateway: concluída?] → Sim → `completed` → **Evento InvoicePaid** (auto-faturamento com serviços prestados)  
+**Fluxo Recorrente:** Veterinário configura retorno (frequência, repetições) → Sistema gera compromissos futuros → Comando `appointments:generate-recurring`  
+**Fluxo Online Booking:** Tutor agenda via link público → `online_bookings` → Recepcionista confirma  
+**Pool Sistema:** `appointments:remind` (dailyAt 18h) → `ProcessCommunicationQueue` → Mensagens  
+**Eventos:** Temporizador (lembrete 24h), Temporizador (lembrete 2h), Intermediário (fatura gerada)
 
 #### X4.15 — Tutor e Pet (17)
 **Arquivo:** `17-fluxo-tutor-pet.svg`  
-**Lanes:** Recepcionista, Sistema, Tutor  
-**Fluxo:** Cadastrar tutor (CPF único) → Cadastrar pet (vinculado) → [Gateway: microchip?] → Registrar número + data → [Múltiplos tutores?] → Adicionar vínculos → Timeline unificada  
-**Subprocesso:** Registro de óbito (causa, autorização, cremação, memorial)
+**Pools:** Clínica, Tutor  
+**Lanes (Clínica):** Recepcionista, Sistema  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Recepcionista cadastra tutor (nome, CPF/CNPJ, RG, e-mail, telefone, endereço) → CPF único validado → Preferências de notificação (WhatsApp/SMS/E-mail) → Cadastra pet vinculado (nome, espécie, raça, sexo, porte, cor, nascimento) → [Gateway: microchip?] → Sim → Registra número do microchip + data de implantação → [Gateway: RG animal?] → Sim → Registra RG + órgão emissor → [Gateway: múltiplos tutores?] → Adicionar vínculos adicionais → **Timeline do Paciente** unifica todo histórico  
+**Subprocesso — Registro de Óbito:** Acessa pet → Registrar óbito (data, causa, veterinário responsável, autorizado por) → [Gateway: cremação?] → Sim → Informa tipo (individual/coletiva), data retirada cinzas → Não → Memorial opcional → Pet marcado como falecido → Agendamentos futuros cancelados  
+**Fluxo de Mensagem:** Sistema → Tutor (notificações, lembretes, resultados)
 
-#### X4.16 — Convênio (18)
+#### X4.16 — Convênio, Claims e CVI (18)
 **Arquivo:** `18-fluxo-convenio.svg`  
-**Lanes:** Financeiro, Sistema, Porto Seguro (API)  
-**Fluxo:** Cadastrar convênio + tabela → Realizar atendimento → [Gateway: conveniado?] → Faturar → Emitir guia → [Auto-claim ativo?] → Enviar claim via API → Webhook → Status (aprovado/rejeitado/glosado)  
-**Subprocesso:** CVI (requisitos, microchip, validade, CRMV)
+**Pools:** Clínica, Convênio/Operadora, Tutor  
+**Lanes (Clínica):** Financeiro, Veterinário, Sistema  
+**Lanes (Tutor):** Tutor  
+**Fluxo Convênio:** Financeiro cadastra convênio (nome, CNPJ, ANS, contato) → Cadastra tabela de procedimentos (código TUSS, valores, coparticipação, cobertura %) → Atendimento realizado → [Gateway: pet é conveniado?] → Sim → Faturamento de guia (SP/SADT/consulta/internação) → Lote de faturamento → Envia ao convênio → Status: enviado / pago / glosado / pendente  
+**Fluxo Claims:** [Gateway: auto-claim ativo?] → Sim → Comando `claims:auto-file` → API Porto Seguro → Claim enviado → Operadora processa → **Webhook** `POST /api/insurance/webhook` → Sistema atualiza status → Tutor consulta no Portal  
+**Subprocesso — CVI:** Veterinário solicita CVI → [Gateway: requisitos OK?] → Microchip implantado ✅, Vacina antirrábica ✅, Exames sorológicos ✅, Tratamento antiparasitário ✅, Atestado clínico ✅ → Gera CVI com número CRMV + validade (10 dias) → Tutor recebe PDF
 
-#### X4.17 — LGPD (22)
+#### X4.17 — Auditoria e LGPD (22)
 **Arquivo:** `22-fluxo-lgpd.svg`  
-**Lanes:** Tutor, Admin/Sistema  
-**Fluxo:** Tutor solicita: acesso / correção / exclusão / portabilidade → Sistema processa → [Gateway: tipo?] → Exportar JSON (lgpd:export) / Anonimizar (lgpd:anonymize) → Auditoria registrada
+**Pools:** Tutor, Clínica  
+**Lanes (Clínica):** Admin, Sistema, Auditor  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Tutor solicita exercício de direito LGPD → [Gateway: tipo de solicitação?] → **Acesso**: Sistema exporta todos dados do tutor/pet em JSON (`lgpd:export`) → **Correção**: Admin edita dados → **Exclusão**: Sistema anonimiza dados pessoais, mantém registros clínicos (`lgpd:anonymize`) → **Portabilidade**: Exporta dados em formato estruturado → **Revogação de consentimento**: Atualiza `consent_logs` → Auditoria registrada (usuário, data, IP, ação) → Resposta ao tutor em até 15 dias  
+**Fluxo Auditor:** Auditor acessa logs → Filtra por usuário/ação/entidade/período → Visualiza detalhes (IP, user agent, valores anteriores/novos) → [Gateway: retenção?] → Logs mantidos 5 anos → Logs de exclusão permanentes  
+**Pool Sistema:** Trilha de auditoria automática em todas as ações create/update/delete
 
-#### X4.18 — Notificação (23)
+#### X4.18 — Notificações (23)
 **Arquivo:** `23-fluxo-notificacao.svg`  
-**Lanes:** Sistema, Tutor  
-**Fluxo:** Evento dispara (consulta, vacina, aniversário, campanha) → Verificar preferências do tutor → [Gateway: canal?] → WhatsApp (prioritário) → SMS (fallback) → E-mail → Registrar em CommunicationQueue → Processar → Log de entrega
+**Pools:** Sistema, Tutor  
+**Lanes (Sistema):** Sistema, CommunicationQueue  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Evento de negócio dispara (consulta agendada, vacina próxima, aniversário pet, campanha recall, resultado exame) → Sistema verifica **preferências do tutor** (T10: canais ativos) → [Gateway: tutor optou por notificações?] → Sim → [Gateway: hierarquia de canais?] → 1º **WhatsApp** (Z-API) → 2º **SMS** (fallback) → 3º **E-mail** → Registra em `CommunicationQueue` → Comando `queue:process` envia → Log de entrega (`notification_logs`) → [Falhou?] → 3 tentativas → Desativa canal temporariamente → [Sucesso?] → Log de sucesso  
+**Pool Tutor:** Tutor recebe notificação no canal escolhido → Pode confirmar/reagendar (agendamento) ou silenciar
 
 #### X4.19 — Chat (24)
 **Arquivo:** `24-fluxo-chat.svg`  
-**Lanes:** Tutor, Clínica  
-**Fluxo:** Tutor envia mensagem → Sistema notifica clínica → Funcionário visualiza → Responde → Tutor recebe → [Gateway: anexo?] → Validar tamanho (10MB max) → Anexar
+**Pools:** Clínica, Tutor  
+**Lanes (Clínica):** Funcionário (Veterinário/Recepcionista/etc.), Sistema  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Tutor acessa Portal → Abre Chat → [Gateway: anexo?] → Sim → Validar tamanho (máx 10MB) → Anexar imagem/PDF → Envia mensagem → Sistema persiste em `chat_messages` → Badge de não lido aparece na sidebar da clínica → Funcionário abre conversa → Visualiza mensagem + anexo → Badge atualizado → Digita resposta → Envia → Sistema persiste → **Tutor recebe notificação** (push/WhatsApp) → Tutor visualiza resposta  
+**Eventos:** Intermediário (nova mensagem → notificação em tempo real)  
+**Pool Sistema:** Histórico mantido por 90 dias
 
-#### X4.20 — Auto-Update (25)
+#### X4.20 — Auto-Update e Configurações (25)
 **Arquivo:** `25-fluxo-autoupdate.svg`  
-**Lanes:** Admin, Sistema, GitHub  
-**Fluxo:** Admin clica "Verificar Atualizações" → Sistema consulta GitHub → [Gateway: atualização disponível?] → Sim → Admin clica "Aplicar" → `php artisan down` → `git pull` → `php artisan migrate` → Limpa cache → `php artisan up` → Log
+**Pools:** Admin, Sistema, GitHub  
+**Lanes (Admin):** Super-Admin, Admin  
+**Lanes (Sistema):** Sistema  
+**Fluxo:** Admin acessa Configurações > Atualização do Sistema → Configura token GitHub + repositório + branch → Clica "Verificar Atualizações" → Sistema faz `git ls-remote` → Compara hash local vs remoto → [Gateway: atualização disponível?] → Sim → Exibe changelog → Admin clica "Aplicar Atualização" → **Fluxo atômico:** `php artisan down` → `git pull https://token@github.com/...` → `php artisan migrate --force` → Limpa cache (config, route, view) → `php artisan up` → Registra histórico (data, versão, status) → [Gateway: merge conflict?] → Aborta, restaura backup, exibe erro
 
 #### X4.21 — Emergência (26)
 **Arquivo:** `26-fluxo-emergencia.svg`  
-**Lanes:** Veterinário, Sistema  
-**Fluxo:** Pet chega em emergência → Buscar protocolo por espécie + gravidade → Abrir protocolo → Seguir procedimentos → Registrar no prontuário
+**Pools:** Clínica, Tutor  
+**Lanes (Clínica):** Veterinário, Sistema  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Pet chega em emergência → **Tutor autoriza atendimento** → Veterinário busca protocolo → Filtra por espécie + categoria (trauma/toxicose/parada/convulsão) + gravidade → Seleciona protocolo → Visualiza passo a passo + medicações com dose por espécie + materiais necessários → Segue procedimentos → **Registra ocorrência no prontuário** → [Gateway: internar?] → Sim → Fluxo Internação → **Tutor notificado do status**
 
-#### X4.22 — Triagem (28)
+#### X4.22 — Triagem Manchester (28)
 **Arquivo:** `28-fluxo-triagem.svg`  
-**Lanes:** Recepcionista, Veterinário, Sistema  
-**Fluxo:** Pet chega → Registrar triagem (queixa, sinais vitais) → Classificar Manchester (cor) → [Gateway: cor?] → Vermelho: alerta sonoro + atendimento imediato → Laranja/Amarelo: fila + tempo espera → Verde/Azul: aguardar → [Gateway: tempo máximo?] → Escalar prioridade → [Gateway: protocolo relevante?] → Sugerir protocolo → Atendimento → Finalizar triagem  
-**Evento Temporizador:** Polling a cada 5s para atualização
+**Pools:** Clínica, Tutor  
+**Lanes (Clínica):** Recepcionista, Veterinário, Sistema  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** **Tutor chega com pet** → Recepcionista abre Nova Triagem → Registra queixa principal + sinais vitais (temp, FC, FR, SpO2, pressão) → **Classifica Manchester (cor):**  
+  → 🔴 **Vermelho** (risco iminente): Atendimento imediato + **alerta sonoro** no painel  
+  → 🟠 **Laranja** (muito urgente): Até 10 min  
+  → 🟡 **Amarelo** (urgente): Até 30 min  
+  → 🟢 **Verde** (pouco urgente): Até 60 min  
+  → 🔵 **Azul** (não urgente): Até 120 min  
+→ [Gateway: tempo máximo excedido?] → Escalar prioridade automaticamente → [Gateway: protocolo de emergência relevante?] → Sugerir → Veterinário realiza atendimento → [Gateway: concluído?] → Finaliza triagem → **Registra na timeline do pet**  
+**Eventos:** Temporizador (polling a cada 5s atualiza painel Livewire), Intermediário (alerta vermelho)
 
-#### X4.23 — Hospedagem (29)
+#### X4.23 — Hospedagem/Boarding (29)
 **Arquivo:** `29-fluxo-hospedagem.svg`  
-**Lanes:** Recepcionista, Veterinário, Sistema  
-**Fluxo:** Check-in → Verificar vacinas → [OK?] → Alocar acomodação → [Gateway: banho/tosa?] → Agendar grooming → Tarefas diárias (alimentação, medicação, passeio) → [Gateway: intercorrência?] → Notificar veterinário → Check-out → Gerar fatura
+**Pools:** Clínica, Tutor  
+**Lanes (Clínica):** Recepcionista, Veterinário, Sistema  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** **Tutor solicita hospedagem** → Recepcionista faz check-in → [Gateway: vacinas em dia?] → Verificação automática → [OK?] → Sim → **Tutor assina termo de responsabilidade** → Aloca acomodação (canil/gatil/VIP/enfermaria) → [Gateway: banho e tosa agendado?] → Sim → Agenda grooming → **Ciclo diário de tarefas:** Alimentação → Medicação → Passeio → Limpeza → [Gateway: intercorrência?] → **Notificar veterinário imediatamente** → Tutor notificado → [Gateway: check-out?] → Calcula diárias (completa até 12h, meia após 12h) → Gera fatura → **Tutor paga e retira pet**  
+**Eventos:** Temporizador (tarefa não concluída → alerta), Intermediário (intercorrência → notificação tutor)
 
 #### X4.24 — Odontologia (30)
 **Arquivo:** `30-fluxo-odontologia.svg`  
-**Lanes:** Veterinário, Sistema  
-**Fluxo:** Abrir odontograma → [Gateway: dente afetado?] → Registrar condição (tártaro, fratura, ausente) → [Procedimento?] → Limpeza/Extração/Restauração → Raio-X pré-extração?] → Obrigatório → Laudo → Prescrição pós-operatória
+**Pools:** Clínica, Tutor  
+**Lanes (Clínica):** Veterinário (odontologista), Sistema  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Veterinário abre ficha odontológica do pet → **Odontograma** exibe todos os dentes coloridos por condição → [Gateway: clica em dente?] → Registra condição (sadio/tártaro/fratura/mobilidade/ausente) → [Gateway: procedimento necessário?] → **Gateway Paralelo:**  
+  → **Limpeza (profilaxia)**: Raspagem, escovação  
+  → **Extração**: Exige raio-X intraoral OBRIGATÓRIO → Laudo radiológico  
+  → **Restauração/Canal**: Técnica específica  
+  → **Gengivectomia**: Procedimento periodontal  
+→ **Tutor autoriza procedimento** → Realiza → Prescrição pós-operatória (analgésico, antibiótico, higiene oral) → Agenda retorno → Registra na timeline
 
 #### X4.25 — Zoonoses (31)
 **Arquivo:** `31-fluxo-zoonoses.svg`  
-**Lanes:** Veterinário, Sistema, Vigilância Sanitária  
-**Fluxo:** Diagnosticar zoonose → [Gateway: notificação compulsória?] → Raiva: imediata (24h) → Leptospirose: 24h → Leishmaniose: semanal → Gerar formulário oficial → Notificar órgão → Registrar protocolo → Relatório epidemiológico
+**Pools:** Clínica, Vigilância Sanitária, Tutor  
+**Lanes (Clínica):** Veterinário, Sistema  
+**Lanes (Tutor):** Tutor  
+**Fluxo:** Veterinário diagnostica zoonose (clínico/sorologia/PCR/cultura) → [Gateway: notificação compulsória?] → **Sim → Prazos legais:**  
+  → **Raiva**: **IMEDIATA (24h)** — alerta no sistema  
+  → **Leptospirose**: 24h  
+  → **Leishmaniose**: Semanal  
+  → **Brucelose**: Semanal  
+→ Gera formulário oficial de notificação → Envia ao órgão competente (SVO/Vigilância Sanitária) → Registra protocolo de notificação → **Tutor notificado do diagnóstico** → Medidas de controle (isolamento animal, vacinação contactantes) → **Tutor orientado e encaminhado para atendimento médico** (se exposto) → Relatório epidemiológico consolidado  
+**Pool Vigilância:** Órgão externo recebe notificação → Pode solicitar relatórios adicionais  
+**Fluxo Tutor:** Tutor é informado sobre riscos, medidas e necessidade de atendimento médico humano
+
+### X4.26 — Recursos Humanos (Processo Transversal)
+**Arquivo:** `rh-fluxo-admissao.svg`  
+**Referenciado em:** `resources/docs/technical-manual/index.md` (não no manual do usuário)  
+**Pools:** Clínica, RH  
+**Lanes:** RH, Admin/Branch-Admin, Sistema  
+**Fluxo:** RH cria departamento → Cria cargo/posição → Cadastra funcionário (nome, documento, CTPS, salário, data admissão, cargo, filial) → [Gateway: acesso ao sistema?] → Sim → Vincula usuário ao funcionário → Atribui role + permissões → Define escala (staff_schedules + on-call) → [Gateway: plantão?] → Configura escala de sobreaviso → Comando `staff:remind` envia lembretes
+
+### X4.27 — Relatórios (Transversal)
+**Arquivo:** `21-fluxo-relatorio.svg`  
+**Referenciado em:** `resources/docs/user-manual/21-relatorios.md`  
+**Pools:** Clínica  
+**Lanes:** Todos os perfis (conforme permissão), Sistema  
+**Fluxo:** Usuário acessa módulo de relatório → Seleciona tipo (clínico/estoque/financeiro/comissões) → Filtros (período, filial, profissional) → [Gateway: formato?] → **Tela**: visualiza na hora → **PDF**: gera e baixa → **Excel/CSV**: exporta → [Gateway: agendar envio?] → Configura recorrência → Sistema envia por e-mail na data agendada
+
+### X4.28 — Mobile (Transversal)
+**Arquivo:** `27-fluxo-mobile.svg`  
+**Referenciado em:** `resources/docs/user-manual/27-mobile.md`  
+**Pools:** Veterinário (em campo)  
+**Lanes:** Veterinário, Sistema, Tutor  
+**Fluxo:** Veterinário acessa `/m` no celular → [Gateway: ação desejada?] → **Agenda do dia**: visualiza consultas → **Pesquisa pet**: busca por nome/tutor → **Check-in**: confirma chegada → **Vacinação rápida**: registro simplificado → **Scanner**: lê código barras/QR → **Chat**: responde tutor → **Triagem**: visualiza fila
 
 ### X5 — Lightbox Modal para Diagramas
 
@@ -1402,18 +1534,19 @@ Cada arquivo `.md` no final da seção principal terá:
 *Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
 ```
 
-### X7 — Tasks de Implementação
+### X7 — Tasks de Implementação ✓
 
-| # | Task | Responsável | Artefatos |
-|---|------|------------|-----------|
-| 1 | Instalar/abrir Draw.io, criar diretório `resources/docs/diagrams/` | Dev | Diretório criado |
-| 2 | Criar `macro-fluxo-sistema.svg` — visão geral com todos os módulos | Dev | SVG |
-| 3 | Criar `matriz-perfis.svg` — RACI perfil × funcionalidade | Dev | SVG |
-| 4–30 | Criar 28 diagramas de processo (um por módulo, conforme X4) | Dev | 28 SVGs |
-| 31 | Adicionar lightbox JS em `resources/views/docs/index.blade.php` | Dev | Código JS |
-| 32 | Adicionar referência `![](diagrams/...)` + legenda no final de cada `.md` | Dev | 29 arquivos .md editados |
-| 33 | Publicar (`docs:publish`) e verificar renderização | Dev | Teste manual |
-| 34 | Verificar responsividade e zoom em mobile | Dev | Teste manual |
+| # | Task | Status | Artefatos |
+|---|------|--------|-----------|
+| 1 | Criar diretório `resources/docs/diagrams/` | ✅ | Diretório criado |
+| 2 | Criar `macro-fluxo-sistema.svg` — visão geral com todos os módulos | ✅ | `macro-fluxo-sistema.svg` |
+| 3 | Criar `matriz-perfis.svg` — RACI perfil × funcionalidade | ✅ | `matriz-perfis.svg` |
+| 4–32 | Criar 28 diagramas de processo + referências nos manuais | ✅ | 30 SVGs + 26 arquivos .md editados |
+| 31 | Adicionar lightbox JS em `resources/views/docs/index.blade.php` | ✅ | Código JS (commit anterior) |
+| 33 | Publicar (`docs:publish`) | ✅ | 72 arquivos publicados |
+| 34 | Verificar responsividade e zoom em mobile | ⬜ | Teste manual pendente |
+
+> **Nota:** Os SVGs foram gerados programaticamente com estrutura mxGraph (compatível com Draw.io). Para refinar o layout visual de qualquer diagrama, abra o arquivo `.svg` no Draw.io — ele reconhecerá os metadados e permitirá edição visual completa.
 
 ### X8 — Total de Diagramas
 
@@ -1421,8 +1554,8 @@ Cada arquivo `.md` no final da seção principal terá:
 |------|:----------:|
 | Visão geral | 1 (macro-fluxo) |
 | Matriz perfis | 1 (RACI) |
-| Processos por módulo | 27 |
-| **Total** | **29 SVG** |
+| Processos por módulo (X4.3–X4.28) | 28 |
+| **Total** | **30 SVG** |
 
 ### X9 — Observações
 
