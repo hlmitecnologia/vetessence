@@ -149,6 +149,36 @@ Após rodar `php artisan migrate --seed`, os seguintes usuários estarão dispon
 
 ---
 
+## Requisitos de Hardware (Servidor de Demonstração)
+
+| Componente | Mínimo | Recomendado |
+|---|---|---|
+| **CPU** | 1 core (x86_64) | 2 cores |
+| **RAM** | 2 GB | 4 GB |
+| **Armazenamento** | 10 GB SSD | 20 GB SSD |
+| **SO** | Ubuntu 22.04+ / Debian 12+ | Ubuntu 24.04 LTS |
+
+### Stack Necessária
+
+- **PHP** 8.2+ (extensões: `bcmath`, `ctype`, `fileinfo`, `gd`, `intl`, `json`, `mbstring`, `openssl`, `PDO`, `pdo_mysql`, `tokenizer`, `xml`, `zip`, `curl`, `libxml`)
+- **Web Server**: Nginx (recomendado) ou Apache com `mod_rewrite`
+- **Banco**: MySQL 8.0+ ou MariaDB 10.6+
+- **Cache/Queue**: Redis (recomendado em produção; opcional em demo — `QUEUE_CONNECTION=sync` + `CACHE_DRIVER=file` funcionam)
+- **Node.js** 18+ (apenas para build de assets)
+
+### Estimativa de Recursos em Uso
+
+| Serviço | RAM (ocioso) | RAM (uso leve, 1–5 usuários) |
+|---|---|---|
+| Nginx + PHP-FPM (2 workers) | ~120 MB | ~300 MB |
+| MySQL / MariaDB | ~300 MB | ~600 MB |
+| Redis (opcional) | ~50 MB | ~100 MB |
+| **Total** | **~470 MB** | **~1 GB** |
+
+O código-fonte ocupa ~565 MB em disco. Para demonstração com poucos usuários simultâneos, **2 GB de RAM e 1 core são suficientes**.
+
+---
+
 ## Plano de Build
 
 O plano detalhado de construção, fases e status de cada módulo está em [PLAN.md](./PLAN.md).

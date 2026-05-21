@@ -68,6 +68,19 @@ tests/
 - **Convênios, Fornecedores, Produtos**: Globais
 - **Financeiro, Estoque, Agendamentos**: Escopados por filial
 
+### Requisitos de Hardware (Demonstração)
+
+| Componente | Mínimo | Recomendado |
+|---|---|---|
+| **CPU** | 1 core (x86_64) | 2 cores |
+| **RAM** | 2 GB | 4 GB |
+| **Armazenamento** | 10 GB SSD | 20 GB SSD |
+| **SO** | Ubuntu 22.04+ / Debian 12+ | Ubuntu 24.04 LTS |
+
+**Stack:** PHP 8.2+ (extensões: bcmath, ctype, fileinfo, gd, intl, json, mbstring, openssl, PDO, pdo_mysql, tokenizer, xml, zip, curl, libxml), Nginx, MySQL 8+ / MariaDB 10.6+, Redis (opcional em demo). Node.js 18+ apenas para build de assets.
+
+**Consumo estimado** (1–5 usuários simultâneos): ~1 GB RAM, ~565 MB de disco.
+
 ### CRUD Pattern (Phase V — Modal CRUD)
 CRUDs de Tier 1 e Tier 2 usam modais Bootstrap + Livewire form components:
 - `app/Livewire/{Entity}Form.php` — Livewire component com mount($id), validação, save()
