@@ -866,4 +866,3 @@ Route::post('api/insurance/webhook', 'App\Http\Controllers\InsuranceWebhookContr
     ->name('insurance.webhook')
     ->middleware('throttle:60,1');
 
-require __DIR__ . '/debug.php';
