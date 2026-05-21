@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Branch;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
@@ -38,6 +39,8 @@ class UserSeeder extends Seeder
             ['name' => 'Maria Tutor', 'email' => 'tutor@vet.com', 'password' => 'tutor123', 'role' => $tutorRole],
         ];
 
+        $defaultBranchId = Branch::where('is_main', true)->value('id');
+
         foreach ($users as $user) {
             User::firstOrCreate(
                 ['email' => $user['email']],
@@ -45,6 +48,7 @@ class UserSeeder extends Seeder
                     'name' => $user['name'],
                     'password' => Hash::make($user['password']),
                     'role_id' => $user['role']->id,
+                    'branch_id' => $defaultBranchId,
                     'is_active' => true,
                 ]
             );
