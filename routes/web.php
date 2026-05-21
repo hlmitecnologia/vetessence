@@ -853,9 +853,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('docs/{section}/{page}', 'App\Http\Controllers\DocController@show')->name('docs.page');
 
 
-    // Branding
-    Route::get('branding', 'App\Http\Controllers\BrandingController@index')->name('branding.index');
-    Route::put('branding', 'App\Http\Controllers\BrandingController@update')->name('branding.update');
+    // Branding / Personalização
+    Route::prefix('configuracoes')->group(function () {
+        Route::get('branding', 'App\Http\Controllers\BrandingController@index')->name('configuracoes.branding.index');
+        Route::put('branding', 'App\Http\Controllers\BrandingController@update')->name('configuracoes.branding.update');
+    });
 });
 
 // Digital signature verification (public, rate-limited)

@@ -10,12 +10,28 @@
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icheck-bootstrap@3/icheck-bootstrap.min.css">
+    <style>body { background: {{ branding('login_background', '#f3f4f6') }} !important; }</style>
     @stack('styles')
 </head>
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-            <a href="/"><b>{{ branding('clinic_name', 'VetEssence') }}</b></a>
+            @php
+                $logoUrl = branding_logo_url();
+                $hasLogo = $logoUrl && !str_contains($logoUrl, 'logo-default.png');
+                $showName = branding('show_clinic_name', '1') === '1';
+                $pos = branding('clinic_name_position', 'right');
+            @endphp
+            <a href="/" class="d-flex align-items-center justify-content-center" style="gap:0.5rem">
+                @if($hasLogo)
+                    <img src="{{ $logoUrl }}" width="60" alt="Logo">
+                @else
+                    <i class="fas fa-paw fa-2x"></i>
+                @endif
+                @if($showName)
+                    <b>{{ branding('clinic_name', 'VetEssence') }}</b>
+                @endif
+            </a>
         </div>
         <div class="card">
             <div class="card-body login-card-body">

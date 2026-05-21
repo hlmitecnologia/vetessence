@@ -10,23 +10,27 @@ class BrandingController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:branding');
+        $this->middleware('can:configuracoes.branding');
     }
 
     public function index()
     {
-        return view('branding.index');
+        return view('configuracoes.branding.index');
     }
 
     public function update(Request $request)
     {
         $request->validate([
-            'clinic_name'  => 'nullable|string|max:255',
-            'primary_color' => 'nullable|regex:/^#[a-fA-F0-9]{6}$/',
-            'logo'         => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
-            'favicon'      => 'nullable|image|mimes:png,ico|max:1024',
-            'remove_logo'  => 'nullable|boolean',
-            'remove_favicon' => 'nullable|boolean',
+            'clinic_name'           => 'nullable|string|max:255',
+            'primary_color'         => 'nullable|regex:/^#[a-fA-F0-9]{6}$/',
+            'logo'                  => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
+            'favicon'               => 'nullable|image|mimes:png,ico|max:1024',
+            'remove_logo'           => 'nullable|boolean',
+            'remove_favicon'        => 'nullable|boolean',
+            'show_clinic_name'      => 'nullable|boolean',
+            'clinic_name_position'  => 'nullable|in:above,below,left,right',
+            'login_background'      => 'nullable|regex:/^#[a-fA-F0-9]{6}$/',
+            'sidebar_logo_width'    => 'nullable|integer|min:20|max:200',
         ]);
 
         if ($request->filled('clinic_name')) {
@@ -35,6 +39,20 @@ class BrandingController extends Controller
 
         if ($request->filled('primary_color')) {
             Setting::set('branding.primary_color', $request->primary_color);
+        }
+
+        Setting::set('branding.show_clinic_name', $request->boolean('show_clinic_name') ? '1' : '0');
+
+        if ($request->filled('clinic_name_position')) {
+            Setting::set('branding.clinic_name_position', $request->clinic_name_position);
+        }
+
+        if ($request->filled('login_background')) {
+            Setting::set('branding.login_background', $request->login_background);
+        }
+
+        if ($request->filled('sidebar_logo_width')) {
+            Setting::set('branding.sidebar_logo_width', $request->sidebar_logo_width);
         }
 
         if ($request->boolean('remove_logo')) {
@@ -59,8 +77,8 @@ class BrandingController extends Controller
             Setting::set('branding.favicon_path', $path);
         }
 
-        return redirect()->route('branding.index')
-            ->with('success', 'Identidade visual atualizada com sucesso.');
+        return redirect()->route('configuracoes.branding.index')
+            ->with('success', 'Personalização atualizada com sucesso.');
     }
 
     private function deleteBrandingFile(string $key): void

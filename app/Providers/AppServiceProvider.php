@@ -99,7 +99,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('emergency-protocols.delete', fn($user) => $user->hasPermissionTo('emergency-protocols.delete'));
         Gate::define('corporate-dashboard.view', fn($user) => $user->hasPermissionTo('corporate-dashboard.view'));
         Gate::define('system-update', fn($user) => $user->hasPermissionTo('system-update'));
-        Gate::define('branding', fn($user) => $user->hasPermissionTo('branding'));
+        Gate::define('configuracoes.branding', fn($user) => $user->hasPermissionTo('configuracoes.branding'));
         Gate::define('docs.view', fn($user) => $user->hasPermissionTo('docs.view'));
 
         // Equipamentos

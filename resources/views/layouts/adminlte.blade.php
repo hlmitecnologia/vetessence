@@ -55,8 +55,22 @@
 
         <!-- Sidebar -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="{{ route('dashboard') }}" class="brand-link">
-                <span class="brand-text font-weight-light"><strong>Vet</strong>Essence</span>
+            @php
+                $logoUrl = branding_logo_url();
+                $hasLogo = $logoUrl && !str_contains($logoUrl, 'logo-default.png');
+                $showName = branding('show_clinic_name', '1') === '1';
+                $pos = branding('clinic_name_position', 'right');
+                $logoW = branding('sidebar_logo_width', 40);
+            @endphp
+            <a href="{{ route('dashboard') }}" class="brand-link d-flex align-items-center">
+                @if($hasLogo)
+                    <img src="{{ $logoUrl }}" width="{{ $logoW }}" alt="Logo" class="brand-image img-circle">
+                @else
+                    <i class="fas fa-paw brand-image"></i>
+                @endif
+                @if($showName)
+                    <span class="brand-text font-weight-light ml-2">{{ branding('clinic_name', 'VetEssence') }}</span>
+                @endif
             </a>
             <div class="sidebar">
                 <nav class="mt-2">
@@ -529,7 +543,7 @@
                         <!-- ADMINISTRAÇÃO -->
                         @can('admin')
                         <li class="nav-header"><i class="fas fa-cog"></i> ADMINISTRAÇÃO</li>
-                        <li class="nav-item has-treeview {{ request()->routeIs('users.*') || request()->routeIs('roles.*') || request()->routeIs('services.*') || request()->routeIs('categories.*') || request()->routeIs('consent-templates.*') || request()->routeIs('communication-templates.*') || request()->routeIs('communication-queues.*') || request()->routeIs('branches.*') || request()->routeIs('departments.*') || request()->routeIs('positions.*') || request()->routeIs('employees.*') ? 'menu-open' : '' }}">
+                        <li class="nav-item has-treeview {{ request()->routeIs('users.*') || request()->routeIs('roles.*') || request()->routeIs('services.*') || request()->routeIs('categories.*') || request()->routeIs('consent-templates.*') || request()->routeIs('communication-templates.*') || request()->routeIs('communication-queues.*') || request()->routeIs('branches.*') || request()->routeIs('departments.*') || request()->routeIs('positions.*') || request()->routeIs('employees.*') || request()->routeIs('configuracoes.branding.*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-shield-alt"></i>
                                 <p>Configurações <i class="right fas fa-angle-left"></i></p>
@@ -614,6 +628,14 @@
                                     <a href="{{ route('system-update.index') }}" class="nav-link {{ request()->routeIs('system-update.*') ? 'active' : '' }}">
                                         <i class="fas fa-sync-alt nav-icon"></i>
                                         <p>Atualizar Sistema</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('configuracoes.branding')
+                                <li class="nav-item">
+                                    <a href="{{ route('configuracoes.branding.index') }}" class="nav-link {{ request()->routeIs('configuracoes.branding.*') ? 'active' : '' }}">
+                                        <i class="fas fa-paint-brush nav-icon"></i>
+                                        <p>Personalização</p>
                                     </a>
                                 </li>
                                 @endcan

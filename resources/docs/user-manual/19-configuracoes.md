@@ -130,21 +130,36 @@ As integrações são configuradas via **arquivo `.env`** na raiz do sistema (ac
 **Uso**: Recebimento automático de resultados de exames via webhook `POST /api/v1/lab-equipment/{id}/receive`.
 **Status**: Consulta via `GET /api/v1/lab-equipment/{id}/status`.
 
-## Personalização (Rebranding U2)
+## Personalização
 
 ### Identidade Visual
-1. Acesse **Configurações > Identidade Visual**
+1. Acesse **Configurações > Personalização** (Super Admin apenas)
 2. Configure:
-   - **Nome da clínica** (exibido no título, sidebar e documentos)
-   - **Cor primária** (usada na sidebar e botões principais)
-   - **Logotipo** (upload PNG, JPG ou SVG — salvo em `storage/app/public/branding/`)
-   - **Favicon** (ícone da aba do navegador)
+
+   **Geral:**
+   - **Nome da clínica** — exibido no título, sidebar, navbar e documentos
+   - **Logotipo** — upload PNG, JPG ou SVG (salvo em `storage/app/public/branding/`)
+   - **Favicon** — ícone da aba do navegador
+
+   **Exibição do Nome:**
+   - **Exibir nome** — ativar/desativar exibição do nome ao lado do logo
+   - **Posição** — escolher entre: acima, abaixo, esquerda ou direita do logo
+   - A posição se aplica à sidebar, navbar AdminLTE e tela de login
+
+   **Cores:**
+   - **Cor primária** — usada na sidebar, botões e elementos principais
+   - **Fundo do login** — cor de fundo da tela de login (AdminLTE e Portal)
+
+   **Ajustes:**
+   - **Largura do logo no sidebar** — em pixels (20–200)
+
 3. A personalização afeta:
-   - Sidebar (cor de fundo)
-   - Título do sistema (brand-text)
-   - Tela de login
+   - Sidebar (cor de fundo, logo + nome com posição configurável)
+   - Navbar AdminLTE (brand link)
+   - Tela de login AdminLTE (logo, nome, fundo)
+   - Tela de login do Portal do Tutor (logo, nome, fundo, cor primária)
    - Cabeçalhos de documentos (PDF)
-4. Permissão necessária: `branding` (admin only)
+4. Permissão necessária: `configuracoes.branding` (Super Admin apenas)
 
 ### Impressão
 - **Header**: Texto exibido no topo dos documentos

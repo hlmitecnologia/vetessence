@@ -143,7 +143,7 @@ class PermissionSeeder extends Seeder
             'system-update',
 
             // Branding
-            'branding',
+            'configuracoes.branding',
 
             // Documentation
             'docs.view',
@@ -162,9 +162,9 @@ class PermissionSeeder extends Seeder
         $rolePermissions = [
             'super-admin' => $permissions, // all
 
-            'branch-admin' => $permissions, // all within branch scope
+            'branch-admin' => array_values(array_diff($permissions, ['configuracoes.branding'])),
 
-            'admin' => $permissions,
+            'admin' => array_values(array_diff($permissions, ['configuracoes.branding'])),
 
             'veterinario' => [
                 'tutors.view', 'tutors.create', 'tutors.edit',

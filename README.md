@@ -91,7 +91,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 - **Modelos de Comunicação** — Mensagens pré-definidas por canal
 - **Backup** — Backup automatizado com retenção configurável
 - **Auto-Update** — Atualização do sistema via GitHub diretamente do painel admin (git pull + migrate)
-- **Rebranding** — Personalização de logo, cores, nome da clínica
+- **Rebranding** — Personalização de logo, cores, nome da clínica, posição do nome, fundo do login
 - **Dashboard Corporativo** — Indicadores consolidados de todas as filiais (faturamento, agendamentos, ocupação)
 
 ---

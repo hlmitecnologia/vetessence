@@ -1555,7 +1555,64 @@ Cada arquivo `.md` no final da seção principal terá:
 | Processos por módulo (X4.3–X4.28) | 28 |
 | **Total** | **30 SVG** |
 
-### X9 — Observações
+### X9 — Personalização / Branding (Configurações > Super Admin)
+
+Página única em **Configurações > Personalização**, acessível apenas por **Super Admin**, que centraliza todas as configurações de identidade visual do sistema.
+
+#### Chaves no banco (`settings`)
+
+| Chave | Tipo | Default | Descrição |
+|---|---|---|---|
+| `branding.clinic_name` | string | `VetEssence` | Nome da clínica |
+| `branding.primary_color` | hex | `#4f46e5` | Cor primária |
+| `branding.logo_path` | string | null | Caminho do logo |
+| `branding.favicon_path` | string | null | Favicon |
+| `branding.show_clinic_name` | boolean | `true` | Exibir nome ao lado do logo |
+| `branding.clinic_name_position` | enum | `right` | Posição: `above`, `below`, `left`, `right` |
+| `branding.login_background` | hex | `#f3f4f6` | Cor de fundo da tela de login |
+| `branding.sidebar_logo_width` | integer | `40` | Largura do logo no sidebar (px) |
+
+#### Permissão
+
+- `configuracoes.branding` — atribuída **apenas** ao Super Administrador
+
+#### Rotas
+
+```
+GET    /configuracoes/branding       → configuracoes.branding.index
+PUT    /configuracoes/branding       → configuracoes.branding.update
+```
+
+#### View — Seções do formulário
+
+1. **Geral**: nome da clínica, logo (upload + preview + remover), favicon (upload + preview + remover)
+2. **Exibição do Nome**: checkbox "Exibir nome", radio group de posição (`above`, `below`, `left`, `right`), preview em tempo real
+3. **Cores**: cor primária (color picker), fundo do login (color picker), preview do botão e link
+4. **Ajustes**: largura do logo no sidebar (px)
+
+#### Onde o logo e nome aparecem
+
+- **Sidebar (sidebar.blade.php)**: exibe logo + nome conforme posição configurada
+- **Sidebar AdminLTE (adminlte.blade.php)**: brand link substitui `<strong>Vet</strong>Essence` hardcoded pelo logo + nome
+- **Login AdminLTE (auth.blade.php)**: logo + nome, fundo personalizado
+- **Login Portal (portal/auth/login.blade.php)**: usa branding em vez de hardcoded
+
+#### Arquivos modificados
+
+| Arquivo | Mudança |
+|---|---|
+| `database/seeders/PermissionSeeder.php` | Adiciona `configuracoes.branding` |
+| `app/Providers/AppServiceProvider.php` | Adiciona Gate `configuracoes.branding` |
+| `routes/web.php` | Move rotas para `/configuracoes/branding` |
+| `app/Http/Controllers/BrandingController.php` | Troca middleware, adiciona novos campos na validação e save |
+| `resources/views/branding/index.blade.php` | Move para `configuracoes/branding/index.blade.php`, adiciona novos campos |
+| `resources/views/layouts/sidebar.blade.php` | Atualiza rota, exibe logo + nome com posição configurável |
+| `resources/views/layouts/adminlte.blade.php` | Adiciona link "Personalização", substitui brand link hardcoded |
+| `resources/views/layouts/auth.blade.php` | Exibe logo + nome, fundo personalizado |
+| `resources/views/portal/auth/login.blade.php` | Usa branding |
+| `app/helpers.php` | Adiciona helper `branding_logo_position_class()` se necessário |
+
+### X10 — Observações
 
 - SVGs são vetoriais — não perdem qualidade com zoom, ocupam pouco espaço, e são texto XML puro (diff friendly)
 - Draw.io salva no formato `.drawio.svg` (SVG puro com metadados editáveis) — permite reabrir e editar no Draw.io

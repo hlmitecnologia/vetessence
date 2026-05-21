@@ -8,10 +8,30 @@
          class="fixed inset-y-0 left-0 z-40 w-64 bg-gray-900 transform transition-transform duration-300 lg:translate-x-0 lg:static lg:inset-0">
     
     <!-- Logo -->
+    @php
+        $logoUrl = branding_logo_url();
+        $hasLogo = $logoUrl && !str_contains($logoUrl, 'logo-default.png');
+        $showName = branding('show_clinic_name', '1') === '1';
+        $pos = branding('clinic_name_position', 'right');
+        $logoW = branding('sidebar_logo_width', 40);
+        $flexClass = match ($pos) {
+            'above' => 'flex-col',
+            'below' => 'flex-col-reverse',
+            'left' => 'flex-row-reverse',
+            'right' => 'flex-row',
+            default => 'flex-row',
+        };
+    @endphp
     <div class="flex items-center justify-center h-16" style="background: {{ branding('primary_color', '#4f46e5') }};">
-        <div class="text-center">
-            <i class="fas fa-paw text-2xl text-white"></i>
-            <span class="ml-2 text-xl font-bold text-white">{{ branding('clinic_name', 'VetEssence') }}</span>
+        <div class="flex {{ $flexClass }} items-center justify-center text-center">
+            @if($hasLogo)
+                <img src="{{ $logoUrl }}" width="{{ $logoW }}" class="inline-block" alt="Logo">
+            @else
+                <i class="fas fa-paw text-2xl text-white"></i>
+            @endif
+            @if($showName)
+                <span class="text-xl font-bold text-white">{{ branding('clinic_name', 'VetEssence') }}</span>
+            @endif
         </div>
     </div>
 
@@ -318,9 +338,9 @@
                     <i class="fas fa-sync-alt w-5 mr-2"></i> Atualizar Sistema
                 </a>
                 @endcan
-                @can('branding')
-                <a href="{{ route('branding.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
-                    <i class="fas fa-paint-brush w-5 mr-2"></i> Identidade Visual
+                @can('configuracoes.branding')
+                <a href="{{ route('configuracoes.branding.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-paint-brush w-5 mr-2"></i> Personalização
                 </a>
                 @endcan
 
