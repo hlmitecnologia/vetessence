@@ -68,18 +68,33 @@ tests/
 - **Convênios, Fornecedores, Produtos**: Globais
 - **Financeiro, Estoque, Agendamentos**: Escopados por filial
 
-### Requisitos de Hardware (Demonstração)
+### Requisitos de Hardware
+
+#### Demonstração (1–5 usuários)
 
 | Componente | Mínimo | Recomendado |
 |---|---|---|
-| **CPU** | 1 core (x86_64) | 2 cores |
+| **CPU** | 1 core | 2 cores |
 | **RAM** | 2 GB | 4 GB |
 | **Armazenamento** | 10 GB SSD | 20 GB SSD |
-| **SO** | Ubuntu 22.04+ / Debian 12+ | Ubuntu 24.04 LTS |
 
-**Stack:** PHP 8.2+ (extensões: bcmath, ctype, fileinfo, gd, intl, json, mbstring, openssl, PDO, pdo_mysql, tokenizer, xml, zip, curl, libxml), Nginx, MySQL 8+ / MariaDB 10.6+, Redis (opcional em demo). Node.js 18+ apenas para build de assets.
+**Stack:** PHP 8.2+, Nginx, MySQL 8+ / MariaDB 10.6+, Redis opcional. Consumo ~1 GB RAM.
 
-**Consumo estimado** (1–5 usuários simultâneos): ~1 GB RAM, ~565 MB de disco.
+#### Produção (50–200 usuários)
+
+Arquitetura com **2 servidores** separando aplicação e banco:
+
+| Componente | Aplicação | Banco de Dados |
+|---|---|---|
+| **CPU** | 4 cores | 4–8 cores |
+| **RAM** | 8 GB | 16 GB |
+| **Armazenamento** | 50 GB SSD | 100 GB SSD |
+
+**Stack obrigatória:** PHP-FPM (8–16 workers), Nginx, MySQL 8+ dedicado (`innodb_buffer_pool_size` 70–80% da RAM), Redis (filas + cache + sessões), Supervisor (2–4 workers `queue:work`), backups diários, fail2ban, Certbot TLS.
+
+**Consumo (app):** ~2 GB RAM. **Consumo (banco):** ~10 GB RAM.
+
+> Para alta disponibilidade: balanceador + 2+ servidores app + réplica MySQL.
 
 ### CRUD Pattern (Phase V — Modal CRUD)
 CRUDs de Tier 1 e Tier 2 usam modais Bootstrap + Livewire form components:

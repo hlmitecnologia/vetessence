@@ -149,7 +149,9 @@ Após rodar `php artisan migrate --seed`, os seguintes usuários estarão dispon
 
 ---
 
-## Requisitos de Hardware (Servidor de Demonstração)
+## Requisitos de Hardware
+
+### Servidor de Demonstração (1–5 usuários simultâneos)
 
 | Componente | Mínimo | Recomendado |
 |---|---|---|
@@ -158,24 +160,45 @@ Após rodar `php artisan migrate --seed`, os seguintes usuários estarão dispon
 | **Armazenamento** | 10 GB SSD | 20 GB SSD |
 | **SO** | Ubuntu 22.04+ / Debian 12+ | Ubuntu 24.04 LTS |
 
-### Stack Necessária
+**Stack:** PHP 8.2+, Nginx, MySQL 8+ / MariaDB 10.6+, Redis opcional (`QUEUE_CONNECTION=sync` + `CACHE_DRIVER=file` funcionam).
 
-- **PHP** 8.2+ (extensões: `bcmath`, `ctype`, `fileinfo`, `gd`, `intl`, `json`, `mbstring`, `openssl`, `PDO`, `pdo_mysql`, `tokenizer`, `xml`, `zip`, `curl`, `libxml`)
-- **Web Server**: Nginx (recomendado) ou Apache com `mod_rewrite`
-- **Banco**: MySQL 8.0+ ou MariaDB 10.6+
-- **Cache/Queue**: Redis (recomendado em produção; opcional em demo — `QUEUE_CONNECTION=sync` + `CACHE_DRIVER=file` funcionam)
-- **Node.js** 18+ (apenas para build de assets)
+**Consumo estimado:** ~470 MB ocioso, ~1 GB em uso. Código-fonte ~565 MB em disco.
 
-### Estimativa de Recursos em Uso
+### Produção (50–200 usuários simultâneos)
 
-| Serviço | RAM (ocioso) | RAM (uso leve, 1–5 usuários) |
+Para cenário real com filas, cache, sessões e backups, recomenda-se **arquitetura com 2 servidores** separando aplicação e banco:
+
+| Componente | Aplicação (Web + PHP-FPM + Redis) | Banco de Dados (MySQL / MariaDB) |
 |---|---|---|
-| Nginx + PHP-FPM (2 workers) | ~120 MB | ~300 MB |
-| MySQL / MariaDB | ~300 MB | ~600 MB |
-| Redis (opcional) | ~50 MB | ~100 MB |
-| **Total** | **~470 MB** | **~1 GB** |
+| **CPU** | 4 cores | 4–8 cores |
+| **RAM** | 8 GB | 16 GB (ajustar `innodb_buffer_pool_size` para 70–80%) |
+| **Armazenamento** | 50 GB SSD (sistema + logs + assets) | 100 GB SSD (dados + binlogs + backups) |
+| **SO** | Ubuntu 24.04 LTS | Ubuntu 24.04 LTS |
 
-O código-fonte ocupa ~565 MB em disco. Para demonstração com poucos usuários simultâneos, **2 GB de RAM e 1 core são suficientes**.
+**Stack de produção obrigatória:**
+- **PHP-FPM** — 8–16 workers (`pm.max_children` conforme RAM disponível)
+- **Nginx** — com micro-caching estático e compressão Brotli
+- **MySQL 8+** — dedicado, com `innodb_buffer_pool_size` configurado
+- **Redis** — obrigatório para filas (`QUEUE_CONNECTION=redis`), cache (`CACHE_DRIVER=redis`), sessões (`SESSION_DRIVER=redis`)
+- **Supervisor** — para gerenciar workers de fila (recomendar 2–4 workers `queue:work`)
+- **Backup** — snapshots diários do banco + storage (scripts Artisan ou cron)
+- **Fail2ban** — proteção para SSH e aplicação
+- **Certbot / Let's Encrypt** — TLS automático
+
+**Consumo estimado por serviço (produção):**
+
+| Serviço | RAM (carga moderada) |
+|---|---|
+| Nginx | ~50 MB |
+| PHP-FPM (12 workers × 40 MB) | ~480 MB |
+| MySQL (buffer pool 6–8 GB) | ~8 GB |
+| Redis (cache + filas + sessões) | ~1 GB |
+| Supervisor workers (4 × 60 MB) | ~240 MB |
+| SO + buffers | ~1 GB |
+| **Total (servidor app)** | **~2 GB** |
+| **Total (servidor banco)** | **~10 GB** |
+
+> **Nota:** Para ambientes com alta disponibilidade, adicionar um segundo servidor de aplicação atrás de um balanceador de carga (HAProxy / Nginx) e réplica do banco em failover.
 
 ---
 
