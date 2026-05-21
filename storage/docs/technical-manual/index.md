@@ -406,8 +406,7 @@ apt update && apt upgrade -y
 
 # Instalar dependências do sistema
 apt install -y nginx mysql-server-8.0 redis-server supervisor \
-  git curl wget unzip gnupg2 certbot python3-certbot-nginx \
-  fail2ban ufw
+  git curl wget unzip gnupg2 fail2ban ufw
 
 # PHP 8.4 (Ondrej PPA)
 add-apt-repository -y ppa:ondrej/php
@@ -676,10 +675,30 @@ supervisorctl start all
 
 #### 3.7. SSL com Let's Encrypt
 
+No **Ubuntu 22.04+**, instale o Certbot via **snap** (recomendado pela Let's Encrypt):
+
+```bash
+# Remover versão antiga via apt (se existir)
+apt remove -y certbot python3-certbot-nginx 2>/dev/null
+
+# Instalar via snap
+snap install certbot --classic
+
+# Garantir que o comando certbot está no PATH
+ln -sf /snap/bin/certbot /usr/bin/certbot
+```
+
+> **Alternativa via apt:** Caso prefira não usar snap, ative o repositório `universe` e instale `apt install -y certbot python3-certbot-nginx`. A versão via apt pode ser mais antiga, mas é funcional.
+
+Emitir certificado e configurar Nginx automaticamente:
+
 ```bash
 certbot --nginx -d seu-dominio.com --non-interactive --agree-tos -m admin@seu-dominio.com
+```
 
-# Renovação automática (systemd timer já vem configurado)
+Verificar renovação automática (o snap já configura o timer):
+
+```bash
 certbot renew --dry-run
 ```
 
