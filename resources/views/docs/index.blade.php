@@ -28,8 +28,8 @@
         <div class="col-md-9">
             <div class="card">
                 <div class="card-header">
-                    @if(request()->route()->getName() !== 'docs.index')
-                        <a href="{{ route('docs.index') }}" class="btn btn-sm btn-outline-secondary">
+                    @if(request()->route('page'))
+                        <a href="{{ route('docs.show', ['section' => request()->route('section')]) }}" class="btn btn-sm btn-outline-secondary">
                             <i class="fas fa-arrow-left"></i> Voltar ao índice
                         </a>
                     @endif
