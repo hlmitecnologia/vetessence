@@ -602,6 +602,14 @@
                                     </a>
                                 </li>
                                 @endcan
+                                @can('system-update')
+                                <li class="nav-item">
+                                    <a href="{{ route('system-update.index') }}" class="nav-link {{ request()->routeIs('system-update.*') ? 'active' : '' }}">
+                                        <i class="fas fa-sync-alt nav-icon"></i>
+                                        <p>Atualizar Sistema</p>
+                                    </a>
+                                </li>
+                                @endcan
                             </ul>
                         </li>
                         @endcan
