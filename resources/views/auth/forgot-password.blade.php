@@ -1,36 +1,43 @@
-<x-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
+@extends('layouts.guest', ['title' => 'Recuperar Senha'])
 
-        <div class="mb-4 text-sm text-gray-600">
-            {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+@section('content')
+    @if (session('status'))
+        <div class="alert alert-success">{{ session('status') }}</div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <p class="mb-3">Informe seu email cadastrado para receber o link de redefinição de senha.</p>
+
+    <form method="POST" action="{{ route('password.email') }}">
+        @csrf
+
+        <div class="input-group mb-3">
+            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                   placeholder="Email" value="{{ old('email') }}" required autofocus>
+            <div class="input-group-append">
+                <div class="input-group-text"><span class="fas fa-envelope"></span></div>
+            </div>
         </div>
 
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
-
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
-
-        <form method="POST" action="{{ route('password.email') }}">
-            @csrf
-
-            <!-- Email Address -->
-            <div>
-                <x-label for="email" :value="__('Email')" />
-
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-block">
+                    Enviar Link de Redefinição
+                </button>
             </div>
+        </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <x-button>
-                    {{ __('Email Password Reset Link') }}
-                </x-button>
-            </div>
-        </form>
-    </x-auth-card>
-</x-guest-layout>
+        <div class="text-center mt-3">
+            <a href="{{ route('login') }}">Voltar ao login</a>
+        </div>
+    </form>
+@endsection

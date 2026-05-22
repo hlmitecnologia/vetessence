@@ -1,48 +1,53 @@
-<x-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
+@extends('layouts.guest', ['title' => 'Redefinir Senha'])
 
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
+@section('content')
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-        <form method="POST" action="{{ route('password.update') }}">
-            @csrf
+    <p class="mb-3">Defina sua nova senha.</p>
 
-            <!-- Password Reset Token -->
-            <input type="hidden" name="token" value="{{ $request->route('token') }}">
+    <form method="POST" action="{{ route('password.update') }}">
+        @csrf
 
-            <!-- Email Address -->
-            <div>
-                <x-label for="email" :value="__('Email')" />
+        <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus />
+        <div class="input-group mb-3">
+            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                   placeholder="Email" value="{{ old('email', $request->email) }}" required autofocus readonly>
+            <div class="input-group-append">
+                <div class="input-group-text"><span class="fas fa-envelope"></span></div>
             </div>
+        </div>
 
-            <!-- Password -->
-            <div class="mt-4">
-                <x-label for="password" :value="__('Password')" />
-
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required />
+        <div class="input-group mb-3">
+            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
+                   placeholder="Nova senha" required>
+            <div class="input-group-append">
+                <div class="input-group-text"><span class="fas fa-lock"></span></div>
             </div>
+        </div>
 
-            <!-- Confirm Password -->
-            <div class="mt-4">
-                <x-label for="password_confirmation" :value="__('Confirm Password')" />
-
-                <x-input id="password_confirmation" class="block mt-1 w-full"
-                                    type="password"
-                                    name="password_confirmation" required />
+        <div class="input-group mb-3">
+            <input type="password" name="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror"
+                   placeholder="Confirmar nova senha" required>
+            <div class="input-group-append">
+                <div class="input-group-text"><span class="fas fa-lock"></span></div>
             </div>
+        </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <x-button>
-                    {{ __('Reset Password') }}
-                </x-button>
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-block">
+                    Redefinir Senha
+                </button>
             </div>
-        </form>
-    </x-auth-card>
-</x-guest-layout>
+        </div>
+    </form>
+@endsection
