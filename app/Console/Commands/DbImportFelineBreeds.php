@@ -4,33 +4,35 @@ namespace App\Console\Commands;
 
 use App\Models\BreedDefault;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class DbImportFelineBreeds extends Command
 {
-    protected $signature = 'db:import-feline-breeds';
-    protected $description = 'Import feline breeds from algcdb into breed_defaults';
+    protected $signature = 'db:import-feline-breeds
+        {--path= : Path to the feline breeds JSON file}';
+
+    protected $description = 'Import feline breeds into breed_defaults from a local JSON file';
 
     public function handle(): int
     {
-        if (!DB::connection('algcdb')->getDatabaseName()) {
-            $this->error('algcdb connection not available.');
+        $path = $this->option('path')
+            ?? database_path('data/feline_breeds.json');
+
+        if (!file_exists($path)) {
+            $this->error("File not found: {$path}");
             return Command::FAILURE;
         }
 
-        $rows = DB::connection('algcdb')
-            ->table('racas')
-            ->where('ativo', 1)
-            ->select('id', 'nomeraca')
-            ->orderBy('nomeraca')
-            ->get();
+        $names = json_decode(file_get_contents($path), true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->error('Invalid JSON: ' . json_last_error_msg());
+            return Command::FAILURE;
+        }
 
-        $bar = $this->output->createProgressBar($rows->count());
+        $bar = $this->output->createProgressBar(count($names));
         $bar->start();
 
         $imported = 0;
-        foreach ($rows as $row) {
-            $name = mb_convert_case(mb_strtolower(trim($row->nomeraca)), MB_CASE_TITLE, 'UTF-8');
+        foreach ($names as $name) {
             if (empty($name)) {
                 continue;
             }

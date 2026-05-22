@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 
 class ExtractVboBreeds extends Command
 {
@@ -141,8 +140,7 @@ class ExtractVboBreeds extends Command
 
         ksort($breedsBySpecies);
 
-        $outputPath = Storage::path('vbo/vbo_breeds.json');
-        Storage::makeDirectory('vbo');
+        $outputPath = database_path('data/vbo_breeds.json');
         file_put_contents($outputPath, json_encode($breedsBySpecies, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
         $total = 0;

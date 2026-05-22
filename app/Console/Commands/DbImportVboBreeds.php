@@ -15,7 +15,7 @@ class DbImportVboBreeds extends Command
     public function handle(): int
     {
         $path = $this->option('path')
-            ?? storage_path('app/vbo/vbo_breeds.json');
+            ?? database_path('data/vbo_breeds.json');
 
         if (!file_exists($path)) {
             $this->error("File not found: {$path}");
