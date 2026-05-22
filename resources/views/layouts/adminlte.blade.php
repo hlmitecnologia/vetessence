@@ -25,6 +25,32 @@
         .btn-secondary-custom:hover { filter: brightness(0.9); color: #fff; }
         .text-accent { color: var(--brand-accent, #d6c38d); }
         .badge-accent { background: var(--brand-accent, #d6c38d); color: #1a1a1a; }
+
+        .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:focus,
+        .btn-primary.disabled, .btn-primary:disabled,
+        .bg-primary, .badge-primary, .alert-primary,
+        .nav-pills .nav-link.active, .nav-pills .show > .nav-link,
+        .page-item.active .page-link,
+        .custom-control-input:checked ~ .custom-control-label::before,
+        .nav-tabs .nav-link.active {
+            background-color: var(--brand-primary, #455e36) !important;
+            border-color: var(--brand-primary, #455e36) !important;
+        }
+        .btn-outline-primary {
+            color: var(--brand-primary, #455e36) !important;
+            border-color: var(--brand-primary, #455e36) !important;
+        }
+        .btn-outline-primary:hover {
+            background-color: var(--brand-primary, #455e36) !important;
+            border-color: var(--brand-primary, #455e36) !important;
+            color: #fff !important;
+        }
+        .text-primary, a.text-primary:hover, a.text-primary:focus {
+            color: var(--brand-primary, #455e36) !important;
+        }
+        a {
+            color: var(--brand-primary, #455e36);
+        }
     </style>
     @stack('styles')
 </head>
