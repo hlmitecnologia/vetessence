@@ -32,6 +32,8 @@ class BrandingController extends Controller
             'login_background'      => 'nullable|regex:/^#[a-fA-F0-9]{6}$/',
             'sidebar_logo_width'    => 'nullable|integer|min:20|max:200',
             'sidebar_bg'            => 'nullable|regex:/^#[a-fA-F0-9]{6}$/',
+            'secondary_color'       => 'nullable|regex:/^#[a-fA-F0-9]{6}$/',
+            'accent_color'          => 'nullable|regex:/^#[a-fA-F0-9]{6}$/',
         ]);
 
         if ($request->filled('clinic_name')) {
@@ -58,6 +60,14 @@ class BrandingController extends Controller
 
         if ($request->filled('sidebar_bg')) {
             Setting::set('branding.sidebar_bg', $request->sidebar_bg);
+        }
+
+        if ($request->filled('secondary_color')) {
+            Setting::set('branding.secondary_color', $request->secondary_color);
+        }
+
+        if ($request->filled('accent_color')) {
+            Setting::set('branding.accent_color', $request->accent_color);
         }
 
         if ($request->boolean('remove_logo')) {

@@ -144,6 +144,28 @@
                             <small class="text-muted">Apenas se um tema escuro estiver ativo na sidebar.</small>
                         </div>
 
+                        <div class="form-group">
+                            <label>Cor Secundária</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" style="background: {{ branding('secondary_color', '#9aaa7e') }}; width: 38px;" id="secondaryColorPreview"></span>
+                                </div>
+                                <input type="color" name="secondary_color" class="form-control" value="{{ branding('secondary_color', '#9aaa7e') }}" style="padding: 2px;" id="secondaryColor">
+                            </div>
+                            <small class="text-muted">Usada em botões secundários e elementos de destaque.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Cor de Destaque (Accent)</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" style="background: {{ branding('accent_color', '#d6c38d') }}; width: 38px;" id="accentColorPreview"></span>
+                                </div>
+                                <input type="color" name="accent_color" class="form-control" value="{{ branding('accent_color', '#d6c38d') }}" style="padding: 2px;" id="accentColor">
+                            </div>
+                            <small class="text-muted">Usada em badges, tags e indicadores visuais.</small>
+                        </div>
+
                         <div class="border rounded p-3 bg-light mb-3">
                             <small class="text-muted d-block mb-2">Pré-visualização de cores:</small>
                             <button class="btn text-white mr-2" style="background: {{ branding('primary_color', '#455e36') }};" id="previewBtn">
@@ -225,6 +247,12 @@ document.getElementById('loginBg')?.addEventListener('input', function() {
 });
 document.getElementById('sidebarBg')?.addEventListener('input', function() {
     document.getElementById('sidebarBgPreview').style.background = this.value;
+});
+document.getElementById('secondaryColor')?.addEventListener('input', function() {
+    document.getElementById('secondaryColorPreview').style.background = this.value;
+});
+document.getElementById('accentColor')?.addEventListener('input', function() {
+    document.getElementById('accentColorPreview').style.background = this.value;
 });
 
 // Preview: logo width

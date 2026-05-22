@@ -37,7 +37,9 @@ if (!function_exists('branding_css_vars')) {
     {
         $primary = branding('primary_color', '#455e36');
         $sidebar = branding('sidebar_bg', '#051c12');
-        return ":root { --brand-primary: {$primary}; --brand-primary-rgb: " . hex_to_rgb($primary) . "; --sidebar-bg: {$sidebar}; }";
+        $secondary = branding('secondary_color', '#9aaa7e');
+        $accent = branding('accent_color', '#d6c38d');
+        return ":root { --brand-primary: {$primary}; --brand-primary-rgb: " . hex_to_rgb($primary) . "; --sidebar-bg: {$sidebar}; --brand-secondary: {$secondary}; --brand-accent: {$accent}; }";
     }
 }
 
