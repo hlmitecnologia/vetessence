@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\LabEquipmentIntegration;
 use App\Models\LabEquipmentResult;
 use Illuminate\Http\Request;
@@ -20,7 +21,8 @@ class LabEquipmentIntegrationController extends Controller
 
     public function create()
     {
-        return view('lab-equipment-integrations.create');
+        $branches = Branch::orderBy('name')->get();
+        return view('lab-equipment-integrations.create', compact('branches'));
     }
 
     public function store(Request $request)
@@ -34,6 +36,7 @@ class LabEquipmentIntegrationController extends Controller
             'ip_address' => 'nullable|string|max:45',
             'port' => 'nullable|integer|min:1|max:65535',
             'is_active' => 'boolean',
+            'branch_id' => 'nullable|exists:branches,id',
             'notes' => 'nullable|string',
         ]);
 
@@ -53,7 +56,8 @@ class LabEquipmentIntegrationController extends Controller
 
     public function edit(LabEquipmentIntegration $labEquipmentIntegration)
     {
-        return view('lab-equipment-integrations.edit', compact('labEquipmentIntegration'));
+        $branches = Branch::orderBy('name')->get();
+        return view('lab-equipment-integrations.edit', compact('labEquipmentIntegration', 'branches'));
     }
 
     public function update(Request $request, LabEquipmentIntegration $labEquipmentIntegration)
@@ -67,6 +71,7 @@ class LabEquipmentIntegrationController extends Controller
             'ip_address' => 'nullable|string|max:45',
             'port' => 'nullable|integer|min:1|max:65535',
             'is_active' => 'boolean',
+            'branch_id' => 'nullable|exists:branches,id',
             'notes' => 'nullable|string',
         ]);
 

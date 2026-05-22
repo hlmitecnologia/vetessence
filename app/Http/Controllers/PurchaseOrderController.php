@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
 use App\Models\Product;
@@ -32,9 +33,10 @@ class PurchaseOrderController extends Controller
 
     public function create()
     {
+        $branches = Branch::orderBy('name')->get();
         $suppliers = Supplier::where('is_active', true)->orderBy('name')->get();
         $products = Product::where('is_active', true)->orderBy('name')->get();
-        return view('purchase-orders.create', compact('suppliers', 'products'));
+        return view('purchase-orders.create', compact('branches', 'suppliers', 'products'));
     }
 
     public function store(Request $request)
@@ -42,6 +44,7 @@ class PurchaseOrderController extends Controller
         $data = $request->validate([
             'supplier_id' => 'required|exists:suppliers,id',
             'notes' => 'nullable|string',
+            'branch_id' => 'nullable|exists:branches,id',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|numeric|min:0.01',
@@ -57,6 +60,7 @@ class PurchaseOrderController extends Controller
             'status' => 'draft',
             'total' => $total,
             'notes' => $data['notes'] ?? null,
+            'branch_id' => $data['branch_id'] ?? null,
         ]);
 
         foreach ($data['items'] as $item) {
@@ -84,9 +88,10 @@ class PurchaseOrderController extends Controller
             return redirect()->route('purchase-orders.show', $purchaseOrder)
                 ->with('error', 'Apenas pedidos em rascunho podem ser editados.');
         }
+        $branches = Branch::orderBy('name')->get();
         $suppliers = Supplier::where('is_active', true)->orderBy('name')->get();
         $products = Product::where('is_active', true)->orderBy('name')->get();
-        return view('purchase-orders.edit', compact('purchaseOrder', 'suppliers', 'products'));
+        return view('purchase-orders.edit', compact('branches', 'purchaseOrder', 'suppliers', 'products'));
     }
 
     public function update(Request $request, PurchaseOrder $purchaseOrder)
@@ -99,6 +104,7 @@ class PurchaseOrderController extends Controller
         $data = $request->validate([
             'supplier_id' => 'required|exists:suppliers,id',
             'notes' => 'nullable|string',
+            'branch_id' => 'nullable|exists:branches,id',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|numeric|min:0.01',
@@ -111,6 +117,7 @@ class PurchaseOrderController extends Controller
             'supplier_id' => $data['supplier_id'],
             'total' => $total,
             'notes' => $data['notes'] ?? null,
+            'branch_id' => $data['branch_id'] ?? null,
         ]);
 
         $purchaseOrder->items()->delete();

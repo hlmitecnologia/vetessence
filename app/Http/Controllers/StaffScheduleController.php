@@ -75,6 +75,7 @@ class StaffScheduleController extends Controller
         ]);
 
         $data['is_on_call'] = $request->boolean('is_on_call');
+        $data['branch_id'] = \App\Services\BranchContext::hasBranch() ? \App\Services\BranchContext::get() : null;
 
         $conflict = $this->detectConflict($data['user_id'], $data['work_date'], $data['start_time'], $data['end_time'], $staffSchedule->id);
         if ($conflict) {

@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Branch;
 use App\Scopes\BranchScope;
+use App\Services\BranchContext;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait BranchScoped
@@ -11,6 +12,12 @@ trait BranchScoped
     public static function bootBranchScoped(): void
     {
         static::addGlobalScope(new BranchScope);
+
+        static::creating(function ($model) {
+            if ($model->branch_id === null && BranchContext::hasBranch()) {
+                $model->branch_id = BranchContext::get();
+            }
+        });
     }
 
     public function branch(): BelongsTo

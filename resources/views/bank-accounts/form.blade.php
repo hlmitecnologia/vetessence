@@ -42,6 +42,17 @@
                     </div>
 
                     <div class="form-group">
+                        <label>Unidade</label>
+                        <select name="branch_id" class="form-control @error('branch_id') is-invalid @enderror">
+                            <option value="">Selecione uma unidade</option>
+                            @foreach($branches as $branch)
+                                <option value="{{ $branch->id }}" @selected(old('branch_id', $bankAccount->branch_id ?? '') == $branch->id)>{{ $branch->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('branch_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="form-group">
                         <label>Descrição</label>
                         <textarea name="description" class="form-control" rows="2">{{ old('description', $bankAccount->description ?? '') }}</textarea>
                     </div>

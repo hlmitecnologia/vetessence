@@ -63,6 +63,16 @@
                 <label for="notes">Observações</label>
                 <textarea name="notes" rows="2" class="form-control">{{ old('notes', $paymentGateway->notes) }}</textarea>
             </div>
+            <div class="form-group">
+                <label for="branch_id">Unidade</label>
+                <select name="branch_id" class="form-control @error('branch_id') is-invalid @enderror">
+                    <option value="">Todas as unidades</option>
+                    @foreach($branches as $branch)
+                        <option value="{{ $branch->id }}" {{ old('branch_id', $paymentGateway->branch_id) == $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
+                    @endforeach
+                </select>
+                @error('branch_id')<span class="invalid-feedback">{{ $message }}</span>@enderror
+            </div>
         </div>
         <div class="card-footer">
             <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Atualizar</button>

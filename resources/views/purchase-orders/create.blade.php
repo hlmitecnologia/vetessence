@@ -15,6 +15,15 @@
                     </x-tom-select>
                 </div>
                 <div class="form-group">
+                    <label>Unidade</label>
+                    <x-tom-select name="branch_id" :value="old('branch_id')">
+                        <option value="">Todas as unidades</option>
+                        @foreach($branches as $b)
+                            <option value="{{ $b->id }}">{{ $b->name }}</option>
+                        @endforeach
+                    </x-tom-select>
+                </div>
+                <div class="form-group">
                     <label>Observações</label>
                     <textarea name="notes" class="form-control" rows="2"></textarea>
                 </div>

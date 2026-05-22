@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Branch;
 use App\Models\Supplier;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -19,6 +20,8 @@ class SupplierForm extends Component
     public $state = '';
     public $contact = '';
     public $notes = '';
+    public $branch_id = '';
+    public $branches = [];
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -31,7 +34,14 @@ class SupplierForm extends Component
         'state' => 'nullable|string|max:2',
         'contact' => 'nullable|string|max:100',
         'notes' => 'nullable|string',
+        'branch_id' => 'nullable|exists:branches,id',
     ];
+
+    public function mount($id = null)
+    {
+        $this->branches = Branch::orderBy('name')->get();
+        if ($id) $this->load($id);
+    }
 
     public function mount($id = null)
     {
@@ -53,6 +63,7 @@ class SupplierForm extends Component
         $this->state = $sup->state ?? '';
         $this->contact = $sup->contact ?? '';
         $this->notes = $sup->notes ?? '';
+        $this->branch_id = (string) ($sup->branch_id ?? '');
     }
 
     #[On('resetForm')]
@@ -69,6 +80,7 @@ class SupplierForm extends Component
         $this->state = '';
         $this->contact = '';
         $this->notes = '';
+        $this->branch_id = '';
         $this->resetValidation();
     }
 
@@ -90,6 +102,7 @@ class SupplierForm extends Component
             'state' => $this->state,
             'contact' => $this->contact,
             'notes' => $this->notes,
+            'branch_id' => $this->branch_id ?: null,
         ];
 
         if ($this->supplierId) {

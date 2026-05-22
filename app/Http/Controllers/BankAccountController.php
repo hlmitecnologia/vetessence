@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BankAccount;
+use App\Models\Branch;
 use Illuminate\Http\Request;
 
 class BankAccountController extends Controller
@@ -23,7 +24,8 @@ class BankAccountController extends Controller
 
     public function create()
     {
-        return view('bank-accounts.create');
+        $branches = Branch::orderBy('name')->get();
+        return view('bank-accounts.create', compact('branches'));
     }
 
     public function store(Request $request)
@@ -34,6 +36,7 @@ class BankAccountController extends Controller
             'account' => 'required|string|max:20',
             'account_type' => 'required|in:checking,savings',
             'description' => 'nullable|string|max:255',
+            'branch_id' => 'nullable|exists:branches,id',
             'is_active' => 'boolean',
         ]);
 
@@ -50,7 +53,8 @@ class BankAccountController extends Controller
 
     public function edit(BankAccount $bankAccount)
     {
-        return view('bank-accounts.edit', compact('bankAccount'));
+        $branches = Branch::orderBy('name')->get();
+        return view('bank-accounts.edit', compact('bankAccount', 'branches'));
     }
 
     public function update(Request $request, BankAccount $bankAccount)
@@ -61,6 +65,7 @@ class BankAccountController extends Controller
             'account' => 'required|string|max:20',
             'account_type' => 'required|in:checking,savings',
             'description' => 'nullable|string|max:255',
+            'branch_id' => 'nullable|exists:branches,id',
             'is_active' => 'boolean',
         ]);
 

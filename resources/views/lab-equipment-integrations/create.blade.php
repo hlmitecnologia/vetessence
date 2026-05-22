@@ -85,6 +85,16 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="branch_id">Unidade</label>
+                <select name="branch_id" class="form-control @error('branch_id') is-invalid @enderror">
+                    <option value="">Todas as unidades</option>
+                    @foreach($branches as $branch)
+                        <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
+                    @endforeach
+                </select>
+                @error('branch_id')<span class="invalid-feedback">{{ $message }}</span>@enderror
+            </div>
+            <div class="form-group">
                 <label for="notes">Observações</label>
                 <textarea name="notes" rows="2" class="form-control">{{ old('notes') }}</textarea>
             </div>

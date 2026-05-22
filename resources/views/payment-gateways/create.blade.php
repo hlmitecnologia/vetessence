@@ -63,6 +63,16 @@
                 <input type="url" name="webhook_url" class="form-control" value="{{ old('webhook_url') }}" placeholder="{{ url('/api/v1/payment/webhook') }}">
             </div>
             <div class="form-group">
+                <label for="branch_id">Unidade</label>
+                <select name="branch_id" class="form-control @error('branch_id') is-invalid @enderror">
+                    <option value="">Todas as unidades</option>
+                    @foreach($branches as $branch)
+                        <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
+                    @endforeach
+                </select>
+                @error('branch_id')<span class="invalid-feedback">{{ $message }}</span>@enderror
+            </div>
+            <div class="form-group">
                 <label for="config">Configuração Adicional (JSON)</label>
                 <textarea name="config" rows="3" class="form-control" placeholder='{"key": "value"}'></textarea>
             </div>

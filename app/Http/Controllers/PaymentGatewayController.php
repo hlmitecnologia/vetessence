@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\PaymentGateway;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,8 @@ class PaymentGatewayController extends Controller
 
     public function create()
     {
-        return view('payment-gateways.create');
+        $branches = Branch::orderBy('name')->get();
+        return view('payment-gateways.create', compact('branches'));
     }
 
     public function store(Request $request)
@@ -34,6 +36,7 @@ class PaymentGatewayController extends Controller
             'webhook_secret' => 'nullable|string',
             'config' => 'nullable|json',
             'notes' => 'nullable|string',
+            'branch_id' => 'nullable|exists:branches,id',
         ]);
 
         $validated['is_active'] = $request->boolean('is_active', false);
@@ -57,7 +60,8 @@ class PaymentGatewayController extends Controller
 
     public function edit(PaymentGateway $paymentGateway)
     {
-        return view('payment-gateways.edit', compact('paymentGateway'));
+        $branches = Branch::orderBy('name')->get();
+        return view('payment-gateways.edit', compact('paymentGateway', 'branches'));
     }
 
     public function update(Request $request, PaymentGateway $paymentGateway)
@@ -72,6 +76,7 @@ class PaymentGatewayController extends Controller
             'webhook_secret' => 'nullable|string',
             'config' => 'nullable|json',
             'notes' => 'nullable|string',
+            'branch_id' => 'nullable|exists:branches,id',
         ]);
 
         $validated['is_active'] = $request->boolean('is_active', false);

@@ -17,6 +17,17 @@
         </div>
 
         <div class="form-group">
+            <label>Unidade</label>
+            <select wire:model="branch_id" class="form-control @error('branch_id') is-invalid @enderror">
+                <option value="">Todas as unidades</option>
+                @foreach($branches as $branch)
+                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                @endforeach
+            </select>
+            @error('branch_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
+        </div>
+
+        <div class="form-group">
             <label>Descrição</label>
             <textarea wire:model="description" class="form-control" rows="2"></textarea>
         </div>
