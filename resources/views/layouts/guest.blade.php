@@ -15,6 +15,8 @@
             background-color: var(--brand-primary, #455e36) !important;
             border-color: var(--brand-primary, #455e36) !important;
         }
+        a { color: var(--brand-primary, #455e36); }
+        a:hover { color: color-mix(in srgb, var(--brand-primary, #455e36) 80%, black); }
         body { background: {{ branding('login_background', '#f9edc3') }} !important; }
     </style>
     @stack('styles')
