@@ -17,6 +17,10 @@
         .btn-action { padding: 0.25rem 0.5rem; }
         .btn-action i { margin: 0; }
         .ts-wrapper .ts-control { min-height: 38px; }
+        .main-sidebar.sidebar-dark-primary,
+        .main-sidebar .nav-sidebar > .nav-item > .nav-link.active {
+            background: var(--sidebar-bg, #051c12) !important;
+        }
     </style>
     @stack('styles')
 </head>
@@ -54,7 +58,8 @@
         </nav>
 
         <!-- Sidebar -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        @php $sidebarBg = branding('sidebar_bg', '#051c12'); @endphp
+        <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background: {{ $sidebarBg }} !important;">
             @php
                 $logoUrl = branding_logo_url();
                 $hasLogo = $logoUrl && !str_contains($logoUrl, 'logo-default.png');

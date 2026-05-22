@@ -22,7 +22,7 @@
             default => 'flex-row',
         };
     @endphp
-    <div class="flex items-center justify-center h-16" style="background: {{ branding('primary_color', '#4f46e5') }};">
+    <div class="flex items-center justify-center h-16" style="background: {{ branding('primary_color', '#455e36') }};">
         <div class="flex {{ $flexClass }} items-center justify-center text-center">
             @if($hasLogo)
                 <img src="{{ $logoUrl }}" width="{{ $logoW }}" class="inline-block" alt="Logo">

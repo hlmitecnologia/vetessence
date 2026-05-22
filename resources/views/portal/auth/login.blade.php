@@ -2,12 +2,12 @@
 
 @section('content')
 @php
-    $primary = branding('primary_color', '#4f46e5');
+    $primary = branding('primary_color', '#455e36');
     $logoUrl = branding_logo_url();
     $hasLogo = $logoUrl && !str_contains($logoUrl, 'logo-default.png');
     $showName = branding('show_clinic_name', '1') === '1';
 @endphp
-<div class="min-h-[70vh] flex items-center justify-center" style="background: {{ branding('login_background', '#f3f4f6') }};">
+<div class="min-h-[70vh] flex items-center justify-center" style="background: {{ branding('login_background', '#f9edc3') }};">
     <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
         <div class="text-center mb-8">
             @if($hasLogo)

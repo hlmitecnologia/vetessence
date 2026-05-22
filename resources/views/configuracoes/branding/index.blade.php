@@ -102,7 +102,7 @@
                         {{-- Preview --}}
                         <div class="border rounded p-3 bg-light mb-3" id="previewName">
                             <small class="text-muted d-block mb-2">Pré-visualização (sidebar):</small>
-                            <div class="d-inline-flex align-items-center p-2 rounded text-white font-weight-bold" style="background: {{ branding('primary_color', '#4f46e5') }};" id="previewBrand">
+                            <div class="d-inline-flex align-items-center p-2 rounded text-white font-weight-bold" style="background: {{ branding('primary_color', '#455e36') }};" id="previewBrand">
                                 <img src="{{ $logo && !str_contains($logo, 'logo-default.png') ? $logo : 'https://via.placeholder.com/40' }}" width="{{ branding('sidebar_logo_width', 40) }}" class="mr-2" id="previewLogo">
                                 <span id="previewNameText" style="{{ $showName !== '1' ? 'display:none' : '' }}">{{ branding('clinic_name', 'VetEssence') }}</span>
                             </div>
@@ -116,9 +116,9 @@
                             <label>Cor Primária</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" style="background: {{ branding('primary_color', '#4f46e5') }}; width: 38px;" id="primaryColorPreview"></span>
+                                    <span class="input-group-text" style="background: {{ branding('primary_color', '#455e36') }}; width: 38px;" id="primaryColorPreview"></span>
                                 </div>
-                                <input type="color" name="primary_color" class="form-control" value="{{ branding('primary_color', '#4f46e5') }}" style="padding: 2px;" id="primaryColor">
+                                <input type="color" name="primary_color" class="form-control" value="{{ branding('primary_color', '#455e36') }}" style="padding: 2px;" id="primaryColor">
                             </div>
                             <small class="text-muted">Usada na sidebar, botões e elementos principais.</small>
                         </div>
@@ -127,15 +127,26 @@
                             <label>Cor de Fundo da Tela de Login</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" style="background: {{ branding('login_background', '#f3f4f6') }}; width: 38px;" id="loginBgPreview"></span>
+                                    <span class="input-group-text" style="background: {{ branding('login_background', '#f9edc3') }}; width: 38px;" id="loginBgPreview"></span>
                                 </div>
-                                <input type="color" name="login_background" class="form-control" value="{{ branding('login_background', '#f3f4f6') }}" style="padding: 2px;" id="loginBg">
+                                <input type="color" name="login_background" class="form-control" value="{{ branding('login_background', '#f9edc3') }}" style="padding: 2px;" id="loginBg">
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Cor de Fundo da Sidebar</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" style="background: {{ branding('sidebar_bg', '#051c12') }}; width: 38px;" id="sidebarBgPreview"></span>
+                                </div>
+                                <input type="color" name="sidebar_bg" class="form-control" value="{{ branding('sidebar_bg', '#051c12') }}" style="padding: 2px;" id="sidebarBg">
+                            </div>
+                            <small class="text-muted">Apenas se um tema escuro estiver ativo na sidebar.</small>
                         </div>
 
                         <div class="border rounded p-3 bg-light mb-3">
                             <small class="text-muted d-block mb-2">Pré-visualização de cores:</small>
-                            <button class="btn text-white mr-2" style="background: {{ branding('primary_color', '#4f46e5') }};" id="previewBtn">
+                            <button class="btn text-white mr-2" style="background: {{ branding('primary_color', '#455e36') }};" id="previewBtn">
                                 <i class="fas fa-check mr-1"></i>Botão Exemplo
                             </button>
                             <a href="#" class="btn btn-outline-secondary">Secundário</a>
@@ -211,6 +222,9 @@ document.getElementById('primaryColor')?.addEventListener('input', function() {
 });
 document.getElementById('loginBg')?.addEventListener('input', function() {
     document.getElementById('loginBgPreview').style.background = this.value;
+});
+document.getElementById('sidebarBg')?.addEventListener('input', function() {
+    document.getElementById('sidebarBgPreview').style.background = this.value;
 });
 
 // Preview: logo width

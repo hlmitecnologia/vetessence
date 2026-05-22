@@ -35,8 +35,9 @@ if (!function_exists('branding_favicon_url')) {
 if (!function_exists('branding_css_vars')) {
     function branding_css_vars(): string
     {
-        $color = branding('primary_color', '#4f46e5');
-        return ":root { --brand-primary: {$color}; --brand-primary-rgb: " . hex_to_rgb($color) . "; }";
+        $primary = branding('primary_color', '#455e36');
+        $sidebar = branding('sidebar_bg', '#051c12');
+        return ":root { --brand-primary: {$primary}; --brand-primary-rgb: " . hex_to_rgb($primary) . "; --sidebar-bg: {$sidebar}; }";
     }
 }
 

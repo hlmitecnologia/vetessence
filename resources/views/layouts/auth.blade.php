@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icheck-bootstrap@3/icheck-bootstrap.min.css">
-    <style>body { background: {{ branding('login_background', '#f3f4f6') }} !important; }</style>
+    <style>body { background: {{ branding('login_background', '#f9edc3') }} !important; }</style>
     @stack('styles')
 </head>
 <body class="hold-transition login-page">
