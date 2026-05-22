@@ -26,6 +26,19 @@
         .text-accent { color: var(--brand-accent, #d6c38d); }
         .badge-accent { background: var(--brand-accent, #d6c38d); color: #1a1a1a; }
 
+        .btn-secondary, .btn-secondary:hover, .btn-secondary:active, .btn-secondary:focus,
+        .btn-secondary.disabled, .btn-secondary:disabled,
+        .bg-secondary, .badge-secondary, .alert-secondary,
+        .btn-outline-secondary {
+            background-color: var(--brand-secondary, #9aaa7e) !important;
+            border-color: var(--brand-secondary, #9aaa7e) !important;
+        }
+        .btn-outline-secondary:hover {
+            background-color: var(--brand-secondary, #9aaa7e) !important;
+            border-color: var(--brand-secondary, #9aaa7e) !important;
+            color: #fff !important;
+        }
+
         .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:focus,
         .btn-primary.disabled, .btn-primary:disabled,
         .bg-primary, .badge-primary, .alert-primary,
