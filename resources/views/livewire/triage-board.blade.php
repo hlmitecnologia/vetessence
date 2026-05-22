@@ -9,7 +9,7 @@
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-hover" style="border: 1px solid #dee2e6;">
                         <thead>
                             <tr>
                                 <th>Severidade</th>
