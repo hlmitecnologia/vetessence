@@ -91,7 +91,8 @@
                         <label for="iv_access">Acesso IV</label>
                         <select name="iv_access" id="iv_access" class="form-control">
                             <option value="">Selecione</option>
-                            @foreach(['Cateter 20G', 'Cateter 22G', 'Cateter 24G', 'Cateter 18G', 'Agulha scalp', 'JE') as $access)
+                            @php $ivAccessOptions = ['Cateter 20G', 'Cateter 22G', 'Cateter 24G', 'Cateter 18G', 'Agulha scalp', 'JE']; @endphp
+                            @foreach($ivAccessOptions as $access)
                                 <option value="{{ $access }}" {{ old('iv_access') == $access ? 'selected' : '' }}>{{ $access }}</option>
                             @endforeach
                         </select>
@@ -102,7 +103,8 @@
                         <label for="intubation_type">Tipo de Intubação</label>
                         <select name="intubation_type" id="intubation_type" class="form-control">
                             <option value="">Selecione</option>
-                            @foreach(['TOT', 'Máscara', 'Traqueostomia', 'Não intubado'] as $int)
+                            @php $intubationOptions = ['TOT', 'Máscara', 'Traqueostomia', 'Não intubado']; @endphp
+                            @foreach($intubationOptions as $int)
                                 <option value="{{ $int }}" {{ old('intubation_type') == $int ? 'selected' : '' }}>{{ $int }}</option>
                             @endforeach
                         </select>
@@ -113,7 +115,8 @@
                         <label for="fluid_type">Tipo de Fluido</label>
                         <select name="fluid_type" id="fluid_type" class="form-control">
                             <option value="">Selecione</option>
-                            @foreach(['Ringer Lactato', 'Ringer Simples', 'SF 0,9%', 'Glicose 5%', 'Hetastarch'] as $fl)
+                            @php $fluidOptions = ['Ringer Lactato', 'Ringer Simples', 'SF 0,9%', 'Glicose 5%', 'Hetastarch']; @endphp
+                            @foreach($fluidOptions as $fl)
                                 <option value="{{ $fl }}" {{ old('fluid_type') == $fl ? 'selected' : '' }}>{{ $fl }}</option>
                             @endforeach
                         </select>

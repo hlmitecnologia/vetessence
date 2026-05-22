@@ -6,7 +6,8 @@
                     <label>Espécie *</label>
                     <select wire:model="species" class="form-control @error('species') is-invalid @enderror" required>
                         <option value="">Selecione...</option>
-                        @foreach(config('species') as $key => $label)
+                        @php $speciesList = config('species'); @endphp
+                        @foreach($speciesList as $key => $label)
                             <option value="{{ $key }}">{{ $label }}</option>
                         @endforeach
                     </select>

@@ -18,7 +18,8 @@
             <div class="col-md-2">
                 <select name="species" class="form-control form-control-sm">
                     <option value="">Todas as espécies</option>
-                    @foreach(config('species') as $key => $label)
+                    @php $speciesList = config('species'); @endphp
+                    @foreach($speciesList as $key => $label)
                         <option value="{{ $key }}" {{ request('species') == $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>

@@ -15,7 +15,8 @@
             <label>Espécie</label>
             <select wire:model="species" class="form-control">
                 <option value="">Todas</option>
-                @foreach(config('species') as $key => $label)
+                @php $speciesList = config('species'); @endphp
+                @foreach($speciesList as $key => $label)
                     <option value="{{ $key }}">{{ $label }}</option>
                 @endforeach
             </select>
