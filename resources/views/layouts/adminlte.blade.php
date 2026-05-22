@@ -20,11 +20,11 @@
         .main-sidebar.sidebar-dark-primary {
             background: var(--sidebar-bg, #051c12) !important;
         }
-        .main-sidebar .nav-sidebar > .nav-item > .nav-link.active {
+        .main-sidebar .nav-sidebar .nav-item .nav-link.active {
             background: var(--brand-accent, #d6c38d) !important;
         }
-        .main-sidebar .nav-sidebar > .nav-item > .nav-link.active,
-        .main-sidebar .nav-sidebar > .nav-item > .nav-link.active i {
+        .main-sidebar .nav-sidebar .nav-item .nav-link.active,
+        .main-sidebar .nav-sidebar .nav-item .nav-link.active i {
             color: #1a1a1a !important;
         }
         .btn-secondary-custom { background: var(--brand-secondary, #9aaa7e); border-color: var(--brand-secondary, #9aaa7e); color: #fff; }
