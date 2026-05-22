@@ -44,8 +44,10 @@
             </div>
 
             <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Sinais Vitais</h5>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title">Sinais Vitais</h5>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
