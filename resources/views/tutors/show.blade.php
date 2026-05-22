@@ -49,9 +49,9 @@
 
                 <hr>
 
-                <a href="{{ route('tutors.edit', $tutor) }}" class="btn btn-primary btn-block">
+                <button onclick="openEditModal({{ $tutor->id }})" class="btn btn-primary btn-block">
                     <i class="fas fa-edit mr-1"></i> Editar
-                </a>
+                </button>
             </div>
         </div>
     </div>
@@ -134,3 +134,31 @@
     </div>
 </div>
 @endsection
+
+@push('modals')
+<div class="modal fade" id="tutorModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tutorModalTitle">Editar Tutor</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('tutor-form', key('tutor-form-show'))
+            </div>
+        </div>
+    </div>
+</div>
+@endpush
+
+@push('scripts')
+document.addEventListener('livewire:initialized', function() {
+    Livewire.on('close-modal', function() { $('#tutorModal').modal('hide'); });
+    Livewire.on('tutor-saved', function() { location.reload(); });
+});
+function openEditModal(id) {
+    Livewire.dispatch('editTutor', { id: id });
+    document.getElementById('tutorModalTitle').textContent = 'Editar Tutor';
+    $('#tutorModal').modal('show');
+}
+@endpush
