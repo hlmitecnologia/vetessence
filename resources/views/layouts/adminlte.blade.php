@@ -17,9 +17,16 @@
         .btn-action { padding: 0.25rem 0.5rem; }
         .btn-action i { margin: 0; }
         .ts-wrapper .ts-control { min-height: 38px; }
-        .main-sidebar.sidebar-dark-primary,
-        .main-sidebar .nav-sidebar > .nav-item > .nav-link.active {
+        .main-sidebar.sidebar-dark-primary {
             background: var(--sidebar-bg, #051c12) !important;
+        }
+        .main-sidebar .nav-sidebar > .nav-item > .nav-link.active,
+        .main-sidebar .nav-sidebar > .nav-item > .nav-link.active i {
+            background: transparent !important;
+            color: var(--brand-accent, #d6c38d) !important;
+        }
+        .main-sidebar .nav-sidebar > .nav-item > .nav-link:hover {
+            color: var(--brand-accent, #d6c38d) !important;
         }
         .btn-secondary-custom { background: var(--brand-secondary, #9aaa7e); border-color: var(--brand-secondary, #9aaa7e); color: #fff; }
         .btn-secondary-custom:hover { filter: brightness(0.9); color: #fff; }
