@@ -78,6 +78,13 @@ class PetForm extends Component
         $this->updateBreeds();
     }
 
+    #[On('createPetForTutor')]
+    public function createForTutor($tutorId)
+    {
+        $this->resetForm();
+        $this->tutor_id = (string) $tutorId;
+    }
+
     #[On('resetForm')]
     public function resetForm()
     {

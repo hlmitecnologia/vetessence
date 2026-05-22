@@ -60,9 +60,9 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="fas fa-paw mr-2"></i>Pets</h5>
-                <a href="{{ route('pets.create') }}?tutor_id={{ $tutor->id }}" class="btn btn-sm btn-primary">
+                <button onclick="openNewPetModal()" class="btn btn-sm btn-primary">
                     <i class="fas fa-plus mr-1"></i> Novo Pet
-                </a>
+                </button>
             </div>
             <div class="card-body">
                 @if($tutor->pets->count() > 0)
@@ -149,16 +149,36 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="petModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="petModalTitle">Novo Pet</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('pet-form', key('pet-form-show'))
+            </div>
+        </div>
+    </div>
+</div>
 @endpush
 
 @push('scripts')
 document.addEventListener('livewire:initialized', function() {
-    Livewire.on('close-modal', function() { $('#tutorModal').modal('hide'); });
+    Livewire.on('close-modal', function() { $('#tutorModal, #petModal').modal('hide'); });
     Livewire.on('tutor-saved', function() { location.reload(); });
+    Livewire.on('pet-saved', function() { location.reload(); });
 });
 function openEditModal(id) {
     Livewire.dispatch('editTutor', { id: id });
     document.getElementById('tutorModalTitle').textContent = 'Editar Tutor';
     $('#tutorModal').modal('show');
+}
+function openNewPetModal() {
+    Livewire.dispatch('createPetForTutor', { tutorId: {{ $tutor->id }} });
+    document.getElementById('petModalTitle').textContent = 'Novo Pet';
+    $('#petModal').modal('show');
 }
 @endpush
