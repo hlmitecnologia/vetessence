@@ -35,6 +35,29 @@ class ExtractVboBreeds extends Command
         'Vertebrate breed' => 'exotic',
     ];
 
+    private array $labelToSpecies = [
+        'Horse' => 'equine', 'Pig' => 'swine', 'Cattle' => 'bovine',
+        'Sheep' => 'ovine', 'Goat' => 'caprine', 'Chicken' => 'avian',
+        'Duck (domestic)' => 'avian', 'Goose (domestic)' => 'avian',
+        'Turkey' => 'avian', 'Guinea fowl' => 'avian', 'Pigeon' => 'avian',
+        'Quail' => 'avian', 'Muscovy duck' => 'avian', 'Ostrich' => 'avian',
+        'Partridge' => 'avian', 'Pheasant' => 'avian', 'Emu' => 'avian',
+        'Nandu' => 'avian', 'Cassowary' => 'avian', 'Peacock' => 'avian',
+        'Swallow' => 'avian', 'Rabbit' => 'lagomorph', 'Guinea pig' => 'rodent',
+        'Golden hamster' => 'rodent', 'Fish' => 'fish', 'Goldfish' => 'fish',
+        'Rainbow trout' => 'fish', 'Zebrafish' => 'fish', 'Japanese rice fish' => 'fish',
+        'Amphibian' => 'amphibian', 'Frog' => 'amphibian',
+        'Camel' => 'camelid', 'Dromedary' => 'camelid',
+        'Bactrian camel' => 'camelid', 'Alpaca' => 'camelid',
+        'Llama' => 'camelid', 'Vicuña' => 'camelid', 'Guanaco' => 'camelid',
+        'Deer' => 'cervid', 'Ass' => 'asinine', 'Buffalo' => 'bovine',
+        'Yak (domestic)' => 'bovine', 'American Bison' => 'bovine',
+        'Domestic yak' => 'bovine', 'Dog' => 'canine', 'Cat' => 'feline',
+        'North American deer mouse' => 'rodent', 'Bighorn sheep' => 'ovine',
+        'Western clawed frog' => 'amphibian', 'Zebra finch' => 'avian',
+        'Dromedary Bactrian Camel' => 'camelid',
+    ];
+
     public function handle(): int
     {
         $csvPath = $this->option('csv');
@@ -48,7 +71,15 @@ class ExtractVboBreeds extends Command
                 $this->error('Download failed: ' . $response->status());
                 return Command::FAILURE;
             }
-            file_put_contents($csvPath, $response->body());
+            $body = $response->body();
+            if (substr($body, 0, 2) === "\x1f\x8b") {
+                $body = gzdecode($body);
+                if ($body === false) {
+                    $this->error('Failed to decompress gzip response.');
+                    return Command::FAILURE;
+                }
+            }
+            file_put_contents($csvPath, $body);
             $this->info('Downloaded');
         }
 
@@ -68,67 +99,129 @@ class ExtractVboBreeds extends Command
         $labelIdx = 1;
         $parentsIdx = 7;
 
-        $vbo040Labels = [];
+        $entryParents = [];
+        $entryLabels = [];
+        $vbo040Ids = [];
+        $breedCandidates = [];
+
         rewind($handle);
         fgetcsv($handle);
         while (($row = fgetcsv($handle)) !== false) {
             $cid = $row[0] ?? '';
-            if (str_contains($cid, '/VBO_04')) {
-                $vbo040Labels[$cid] = $row[$labelIdx] ?? '';
-            }
-        }
-
-        $breedsBySpecies = [];
-
-        rewind($handle);
-        fgetcsv($handle);
-        $pattern = '/^(.+?)\s+\((.+)\)$/';
-
-        while (($row = fgetcsv($handle)) !== false) {
             $label = $row[$labelIdx] ?? '';
             $parentsStr = $row[$parentsIdx] ?? '';
 
-            if (!preg_match($pattern, $label, $m)) {
-                continue;
-            }
+            $entryLabels[$cid] = $label;
 
-            $breedName = trim($m[1]);
-
-            if (str_contains($breedName, ',')) {
-                continue;
-            }
-
-            $lower = mb_strtolower($breedName);
-            if (in_array($lower, ['breed', 'standard', 'crossbreed', 'mixed', 'unknown', 'feral', ''], true) || mb_strlen($breedName) < 2) {
-                continue;
-            }
-
-            $vboSpecies = null;
+            $parents = [];
             foreach (explode('|', $parentsStr) as $p) {
                 $p = trim($p);
-                if (str_contains($p, '/VBO_04')) {
-                    $vboSpecies = $p;
+                if ($p !== '') {
+                    $parents[] = $p;
+                }
+            }
+            $entryParents[$cid] = $parents;
+
+            if (str_contains($cid, '/VBO_04')) {
+                $vbo040Ids[$cid] = true;
+            }
+
+            $pattern = '/^(.+?)\s+\((.+)\)$/';
+            if (preg_match($pattern, $label, $m)) {
+                $breedCandidates[] = [
+                    'id' => $cid,
+                    'name' => trim($m[1]),
+                    'speciesLabel' => $m[2],
+                ];
+            }
+        }
+
+        $this->info('Building parent chain and classifying breeds...');
+
+        $findAllVbo040Ancestors = function (array $parentIds) use (&$entryParents, &$vbo040Ids): array {
+            $found = [];
+            $seen = [];
+            $queue = $parentIds;
+
+            while (!empty($queue)) {
+                $current = array_shift($queue);
+                if (isset($seen[$current])) continue;
+                $seen[$current] = true;
+
+                if (isset($vbo040Ids[$current])) {
+                    $found[] = $current;
+                    continue;
+                }
+
+                $parentsOfCurrent = $entryParents[$current] ?? [];
+                foreach ($parentsOfCurrent as $p) {
+                    if (!isset($seen[$p])) {
+                        $queue[] = $p;
+                    }
+                }
+            }
+
+            return array_unique($found);
+        };
+
+        $breedsBySpecies = [];
+        $processed = 0;
+
+        foreach ($breedCandidates as $candidate) {
+            $rawName = $candidate['name'];
+            $speciesLabel = $candidate['speciesLabel'];
+            $id = $candidate['id'];
+
+            $cleanName = $rawName;
+            $commaPos = mb_strpos($cleanName, ',');
+            if ($commaPos !== false) {
+                $cleanName = trim(mb_substr($cleanName, 0, $commaPos));
+            }
+
+            $lower = mb_strtolower($cleanName);
+            if (in_array($lower, ['breed', 'standard', 'crossbreed', 'mixed', 'unknown', 'feral', ''], true) || mb_strlen($cleanName) < 2) {
+                continue;
+            }
+
+            $parentIds = $entryParents[$id] ?? [];
+            $vboIds = $findAllVbo040Ancestors($parentIds);
+
+            $speciesKey = null;
+
+            foreach ($vboIds as $vboId) {
+                $vboLabel = $entryLabels[$vboId] ?? '';
+                if (!$vboLabel) continue;
+                $mappedKey = $this->speciesMap[$vboLabel] ?? null;
+                if ($mappedKey && !in_array($mappedKey, ['exotic'], true)) {
+                    $speciesKey = $mappedKey;
                     break;
                 }
             }
 
-            if (!$vboSpecies) {
-                continue;
+            if (!$speciesKey || $speciesKey === 'exotic') {
+                foreach ($vboIds as $vboId) {
+                    $vboLabel = $entryLabels[$vboId] ?? '';
+                    if (!$vboLabel) continue;
+                    $speciesKey = $this->speciesMap[$vboLabel]
+                        ?? str_replace([' breed', ' '], ['', '_'], mb_strtolower($vboLabel));
+                    if ($speciesKey) break;
+                }
             }
 
-            $speciesLabel = $vbo040Labels[$vboSpecies] ?? '';
-            if (!$speciesLabel) {
-                continue;
+            if (!$speciesKey || $speciesKey === 'exotic') {
+                $speciesKey = $this->labelToSpecies[$speciesLabel] ?? $speciesKey;
             }
 
-            $speciesKey = $this->speciesMap[$speciesLabel]
-                ?? str_replace([' breed', ' '], ['', '_'], mb_strtolower($speciesLabel));
+            if (!$speciesKey) {
+                continue;
+            }
 
             if (in_array($speciesKey, ['canine', 'feline'], true)) {
                 continue;
             }
 
-            $breedsBySpecies[$speciesKey][$breedName] = true;
+            $breedsBySpecies[$speciesKey][$cleanName] = true;
+            $processed++;
         }
 
         fclose($handle);
