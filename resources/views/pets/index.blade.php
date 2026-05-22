@@ -31,11 +31,10 @@
                             @if($pet->photo_url)
                                 <img src="{{ $pet->photo_url }}" alt="{{ $pet->name }}" class="w-10 h-10 rounded-circle object-cover">
                             @else
-                                <div class="w-10 h-10 bg-green-100 rounded-circle d-flex align-items-center justify-content-center text-green-600">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 40px; height: 40px; background: color-mix(in srgb, var(--brand-primary, #455e36) 15%, white); color: var(--brand-primary, #455e36);">
                                     <i class="fas fa-paw"></i>
                                 </div>
-                            @endif
-                            <div class="ml-2">
+                                <div class="ml-2">
                                 <div class="font-weight-bold">{{ $pet->name }}</div>
                                 <small class="text-muted">{{ $pet->gender === 'male' ? 'Macho' : 'Fêmea' }}</small>
                             </div>

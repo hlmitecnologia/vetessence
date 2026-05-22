@@ -1,95 +1,91 @@
 @extends('layouts.adminlte', ['title' => 'Nova Consulta'])
 
-@section('header')
-    <a href="{{ route('appointments.index') }}" class="text-gray-500 hover:text-gray-700">
-        <i class="fas fa-arrow-left"></i>
-    </a>
-    <h2 class="ml-4 text-lg font-semibold">Nova Consulta</h2>
-@endsection
-
 @section('content')
-<div class="max-w-3xl mx-auto">
-    <form action="{{ route('appointments.store') }}" method="POST" class="bg-white rounded-xl shadow-sm p-6">
-        @csrf
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Pet *</label>
-                <x-tom-select name="pet_id" :value="old('pet_id')" required>
-                    @foreach($pets as $pet)
-                    <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>
-                        {{ $pet->name }}
-                        @if($pet->tutors->first())
-                            - {{ $pet->tutors->first()->name }}
-                        @endif
-                    </option>
-                    @endforeach
-                </x-tom-select>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Veterinário *</label>
-                <x-tom-select name="vet_id" :value="old('vet_id')" required>
-                    @foreach($veterinarians as $vet)
-                    <option value="{{ $vet->id }}" {{ old('vet_id') == $vet->id ? 'selected' : '' }}>
-                        {{ $vet->name }}
-                    </option>
-                    @endforeach
-                </x-tom-select>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Data *</label>
-                <input type="date" name="date" value="{{ old('date', date('Y-m-d')) }}" required
-                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Hora *</label>
-                <input type="time" name="time" value="{{ old('time') }}" required
-                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tipo *</label>
-                <select name="type" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
-                    <option value="">Selecione...</option>
-                    <option value="consulta" {{ old('type') == 'consulta' ? 'selected' : '' }}>Consulta</option>
-                    <option value="retorno" {{ old('type') == 'retorno' ? 'selected' : '' }}>Retorno</option>
-                    <option value="emergencia" {{ old('type') == 'emergencia' ? 'selected' : '' }}>Emergência</option>
-                    <option value="cirurgia" {{ old('type') == 'cirurgia' ? 'selected' : '' }}>Cirurgia</option>
-                    <option value="vacina" {{ old('type') == 'vacina' ? 'selected' : '' }}>Vacina</option>
-                    <option value="exame" {{ old('type') == 'exame' ? 'selected' : '' }}>Exame</option>
-                </select>
-            </div>
-
-            <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Motivo/Observações</label>
-                <textarea name="reason" rows="3"
-                          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">{{ old('reason') }}</textarea>
-            </div>
-
-            <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Serviços</label>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    @foreach($services as $service)
-                    <label class="flex items-center p-2 border rounded-lg hover:bg-gray-50 cursor-pointer">
-                        <input type="checkbox" name="services[]" value="{{ $service->id }}"
-                               class="rounded text-indigo-600 focus:ring-indigo-500">
-                        <span class="ml-2 text-sm">{{ $service->name }}</span>
-                        <span class="ml-auto text-sm text-gray-500">R$ {{ number_format($service->price, 2, ',', '.') }}</span>
-                    </label>
-                    @endforeach
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form action="{{ route('appointments.store') }}" method="POST">
+            @csrf
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Pet *</label>
+                                <x-tom-select name="pet_id" :value="old('pet_id')" required>
+                                    @foreach($pets as $pet)
+                                    <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>
+                                        {{ $pet->name }}
+                                        @if($pet->tutors->first()) - {{ $pet->tutors->first()->name }} @endif
+                                    </option>
+                                    @endforeach
+                                </x-tom-select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Veterinário *</label>
+                                <x-tom-select name="vet_id" :value="old('vet_id')" required>
+                                    @foreach($veterinarians as $vet)
+                                    <option value="{{ $vet->id }}" {{ old('vet_id') == $vet->id ? 'selected' : '' }}>{{ $vet->name }}</option>
+                                    @endforeach
+                                </x-tom-select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Data *</label>
+                                <input type="date" name="date" value="{{ old('date', date('Y-m-d')) }}" required class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Hora *</label>
+                                <input type="time" name="time" value="{{ old('time') }}" required class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Tipo *</label>
+                                <select name="type" required class="form-control">
+                                    <option value="">Selecione...</option>
+                                    <option value="consulta" {{ old('type') == 'consulta' ? 'selected' : '' }}>Consulta</option>
+                                    <option value="retorno" {{ old('type') == 'retorno' ? 'selected' : '' }}>Retorno</option>
+                                    <option value="emergencia" {{ old('type') == 'emergencia' ? 'selected' : '' }}>Emergência</option>
+                                    <option value="cirurgia" {{ old('type') == 'cirurgia' ? 'selected' : '' }}>Cirurgia</option>
+                                    <option value="vacina" {{ old('type') == 'vacina' ? 'selected' : '' }}>Vacina</option>
+                                    <option value="exame" {{ old('type') == 'exame' ? 'selected' : '' }}>Exame</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Motivo/Observações</label>
+                                <textarea name="reason" rows="3" class="form-control">{{ old('reason') }}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label>Serviços</label>
+                            <div class="row">
+                                @foreach($services as $service)
+                                <div class="col-md-4 mb-1">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="services[]" value="{{ $service->id }}" class="custom-control-input" id="svc-{{ $service->id }}">
+                                        <label class="custom-control-label" for="svc-{{ $service->id }}">
+                                            {{ $service->name }} <small class="text-muted">R$ {{ number_format($service->price, 2, ',', '.') }}</small>
+                                        </label>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-right">
+                    <a href="{{ route('appointments.index') }}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Agendar</button>
                 </div>
             </div>
-        </div>
-
-        <div class="mt-6 flex justify-end gap-4">
-            <a href="{{ route('appointments.index') }}" class="px-6 py-2 border rounded-lg hover:bg-gray-50">Cancelar</a>
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg">
-                <i class="fas fa-save mr-2"></i> Agendar
-            </button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 @endsection

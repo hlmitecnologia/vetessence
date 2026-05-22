@@ -1,21 +1,26 @@
-@extends('layouts.adminlte', ['title' => 'Categoria'])
-
-@section('header')
-    <a href="{{ route('categories.index') }}" class="text-gray-500 hover:text-gray-700"><i class="fas fa-arrow-left"></i></a>
-    <h2 class="ml-4 text-lg font-semibold">{{ $category->name }}</h2>
-@endsection
+@extends('layouts.adminlte', ['title' => $category->name])
 
 @section('content')
-<div class="max-w-xl mx-auto">
-    <div class="bg-white rounded-xl shadow-sm p-6">
-        <div class="grid grid-cols-2 gap-6">
-            <div><h4 class="text-xs text-gray-500 uppercase">Tipo</h4><p>{{ ucfirst($category->type) }}</p></div>
-            <div><h4 class="text-xs text-gray-500 uppercase">Categoria Pai</h4><p>{{ $category->parent->name ?? '-' }}</p></div>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <small class="text-muted text-uppercase">Tipo</small>
+                        <p>{{ ucfirst($category->type) }}</p>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted text-uppercase">Categoria Pai</small>
+                        <p>{{ $category->parent->name ?? '-' }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="mt-6 flex justify-between">
-        <a href="{{ route('categories.index') }}" class="px-4 py-2 border rounded-lg hover:bg-gray-50"><i class="fas fa-arrow-left mr-2"></i>Voltar</a>
-        <a href="{{ route('categories.edit', $category) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg"><i class="fas fa-edit mr-2"></i>Editar</a>
+        <div class="d-flex justify-content-between mt-3">
+            <a href="{{ route('categories.index') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left mr-1"></i>Voltar</a>
+            <a href="{{ route('categories.edit', $category) }}" class="btn btn-primary"><i class="fas fa-edit mr-1"></i>Editar</a>
+        </div>
     </div>
 </div>
 @endsection

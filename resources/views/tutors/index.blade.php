@@ -28,7 +28,7 @@
                 <tr>
                     <td>
                         <div class="d-flex align-items-center">
-                            <div class="w-8 h-8 bg-indigo-100 rounded-circle d-flex align-items-center justify-content-center text-indigo-600 font-semibold">
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle font-weight-bold" style="width: 32px; height: 32px; background: color-mix(in srgb, var(--brand-primary, #455e36) 15%, white); color: var(--brand-primary, #455e36);">
                                 {{ substr($tutor->name, 0, 1) }}
                             </div>
                             <div class="ml-2">
