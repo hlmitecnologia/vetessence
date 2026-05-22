@@ -1,6 +1,11 @@
 @extends('layouts.adminlte', ['title' => $pet->name])
 
 @section('content')
+<div class="mb-3">
+    <a href="{{ route('pets.index') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left mr-1"></i> Voltar para lista
+    </a>
+</div>
 <div class="row">
     <div class="col-md-4">
         <div class="card">
