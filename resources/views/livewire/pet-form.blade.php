@@ -25,13 +25,44 @@
 
         <div class="form-group">
             <label>Tutor Responsável *</label>
-            <x-tom-select wire="tutor_id" :value="$tutor_id" required>
-                @foreach($tutors as $tutor)
-                <option value="{{ $tutor->id }}">{{ $tutor->name }}</option>
-                @endforeach
-            </x-tom-select>
+            <div class="input-group">
+                <x-tom-select wire="tutor_id" :value="$tutor_id" required>
+                    @foreach($tutors as $tutor)
+                    <option value="{{ $tutor->id }}">{{ $tutor->name }}</option>
+                    @endforeach
+                </x-tom-select>
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-primary" onclick="openNewTutorModal()" title="Novo Tutor">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
             @error('tutor_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
+
+        <div class="modal fade" id="tutorModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Novo Tutor</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        @livewire('tutor-form', key('tutor-form-pet'))
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        document.addEventListener('livewire:initialized', function() {
+            Livewire.on('close-modal', function() { $('#tutorModal').modal('hide'); });
+            Livewire.on('tutor-saved', function() { location.reload(); });
+        });
+        function openNewTutorModal() {
+            $('#tutorModal').modal('show');
+        }
+        </script>
 
         <div class="row">
             <div class="col-md-6">
