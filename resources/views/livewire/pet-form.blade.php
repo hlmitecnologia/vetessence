@@ -40,12 +40,13 @@
             @error('tutor_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
-        <div class="modal fade" id="tutorModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+        <div id="tutorOverlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:1055;">
+            <div style="position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.5);" onclick="closeTutorOverlay()"></div>
+            <div class="modal-dialog modal-dialog-centered" role="document" style="pointer-events:auto;">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Novo Tutor</h5>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <button type="button" class="close" onclick="closeTutorOverlay()">&times;</button>
                     </div>
                     <div class="modal-body">
                         @livewire('tutor-form', key('tutor-form-pet'))
@@ -56,14 +57,16 @@
 
         <script>
         document.addEventListener('livewire:initialized', function() {
-            Livewire.on('close-modal', function() { $('#tutorModal').modal('hide'); });
+            Livewire.on('close-modal', function() { closeTutorOverlay(); });
             Livewire.on('tutor-saved', function() { location.reload(); });
         });
-        $('#tutorModal').on('hidden.bs.modal', function() {
-            $('body').addClass('modal-open');
-        });
         function openNewTutorModal() {
-            $('#tutorModal').modal('show');
+            document.getElementById('tutorOverlay').style.display = 'block';
+            document.body.classList.add('overflow-hidden');
+        }
+        function closeTutorOverlay() {
+            document.getElementById('tutorOverlay').style.display = 'none';
+            document.body.classList.remove('overflow-hidden');
         }
         </script>
 

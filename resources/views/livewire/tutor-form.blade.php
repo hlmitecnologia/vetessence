@@ -50,7 +50,7 @@
         </div>
 
         <div class="text-right">
-            <button type="button" class="btn btn-secondary" onclick="$('#tutorModal').modal('hide')">Cancelar</button>
+            <button type="button" class="btn btn-secondary" onclick="closeTutorOverlay()">Cancelar</button>
             <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Salvar</button>
         </div>
     </form>
