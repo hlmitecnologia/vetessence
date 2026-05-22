@@ -46,10 +46,27 @@ class TriageRecordController extends Controller
             'pet_id' => 'required|exists:pets,id',
             'severity' => 'required|in:green,yellow,orange,red',
             'chief_complaint' => 'required|string',
-            'vital_signs' => 'nullable|array',
             'assigned_vet_id' => 'nullable|exists:users,id',
+            'vs_temperature' => 'nullable|string|max:20',
+            'vs_heart_rate' => 'nullable|string|max:20',
+            'vs_respiratory_rate' => 'nullable|string|max:20',
+            'vs_weight' => 'nullable|string|max:20',
+            'vs_mucosa' => 'nullable|string|max:50',
+            'vs_hydration' => 'nullable|string|max:50',
+            'vs_lymph_nodes' => 'nullable|string|max:50',
         ]);
 
+        $vitalSigns = array_filter([
+            'temperature' => $request->vs_temperature,
+            'heart_rate' => $request->vs_heart_rate,
+            'respiratory_rate' => $request->vs_respiratory_rate,
+            'weight' => $request->vs_weight,
+            'mucosa' => $request->vs_mucosa,
+            'hydration' => $request->vs_hydration,
+            'lymph_nodes' => $request->vs_lymph_nodes,
+        ]);
+
+        $data['vital_signs'] = !empty($vitalSigns) ? $vitalSigns : null;
         $data['check_in_at'] = now();
         $data['status'] = 'waiting';
         TriageRecord::create($data);
@@ -78,8 +95,26 @@ class TriageRecordController extends Controller
             'status' => 'required|in:waiting,in_consultation,seen,discharged',
             'assigned_vet_id' => 'nullable|exists:users,id',
             'chief_complaint' => 'nullable|string',
-            'vital_signs' => 'nullable|array',
+            'vs_temperature' => 'nullable|string|max:20',
+            'vs_heart_rate' => 'nullable|string|max:20',
+            'vs_respiratory_rate' => 'nullable|string|max:20',
+            'vs_weight' => 'nullable|string|max:20',
+            'vs_mucosa' => 'nullable|string|max:50',
+            'vs_hydration' => 'nullable|string|max:50',
+            'vs_lymph_nodes' => 'nullable|string|max:50',
         ]);
+
+        $vitalSigns = array_filter([
+            'temperature' => $request->vs_temperature,
+            'heart_rate' => $request->vs_heart_rate,
+            'respiratory_rate' => $request->vs_respiratory_rate,
+            'weight' => $request->vs_weight,
+            'mucosa' => $request->vs_mucosa,
+            'hydration' => $request->vs_hydration,
+            'lymph_nodes' => $request->vs_lymph_nodes,
+        ]);
+
+        $data['vital_signs'] = !empty($vitalSigns) ? $vitalSigns : null;
 
         if ($data['status'] === 'seen' && !$triage->seen_at) {
             $data['seen_at'] = now();

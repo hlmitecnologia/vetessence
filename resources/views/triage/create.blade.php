@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="row justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-8">
         <form action="{{ route('triage.store') }}" method="POST">
             @csrf
             <div class="card">
@@ -40,9 +40,55 @@
                             @endforeach
                         </x-tom-select>
                     </div>
-                    <div class="form-group">
-                        <label>Sinais Vitais (JSON opcional)</label>
-                        <textarea name="vital_signs" rows="2" class="form-control font-monospace small" placeholder='{"temperatura": "38.5", "freq_cardiaca": "120", "freq_respiratoria": "30" }'>{{ old('vital_signs') }}</textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Sinais Vitais</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Temperatura (ºC)</label>
+                                <input type="text" name="vs_temperature" value="{{ old('vs_temperature') }}" class="form-control" placeholder="38.5">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Frequência Cardíaca (bpm)</label>
+                                <input type="text" name="vs_heart_rate" value="{{ old('vs_heart_rate') }}" class="form-control" placeholder="120">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Frequência Respiratória (mrm)</label>
+                                <input type="text" name="vs_respiratory_rate" value="{{ old('vs_respiratory_rate') }}" class="form-control" placeholder="30">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Peso (kg)</label>
+                                <input type="text" name="vs_weight" value="{{ old('vs_weight') }}" class="form-control" placeholder="10.5">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Mucosas</label>
+                                <input type="text" name="vs_mucosa" value="{{ old('vs_mucosa') }}" class="form-control" placeholder="Normocoradas">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Hidratação</label>
+                                <input type="text" name="vs_hydration" value="{{ old('vs_hydration') }}" class="form-control" placeholder="Normal">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Linfonodos</label>
+                                <input type="text" name="vs_lymph_nodes" value="{{ old('vs_lymph_nodes') }}" class="form-control" placeholder="Normais">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card-footer text-right">
