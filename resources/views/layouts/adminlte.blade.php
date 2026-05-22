@@ -17,6 +17,10 @@
         .btn-action { padding: 0.25rem 0.5rem; }
         .btn-action i { margin: 0; }
         .ts-wrapper .ts-control { min-height: 38px; }
+        .ts-dropdown { background: #fff !important; }
+        .ts-dropdown .option { background: #fff !important; }
+        .ts-dropdown .option.active { background: #e9ecef !important; }
+        .ts-dropdown .option:hover { background: #dee2e6 !important; }
         .main-sidebar.sidebar-dark-primary {
             background: var(--sidebar-bg, #051c12) !important;
         }

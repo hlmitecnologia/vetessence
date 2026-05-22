@@ -9,13 +9,20 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label>Pet *</label>
-                        <x-tom-select name="pet_id" :value="old('pet_id')" required>
-                            @foreach($pets as $pet)
-                            <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>
-                                {{ $pet->name }} @if($pet->tutors->first()) - {{ $pet->tutors->first()->name }} @endif
-                            </option>
-                            @endforeach
-                        </x-tom-select>
+                        <div class="input-group">
+                            <x-tom-select name="pet_id" :value="old('pet_id')" required>
+                                @foreach($pets as $pet)
+                                <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>
+                                    {{ $pet->name }} @if($pet->tutors->first()) - {{ $pet->tutors->first()->name }} @endif
+                                </option>
+                                @endforeach
+                            </x-tom-select>
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-primary" onclick="openNewPetModal()" title="Novo Pet">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Severidade *</label>
@@ -102,3 +109,29 @@
     </div>
 </div>
 @endsection
+
+@push('modals')
+<div class="modal fade" id="petModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Novo Pet</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('pet-form', key('pet-form-triage'))
+            </div>
+        </div>
+    </div>
+</div>
+@endpush
+
+@push('scripts')
+document.addEventListener('livewire:initialized', function() {
+    Livewire.on('close-modal', function() { $('#petModal').modal('hide'); });
+    Livewire.on('pet-saved', function() { location.reload(); });
+});
+function openNewPetModal() {
+    $('#petModal').modal('show');
+}
+@endpush
