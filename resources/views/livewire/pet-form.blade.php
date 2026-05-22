@@ -59,6 +59,9 @@
             Livewire.on('close-modal', function() { $('#tutorModal').modal('hide'); });
             Livewire.on('tutor-saved', function() { location.reload(); });
         });
+        $('#tutorModal').on('hidden.bs.modal', function() {
+            $('body').addClass('modal-open');
+        });
         function openNewTutorModal() {
             $('#tutorModal').modal('show');
         }
