@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\TriageRecord;
 use App\Models\Pet;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TriageRecordController extends Controller
@@ -33,7 +35,9 @@ class TriageRecordController extends Controller
     public function create()
     {
         $pets = Pet::with('tutors')->orderBy('name')->get();
-        return view('triage.create', compact('pets'));
+        $vetRole = Role::where('slug', 'veterinario')->first();
+        $veterinarians = $vetRole ? User::where('role_id', $vetRole->id)->where('is_active', true)->orderBy('name')->get() : collect();
+        return view('triage.create', compact('pets', 'veterinarians'));
     }
 
     public function store(Request $request)
@@ -62,7 +66,9 @@ class TriageRecordController extends Controller
     public function edit(TriageRecord $triage)
     {
         $pets = Pet::with('tutors')->orderBy('name')->get();
-        return view('triage.edit', compact('triage', 'pets'));
+        $vetRole = Role::where('slug', 'veterinario')->first();
+        $veterinarians = $vetRole ? User::where('role_id', $vetRole->id)->where('is_active', true)->orderBy('name')->get() : collect();
+        return view('triage.edit', compact('triage', 'pets', 'veterinarians'));
     }
 
     public function update(Request $request, TriageRecord $triage)
