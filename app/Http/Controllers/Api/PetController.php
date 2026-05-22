@@ -77,7 +77,7 @@ class PetController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:100',
             'tutor_id' => 'required|exists:tutors,id',
-            'species' => 'required|in:canine,feline,avian,exotic,reptile,small_mammal',
+            'species' => 'required|in:' . implode(',', array_keys(config('species'))),
             'breed' => 'nullable|string|max:100',
             'gender' => 'required|in:male,female',
             'birth_date' => 'nullable|date',
@@ -102,7 +102,7 @@ class PetController extends Controller
 
         $validated = $request->validate([
             'name' => 'sometimes|string|max:100',
-            'species' => 'sometimes|in:canine,feline,avian,exotic,reptile,small_mammal',
+            'species' => 'sometimes|in:' . implode(',', array_keys(config('species'))),
             'breed' => 'sometimes|nullable|string|max:100',
             'gender' => 'sometimes|in:male,female',
             'birth_date' => 'sometimes|nullable|date',

@@ -15,11 +15,9 @@
             <label>Espécie</label>
             <select wire:model="species" class="form-control">
                 <option value="">Todas</option>
-                <option value="canine">Canina</option>
-                <option value="feline">Felina</option>
-                <option value="equine">Equina</option>
-                <option value="bovine">Bovina</option>
-                <option value="other">Outras</option>
+                @foreach(config('species') as $key => $label)
+                    <option value="{{ $key }}">{{ $label }}</option>
+                @endforeach
             </select>
         </div>
 

@@ -31,7 +31,7 @@ class ServiceController extends Controller
     public function create()
     {
         $categories = Category::where('type', 'service')->orderBy('name')->get();
-        $speciesList = ['Canina', 'Felina', 'Equina', 'Bovina', 'Outros'];
+        $speciesList = config('species');
         return view('services.create', compact('categories', 'speciesList'));
     }
 
@@ -70,7 +70,7 @@ class ServiceController extends Controller
     {
         $categories = Category::where('type', 'service')->orderBy('name')->get();
         $service->load('priceTiers');
-        $speciesList = ['Canina', 'Felina', 'Equina', 'Bovina', 'Outros'];
+        $speciesList = config('species');
         return view('services.edit', compact('service', 'categories', 'speciesList'));
     }
 

@@ -1,15 +1,18 @@
-@extends('layouts.adminlte', ['title' => 'Padrões de Raça'])
+@extends('layouts.adminlte', ['title' => 'Raças'])
 
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Padrões de Raça</h3>
+        <h3 class="card-title">Raças</h3>
         <div class="card-tools">
-            <button onclick="openCreateModal()" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Novo</button>
+            <button onclick="openCreateModal()" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Nova Raça</button>
         </div>
     </div>
     <div class="card-body table-responsive p-0">
-        <table class="table table-hover text-nowrap">
+        @php
+            $speciesLabels = config('species');
+        @endphp
+        <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>Espécie</th>
@@ -25,7 +28,7 @@
             <tbody>
                 @forelse($defaults as $d)
                 <tr>
-                    <td>{{ $d->species }}</td>
+                    <td>{{ $speciesLabels[$d->species] ?? $d->species }}</td>
                     <td>{{ $d->breed }}</td>
                     <td>{{ $d->size ?? '-' }}</td>
                     <td>{{ $d->avg_weight_min && $d->avg_weight_max ? $d->avg_weight_min . ' - ' . $d->avg_weight_max . ' kg' : '-' }}</td>
@@ -42,20 +45,18 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="8" class="text-center">Nenhum padrão encontrado.</td></tr>
+                <tr><td colspan="8" class="text-center">Nenhum registro encontrado.</td></tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-    <div class="card-footer">{{ $defaults->links() }}</div>
 </div>
 
-<!-- BreedDefault Modal -->
 <div class="modal fade" id="breedDefaultModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="breedDefaultModalTitle">Novo Padrão de Raça</h5>
+                <h5 class="modal-title" id="breedDefaultModalTitle">Nova Raça</h5>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -73,12 +74,12 @@
     });
     function openCreateModal() {
         Livewire.dispatch('resetForm');
-        document.getElementById('breedDefaultModalTitle').textContent = 'Novo Padrão de Raça';
+        document.getElementById('breedDefaultModalTitle').textContent = 'Nova Raça';
         $('#breedDefaultModal').modal('show');
     }
     function openEditModal(id) {
         Livewire.dispatch('editBreedDefault', { id: id });
-        document.getElementById('breedDefaultModalTitle').textContent = 'Editar Padrão de Raça';
+        document.getElementById('breedDefaultModalTitle').textContent = 'Editar Raça';
         $('#breedDefaultModal').modal('show');
     }
 @endpush

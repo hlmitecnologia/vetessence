@@ -6,10 +6,9 @@
                     <label>Espécie *</label>
                     <select wire:model="species" class="form-control @error('species') is-invalid @enderror" required>
                         <option value="">Selecione...</option>
-                        <option value="canine">Canina</option>
-                        <option value="feline">Felina</option>
-                        <option value="equine">Equina</option>
-                        <option value="bovine">Bovina</option>
+                        @foreach(config('species') as $key => $label)
+                            <option value="{{ $key }}">{{ $label }}</option>
+                        @endforeach
                     </select>
                     @error('species') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>

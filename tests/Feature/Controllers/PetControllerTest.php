@@ -4,6 +4,7 @@ namespace Tests\Feature\Controllers;
 
 use App\Models\Pet;
 use App\Models\Tutor;
+use Database\Seeders\BreedDefaultSeeder;
 use Tests\ModuleTestCase;
 
 class PetControllerTest extends ModuleTestCase
@@ -12,6 +13,7 @@ class PetControllerTest extends ModuleTestCase
     {
         parent::setUp();
         $this->loginAs('veterinario');
+        $this->seed(BreedDefaultSeeder::class);
     }
 
     public function test_index()

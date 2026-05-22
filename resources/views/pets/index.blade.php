@@ -34,7 +34,8 @@
                                 <div class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 40px; height: 40px; background: color-mix(in srgb, var(--brand-primary, #455e36) 15%, white); color: var(--brand-primary, #455e36);">
                                     <i class="fas fa-paw"></i>
                                 </div>
-                                <div class="ml-2">
+                            @endif
+                            <div class="ml-2">
                                 <div class="font-weight-bold">{{ $pet->name }}</div>
                                 <small class="text-muted">{{ $pet->gender === 'male' ? 'Macho' : 'Fêmea' }}</small>
                             </div>
@@ -42,18 +43,11 @@
                     </td>
                     <td>
                         @php
-                            $speciesLabels = [
-                                'canine' => 'Canino',
-                                'feline' => 'Felino',
-                                'avian' => 'Ave',
-                                'exotic' => 'Exótico',
-                                'reptile' => 'Réptil',
-                                'small_mammal' => 'Pequeno Mamífero'
-                            ];
+                            $speciesLabels = config('species');
                         @endphp
                         {{ $speciesLabels[$pet->species] ?? $pet->species }}
                     </td>
-                    <td>{{ $pet->breed ?? 'SRD' }}</td>
+                    <td>{{ $pet->breedRelation?->name ?? $pet->breed ?? 'SRD' }}</td>
                     <td>
                         @php $firstTutor = $pet->tutors->first(); @endphp
                         {{ $firstTutor ? $firstTutor->name : '-' }}

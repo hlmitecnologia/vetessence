@@ -22,9 +22,24 @@
                         <small class="text-muted text-uppercase">Contato</small>
                         <p>{{ $supplier->contact ?? '-' }}</p>
                     </div>
+                    @php
+                        $sCity = $supplier->city?->name ?? $supplier->city;
+                        $sState = $supplier->state?->uf ?? $supplier->state;
+                        $sParts = array_filter([$supplier->address, $supplier->number]);
+                        $sAddress = implode(', ', $sParts);
+                    @endphp
                     <div class="col-12">
                         <small class="text-muted text-uppercase">Endereço</small>
-                        <p>{{ $supplier->address ? $supplier->address . ', ' . $supplier->city . ' - ' . $supplier->state : '-' }}</p>
+                        <p>
+                            @if($sAddress || $supplier->neighborhood || $sCity)
+                                {{ $sAddress }}
+                                @if($supplier->neighborhood) - {{ $supplier->neighborhood }}@endif
+                                @if($sCity) - {{ $sCity }} {{ $sState }}@endif
+                                @if($supplier->complement) ({{ $supplier->complement }})@endif
+                            @else
+                                -
+                            @endif
+                        </p>
                     </div>
                 </div>
             </div>

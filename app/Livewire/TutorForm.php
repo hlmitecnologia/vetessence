@@ -2,7 +2,10 @@
 
 namespace App\Livewire;
 
+use App\Models\City;
+use App\Models\State;
 use App\Models\Tutor;
+use App\Services\Cep\CepService;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -14,8 +17,14 @@ class TutorForm extends Component
     public $email = '';
     public $phone = '';
     public $address = '';
-    public $city = '';
-    public $state = '';
+    public $number = '';
+    public $neighborhood = '';
+    public $complement = '';
+    public $zipcode = '';
+    public $state_id = '';
+    public $city_id = '';
+    public $states = [];
+    public $cities = [];
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -23,12 +32,17 @@ class TutorForm extends Component
         'email' => 'required|email|unique:tutors,email',
         'phone' => 'required',
         'address' => 'nullable|string',
-        'city' => 'nullable|string|max:100',
-        'state' => 'nullable|string|max:2',
+        'number' => 'nullable|string|max:20',
+        'neighborhood' => 'nullable|string|max:100',
+        'complement' => 'nullable|string|max:100',
+        'zipcode' => 'nullable|string|max:20',
+        'state_id' => 'nullable|exists:states,id',
+        'city_id' => 'nullable|exists:cities,id',
     ];
 
     public function mount($id = null)
     {
+        $this->states = State::orderBy('name')->pluck('name', 'id')->toArray();
         if ($id) $this->load($id);
     }
 
@@ -42,8 +56,13 @@ class TutorForm extends Component
         $this->email = $tutor->email;
         $this->phone = $tutor->phone;
         $this->address = $tutor->address ?? '';
-        $this->city = $tutor->city ?? '';
-        $this->state = $tutor->state ?? '';
+        $this->number = $tutor->number ?? '';
+        $this->neighborhood = $tutor->neighborhood ?? '';
+        $this->complement = $tutor->complement ?? '';
+        $this->zipcode = $tutor->zipcode ?? '';
+        $this->state_id = (string) ($tutor->state_id ?? '');
+        $this->city_id = (string) ($tutor->city_id ?? '');
+        $this->loadCities();
     }
 
     #[On('resetForm')]
@@ -55,9 +74,62 @@ class TutorForm extends Component
         $this->email = '';
         $this->phone = '';
         $this->address = '';
-        $this->city = '';
-        $this->state = '';
+        $this->number = '';
+        $this->neighborhood = '';
+        $this->complement = '';
+        $this->zipcode = '';
+        $this->state_id = '';
+        $this->city_id = '';
+        $this->cities = [];
         $this->resetValidation();
+    }
+
+    public function updatedStateId($value)
+    {
+        $this->city_id = '';
+        $this->cities = [];
+        if ($value) {
+            $this->loadCities();
+        }
+    }
+
+    public function updatedZipcode($value)
+    {
+        $cep = preg_replace('/\D/', '', $value ?? '');
+        if (strlen($cep) !== 8) {
+            return;
+        }
+
+        $result = app(CepService::class)->lookup($cep);
+        if (!$result) {
+            return;
+        }
+
+        $this->address = $result->street;
+        $this->neighborhood = $result->neighborhood;
+
+        $state = State::where('uf', $result->state)->first();
+        if ($state) {
+            $this->state_id = (string) $state->id;
+            $this->loadCities();
+
+            $city = City::where('state_id', $state->id)
+                ->where('name', $result->city)
+                ->first();
+            if ($city) {
+                $this->city_id = (string) $city->id;
+            }
+        }
+    }
+
+    protected function loadCities()
+    {
+        if ($this->state_id) {
+            $this->cities = City::where('state_id', $this->state_id)
+                ->orderBy('name')
+                ->pluck('name', 'id')
+                ->toArray();
+        }
     }
 
     public function save()
@@ -69,7 +141,7 @@ class TutorForm extends Component
         }
         $this->validate($rules);
 
-        foreach (['address', 'city', 'state'] as $f) {
+        foreach (['address', 'number', 'neighborhood', 'complement', 'zipcode'] as $f) {
             $this->$f = $this->$f ?: null;
         }
 
@@ -79,8 +151,12 @@ class TutorForm extends Component
             'email' => $this->email,
             'phone' => $this->phone,
             'address' => $this->address,
-            'city' => $this->city,
-            'state' => $this->state,
+            'number' => $this->number,
+            'neighborhood' => $this->neighborhood,
+            'complement' => $this->complement,
+            'zipcode' => $this->zipcode,
+            'state_id' => $this->state_id ?: null,
+            'city_id' => $this->city_id ?: null,
         ];
 
         if ($this->tutorId) {

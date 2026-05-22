@@ -23,7 +23,7 @@ class ZoonoticDiseaseForm extends Component
     public $notes = '';
     public $is_active = true;
 
-    public $speciesOptions = ['canine', 'feline', 'equine', 'bovine', 'avian', 'reptile'];
+    public $speciesOptions = [];
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -43,6 +43,7 @@ class ZoonoticDiseaseForm extends Component
 
     public function mount($id = null)
     {
+        $this->speciesOptions = array_keys(config('species'));
         if ($id) $this->load($id);
     }
 

@@ -20,6 +20,7 @@ class BreedDefaultForm extends Component
     public $predispositions = '';
     public $notes = '';
     public $is_active = true;
+    public $speciesOptions = [];
 
     protected $rules = [
         'species' => 'required|string|max:50',
@@ -37,6 +38,7 @@ class BreedDefaultForm extends Component
 
     public function mount($id = null)
     {
+        $this->speciesOptions = config('species');
         if ($id) $this->load($id);
     }
 

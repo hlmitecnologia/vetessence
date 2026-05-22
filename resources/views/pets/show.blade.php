@@ -20,9 +20,9 @@
                 <h5 class="font-weight-bold">{{ $pet->name }}</h5>
                 <p class="text-muted">
                     @php
-                        $speciesLabels = ['canine' => 'Canino', 'feline' => 'Felino', 'avian' => 'Ave', 'exotic' => 'Exótico'];
+                        $speciesLabels = config('species');
                     @endphp
-                    {{ $speciesLabels[$pet->species] ?? $pet->species }} - {{ $pet->breed ?? 'SRD' }}
+                    {{ $speciesLabels[$pet->species] ?? $pet->species }} - {{ $pet->breedRelation?->name ?? $pet->breed ?? 'SRD' }}
                 </p>
 
                 <hr>

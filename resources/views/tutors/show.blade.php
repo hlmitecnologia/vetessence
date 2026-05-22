@@ -39,10 +39,21 @@
                         <i class="fas fa-envelope text-muted mr-2" style="width: 18px;"></i>
                         <span>{{ $tutor->email }}</span>
                     </div>
-                    @if($tutor->address)
+                    @php
+                        $locCity = $tutor->city?->name ?? $tutor->city;
+                        $locState = $tutor->state?->uf ?? $tutor->state;
+                        $locParts = array_filter([$tutor->address, $tutor->number]);
+                        $locAddress = implode(', ', $locParts);
+                    @endphp
+                    @if($locAddress || $tutor->neighborhood || $locCity)
                     <div class="mb-2">
                         <i class="fas fa-map-marker-alt text-muted mr-2" style="width: 18px;"></i>
-                        <span>{{ $tutor->address }}{{ $tutor->city ? ', ' . $tutor->city . ' - ' . $tutor->state : '' }}</span>
+                        <span>
+                            {{ $locAddress }}
+                            @if($tutor->neighborhood) - {{ $tutor->neighborhood }}@endif
+                            @if($locCity) - {{ $locCity }} {{ $locState }}@endif
+                            @if($tutor->complement) ({{ $tutor->complement }})@endif
+                        </span>
                     </div>
                     @endif
                 </div>

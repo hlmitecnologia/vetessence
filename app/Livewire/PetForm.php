@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\BreedDefault;
 use App\Models\Pet;
 use App\Models\PetTutor;
 use App\Models\Tutor;
@@ -18,6 +19,7 @@ class PetForm extends Component
     public $tutor_id = '';
     public $species = '';
     public $breed = '';
+    public $breed_default_id = '';
     public $gender = '';
     public $birth_date = '';
     public $weight = '';
@@ -31,27 +33,24 @@ class PetForm extends Component
     public $notes = '';
 
     public $tutors = [];
-    public $speciesOptions = [
-        'canine' => 'Canino',
-        'feline' => 'Felino',
-        'avian' => 'Ave',
-        'exotic' => 'Exótico',
-        'reptile' => 'Réptil',
-        'small_mammal' => 'Pequeno Mamífero'
-    ];
+    public $speciesOptions = [];
     public $breeds = [];
 
-    protected $rules = [
-        'name' => 'required|string|max:100',
-        'tutor_id' => 'required|exists:tutors,id',
-        'species' => 'required|in:canine,feline,avian,exotic,reptile,small_mammal',
-        'gender' => 'required|in:male,female',
-    ];
+    protected function rules()
+    {
+        return [
+            'name' => 'required|string|max:100',
+            'tutor_id' => 'required|exists:tutors,id',
+            'species' => 'required|in:' . implode(',', array_keys(config('species'))),
+            'gender' => 'required|in:male,female',
+        ];
+    }
 
     public function mount($id = null)
     {
+        $this->speciesOptions = config('species');
         $this->tutors = Tutor::orderBy('name')->get();
-        $this->updateBreeds();
+        $this->loadBreeds();
         if ($id) $this->load($id);
     }
 
@@ -59,11 +58,12 @@ class PetForm extends Component
     public function load($id)
     {
         $this->petId = $id;
-        $pet = Pet::with('tutors')->findOrFail($id);
+        $pet = Pet::with('tutors', 'breedRelation')->findOrFail($id);
         $this->name = $pet->name;
         $this->tutor_id = (string) ($pet->tutors->first()->id ?? '');
         $this->species = $pet->species;
         $this->breed = $pet->breed ?? '';
+        $this->breed_default_id = (string) ($pet->breed_default_id ?? '');
         $this->gender = $pet->gender;
         $this->birth_date = $pet->birth_date ? $pet->birth_date->format('Y-m-d') : '';
         $this->weight = (string) ($pet->weight ?? '');
@@ -75,7 +75,7 @@ class PetForm extends Component
         $this->size = $pet->size ?? 'medium';
         $this->notes = $pet->notes ?? '';
         $this->tutors = Tutor::orderBy('name')->get();
-        $this->updateBreeds();
+        $this->loadBreeds();
     }
 
     #[On('createPetForTutor')]
@@ -93,6 +93,7 @@ class PetForm extends Component
         $this->tutor_id = '';
         $this->species = '';
         $this->breed = '';
+        $this->breed_default_id = '';
         $this->gender = '';
         $this->birth_date = '';
         $this->weight = '';
@@ -105,26 +106,36 @@ class PetForm extends Component
         $this->photo = null;
         $this->notes = '';
         $this->tutors = Tutor::orderBy('name')->get();
-        $this->updateBreeds();
+        $this->loadBreeds();
         $this->resetValidation();
     }
 
-    public function updatedSpecies($value)
+    public function onSpeciesChange()
     {
-        $this->updateBreeds();
+        $this->breed = '';
+        $this->breed_default_id = '';
+        $this->loadBreeds();
     }
 
-    public function updateBreeds()
+    public function updatedBreedDefaultId($value)
     {
-        $breedsBySpecies = [
-            'canine' => ['SRD', 'Labrador', 'Golden Retriever', 'Poodle', 'Bulldog', 'Pastor Alemão', 'Rottweiler', 'Beagle', 'Vira-lata', 'Shih Tzu', 'Yorkshire', 'Dachshund', 'Boxer', 'Doberman', 'Pug', 'Husky', 'Border Collie', 'Outro'],
-            'feline' => ['SRD', 'Persa', 'Siamês', 'Maine Coon', 'British Shorthair', 'Ragdoll', 'Bengal', 'Abissínio', 'Sphynx', 'Munchkin', 'Norueguês', 'Outro'],
-            'avian' => ['Canário', 'Periquito', 'Calopsita', 'Papagaio', 'Arara', 'Cacatua', 'Curió', 'Bicudo', 'Outro'],
-            'exotic' => ['Hamster', 'Porquinho da Índia', 'Coelho', 'Furão', 'Chinchila', 'Gerbil', 'Porco-espinho', 'Outro'],
-            'reptile' => ['Tartaruga', 'Jabuti', 'Iguana', 'Gecko', 'Dragão barbudo', 'Serpente', 'Camaleão', 'Outro'],
-            'small_mammal' => ['Hamster', 'Porquinho da Índia', 'Coelho anão', 'Furão', 'Chinchila', 'Gerbil', 'Rato', 'Camundongo', 'Outro'],
-        ];
-        $this->breeds = isset($breedsBySpecies[$this->species]) ? $breedsBySpecies[$this->species] : [];
+        if ($value) {
+            $breed = BreedDefault::find($value);
+            $this->breed = $breed?->breed ?? '';
+        }
+    }
+
+    public function loadBreeds()
+    {
+        if (!$this->species) {
+            $this->breeds = [];
+            return;
+        }
+        $this->breeds = BreedDefault::where('is_active', true)
+            ->where('species', $this->species)
+            ->orderBy('breed')
+            ->pluck('breed', 'id')
+            ->toArray();
     }
 
     public function save()
@@ -135,6 +146,7 @@ class PetForm extends Component
             'name' => $this->name,
             'species' => $this->species,
             'breed' => $this->breed ?: null,
+            'breed_default_id' => $this->breed_default_id ?: null,
             'gender' => $this->gender,
             'birth_date' => $this->birth_date ?: null,
             'weight' => $this->weight ?: null,

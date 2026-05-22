@@ -11,7 +11,7 @@ class PetController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Pet::with('tutors');
+        $query = Pet::with('tutors', 'breedRelation');
 
         if ($request->search) {
             $query->where('name', 'like', "%{$request->search}%")
@@ -39,7 +39,7 @@ class PetController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:100',
-            'species' => 'required|in:canine,feline,avian,exotic,reptile,small_mammal',
+            'species' => 'required|in:' . implode(',', array_keys(config('species'))),
             'breed' => 'nullable|string|max:100',
             'gender' => 'required|in:male,female',
             'birth_date' => 'nullable|date',
@@ -92,7 +92,7 @@ class PetController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:100',
-            'species' => 'required|in:canine,feline,avian,exotic,reptile,small_mammal',
+            'species' => 'required|in:' . implode(',', array_keys(config('species'))),
             'breed' => 'nullable|string|max:100',
             'gender' => 'required|in:male,female',
             'birth_date' => 'nullable|date',

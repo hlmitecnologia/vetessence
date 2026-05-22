@@ -247,6 +247,22 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'suppliers.destroy',
     ]);
 
+    // Geographic data (cities by state for cascading selects)
+    Route::get('/api/cities/{stateId}', function ($stateId) {
+        return \App\Models\City::where('state_id', $stateId)
+            ->orderBy('name')
+            ->pluck('name', 'id');
+    })->name('api.cities.by-state');
+
+    // CEP lookup (auto-fill address from zipcode)
+    Route::get('/api/cep/{cep}', function ($cep) {
+        $result = app(\App\Services\Cep\CepService::class)->lookup($cep);
+        if (!$result) {
+            return response()->json(['error' => 'CEP not found'], 404);
+        }
+        return response()->json($result->toArray());
+    })->name('api.cep.lookup');
+
     // Categories
     Route::resource('categories', 'App\Http\Controllers\CategoryController')->names([
         'index' => 'categories.index',

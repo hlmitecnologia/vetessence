@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Models;
 
+use App\Models\City;
+use App\Models\State;
 use App\Models\Supplier;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -19,6 +21,9 @@ class SupplierTest extends TestCase
             'email' => 'supplier@test.com',
             'city' => 'Sao Paulo',
             'state' => 'SP',
+            'state_id' => null,
+            'city_id' => null,
+            'zipcode' => null,
         ]);
 
         $this->assertDatabaseHas('suppliers', [
@@ -36,5 +41,29 @@ class SupplierTest extends TestCase
         ]);
 
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $supplier->products);
+    }
+
+    public function test_state_relationship()
+    {
+        $state = State::factory()->create();
+        $supplier = Supplier::create([
+            'name' => 'Supplier A',
+            'state_id' => $state->id,
+        ]);
+
+        $this->assertTrue($supplier->state->is($state));
+    }
+
+    public function test_city_relationship()
+    {
+        $state = State::factory()->create();
+        $city = City::factory()->create(['state_id' => $state->id]);
+        $supplier = Supplier::create([
+            'name' => 'Supplier A',
+            'state_id' => $state->id,
+            'city_id' => $city->id,
+        ]);
+
+        $this->assertTrue($supplier->city->is($city));
     }
 }

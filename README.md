@@ -208,6 +208,13 @@ O plano detalhado de construção, fases e status de cada módulo está em [PLAN
 
 ---
 
+## Atribuições
+
+Este sistema utiliza dados do **Vertebrate Breed Ontology (VBO)**, licenciado sob CC-BY-4.0.
+Consulte [NCBITAXONOMY.md](./NCBITAXONOMY.md) para detalhes de atribuição, fontes e dados incorporados.
+
+---
+
 ## Regra de Atualização
 
 Este README é mantido em **português brasileiro**. Ao fazer commit:

@@ -14,7 +14,7 @@ class BreedDefaultController extends Controller
 
     public function index()
     {
-        $defaults = BreedDefault::orderBy('species')->orderBy('breed')->paginate(20);
+        $defaults = BreedDefault::orderBy('species')->orderBy('breed')->get();
         return view('breed-defaults.index', compact('defaults'));
     }
 

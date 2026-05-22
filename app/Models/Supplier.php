@@ -14,11 +14,23 @@ class Supplier extends Model
 
     protected $fillable = [
         'name', 'cnpj', 'ie', 'phone', 'email',
-        'address', 'city', 'state', 'contact', 'notes', 'branch_id'
+        'address', 'number', 'neighborhood', 'complement',
+        'city', 'state', 'contact', 'notes', 'branch_id',
+        'state_id', 'city_id', 'zipcode',
     ];
 
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function state(): BelongsTo
+    {
+        return $this->belongsTo(State::class);
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
     }
 }

@@ -2,8 +2,10 @@
 
 namespace Tests\Unit\Models;
 
-use App\Models\Tutor;
+use App\Models\City;
 use App\Models\Pet;
+use App\Models\State;
+use App\Models\Tutor;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -33,5 +35,28 @@ class TutorTest extends TestCase
         $tutor->pets()->attach($pet1->id, ['is_primary' => true, 'relationship' => 'tutor']);
         $tutor->pets()->attach($pet2->id, ['is_primary' => false, 'relationship' => 'tutor']);
         $this->assertCount(1, $tutor->primaryPets);
+    }
+
+    public function test_state_relationship()
+    {
+        $state = State::factory()->create();
+        $tutor = Tutor::factory()->create([
+            'state_id' => $state->id,
+            'city_id' => null,
+        ]);
+
+        $this->assertTrue($tutor->state()->first()->is($state));
+    }
+
+    public function test_city_relationship()
+    {
+        $state = State::factory()->create();
+        $city = City::factory()->create(['state_id' => $state->id]);
+        $tutor = Tutor::factory()->create([
+            'state_id' => $state->id,
+            'city_id' => $city->id,
+        ]);
+
+        $this->assertTrue($tutor->city()->first()->is($city));
     }
 }

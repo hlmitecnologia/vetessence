@@ -74,7 +74,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Espécie *</label>
-                    <select wire:model="species" class="form-control @error('species') is-invalid @enderror" required>
+                    <select wire:model="species" wire:change="onSpeciesChange" class="form-control @error('species') is-invalid @enderror" required>
                         <option value="">Selecione...</option>
                         @foreach($speciesOptions as $value => $label)
                         <option value="{{ $value }}">{{ $label }}</option>
@@ -100,10 +100,10 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Raça</label>
-                    <select wire:model="breed" class="form-control">
+                    <select wire:model="breed_default_id" class="form-control">
                         <option value="">Selecione...</option>
-                        @foreach($breeds as $breed)
-                        <option value="{{ $breed }}">{{ $breed }}</option>
+                        @foreach($breeds as $id => $name)
+                        <option value="{{ $id }}">{{ $name }}</option>
                         @endforeach
                     </select>
                 </div>

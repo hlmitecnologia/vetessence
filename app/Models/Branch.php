@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Branch extends Model
@@ -11,9 +12,11 @@ class Branch extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'slug', 'address', 'city', 'state',
+        'name', 'slug', 'address', 'number', 'neighborhood', 'complement',
+        'city', 'state',
         'zip_code', 'phone', 'email', 'cnpj',
         'is_active', 'is_main', 'notes',
+        'state_id', 'city_id',
     ];
 
     protected $casts = [
@@ -25,4 +28,14 @@ class Branch extends Model
 
     public function scopeActive($query) { return $query->where('is_active', true); }
     public function scopeMain($query) { return $query->where('is_main', true); }
+
+    public function state(): BelongsTo
+    {
+        return $this->belongsTo(State::class);
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
 }

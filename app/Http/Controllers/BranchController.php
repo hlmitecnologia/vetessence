@@ -29,6 +29,9 @@ class BranchController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:100|unique:branches,slug',
             'address' => 'nullable|string|max:500',
+            'number' => 'nullable|string|max:20',
+            'neighborhood' => 'nullable|string|max:100',
+            'complement' => 'nullable|string|max:100',
             'city' => 'nullable|string|max:100',
             'state' => 'nullable|string|max:50',
             'zip_code' => 'nullable|string|max:20',
@@ -38,6 +41,8 @@ class BranchController extends Controller
             'is_active' => 'boolean',
             'is_main' => 'boolean',
             'notes' => 'nullable|string',
+            'state_id' => 'nullable|exists:states,id',
+            'city_id' => 'nullable|exists:cities,id',
         ]);
 
         $validated['slug'] = $validated['slug'] ?? Str::slug($validated['name']);
@@ -70,6 +75,9 @@ class BranchController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:100|unique:branches,slug,' . $branch->id,
             'address' => 'nullable|string|max:500',
+            'number' => 'nullable|string|max:20',
+            'neighborhood' => 'nullable|string|max:100',
+            'complement' => 'nullable|string|max:100',
             'city' => 'nullable|string|max:100',
             'state' => 'nullable|string|max:50',
             'zip_code' => 'nullable|string|max:20',
@@ -79,6 +87,8 @@ class BranchController extends Controller
             'is_active' => 'boolean',
             'is_main' => 'boolean',
             'notes' => 'nullable|string',
+            'state_id' => 'nullable|exists:states,id',
+            'city_id' => 'nullable|exists:cities,id',
         ]);
 
         $validated['slug'] = $validated['slug'] ?? Str::slug($validated['name']);

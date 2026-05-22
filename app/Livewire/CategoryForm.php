@@ -38,17 +38,6 @@ class CategoryForm extends Component
         }
     }
 
-    public function mount($categoryId = null)
-    {
-        $this->parentCategories = Category::whereNull('parent_id')
-            ->orderBy('name')
-            ->get();
-
-        if ($categoryId) {
-            $this->loadCategory($categoryId);
-        }
-    }
-
     #[On('editCategory')]
     public function loadCategory($id)
     {

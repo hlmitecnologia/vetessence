@@ -1146,7 +1146,7 @@ php artisan test --env=testing --filter="DepartmentControllerTest::test_index" -
 
 ---
 
-## Phase X — Diagramas BPMN 2.0 para Manuais do Usuário
+## Phase X — Diagramas BPMN 2.0 para Manuais do Usuário ✅ Completo
 
 **Objetivo:** Adicionar diagramas de processo BPMN 2.0 nos manuais do usuário (29 módulos) e manual técnico, como imagens SVG interativas com modal lightbox.
 
@@ -1619,3 +1619,189 @@ PUT    /configuracoes/branding       → configuracoes.branding.update
 - Para editar um diagrama existente: abra o `.svg` no Draw.io → ele reconhece os metadados → edite → salve
 - Alternativa ao Draw.io: **bpmn.io** (web-based, BPMN 2.0 nativo, exporta SVG) pode ser usado em paralelo
 - Caso prefira não depender de ferramenta gráfica, Mermaid.js com `flowchart` + `subgraph` como swimlanes é uma alternativa simplificada (mas não BPMN 2.0 verdadeiro)
+
+---
+
+## Phase Y — Dados Geográficos (CEP + Cidade/Estado com Cascading Select)
+
+**Aprovado em 2026-05-22.** CEP adicionado a Supplier e Branch. Dados existentes migrados automaticamente (texto → FK).
+
+### Y1 — Estrutura de Dados
+
+| # | Task | Arquivos |
+|---|------|----------|
+| 1 | Migration `create_states_table`: `id`, `name`, `uf` (CHAR 2), `ibge_code`, `country` (default 'BR'), `created_at`, `updated_at` | `database/migrations/` |
+| 2 | Migration `create_cities_table`: `id`, `state_id` (FK), `name`, `ibge_code`, `created_at`, `updated_at` | `database/migrations/` |
+| 3 | Migration add `state_id`, `city_id` (FK) + `zipcode` a `suppliers`; add `state_id`, `city_id` (FK) + `zip_code` a `branches`; add `state_id`, `city_id` (FK) a `tutors` (já tem `zipcode`) | `database/migrations/` |
+
+### Y2 — Models + Relacionamentos
+
+| # | Task | Arquivos |
+|---|------|----------|
+| 4 | `State` model — `$fillable`, `$casts`, `hasMany(City::class)`, scope `byUf` | `app/Models/State.php` + factory |
+| 5 | `City` model — `$fillable`, `$casts`, `belongsTo(State::class)`, scope `byState` | `app/Models/City.php` + factory |
+| 6 | `Tutor` — add `belongsTo(State::class)`, `belongsTo(City::class)`, fillable `state_id`, `city_id` | `app/Models/Tutor.php` |
+| 7 | `Supplier` — add `belongsTo(State::class)`, `belongsTo(City::class)`, fillable `state_id`, `city_id`, `zipcode` | `app/Models/Supplier.php` |
+| 8 | `Branch` — add `belongsTo(State::class)`, `belongsTo(City::class)`, fillable `state_id`, `city_id`, `zip_code` | `app/Models/Branch.php` |
+
+### Y3 — Dados Embutidos (Seeder, sem dependência externa)
+
+| # | Task | Arquivos |
+|---|------|----------|
+| 9 | `GeoSeeder` — contém os 27 estados + 5.715 cidades brasileiras em arrays inline. Executado via `DatabaseSeeder` (nova instalação) ou standalone (`php artisan db:seed --class=GeoSeeder`). Sem dependência de banco externo | `database/seeders/GeoSeeder.php` |
+| 10 | Command `db:import-geo` — conecta ao `megapedigreedb` (existente) para migração de instalações legadas. Faz upsert de states/cities, depois migra dados textuais existentes (ex: "SP" → FK, "São Paulo" → FK). Fallback: executa `GeoSeeder` se megapedigreedb indisponível | `app/Console/Commands/DbImportGeo.php` |
+
+### Y4 — Livewire Forms (Cascading Select)
+
+| # | Task | Arquivos |
+|---|------|----------|
+| 11 | `TutorForm` — add `$state_id`, `$city_id`, `$cities` (computed from state), validation rules. On `updatedStateId`, reset `$city_id` + load cities | `app/Livewire/TutorForm.php` |
+| 12 | `TutorForm` view — two Tom Selects: Estado (all 27 states) → Cidade (filtered by state_id) + CEP input | `resources/views/livewire/tutor-form.blade.php` |
+| 13 | `SupplierForm` — same cascading pattern + zipcode field | `app/Livewire/SupplierForm.php` + view |
+
+### Y5 — Views Clássicas (Branch)
+
+| # | Task | Arquivos |
+|---|------|----------|
+| 14 | `branches/create.blade.php` — cascading Estado → Cidade + CEP input | `resources/views/branches/create.blade.php` |
+| 15 | `branches/edit.blade.php` — same pattern with pre-selected values | `resources/views/branches/edit.blade.php` |
+| 16 | `tutors/show.blade.php` — exibir `tutor->city->name`, `tutor->state->uf` no lugar de texto | `resources/views/tutors/show.blade.php` |
+| 17 | `suppliers/show.blade.php` — exibir `supplier->city->name`, `supplier->state->uf` | `resources/views/suppliers/show.blade.php` |
+| 18 | `branches/show.blade.php` — exibir `branch->city->name`, `branch->state->uf` | `resources/views/branches/show.blade.php` |
+
+### Y6 — Controllers
+
+| # | Task | Arquivos |
+|---|------|----------|
+| 19 | `TutorRecordController::store/update` — add `state_id`, `city_id` to validation + request | `app/Http/Controllers/TutorRecordController.php` |
+| 20 | `SupplierController::store/update` — add `state_id`, `city_id`, `zipcode` to validation + request | `app/Http/Controllers/SupplierController.php` |
+| 21 | `BranchController::store/update` — add `state_id`, `city_id`, `zip_code` to validation + request | `app/Http/Controllers/BranchController.php` |
+
+### Y7 — Cascading JSON Route
+
+| # | Task | Arquivos |
+|---|------|----------|
+| 22 | Route `GET /api/cities/{stateId}` — returns JSON of cities for the given state (used by Livewire and classic forms) | `routes/web.php` + controller closure |
+
+### Y8 — Testes
+
+| # | Task | Arquivos |
+|---|------|----------|
+| 23 | Unit: State model (fillable, casts, relationships, scopes) — 3 tests | `tests/Unit/Models/StateTest.php` |
+| 24 | Unit: City model (fillable, casts, relationships, scopes) — 3 tests | `tests/Unit/Models/CityTest.php` |
+| 25 | Feature: CRUD de Tutor com state/city — 4 tests (create, update, validation, show) | `tests/Feature/Controllers/TutorRecordControllerTest.php` (extend) |
+| 26 | Feature: CRUD de Supplier com state/city/zip — 4 tests | `tests/Feature/Controllers/SupplierControllerTest.php` (extend) |
+| 27 | Feature: CRUD de Branch com state/city/zip — 4 tests | `tests/Feature/Controllers/BranchControllerTest.php` (extend) |
+| 28 | Feature: `db:import-geo` command — 2 tests (import states, import cities) | `tests/Feature/Commands/DbImportGeoTest.php` |
+| 29 | Feature: JSON cities endpoint — 2 tests (returns cities, returns empty for invalid state) | `tests/Feature/Api/CitiesEndpointTest.php` |
+
+**Total estimado de testes: ~22**
+
+---
+
+## Phase Z — Auto-Preenchimento de Endereço por CEP
+
+**Objetivo:** Ao digitar o CEP em qualquer formulário de endereço (Tutor, Fornecedor, Unidade), buscar automaticamente logradouro, bairro, cidade e estado via API gratuita. Se não encontrado, o preenchimento manual continua funcionando normalmente.
+
+### Z1 — API Escolhida: ViaCEP + Fallback AwesomeAPI
+
+| Provedor | URL | Autenticação | Limite | Confiabilidade |
+|----------|-----|-------------|--------|----------------|
+| **ViaCEP** (primário) | `GET https://viacep.com.br/ws/{cep}/json/` | Nenhuma | Ilimitado | 99.8% uptime, 10+ anos |
+| **AwesomeAPI** (fallback) | `GET https://cep.awesomeapi.com.br/json/{cep}` | Nenhuma | Ilimitado | Base IBGE com lat/lng |
+
+**Por que ViaCEP:**
+- Gratuito, sem chave, sem rate limit
+- Resposta em JSON em ~120ms
+- Resposta de erro padronizada (`{"erro": true}`)
+- Mais usado no Brasil (2.3M req/dia), vasto ecossistema de integração
+- Mantido pela comunidade, estável desde 2015
+
+**Resposta ViaCEP:**
+```json
+{
+  "cep": "01310-100",
+  "logradouro": "Avenida Paulista",
+  "complemento": "lado par",
+  "bairro": "Bela Vista",
+  "localidade": "São Paulo",
+  "uf": "SP",
+  "ibge": "3550308",
+  "ddd": "11"
+}
+```
+
+**AwesomeAPI como fallback** — cobre casos raros onde ViaCEP pode estar indisponível.
+
+### Z2 — Estratégia de Implementação
+
+```mermaid
+flowchart TD
+    A[Usuário digita CEP 8 dígitos] --> B{CEP válido?}
+    B -->|sim| C[Tenta ViaCEP]
+    B -->|não| D[Aguarda 8 dígitos]
+    C -->|sucesso| E[Preenche: rua, bairro, cidade, estado]
+    C -->|erro/timeout| F[Tenta AwesomeAPI]
+    F -->|sucesso| E
+    F -->|erro| G[Mantém manual - sem preenchimento]
+    E --> H[Usuário confirma/ajusta campos]
+```
+
+| Etapa | Ação | Gatilho |
+|-------|------|---------|
+| 1 | Capturar CEP com 8 dígitos numéricos | `input` com `maxlength=9` + máscara `00000-000` |
+| 2 | Disparar busca automática | `debounce(800ms)` ou `@keyup.enter` ou onBlur |
+| 3 | Chamar `CepService::lookup($cep)` | Service class com cache |
+| 4 | Se sucesso: preencher rua, bairro, cidade, estado | Atualiza Livewire properties / jQuery |
+| 5 | Se erro: não alterar campos, sem toast de erro | Silencioso — usuário preenche manual |
+
+### Z3 — Serviço: `CepService`
+
+```php
+class CepService
+{
+    public function lookup(string $cep): ?CepResult;
+
+    // 1. Valida formato (8 dígitos)
+    // 2. Tenta cache (session ou DB)
+    // 3. GET ViaCEP com timeout 3s
+    // 4. Se erro, GET AwesomeAPI com timeout 3s
+    // 5. Mapeia resposta para DTO CepResult
+    // 6. Cache por 7 dias
+}
+```
+
+**DTO `CepResult`:**
+- `zipcode`, `street`, `neighborhood`, `city`, `state`, `ibge`
+
+### Z4 — Integração nos Formulários
+
+| Formulário | Tipo | Ação ao preencher CEP |
+|------------|------|----------------------|
+| **TutorForm** | Livewire | `$this->dispatch('cepFound', $result)` → preenche address, neighborhood, city, state |
+| **SupplierForm** | Livewire | Mesmo padrão |
+| **Branch create/edit** | Clássico | jQuery `$.get('/api/cep/{cep}')` → preenche campos |
+
+O roteamento será:
+- **Livewire**: método `updatedZipcode()` ou `updatedCep()` que chama o service no backend
+- **Clássico (Branch)**: endpoint `GET /api/cep/{cep}` (já temos padrão similar com `/api/cities/{stateId}`)
+
+### Z5 — Tasks
+
+| # | Task | Arquivos | Testes |
+|---|------|----------|--------|
+| 1 | Criar `CepResult` DTO (value object com typed properties) | `app/Services/Cep/CepResult.php` | 2 unit |
+| 2 | Criar `CepService` — lookup via ViaCEP + AwesomeAPI fallback + cache de sessão | `app/Services/Cep/CepService.php` | 4 feature (mock HTTP) |
+| 3 | Adicionar rota `GET /api/cep/{cep}` para formulários clássicos | `routes/web.php` | 2 feature (returns data, returns empty) |
+| 4 | TutorForm: método `updatedZipcode()` + preenchimento automático de address/neighborhood/state/city | `app/Livewire/TutorForm.php` | 2 feature |
+| 5 | SupplierForm: mesmo padrão | `app/Livewire/SupplierForm.php` | 2 feature |
+| 6 | Branch create/edit: jQuery no onBlur do CEP → `$.get('/api/cep/' + cep)` | `resources/views/branches/create.blade.php`, `edit.blade.php` | — (testado via rota) |
+| 7 | Adicionar máscara de CEP (`00000-000`) nos inputs que ainda não têm | views | — |
+| 8 | **Testes** | diversos | ~10 |
+
+### Z6 — Observações
+
+- **Cache**: resultados da API devem ser cacheados (session ou tabela `cep_cache`) para evitar chamadas repetidas ao mesmo CEP
+- **Fallback silencioso**: se ViaCEP + AwesomeAPI falharem, o formulário continua editável normalmente — sem mensagem de erro para não frustrar o usuário
+- **CEP inválido**: se o usuário digitar um CEP que não existe, nenhum campo é alterado
+- **Rate limit**: ViaCEP não tem limite documentado, mas em caso de muitas requisições usar cache evita qualquer problema

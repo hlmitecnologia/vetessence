@@ -18,11 +18,9 @@
             <div class="col-md-2">
                 <select name="species" class="form-control form-control-sm">
                     <option value="">Todas as espécies</option>
-                    <option value="canine" {{ request('species') == 'canine' ? 'selected' : '' }}>Canina</option>
-                    <option value="feline" {{ request('species') == 'feline' ? 'selected' : '' }}>Felina</option>
-                    <option value="equine" {{ request('species') == 'equine' ? 'selected' : '' }}>Equina</option>
-                    <option value="bovine" {{ request('species') == 'bovine' ? 'selected' : '' }}>Bovina</option>
-                    <option value="other" {{ request('species') == 'other' ? 'selected' : '' }}>Outras</option>
+                    @foreach(config('species') as $key => $label)
+                        <option value="{{ $key }}" {{ request('species') == $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="col-md-2">

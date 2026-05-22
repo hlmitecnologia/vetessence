@@ -35,10 +35,16 @@ class SupplierController extends Controller
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email',
             'address' => 'nullable|string',
+            'number' => 'nullable|string|max:20',
+            'neighborhood' => 'nullable|string|max:100',
+            'complement' => 'nullable|string|max:100',
             'city' => 'nullable|string|max:100',
             'state' => 'nullable|string|max:2',
             'contact' => 'nullable|string|max:100',
             'notes' => 'nullable|string',
+            'state_id' => 'nullable|exists:states,id',
+            'city_id' => 'nullable|exists:cities,id',
+            'zipcode' => 'nullable|string|max:20',
         ]);
 
         Supplier::create($validated);
@@ -66,10 +72,16 @@ class SupplierController extends Controller
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email',
             'address' => 'nullable|string',
+            'number' => 'nullable|string|max:20',
+            'neighborhood' => 'nullable|string|max:100',
+            'complement' => 'nullable|string|max:100',
             'city' => 'nullable|string|max:100',
             'state' => 'nullable|string|max:2',
             'contact' => 'nullable|string|max:100',
             'notes' => 'nullable|string',
+            'state_id' => 'nullable|exists:states,id',
+            'city_id' => 'nullable|exists:cities,id',
+            'zipcode' => 'nullable|string|max:20',
         ]);
 
         $supplier->update($validated);

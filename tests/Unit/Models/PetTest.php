@@ -5,12 +5,19 @@ namespace Tests\Unit\Models;
 use App\Models\Pet;
 use App\Models\Tutor;
 use App\Models\Branch;
+use Database\Seeders\BreedDefaultSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class PetTest extends TestCase
 {
     use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(BreedDefaultSeeder::class);
+    }
 
     public function test_fillable()
     {

@@ -22,6 +22,7 @@ class Tutor extends Authenticatable
         'city', 'state', 'profession', 'photo', 'notes',
         'password', 'remember_token',
         'created_at_branch_id',
+        'state_id', 'city_id',
         'notify_sms', 'notify_whatsapp', 'notify_email',
     ];
 
@@ -73,5 +74,15 @@ class Tutor extends Authenticatable
     public function createdAtBranch(): BelongsTo
     {
         return $this->belongsTo(Branch::class, 'created_at_branch_id');
+    }
+
+    public function state(): BelongsTo
+    {
+        return $this->belongsTo(State::class);
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
     }
 }

@@ -2,7 +2,12 @@
     <form wire:submit.prevent="save">
         <div class="form-group">
             <label>Espécie *</label>
-            <input type="text" wire:model="species" class="form-control @error('species') is-invalid @enderror" required>
+            <select wire:model="species" class="form-control @error('species') is-invalid @enderror" required>
+                <option value="">Selecione...</option>
+                @foreach($speciesOptions as $value => $label)
+                <option value="{{ $value }}">{{ $label }}</option>
+                @endforeach
+            </select>
             @error('species') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 

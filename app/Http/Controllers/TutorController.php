@@ -47,8 +47,13 @@ class TutorController extends Controller
             'email' => 'required|email|unique:tutors',
             'phone' => 'required',
             'address' => 'nullable|string',
+            'number' => 'nullable|string|max:20',
+            'neighborhood' => 'nullable|string|max:100',
+            'complement' => 'nullable|string|max:100',
             'city' => 'nullable|string|max:100',
             'state' => 'nullable|string|max:2',
+            'state_id' => 'nullable|exists:states,id',
+            'city_id' => 'nullable|exists:cities,id',
         ]);
 
         $validated['notify_sms'] = $request->boolean('notify_sms');
@@ -85,8 +90,13 @@ class TutorController extends Controller
             'email' => 'required|email|unique:tutors,email,' . $tutor->id,
             'phone' => 'required',
             'address' => 'nullable|string',
+            'number' => 'nullable|string|max:20',
+            'neighborhood' => 'nullable|string|max:100',
+            'complement' => 'nullable|string|max:100',
             'city' => 'nullable|string|max:100',
             'state' => 'nullable|string|max:2',
+            'state_id' => 'nullable|exists:states,id',
+            'city_id' => 'nullable|exists:cities,id',
         ]);
 
         $validated['notify_sms'] = $request->boolean('notify_sms');

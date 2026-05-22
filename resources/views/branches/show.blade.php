@@ -16,8 +16,22 @@
             <div class="col-md-4"><strong>E-mail:</strong><p>{{ $branch->email ?? '-' }}</p></div>
         </div>
         <div class="row mt-2">
-            <div class="col-md-6"><strong>Endereço:</strong><p>{{ $branch->address ?? '-' }}</p></div>
-            <div class="col-md-3"><strong>Cidade/UF:</strong><p>{{ $branch->city ?? '-' }}/{{ $branch->state ?? '' }}</p></div>
+            @php
+                $bCity = $branch->city?->name ?? $branch->city;
+                $bState = $branch->state?->uf ?? $branch->state;
+                $bParts = array_filter([$branch->address, $branch->number]);
+                $bAddress = implode(', ', $bParts);
+            @endphp
+            <div class="col-md-6"><strong>Endereço:</strong><p>
+                @if($bAddress)
+                    {{ $bAddress }}
+                    @if($branch->neighborhood) - {{ $branch->neighborhood }}@endif
+                    @if($branch->complement) ({{ $branch->complement }})@endif
+                @else
+                    -
+                @endif
+            </p></div>
+            <div class="col-md-3"><strong>Cidade/UF:</strong><p>{{ $bCity ?? '-' }}{{ $bState ? ' - ' . $bState : '' }}</p></div>
             <div class="col-md-3"><strong>CNPJ:</strong><p>{{ $branch->cnpj ?? '-' }}</p></div>
         </div>
         <div class="row mt-2">

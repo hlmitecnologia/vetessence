@@ -14,7 +14,7 @@ class Pet extends Model
     use HasFactory, HasPhoto;
 
     protected $fillable = [
-        'name', 'species', 'breed', 'gender', 'birth_date', 'weight',
+        'name', 'species', 'breed', 'breed_default_id', 'gender', 'birth_date', 'weight',
         'color', 'microchip_number', 'microchip_date', 'rg_number', 'rg_issuer',
         'coat', 'size', 'is_active', 'notes', 'photo', 'created_at_branch_id',
     ];
@@ -65,6 +65,11 @@ class Pet extends Model
     public function convenioPets(): HasMany
     {
         return $this->hasMany(ConvenioPet::class);
+    }
+
+    public function breedRelation(): BelongsTo
+    {
+        return $this->belongsTo(BreedDefault::class, 'breed_default_id');
     }
 
     public function createdAtBranch(): BelongsTo

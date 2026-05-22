@@ -3,7 +3,10 @@
 namespace App\Livewire;
 
 use App\Models\Branch;
+use App\Models\City;
+use App\Models\State;
 use App\Models\Supplier;
+use App\Services\Cep\CepService;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -16,12 +19,18 @@ class SupplierForm extends Component
     public $phone = '';
     public $email = '';
     public $address = '';
-    public $city = '';
-    public $state = '';
+    public $number = '';
+    public $neighborhood = '';
+    public $complement = '';
+    public $state_id = '';
+    public $city_id = '';
+    public $zipcode = '';
     public $contact = '';
     public $notes = '';
     public $branch_id = '';
     public $branches = [];
+    public $states = [];
+    public $cities = [];
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -30,8 +39,12 @@ class SupplierForm extends Component
         'phone' => 'nullable|string|max:20',
         'email' => 'nullable|email',
         'address' => 'nullable|string',
-        'city' => 'nullable|string|max:100',
-        'state' => 'nullable|string|max:2',
+        'number' => 'nullable|string|max:20',
+        'neighborhood' => 'nullable|string|max:100',
+        'complement' => 'nullable|string|max:100',
+        'state_id' => 'nullable|exists:states,id',
+        'city_id' => 'nullable|exists:cities,id',
+        'zipcode' => 'nullable|string|max:20',
         'contact' => 'nullable|string|max:100',
         'notes' => 'nullable|string',
         'branch_id' => 'nullable|exists:branches,id',
@@ -40,11 +53,7 @@ class SupplierForm extends Component
     public function mount($id = null)
     {
         $this->branches = Branch::orderBy('name')->get();
-        if ($id) $this->load($id);
-    }
-
-    public function mount($id = null)
-    {
+        $this->states = State::orderBy('name')->pluck('name', 'id')->toArray();
         if ($id) $this->load($id);
     }
 
@@ -59,11 +68,16 @@ class SupplierForm extends Component
         $this->phone = $sup->phone ?? '';
         $this->email = $sup->email ?? '';
         $this->address = $sup->address ?? '';
-        $this->city = $sup->city ?? '';
-        $this->state = $sup->state ?? '';
+        $this->number = $sup->number ?? '';
+        $this->neighborhood = $sup->neighborhood ?? '';
+        $this->complement = $sup->complement ?? '';
+        $this->state_id = (string) ($sup->state_id ?? '');
+        $this->city_id = (string) ($sup->city_id ?? '');
+        $this->zipcode = $sup->zipcode ?? '';
         $this->contact = $sup->contact ?? '';
         $this->notes = $sup->notes ?? '';
         $this->branch_id = (string) ($sup->branch_id ?? '');
+        $this->loadCities();
     }
 
     #[On('resetForm')]
@@ -76,17 +90,70 @@ class SupplierForm extends Component
         $this->phone = '';
         $this->email = '';
         $this->address = '';
-        $this->city = '';
-        $this->state = '';
+        $this->number = '';
+        $this->neighborhood = '';
+        $this->complement = '';
+        $this->state_id = '';
+        $this->city_id = '';
+        $this->zipcode = '';
         $this->contact = '';
         $this->notes = '';
         $this->branch_id = '';
+        $this->cities = [];
         $this->resetValidation();
+    }
+
+    public function updatedStateId($value)
+    {
+        $this->city_id = '';
+        $this->cities = [];
+        if ($value) {
+            $this->loadCities();
+        }
+    }
+
+    public function updatedZipcode($value)
+    {
+        $cep = preg_replace('/\D/', '', $value ?? '');
+        if (strlen($cep) !== 8) {
+            return;
+        }
+
+        $result = app(CepService::class)->lookup($cep);
+        if (!$result) {
+            return;
+        }
+
+        $this->address = $result->street;
+        $this->neighborhood = $result->neighborhood;
+
+        $state = State::where('uf', $result->state)->first();
+        if ($state) {
+            $this->state_id = (string) $state->id;
+            $this->loadCities();
+
+            $city = City::where('state_id', $state->id)
+                ->where('name', $result->city)
+                ->first();
+            if ($city) {
+                $this->city_id = (string) $city->id;
+            }
+        }
+    }
+
+    protected function loadCities()
+    {
+        if ($this->state_id) {
+            $this->cities = City::where('state_id', $this->state_id)
+                ->orderBy('name')
+                ->pluck('name', 'id')
+                ->toArray();
+        }
     }
 
     public function save()
     {
-        foreach (['cnpj', 'ie', 'phone', 'email', 'address', 'city', 'state', 'contact', 'notes'] as $f) {
+        foreach (['cnpj', 'ie', 'phone', 'email', 'address', 'number', 'neighborhood', 'complement', 'zipcode', 'contact', 'notes'] as $f) {
             $this->$f = $this->$f ?: null;
         }
         $this->validate();
@@ -98,8 +165,12 @@ class SupplierForm extends Component
             'phone' => $this->phone,
             'email' => $this->email,
             'address' => $this->address,
-            'city' => $this->city,
-            'state' => $this->state,
+            'number' => $this->number,
+            'neighborhood' => $this->neighborhood,
+            'complement' => $this->complement,
+            'state_id' => $this->state_id ?: null,
+            'city_id' => $this->city_id ?: null,
+            'zipcode' => $this->zipcode,
             'contact' => $this->contact,
             'notes' => $this->notes,
             'branch_id' => $this->branch_id ?: null,
