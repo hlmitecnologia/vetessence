@@ -1,5 +1,22 @@
 <div>
     <form wire:submit.prevent="save">
+        <div class="form-group text-center">
+            @if ($photo)
+                <img src="{{ $photo->temporaryUrl() }}" class="rounded-circle mb-2" style="width: 96px; height: 96px; object-fit: cover;">
+            @elseif ($petId && ($existing = \App\Models\Pet::find($petId)) && $existing->photo_url)
+                <img src="{{ $existing->photo_url }}" class="rounded-circle mb-2" style="width: 96px; height: 96px; object-fit: cover;">
+            @else
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" style="width: 96px; height: 96px; background: color-mix(in srgb, var(--brand-primary, #455e36) 15%, white);">
+                    <i class="fas fa-paw" style="font-size: 2rem; color: var(--brand-primary, #455e36);"></i>
+                </div>
+            @endif
+            <div class="custom-file">
+                <input type="file" wire:model="photo" class="custom-file-input" id="petPhoto" accept="image/png,image/jpeg,image/webp">
+                <label class="custom-file-label" for="petPhoto">Foto do pet</label>
+            </div>
+            @error('photo') <span class="text-danger small">{{ $message }}</span> @enderror
+        </div>
+
         <div class="form-group">
             <label>Nome *</label>
             <input type="text" wire:model="name" class="form-control @error('name') is-invalid @enderror" required>

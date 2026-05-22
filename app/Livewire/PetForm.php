@@ -149,10 +149,17 @@ class PetForm extends Component
         ];
 
         if ($this->petId) {
-            Pet::findOrFail($this->petId)->update($data);
+            $pet = Pet::findOrFail($this->petId);
+            $pet->update($data);
+            if ($this->photo) {
+                $pet->savePhoto($this->photo, 'pets');
+            }
             PetTutor::where('pet_id', $this->petId)->where('is_primary', true)->update(['tutor_id' => $this->tutor_id]);
         } else {
             $pet = Pet::create($data);
+            if ($this->photo) {
+                $pet->savePhoto($this->photo, 'pets');
+            }
             PetTutor::create([
                 'pet_id' => $pet->id,
                 'tutor_id' => $this->tutor_id,

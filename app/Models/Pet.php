@@ -16,7 +16,7 @@ class Pet extends Model
     protected $fillable = [
         'name', 'species', 'breed', 'gender', 'birth_date', 'weight',
         'color', 'microchip_number', 'microchip_date', 'rg_number', 'rg_issuer',
-        'coat', 'size', 'is_active', 'notes', 'created_at_branch_id',
+        'coat', 'size', 'is_active', 'notes', 'photo', 'created_at_branch_id',
     ];
 
     protected $casts = [
