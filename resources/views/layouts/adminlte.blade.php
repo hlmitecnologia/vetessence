@@ -697,7 +697,7 @@
                                 <li class="nav-item">
                                     <a href="{{ route('docs.index') }}" class="nav-link {{ request()->routeIs('docs.*') ? 'active' : '' }}">
                                         <i class="fas fa-book nav-icon"></i>
-                                        <p>Documentação</p>
+                                        <p>Manual</p>
                                     </a>
                                 </li>
                                 @endcan

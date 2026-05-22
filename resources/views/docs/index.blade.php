@@ -1,12 +1,12 @@
 @extends('layouts.adminlte')
-@section('title', 'Documentação')
+@section('title', 'Manual')
 @section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h5><i class="fas fa-book"></i> Documentação</h5>
+                    <h5><i class="fas fa-book"></i> Manual</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
@@ -81,6 +81,7 @@
 
 @push('styles')
 <style>
+.list-group-item.active { background: var(--brand-accent, #d6c38d) !important; border-color: var(--brand-accent, #d6c38d) !important; color: #1a1a1a !important; }
 .docs-content h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
 .docs-content h2 { font-size: 1.35rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; }
 .docs-content h3 { font-size: 1.15rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; }
