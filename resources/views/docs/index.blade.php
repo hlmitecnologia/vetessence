@@ -1,5 +1,5 @@
 @extends('layouts.adminlte')
-@section('title', 'Manual')
+@php $title = 'Manual'; @endphp
 @section('content')
 <div class="container-fluid">
     <div class="row">
