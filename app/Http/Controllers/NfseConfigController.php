@@ -2,20 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\NfseConfig;
 use Illuminate\Http\Request;
 
 class NfseConfigController extends Controller
 {
-    public function edit()
+    public function edit(Request $request)
     {
-        $config = NfseConfig::where('branch_id', auth()->user()->branch_id)->firstOrNew();
-        return view('nfse.config', compact('config'));
+        $user = $request->user();
+
+        if ($user->can('unidades')) {
+            $branches = Branch::active()->orderBy('name')->get();
+        } else {
+            $branches = Branch::where('id', $user->branch_id)->get();
+        }
+
+        $branchId = $request->query('branch_id', $user->branch_id);
+
+        $config = NfseConfig::where('branch_id', $branchId)->firstOrNew();
+
+        return view('nfse.config', compact('branches', 'branchId', 'config'));
     }
 
     public function update(Request $request)
     {
         $validated = $request->validate([
+            'branch_id' => 'required|exists:branches,id',
             'cnpj' => 'required|string|max:18',
             'municipio_ibge' => 'required|string|max:7',
             'regime_tributario' => 'required|in:mei,simples_nacional,lucro_presumido',
@@ -27,13 +40,13 @@ class NfseConfigController extends Controller
             'webmania_consumer_secret' => 'required|string',
         ]);
 
-        $branchId = auth()->user()->branch_id;
-
         NfseConfig::updateOrCreate(
-            ['branch_id' => $branchId],
+            ['branch_id' => $validated['branch_id']],
             $validated + ['is_active' => true],
         );
 
-        return redirect()->route('nfse.config')->with('success', 'Configuração NFS-e salva!');
+        return redirect()
+            ->route('nfse.config', ['branch_id' => $validated['branch_id']])
+            ->with('success', 'Configuração NFS-e salva!');
     }
 }

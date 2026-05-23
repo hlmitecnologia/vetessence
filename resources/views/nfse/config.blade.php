@@ -13,13 +13,31 @@
                 @csrf
                 @method('PUT')
                 <div class="card-body">
-                    <p class="text-muted">Configure os dados fiscais da sua unidade para emissão de Nota Fiscal de Serviços Eletrônica via Webmania®.</p>
+                    <p class="text-muted">Configure os dados fiscais para emissão de Nota Fiscal de Serviços Eletrônica via Webmania®.</p>
+
+                    <div class="form-group">
+                        <label>Unidade *</label>
+                        <select name="branch_id" id="branch_id" class="form-control @error('branch_id') is-invalid @enderror" required>
+                            <option value="">Selecione a unidade</option>
+                            @foreach($branches as $branch)
+                                <option value="{{ $branch->id }}"
+                                    data-cnpj="{{ $branch->cnpj }}"
+                                    {{ old('branch_id', $branchId) == $branch->id ? 'selected' : '' }}>
+                                    {{ $branch->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('branch_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+
+                    <hr>
+                    <h5>Dados Fiscais</h5>
 
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>CNPJ *</label>
-                                <input type="text" name="cnpj" class="form-control @error('cnpj') is-invalid @enderror" value="{{ old('cnpj', $config->cnpj ?? '') }}" required>
+                                <input type="text" name="cnpj" id="cnpj" class="form-control @error('cnpj') is-invalid @enderror" value="{{ old('cnpj', $config->cnpj ?? '') }}" required>
                                 @error('cnpj') <span class="invalid-feedback">{{ $message }}</span> @enderror
                             </div>
                         </div>
@@ -109,3 +127,16 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.getElementById('branch_id').addEventListener('change', function () {
+    const cnpj = this.options[this.selectedIndex]?.dataset.cnpj || '';
+    document.getElementById('cnpj').value = cnpj;
+
+    const url = new URL(window.location);
+    url.searchParams.set('branch_id', this.value);
+    window.location.href = url.toString();
+});
+</script>
+@endpush
