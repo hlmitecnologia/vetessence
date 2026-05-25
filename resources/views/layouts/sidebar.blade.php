@@ -22,10 +22,10 @@
             default => 'flex-row',
         };
     @endphp
-    <div class="flex items-center justify-center" style="min-height: 70px; background: {{ branding('primary_color', '#455e36') }}; padding: 8px;">
+    <div class="flex items-center justify-center" style="height: 50px; background: {{ branding('primary_color', '#455e36') }}; padding: 4px 8px;">
         <div class="flex {{ $flexClass }} items-center justify-center text-center w-full">
             @if($hasLogo)
-                <img src="{{ $logoUrl }}" style="max-height: 55px; max-width: 100%; object-fit: contain;" alt="Logo">
+                <img src="{{ $logoUrl }}" style="max-height: 40px; max-width: 100%; object-fit: contain;" alt="Logo">
             @else
                 <i class="fas fa-paw text-2xl text-white"></i>
             @endif
