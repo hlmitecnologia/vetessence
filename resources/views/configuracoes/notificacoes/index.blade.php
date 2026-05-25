@@ -1,13 +1,13 @@
 @extends('layouts.adminlte', ['title' => 'Notificações'])
 
-@section('css')
+@push('styles')
 <style>
 .nav-tabs .nav-link.active {
     color: #fff !important;
     font-weight: 600;
 }
 </style>
-@endsection
+@endpush
 
 @section('content')
 <div class="container-fluid">
@@ -331,24 +331,25 @@
 </div>
 @endsection
 
-@push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
     function toggleProviderFields(group) {
-        const select = document.querySelector(`.provider-select[data-group="${group}"]`);
+        var select = document.querySelector('.provider-select[data-group="' + group + '"]');
         if (!select) return;
-        const selected = select.value;
-        document.querySelectorAll(`.provider-fields[data-group="${group}"]`).forEach(el => {
-            el.style.display = el.dataset.provider === selected ? 'block' : 'none';
-        });
+        var selected = select.value;
+        var fields = document.querySelectorAll('.provider-fields[data-group="' + group + '"]');
+        for (var i = 0; i < fields.length; i++) {
+            fields[i].style.display = fields[i].dataset.provider === selected ? 'block' : 'none';
+        }
     }
-
-    document.querySelectorAll('.provider-select').forEach(select => {
-        toggleProviderFields(select.dataset.group);
-        select.addEventListener('change', function() {
-            toggleProviderFields(this.dataset.group);
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+        var selects = document.querySelectorAll('.provider-select');
+        for (var i = 0; i < selects.length; i++) {
+            toggleProviderFields(selects[i].dataset.group);
+            selects[i].addEventListener('change', function() {
+                toggleProviderFields(this.dataset.group);
+            });
+        }
     });
-});
+})();
 </script>
-@endpush
