@@ -17,7 +17,7 @@ class NfseConfigController extends Controller
     public function update(Request $request)
     {
         $rules = [
-            'provider' => 'required|in:webmania,focusnfe,ginfes',
+            'provider' => 'required|in:webmania,focusnfe,spedy,tecnospeed,nfeio',
             'ambiente' => 'required|in:homologacao,producao',
         ];
 
@@ -33,9 +33,15 @@ class NfseConfigController extends Controller
             'focusnfe' => [
                 'focusnfe_token' => 'required|string',
             ],
-            'ginfes' => [
-                'ginfes_username' => 'required|string',
-                'ginfes_password' => 'required|string',
+            'spedy' => [
+                'spedy_api_key' => 'required|string',
+                'spedy_api_secret' => 'required|string',
+            ],
+            'tecnospeed' => [
+                'tecnospeed_token' => 'required|string',
+            ],
+            'nfeio' => [
+                'nfeio_api_key' => 'required|string',
             ],
             default => [],
         };

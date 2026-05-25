@@ -6,27 +6,27 @@ use App\Models\NfseConfig;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\Http;
 
-class GinfesProvider implements NfseProvider
+class SpedyProvider implements NfseProvider
 {
     protected string $baseUrl;
 
     public function __construct()
     {
-        $this->baseUrl = config('nfse.ginfes.base_url', 'https://api.ginfes.com.br');
+        $this->baseUrl = config('nfse.spedy.base_url', 'https://api.spedy.com.br');
     }
 
     public function emitir(NfseConfig $config, Invoice $invoice): NfseResult
     {
         $payload = $this->buildPayload($config, $invoice);
 
-        $response = Http::withBasicAuth($config->ginfes_username, $config->ginfes_password)
+        $response = Http::withHeaders($this->headers($config))
             ->post("{$this->baseUrl}/v1/nfse", $payload);
 
         $body = $response->json();
 
         if (!$response->successful()) {
             return NfseResult::error(
-                $body['erro'] ?? $body['error'] ?? 'Erro ao emitir NFSe via GinFes',
+                $body['erro'] ?? $body['error'] ?? 'Erro ao emitir NFSe via Spedy',
                 $body
             );
         }
@@ -44,14 +44,14 @@ class GinfesProvider implements NfseProvider
 
     public function consultar(NfseConfig $config, string $nfseNumber): NfseResult
     {
-        $response = Http::withBasicAuth($config->ginfes_username, $config->ginfes_password)
+        $response = Http::withHeaders($this->headers($config))
             ->get("{$this->baseUrl}/v1/nfse/{$nfseNumber}");
 
         $body = $response->json();
 
         if (!$response->successful()) {
             return NfseResult::error(
-                $body['erro'] ?? $body['error'] ?? 'Erro ao consultar NFSe via GinFes',
+                $body['erro'] ?? $body['error'] ?? 'Erro ao consultar NFSe via Spedy',
                 $body
             );
         }
@@ -69,7 +69,7 @@ class GinfesProvider implements NfseProvider
 
     public function cancelar(NfseConfig $config, string $nfseNumber, string $motivo): NfseResult
     {
-        $response = Http::withBasicAuth($config->ginfes_username, $config->ginfes_password)
+        $response = Http::withHeaders($this->headers($config))
             ->post("{$this->baseUrl}/v1/nfse/{$nfseNumber}/cancelar", [
                 'motivo' => $motivo,
             ]);
@@ -78,7 +78,7 @@ class GinfesProvider implements NfseProvider
 
         if (!$response->successful()) {
             return NfseResult::error(
-                $body['erro'] ?? $body['error'] ?? 'Erro ao cancelar NFSe via GinFes',
+                $body['erro'] ?? $body['error'] ?? 'Erro ao cancelar NFSe via Spedy',
                 $body
             );
         }
@@ -87,6 +87,15 @@ class GinfesProvider implements NfseProvider
             nfseNumber: $nfseNumber,
             rawResponse: $body,
         );
+    }
+
+    protected function headers(NfseConfig $config): array
+    {
+        return [
+            'X-Api-Key' => $config->spedy_api_key,
+            'X-Api-Secret' => $config->spedy_api_secret,
+            'Content-Type' => 'application/json',
+        ];
     }
 
     protected function buildPayload(NfseConfig $config, Invoice $invoice): array

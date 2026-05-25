@@ -17,8 +17,10 @@ class NfseConfig extends Model
         'webmania_consumer_key',
         'webmania_consumer_secret',
         'focusnfe_token',
-        'ginfes_username',
-        'ginfes_password',
+        'spedy_api_key',
+        'spedy_api_secret',
+        'tecnospeed_token',
+        'nfeio_api_key',
         'is_active',
     ];
 

@@ -105,7 +105,9 @@ class NfseService
         return match ($config->provider) {
             'webmania' => app(WebmaniaProvider::class),
             'focusnfe' => app(FocusNfeProvider::class),
-            'ginfes' => app(GinfesProvider::class),
+            'spedy' => app(SpedyProvider::class),
+            'tecnospeed' => app(TecnospeedProvider::class),
+            'nfeio' => app(NfeIoProvider::class),
             default => throw new \InvalidArgumentException("Provedor NFS-e desconhecido: {$config->provider}"),
         };
     }

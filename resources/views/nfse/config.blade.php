@@ -36,7 +36,9 @@
                                 <select name="provider" class="form-control provider-select @error('provider') is-invalid @enderror" data-group="nfse" required>
                                     <option value="webmania" {{ old('provider', $config->provider ?? 'webmania') == 'webmania' ? 'selected' : '' }}>Webmania®</option>
                                     <option value="focusnfe" {{ old('provider', $config->provider ?? '') == 'focusnfe' ? 'selected' : '' }}>FocusNFe</option>
-                                    <option value="ginfes" {{ old('provider', $config->provider ?? '') == 'ginfes' ? 'selected' : '' }}>GinFes</option>
+                                    <option value="spedy" {{ old('provider', $config->provider ?? '') == 'spedy' ? 'selected' : '' }}>Spedy</option>
+                                    <option value="tecnospeed" {{ old('provider', $config->provider ?? '') == 'tecnospeed' ? 'selected' : '' }}>Tecnospeed</option>
+                                    <option value="nfeio" {{ old('provider', $config->provider ?? '') == 'nfeio' ? 'selected' : '' }}>NFE.io</option>
                                 </select>
                                 @error('provider') <span class="invalid-feedback">{{ $message }}</span> @enderror
                             </div>
@@ -104,24 +106,44 @@
                         </p>
                     </div>
 
-                    {{-- GINFES --}}
-                    <div class="provider-fields" data-provider="ginfes" data-group="nfse">
-                        <h6 class="text-primary mt-3"><i class="fas fa-building mr-1"></i>Credenciais GinFes</h6>
+                    {{-- SPEDY --}}
+                    <div class="provider-fields" data-provider="spedy" data-group="nfse">
+                        <h6 class="text-primary mt-3"><i class="fas fa-rocket mr-1"></i>Credenciais Spedy</h6>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Usuário (e-mail) *</label>
-                                    <input type="email" name="ginfes_username" class="form-control @error('ginfes_username') is-invalid @enderror" value="{{ old('ginfes_username', $config->ginfes_username ?? '') }}" placeholder="email@exemplo.com">
-                                    @error('ginfes_username') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                    <label>API Key *</label>
+                                    <input type="text" name="spedy_api_key" class="form-control @error('spedy_api_key') is-invalid @enderror" value="{{ old('spedy_api_key', $config->spedy_api_key ?? '') }}" placeholder="Chave da API">
+                                    @error('spedy_api_key') <span class="invalid-feedback">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Senha *</label>
-                                    <input type="password" name="ginfes_password" class="form-control @error('ginfes_password') is-invalid @enderror" value="{{ old('ginfes_password', $config->ginfes_password ?? '') }}" placeholder="********">
-                                    @error('ginfes_password') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                    <label>API Secret *</label>
+                                    <input type="password" name="spedy_api_secret" class="form-control @error('spedy_api_secret') is-invalid @enderror" value="{{ old('spedy_api_secret', $config->spedy_api_secret ?? '') }}" placeholder="******">
+                                    @error('spedy_api_secret') <span class="invalid-feedback">{{ $message }}</span> @enderror
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    {{-- TECNOSPEED --}}
+                    <div class="provider-fields" data-provider="tecnospeed" data-group="nfse">
+                        <h6 class="text-primary mt-3"><i class="fas fa-tachometer-alt mr-1"></i>Credenciais Tecnospeed</h6>
+                        <div class="form-group">
+                            <label>Token de API *</label>
+                            <input type="text" name="tecnospeed_token" class="form-control @error('tecnospeed_token') is-invalid @enderror" value="{{ old('tecnospeed_token', $config->tecnospeed_token ?? '') }}" placeholder="Token">
+                            @error('tecnospeed_token') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+
+                    {{-- NFE.IO --}}
+                    <div class="provider-fields" data-provider="nfeio" data-group="nfse">
+                        <h6 class="text-primary mt-3"><i class="fas fa-file-invoice mr-1"></i>Credenciais NFE.io</h6>
+                        <div class="form-group">
+                            <label>API Key *</label>
+                            <input type="text" name="nfeio_api_key" class="form-control @error('nfeio_api_key') is-invalid @enderror" value="{{ old('nfeio_api_key', $config->nfeio_api_key ?? '') }}" placeholder="Chave da API">
+                            @error('nfeio_api_key') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
                     </div>
                 </div>

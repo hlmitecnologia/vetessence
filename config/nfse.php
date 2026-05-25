@@ -9,8 +9,16 @@ return [
         'base_url' => env('FOCUSNFE_BASE_URL', 'https://api.focusnfe.com.br'),
     ],
 
-    'ginfes' => [
-        'base_url' => env('GINFES_BASE_URL', 'https://api.ginfes.com.br'),
+    'spedy' => [
+        'base_url' => env('SPEDY_BASE_URL', 'https://api.spedy.com.br'),
+    ],
+
+    'tecnospeed' => [
+        'base_url' => env('TECNOSPEED_BASE_URL', 'https://api.tecnospeed.com.br'),
+    ],
+
+    'nfeio' => [
+        'base_url' => env('NFEIO_BASE_URL', 'https://api.nfe.io'),
     ],
 
     'ambiente' => env('NFSE_AMBIENTE', 'homologacao'),
