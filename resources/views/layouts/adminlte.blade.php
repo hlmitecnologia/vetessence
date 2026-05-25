@@ -116,7 +116,7 @@
             @php
                 $logoUrl = branding_logo_url();
                 $hasLogo = (bool) $logoUrl;
-                $showName = branding('show_clinic_name', '1') === '1';
+                $showName = branding('show_clinic_name', '0') === '1';
                 $pos = branding('clinic_name_position', 'right');
                 $logoW = branding('sidebar_logo_width', 40);
             @endphp

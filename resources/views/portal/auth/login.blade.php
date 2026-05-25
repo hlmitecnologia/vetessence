@@ -5,7 +5,7 @@
     $primary = branding('primary_color', '#455e36');
     $logoUrl = branding_logo_url();
     $hasLogo = (bool) $logoUrl;
-    $showName = branding('show_clinic_name', '1') === '1';
+    $showName = branding('show_clinic_name', '0') === '1';
 @endphp
 <div class="min-h-[70vh] flex items-center justify-center" style="background: {{ branding('login_background', '#f9edc3') }};">
     <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">

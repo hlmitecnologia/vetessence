@@ -76,7 +76,7 @@
                         <hr>
 
                         @php
-                            $showName = branding('show_clinic_name', '1');
+                            $showName = branding('show_clinic_name', '0');
                             $position = branding('clinic_name_position', 'right');
                         @endphp
 
