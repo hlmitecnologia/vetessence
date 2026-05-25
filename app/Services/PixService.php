@@ -23,13 +23,23 @@ class PixService
 
         $this->gi = 'br.gov.bcb.pix';
 
-        if ($gateway) {
-            $cfg = $gateway->config ?? [];
+        $branch = null;
+        if ($gateway && $gateway->branch_id) {
+            $branch = $gateway->branch;
+        }
+
+        if ($branch) {
             $this->pixKey = $gateway->public_key ?? config('pix.pix_key', '');
-            $this->merchantName = $gateway->secret_key ?? config('pix.merchant_name', '');
-            $this->city = $cfg['city'] ?? config('pix.city', 'SAO PAULO');
-            $this->url = $cfg['url'] ?? config('pix.url', '');
-            $this->isUniquePayment = $cfg['is_unique_payment'] ?? config('pix.is_unique_payment', false);
+            $this->merchantName = $branch->name ?? config('pix.merchant_name', '');
+            $this->city = $branch->city ?? config('pix.city', 'SAO PAULO');
+            $this->url = ($gateway->config['url'] ?? '') ?: config('pix.url', '');
+            $this->isUniquePayment = $gateway->config['is_unique_payment'] ?? config('pix.is_unique_payment', false);
+        } elseif ($gateway) {
+            $this->pixKey = $gateway->public_key ?? config('pix.pix_key', '');
+            $this->merchantName = config('pix.merchant_name', '');
+            $this->city = config('pix.city', 'SAO PAULO');
+            $this->url = ($gateway->config['url'] ?? '') ?: config('pix.url', '');
+            $this->isUniquePayment = $gateway->config['is_unique_payment'] ?? config('pix.is_unique_payment', false);
         } else {
             $this->pixKey = config('pix.pix_key', '');
             $this->merchantName = config('pix.merchant_name', '');

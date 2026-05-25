@@ -35,8 +35,6 @@ class PaymentGatewayController extends Controller
             'secret_key' => 'nullable|string',
             'webhook_secret' => 'nullable|string',
             'config' => 'nullable|json',
-            'config.city' => 'nullable|string|max:50',
-
             'config.url' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
             'branch_id' => 'nullable|exists:branches,id',
@@ -47,7 +45,6 @@ class PaymentGatewayController extends Controller
 
         if ($request->has('config') && is_array($request->config)) {
             $validated['config'] = array_merge([
-                'city' => '',
                 'url' => '',
             ], $request->config);
         } elseif ($request->config) {
@@ -88,8 +85,6 @@ class PaymentGatewayController extends Controller
             'secret_key' => 'nullable|string',
             'webhook_secret' => 'nullable|string',
             'config' => 'nullable|json',
-            'config.city' => 'nullable|string|max:50',
-
             'config.url' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
             'branch_id' => 'nullable|exists:branches,id',
@@ -100,7 +95,6 @@ class PaymentGatewayController extends Controller
 
         if ($request->has('config') && is_array($request->config)) {
             $validated['config'] = array_merge([
-                'city' => '',
                 'url' => '',
             ], $request->config);
         } elseif ($request->config) {

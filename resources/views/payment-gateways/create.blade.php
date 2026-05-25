@@ -111,33 +111,17 @@
             {{-- PIX --}}
             <div class="provider-fields" data-provider="pix" data-group="gateway" style="display:none;">
                 <h6 class="text-primary mt-3"><i class="fas fa-qrcode mr-1"></i>PIX</h6>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Chave PIX</label>
-                            <input type="text" name="public_key" class="form-control" value="{{ old('public_key') }}" placeholder="CPF, CNPJ, e-mail, telefone ou EVP">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Nome do Recebedor</label>
-                            <input type="text" name="secret_key" class="form-control" value="{{ old('secret_key') }}" placeholder="NOME DA EMPRESA">
-                        </div>
-                    </div>
+                <p class="text-muted small">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    O nome do recebedor e a cidade serão obtidos automaticamente da unidade selecionada abaixo.
+                </p>
+                <div class="form-group">
+                    <label>Chave PIX</label>
+                    <input type="text" name="public_key" class="form-control" value="{{ old('public_key') }}" placeholder="CPF, CNPJ, e-mail, telefone ou EVP">
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Cidade</label>
-                            <input type="text" name="config[city]" class="form-control" value="{{ old('config.city') }}" placeholder="SAO PAULO">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>URL (opcional)</label>
-                            <input type="url" name="config[url]" class="form-control" value="{{ old('config.url') }}" placeholder="https://">
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label>URL (opcional — para PIX dinâmico)</label>
+                    <input type="url" name="config[url]" class="form-control" value="{{ old('config.url') }}" placeholder="https://">
                 </div>
             </div>
 
