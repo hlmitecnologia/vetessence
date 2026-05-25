@@ -2,10 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\CommunicationQueue;
 use App\Models\CommunicationTemplate;
-use App\Models\NotificationLog;
 use App\Models\Pet;
-use App\Models\Tutor;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -33,8 +32,8 @@ class ProcessRecallCampaigns extends Command
 
             if (!$lastVaccine) continue;
 
-            $alreadyNotified = NotificationLog::where('pet_id', $pet->id)
-                ->where('type', 'recall')
+            $alreadyNotified = CommunicationQueue::where('pet_id', $pet->id)
+                ->where('channel', 'email')
                 ->where('created_at', '>=', now()->subDays(30))
                 ->exists();
 
@@ -43,23 +42,30 @@ class ProcessRecallCampaigns extends Command
             foreach ($pet->tutors as $tutor) {
                 if (!$tutor->email && !$tutor->phone) continue;
 
-                $template = $templates->firstWhere('channel', 'email');
+                $channel = 'email';
+                $destination = $tutor->email;
+
+                if ($tutor->notify_whatsapp && $tutor->phone) {
+                    $channel = 'whatsapp';
+                    $destination = $tutor->phone;
+                }
+
+                $template = $templates->firstWhere('channel', $channel);
                 $message = $template
                     ? str_replace(['{pet_name}', '{vaccine_name}'], [$pet->name, $lastVaccine->vaccine], $template->content)
                     : "Olá, lembrete: seu pet {$pet->name} está com a vacina {$lastVaccine->vaccine} atrasada. Procure-nos para atualização.";
 
-                if ($tutor->email) {
-                    NotificationLog::create([
-                        'pet_id' => $pet->id,
-                        'tutor_id' => $tutor->id,
-                        'type' => 'recall',
-                        'channel' => 'email',
-                        'destination' => $tutor->email,
-                        'message' => $message,
-                        'status' => 'pending',
-                    ]);
-                    $processed++;
-                }
+                CommunicationQueue::create([
+                    'pet_id' => $pet->id,
+                    'tutor_id' => $tutor->id,
+                    'template_id' => $template?->id,
+                    'channel' => $channel,
+                    'destination' => $destination,
+                    'message_content' => $message,
+                    'scheduled_at' => now(),
+                    'status' => 'pending',
+                ]);
+                $processed++;
             }
         }
 

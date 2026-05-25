@@ -343,6 +343,9 @@
                     <i class="fas fa-paint-brush w-5 mr-2"></i> Personalização
                 </a>
                 @endcan
+                <a href="{{ route('configuracoes.notificacoes.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-bell w-5 mr-2"></i> Notificações
+                </a>
                 @can('configuracoes')
                 <a href="{{ route('breed-defaults.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-paw w-5 mr-2"></i> Raças

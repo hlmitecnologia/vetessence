@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\StaffSchedule;
-use App\Models\User;
-use App\Services\EmailApiService;
+use App\Services\Notification\NotificationChannel;
+use App\Services\Notification\NotificationService;
 use Illuminate\Console\Command;
 
 class StaffRemind extends Command
@@ -12,7 +12,7 @@ class StaffRemind extends Command
     protected $signature = 'staff:remind {--days=1 : Number of days ahead to check}';
     protected $description = 'Send reminders to staff about upcoming shifts and on-call duty';
 
-    public function handle(EmailApiService $email)
+    public function handle(NotificationService $notificationService)
     {
         $date = now()->addDays((int) $this->option('days'))->format('Y-m-d');
 
@@ -40,13 +40,18 @@ class StaffRemind extends Command
                 . "Horário: {$schedule->start_time} às {$schedule->end_time}\n\n"
                 . "Atenciosamente,\nEquipe VetEssence";
 
-            $success = $email->send($schedule->user->name, $schedule->user->email, $message);
+            $result = $notificationService->send(
+                NotificationChannel::Email,
+                $schedule->user->email,
+                $message,
+                'Lembrete de Escala'
+            );
 
-            if ($success) {
+            if ($result->success) {
                 $sent++;
                 $this->info("Lembrete enviado para {$schedule->user->email}");
             } else {
-                $this->error("Falha ao enviar para {$schedule->user->email}");
+                $this->error("Falha ao enviar para {$schedule->user->email}: {$result->error}");
             }
         }
 

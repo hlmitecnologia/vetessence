@@ -3,9 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\CommunicationQueue;
-use App\Services\EmailApiService;
-use App\Services\Communication\WhatsAppProvider;
-use App\Services\Communication\SmsProvider;
+use App\Services\Notification\NotificationChannel;
+use App\Services\Notification\NotificationService;
 use Illuminate\Console\Command;
 
 class ProcessCommunicationQueue extends Command
@@ -13,7 +12,7 @@ class ProcessCommunicationQueue extends Command
     protected $signature = 'queue:process {--limit=50 : Max items to process per run}';
     protected $description = 'Process pending communication queue items';
 
-    public function handle(EmailApiService $email)
+    public function handle(NotificationService $notificationService)
     {
         $limit = (int) $this->option('limit');
         $sent = 0;
@@ -30,34 +29,33 @@ class ProcessCommunicationQueue extends Command
             return Command::SUCCESS;
         }
 
-        $whatsapp = new WhatsAppProvider();
-        $sms = new SmsProvider();
-
         foreach ($items as $item) {
-            $success = false;
+            $channel = NotificationChannel::tryFrom($item->channel);
 
-            if ($item->channel === 'email') {
-                $tutorName = $item->tutor ? $item->tutor->name : 'Tutor';
-                $success = $email->send(
-                    $tutorName,
-                    $item->destination,
-                    $item->message_content
-                );
-            } elseif ($item->channel === 'whatsapp') {
-                $success = $whatsapp->send($item->destination, $item->message_content);
-            } elseif ($item->channel === 'sms') {
-                $success = $sms->send($item->destination, $item->message_content);
-            } else {
+            if (!$channel) {
                 $item->update(['status' => 'failed', 'error_message' => 'Unsupported channel']);
                 $failed++;
                 continue;
             }
 
-            if ($success) {
+            $subject = null;
+            if ($channel === NotificationChannel::Email) {
+                $template = $item->template;
+                $subject = $template?->subject ?? 'Comunicação';
+            }
+
+            $result = $notificationService->send(
+                $channel,
+                $item->destination,
+                $item->message_content,
+                $subject
+            );
+
+            if ($result->success) {
                 $item->update(['sent_at' => now(), 'status' => 'sent']);
                 $sent++;
             } else {
-                $item->update(['status' => 'failed', 'error_message' => 'Provider rejected']);
+                $item->update(['status' => 'failed', 'error_message' => $result->error ?? 'Provider rejected']);
                 $failed++;
             }
         }

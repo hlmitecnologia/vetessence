@@ -873,6 +873,9 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('configuracoes')->group(function () {
         Route::get('branding', 'App\Http\Controllers\BrandingController@index')->name('configuracoes.branding.index');
         Route::put('branding', 'App\Http\Controllers\BrandingController@update')->name('configuracoes.branding.update');
+
+        Route::get('notificacoes', 'App\Http\Controllers\NotificationConfigController@index')->name('configuracoes.notificacoes.index');
+        Route::put('notificacoes', 'App\Http\Controllers\NotificationConfigController@update')->name('configuracoes.notificacoes.update');
     });
 });
 

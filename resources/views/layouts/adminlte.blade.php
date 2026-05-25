@@ -601,7 +601,7 @@
                         <!-- ADMINISTRAÇÃO -->
                         @can('admin')
                         <li class="nav-header"><i class="fas fa-cog"></i> ADMINISTRAÇÃO</li>
-                        <li class="nav-item has-treeview {{ request()->routeIs('users.*') || request()->routeIs('roles.*') || request()->routeIs('services.*') || request()->routeIs('categories.*') || request()->routeIs('consent-templates.*') || request()->routeIs('communication-templates.*') || request()->routeIs('communication-queues.*') || request()->routeIs('branches.*') || request()->routeIs('departments.*') || request()->routeIs('positions.*') || request()->routeIs('employees.*') || request()->routeIs('configuracoes.branding.*') || request()->routeIs('breed-defaults.*') ? 'menu-open' : '' }}">
+                        <li class="nav-item has-treeview {{ request()->routeIs('users.*') || request()->routeIs('roles.*') || request()->routeIs('services.*') || request()->routeIs('categories.*') || request()->routeIs('consent-templates.*') || request()->routeIs('communication-templates.*') || request()->routeIs('communication-queues.*') || request()->routeIs('branches.*') || request()->routeIs('departments.*') || request()->routeIs('positions.*') || request()->routeIs('employees.*') || request()->routeIs('configuracoes.branding.*') || request()->routeIs('configuracoes.notificacoes.*') || request()->routeIs('breed-defaults.*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-shield-alt"></i>
                                 <p>Configurações <i class="right fas fa-angle-left"></i></p>
@@ -697,6 +697,12 @@
                                     </a>
                                 </li>
                                 @endcan
+                                <li class="nav-item">
+                                    <a href="{{ route('configuracoes.notificacoes.index') }}" class="nav-link {{ request()->routeIs('configuracoes.notificacoes.*') ? 'active' : '' }}">
+                                        <i class="fas fa-bell nav-icon"></i>
+                                        <p>Notificações</p>
+                                    </a>
+                                </li>
                                 @can('configuracoes')
                                 <li class="nav-item">
                                     <a href="{{ route('breed-defaults.index') }}" class="nav-link {{ request()->routeIs('breed-defaults.*') ? 'active' : '' }}">
