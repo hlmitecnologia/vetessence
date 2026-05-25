@@ -32,7 +32,7 @@
             @endphp
             <a href="/" class="d-flex align-items-center justify-content-center" style="min-height:60px;">
                 @if($hasLogo)
-                    <img src="{{ $logoUrl }}" style="max-height:55px;max-width:100%;object-fit:contain;" alt="Logo">
+                    <img src="{{ $logoUrl }}" style="width:100%;height:auto;" alt="Logo">
                 @else
                     <i class="fas fa-paw fa-2x"></i>
                 @endif
