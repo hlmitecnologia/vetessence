@@ -74,3 +74,10 @@ if (!function_exists('branding_clinic_name')) {
         return branding('clinic_name', config('app.name', 'VetEssence'));
     }
 }
+
+if (!function_exists('notification_config')) {
+    function notification_config(string $key, $default = null)
+    {
+        return Setting::get('notification_' . $key, $default);
+    }
+}

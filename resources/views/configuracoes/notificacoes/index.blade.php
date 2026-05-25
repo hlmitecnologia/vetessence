@@ -1,5 +1,14 @@
 @extends('layouts.adminlte', ['title' => 'Notificações'])
 
+@section('css')
+<style>
+.nav-tabs .nav-link.active {
+    color: #fff !important;
+    font-weight: 600;
+}
+</style>
+@endsection
+
 @section('content')
 <div class="container-fluid">
     <div class="row">
@@ -44,21 +53,21 @@
                                     <label>Provedor de E-mail</label>
                                     <select name="email_provider" class="form-control provider-select" data-group="email">
                                         <option value="">-- Selecione --</option>
-                                        <option value="smtp" {{ branding('notification_email_provider') === 'smtp' ? 'selected' : '' }}>SMTP</option>
-                                        <option value="mailgun" {{ branding('notification_email_provider') === 'mailgun' ? 'selected' : '' }}>Mailgun</option>
-                                        <option value="ses" {{ branding('notification_email_provider') === 'ses' ? 'selected' : '' }}>Amazon SES</option>
-                                        <option value="sendgrid" {{ branding('notification_email_provider') === 'sendgrid' ? 'selected' : '' }}>SendGrid</option>
+                                        <option value="smtp" {{ notification_config('email_provider') === 'smtp' ? 'selected' : '' }}>SMTP</option>
+                                        <option value="mailgun" {{ notification_config('email_provider') === 'mailgun' ? 'selected' : '' }}>Mailgun</option>
+                                        <option value="ses" {{ notification_config('email_provider') === 'ses' ? 'selected' : '' }}>Amazon SES</option>
+                                        <option value="sendgrid" {{ notification_config('email_provider') === 'sendgrid' ? 'selected' : '' }}>SendGrid</option>
                                     </select>
                                 </div>
 
                                 <div class="form-group">
                                     <label>E-mail remetente</label>
-                                    <input type="email" name="email_from" class="form-control" value="{{ branding('notification_email_from', '') }}" placeholder="noreplay@exemplo.com">
+                                    <input type="email" name="email_from" class="form-control" value="{{ notification_config('email_from', '') }}" placeholder="noreply@exemplo.com">
                                 </div>
 
                                 <div class="form-group">
                                     <label>Nome do remetente</label>
-                                    <input type="text" name="email_from_name" class="form-control" value="{{ branding('notification_email_from_name', '') }}" placeholder="Clínica Veterinária">
+                                    <input type="text" name="email_from_name" class="form-control" value="{{ notification_config('email_from_name', '') }}" placeholder="Clínica Veterinária">
                                 </div>
 
                                 {{-- SMTP --}}
@@ -68,22 +77,22 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Servidor</label>
-                                                <input type="text" name="email_smtp_host" class="form-control" value="{{ branding('notification_email_smtp_host', '') }}" placeholder="smtp.exemplo.com">
+                                                <input type="text" name="email_smtp_host" class="form-control" value="{{ notification_config('email_smtp_host', '') }}" placeholder="smtp.exemplo.com">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label>Porta</label>
-                                                <input type="text" name="email_smtp_port" class="form-control" value="{{ branding('notification_email_smtp_port', '587') }}" placeholder="587">
+                                                <input type="text" name="email_smtp_port" class="form-control" value="{{ notification_config('email_smtp_port', '587') }}" placeholder="587">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Criptografia</label>
                                                 <select name="email_smtp_encryption" class="form-control">
-                                                    <option value="tls" {{ branding('notification_email_smtp_encryption', 'tls') === 'tls' ? 'selected' : '' }}>TLS</option>
-                                                    <option value="ssl" {{ branding('notification_email_smtp_encryption', 'tls') === 'ssl' ? 'selected' : '' }}>SSL</option>
-                                                    <option value="null" {{ branding('notification_email_smtp_encryption', 'tls') === 'null' ? 'selected' : '' }}>Nenhuma</option>
+                                                    <option value="tls" {{ notification_config('email_smtp_encryption', 'tls') === 'tls' ? 'selected' : '' }}>TLS</option>
+                                                    <option value="ssl" {{ notification_config('email_smtp_encryption', 'tls') === 'ssl' ? 'selected' : '' }}>SSL</option>
+                                                    <option value="null" {{ notification_config('email_smtp_encryption', 'tls') === 'null' ? 'selected' : '' }}>Nenhuma</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -92,13 +101,13 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Usuário</label>
-                                                <input type="text" name="email_smtp_username" class="form-control" value="{{ branding('notification_email_smtp_username', '') }}" placeholder="seu@email.com">
+                                                <input type="text" name="email_smtp_username" class="form-control" value="{{ notification_config('email_smtp_username', '') }}" placeholder="seu@email.com">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Senha</label>
-                                                <input type="password" name="email_smtp_password" class="form-control" value="{{ branding('notification_email_smtp_password', '') }}" placeholder="********">
+                                                <input type="password" name="email_smtp_password" class="form-control" value="{{ notification_config('email_smtp_password', '') }}" placeholder="********">
                                             </div>
                                         </div>
                                     </div>
@@ -109,17 +118,17 @@
                                     <h6 class="text-primary mt-3"><i class="fas fa-bullseye mr-1"></i>Mailgun</h6>
                                     <div class="form-group">
                                         <label>Domínio</label>
-                                        <input type="text" name="email_mailgun_domain" class="form-control" value="{{ branding('notification_email_mailgun_domain', '') }}" placeholder="mg.exemplo.com">
+                                        <input type="text" name="email_mailgun_domain" class="form-control" value="{{ notification_config('email_mailgun_domain', '') }}" placeholder="mg.exemplo.com">
                                     </div>
                                     <div class="form-group">
                                         <label>API Secret</label>
-                                        <input type="password" name="email_mailgun_secret" class="form-control" value="{{ branding('notification_email_mailgun_secret', '') }}" placeholder="********">
+                                        <input type="password" name="email_mailgun_secret" class="form-control" value="{{ notification_config('email_mailgun_secret', '') }}" placeholder="********">
                                     </div>
                                     <div class="form-group">
                                         <label>Endpoint</label>
                                         <select name="email_mailgun_endpoint" class="form-control">
-                                            <option value="api.mailgun.net" {{ branding('notification_email_mailgun_endpoint', 'api.mailgun.net') === 'api.mailgun.net' ? 'selected' : '' }}>api.mailgun.net (EUA)</option>
-                                            <option value="api.eu.mailgun.net" {{ branding('notification_email_mailgun_endpoint', 'api.mailgun.net') === 'api.eu.mailgun.net' ? 'selected' : '' }}>api.eu.mailgun.net (Europa)</option>
+                                            <option value="api.mailgun.net" {{ notification_config('email_mailgun_endpoint', 'api.mailgun.net') === 'api.mailgun.net' ? 'selected' : '' }}>api.mailgun.net (EUA)</option>
+                                            <option value="api.eu.mailgun.net" {{ notification_config('email_mailgun_endpoint', 'api.mailgun.net') === 'api.eu.mailgun.net' ? 'selected' : '' }}>api.eu.mailgun.net (Europa)</option>
                                         </select>
                                     </div>
                                 </div>
@@ -131,23 +140,23 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Access Key ID</label>
-                                                <input type="text" name="email_ses_key" class="form-control" value="{{ branding('notification_email_ses_key', '') }}" placeholder="AKIA...">
+                                                <input type="text" name="email_ses_key" class="form-control" value="{{ notification_config('email_ses_key', '') }}" placeholder="AKIA...">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Secret Access Key</label>
-                                                <input type="password" name="email_ses_secret" class="form-control" value="{{ branding('notification_email_ses_secret', '') }}" placeholder="********">
+                                                <input type="password" name="email_ses_secret" class="form-control" value="{{ notification_config('email_ses_secret', '') }}" placeholder="********">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label>Região</label>
                                         <select name="email_ses_region" class="form-control">
-                                            <option value="us-east-1" {{ branding('notification_email_ses_region', 'us-east-1') === 'us-east-1' ? 'selected' : '' }}>US East (N. Virginia)</option>
-                                            <option value="us-west-2" {{ branding('notification_email_ses_region', 'us-east-1') === 'us-west-2' ? 'selected' : '' }}>US West (Oregon)</option>
-                                            <option value="sa-east-1" {{ branding('notification_email_ses_region', 'us-east-1') === 'sa-east-1' ? 'selected' : '' }}>South America (São Paulo)</option>
-                                            <option value="eu-west-1" {{ branding('notification_email_ses_region', 'us-east-1') === 'eu-west-1' ? 'selected' : '' }}>EU (Ireland)</option>
+                                            <option value="us-east-1" {{ notification_config('email_ses_region', 'us-east-1') === 'us-east-1' ? 'selected' : '' }}>US East (N. Virginia)</option>
+                                            <option value="us-west-2" {{ notification_config('email_ses_region', 'us-east-1') === 'us-west-2' ? 'selected' : '' }}>US West (Oregon)</option>
+                                            <option value="sa-east-1" {{ notification_config('email_ses_region', 'us-east-1') === 'sa-east-1' ? 'selected' : '' }}>South America (São Paulo)</option>
+                                            <option value="eu-west-1" {{ notification_config('email_ses_region', 'us-east-1') === 'eu-west-1' ? 'selected' : '' }}>EU (Ireland)</option>
                                         </select>
                                     </div>
                                 </div>
@@ -157,7 +166,7 @@
                                     <h6 class="text-primary mt-3"><i class="fas fa-paper-plane mr-1"></i>SendGrid</h6>
                                     <div class="form-group">
                                         <label>API Key</label>
-                                        <input type="password" name="email_sendgrid_api_key" class="form-control" value="{{ branding('notification_email_sendgrid_api_key', '') }}" placeholder="SG.********">
+                                        <input type="password" name="email_sendgrid_api_key" class="form-control" value="{{ notification_config('email_sendgrid_api_key', '') }}" placeholder="SG.********">
                                     </div>
                                 </div>
                             </div>
@@ -168,9 +177,9 @@
                                     <label>Provedor de SMS</label>
                                     <select name="sms_provider" class="form-control provider-select" data-group="sms">
                                         <option value="">-- Selecione --</option>
-                                        <option value="twilio" {{ branding('notification_sms_provider') === 'twilio' ? 'selected' : '' }}>Twilio</option>
-                                        <option value="zenvio" {{ branding('notification_sms_provider') === 'zenvio' ? 'selected' : '' }}>Zenvio</option>
-                                        <option value="sns" {{ branding('notification_sms_provider') === 'sns' ? 'selected' : '' }}>Amazon SNS</option>
+                                        <option value="twilio" {{ notification_config('sms_provider') === 'twilio' ? 'selected' : '' }}>Twilio</option>
+                                        <option value="zenvio" {{ notification_config('sms_provider') === 'zenvio' ? 'selected' : '' }}>Zenvio</option>
+                                        <option value="sns" {{ notification_config('sms_provider') === 'sns' ? 'selected' : '' }}>Amazon SNS</option>
                                     </select>
                                 </div>
 
@@ -178,15 +187,15 @@
                                     <h6 class="text-primary mt-3"><i class="fab fa-twilio mr-1"></i>Twilio</h6>
                                     <div class="form-group">
                                         <label>Account SID</label>
-                                        <input type="text" name="sms_twilio_account_sid" class="form-control" value="{{ branding('notification_sms_twilio_account_sid', '') }}" placeholder="AC...">
+                                        <input type="text" name="sms_twilio_account_sid" class="form-control" value="{{ notification_config('sms_twilio_account_sid', '') }}" placeholder="AC...">
                                     </div>
                                     <div class="form-group">
                                         <label>Auth Token</label>
-                                        <input type="password" name="sms_twilio_auth_token" class="form-control" value="{{ branding('notification_sms_twilio_auth_token', '') }}" placeholder="********">
+                                        <input type="password" name="sms_twilio_auth_token" class="form-control" value="{{ notification_config('sms_twilio_auth_token', '') }}" placeholder="********">
                                     </div>
                                     <div class="form-group">
                                         <label>Número de origem</label>
-                                        <input type="text" name="sms_twilio_from_number" class="form-control" value="{{ branding('notification_sms_twilio_from_number', '') }}" placeholder="+5511999999999">
+                                        <input type="text" name="sms_twilio_from_number" class="form-control" value="{{ notification_config('sms_twilio_from_number', '') }}" placeholder="+5511999999999">
                                     </div>
                                 </div>
 
@@ -194,11 +203,11 @@
                                     <h6 class="text-primary mt-3"><i class="fas fa-comment-dots mr-1"></i>Zenvio</h6>
                                     <div class="form-group">
                                         <label>API Key</label>
-                                        <input type="password" name="sms_zenvio_api_key" class="form-control" value="{{ branding('notification_sms_zenvio_api_key', '') }}" placeholder="********">
+                                        <input type="password" name="sms_zenvio_api_key" class="form-control" value="{{ notification_config('sms_zenvio_api_key', '') }}" placeholder="********">
                                     </div>
                                     <div class="form-group">
                                         <label>Número de origem</label>
-                                        <input type="text" name="sms_zenvio_from_number" class="form-control" value="{{ branding('notification_sms_zenvio_from_number', '') }}" placeholder="+5511999999999">
+                                        <input type="text" name="sms_zenvio_from_number" class="form-control" value="{{ notification_config('sms_zenvio_from_number', '') }}" placeholder="+5511999999999">
                                     </div>
                                 </div>
 
@@ -208,23 +217,23 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Access Key ID</label>
-                                                <input type="text" name="sms_sns_key" class="form-control" value="{{ branding('notification_sms_sns_key', '') }}" placeholder="AKIA...">
+                                                <input type="text" name="sms_sns_key" class="form-control" value="{{ notification_config('sms_sns_key', '') }}" placeholder="AKIA...">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Secret Access Key</label>
-                                                <input type="password" name="sms_sns_secret" class="form-control" value="{{ branding('notification_sms_sns_secret', '') }}" placeholder="********">
+                                                <input type="password" name="sms_sns_secret" class="form-control" value="{{ notification_config('sms_sns_secret', '') }}" placeholder="********">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label>Região</label>
                                         <select name="sms_sns_region" class="form-control">
-                                            <option value="us-east-1" {{ branding('notification_sms_sns_region', 'us-east-1') === 'us-east-1' ? 'selected' : '' }}>US East (N. Virginia)</option>
-                                            <option value="us-west-2" {{ branding('notification_sms_sns_region', 'us-east-1') === 'us-west-2' ? 'selected' : '' }}>US West (Oregon)</option>
-                                            <option value="sa-east-1" {{ branding('notification_sms_sns_region', 'us-east-1') === 'sa-east-1' ? 'selected' : '' }}>South America (São Paulo)</option>
-                                            <option value="eu-west-1" {{ branding('notification_sms_sns_region', 'us-east-1') === 'eu-west-1' ? 'selected' : '' }}>EU (Ireland)</option>
+                                            <option value="us-east-1" {{ notification_config('sms_sns_region', 'us-east-1') === 'us-east-1' ? 'selected' : '' }}>US East (N. Virginia)</option>
+                                            <option value="us-west-2" {{ notification_config('sms_sns_region', 'us-east-1') === 'us-west-2' ? 'selected' : '' }}>US West (Oregon)</option>
+                                            <option value="sa-east-1" {{ notification_config('sms_sns_region', 'us-east-1') === 'sa-east-1' ? 'selected' : '' }}>South America (São Paulo)</option>
+                                            <option value="eu-west-1" {{ notification_config('sms_sns_region', 'us-east-1') === 'eu-west-1' ? 'selected' : '' }}>EU (Ireland)</option>
                                         </select>
                                     </div>
                                 </div>
@@ -236,10 +245,10 @@
                                     <label>Provedor de WhatsApp</label>
                                     <select name="whatsapp_provider" class="form-control provider-select" data-group="whatsapp">
                                         <option value="">-- Selecione --</option>
-                                        <option value="zapi" {{ branding('notification_whatsapp_provider') === 'zapi' ? 'selected' : '' }}>Z-API</option>
-                                        <option value="weni" {{ branding('notification_whatsapp_provider') === 'weni' ? 'selected' : '' }}>Weni</option>
-                                        <option value="cloudapi" {{ branding('notification_whatsapp_provider') === 'cloudapi' ? 'selected' : '' }}>WhatsApp Cloud API (Meta)</option>
-                                        <option value="twilio" {{ branding('notification_whatsapp_provider') === 'twilio' ? 'selected' : '' }}>Twilio WhatsApp</option>
+                                        <option value="zapi" {{ notification_config('whatsapp_provider') === 'zapi' ? 'selected' : '' }}>Z-API</option>
+                                        <option value="weni" {{ notification_config('whatsapp_provider') === 'weni' ? 'selected' : '' }}>Weni</option>
+                                        <option value="cloudapi" {{ notification_config('whatsapp_provider') === 'cloudapi' ? 'selected' : '' }}>WhatsApp Cloud API (Meta)</option>
+                                        <option value="twilio" {{ notification_config('whatsapp_provider') === 'twilio' ? 'selected' : '' }}>Twilio WhatsApp</option>
                                     </select>
                                 </div>
 
@@ -247,15 +256,15 @@
                                     <h6 class="text-success mt-3"><i class="fas fa-bolt mr-1"></i>Z-API</h6>
                                     <div class="form-group">
                                         <label>API URL</label>
-                                        <input type="text" name="whatsapp_zapi_url" class="form-control" value="{{ branding('notification_whatsapp_zapi_url', '') }}" placeholder="https://api.z-api.io/v1">
+                                        <input type="text" name="whatsapp_zapi_url" class="form-control" value="{{ notification_config('whatsapp_zapi_url', '') }}" placeholder="https://api.z-api.io/v1">
                                     </div>
                                     <div class="form-group">
                                         <label>API Token</label>
-                                        <input type="password" name="whatsapp_zapi_token" class="form-control" value="{{ branding('notification_whatsapp_zapi_token', '') }}" placeholder="********">
+                                        <input type="password" name="whatsapp_zapi_token" class="form-control" value="{{ notification_config('whatsapp_zapi_token', '') }}" placeholder="********">
                                     </div>
                                     <div class="form-group">
                                         <label>Instance ID</label>
-                                        <input type="text" name="whatsapp_zapi_instance" class="form-control" value="{{ branding('notification_whatsapp_zapi_instance', '') }}" placeholder="Instance ID">
+                                        <input type="text" name="whatsapp_zapi_instance" class="form-control" value="{{ notification_config('whatsapp_zapi_instance', '') }}" placeholder="Instance ID">
                                     </div>
                                 </div>
 
@@ -263,15 +272,15 @@
                                     <h6 class="text-success mt-3"><i class="fas fa-robot mr-1"></i>Weni</h6>
                                     <div class="form-group">
                                         <label>API Key</label>
-                                        <input type="password" name="whatsapp_weni_api_key" class="form-control" value="{{ branding('notification_whatsapp_weni_api_key', '') }}" placeholder="********">
+                                        <input type="password" name="whatsapp_weni_api_key" class="form-control" value="{{ notification_config('whatsapp_weni_api_key', '') }}" placeholder="********">
                                     </div>
                                     <div class="form-group">
                                         <label>Project UUID</label>
-                                        <input type="text" name="whatsapp_weni_project_uuid" class="form-control" value="{{ branding('notification_whatsapp_weni_project_uuid', '') }}" placeholder="UUID do projeto">
+                                        <input type="text" name="whatsapp_weni_project_uuid" class="form-control" value="{{ notification_config('whatsapp_weni_project_uuid', '') }}" placeholder="UUID do projeto">
                                     </div>
                                     <div class="form-group">
                                         <label>Número de origem</label>
-                                        <input type="text" name="whatsapp_weni_from_number" class="form-control" value="{{ branding('notification_whatsapp_weni_from_number', '') }}" placeholder="+5511999999999">
+                                        <input type="text" name="whatsapp_weni_from_number" class="form-control" value="{{ notification_config('whatsapp_weni_from_number', '') }}" placeholder="+5511999999999">
                                     </div>
                                 </div>
 
@@ -279,11 +288,11 @@
                                     <h6 class="text-success mt-3"><i class="fab fa-facebook mr-1"></i>WhatsApp Cloud API (Meta)</h6>
                                     <div class="form-group">
                                         <label>Access Token (permanente)</label>
-                                        <input type="password" name="whatsapp_cloudapi_access_token" class="form-control" value="{{ branding('notification_whatsapp_cloudapi_access_token', '') }}" placeholder="EAAx...ZD">
+                                        <input type="password" name="whatsapp_cloudapi_access_token" class="form-control" value="{{ notification_config('whatsapp_cloudapi_access_token', '') }}" placeholder="EAAx...ZD">
                                     </div>
                                     <div class="form-group">
                                         <label>Phone Number ID</label>
-                                        <input type="text" name="whatsapp_cloudapi_phone_number_id" class="form-control" value="{{ branding('notification_whatsapp_cloudapi_phone_number_id', '') }}" placeholder="ID do número de telefone">
+                                        <input type="text" name="whatsapp_cloudapi_phone_number_id" class="form-control" value="{{ notification_config('whatsapp_cloudapi_phone_number_id', '') }}" placeholder="ID do número de telefone">
                                     </div>
                                     <small class="text-muted">
                                         <i class="fas fa-info-circle mr-1"></i>
@@ -295,15 +304,15 @@
                                     <h6 class="text-success mt-3"><i class="fab fa-twilio mr-1"></i>Twilio WhatsApp</h6>
                                     <div class="form-group">
                                         <label>Account SID</label>
-                                        <input type="text" name="whatsapp_twilio_account_sid" class="form-control" value="{{ branding('notification_whatsapp_twilio_account_sid', '') }}" placeholder="AC...">
+                                        <input type="text" name="whatsapp_twilio_account_sid" class="form-control" value="{{ notification_config('whatsapp_twilio_account_sid', '') }}" placeholder="AC...">
                                     </div>
                                     <div class="form-group">
                                         <label>Auth Token</label>
-                                        <input type="password" name="whatsapp_twilio_auth_token" class="form-control" value="{{ branding('notification_whatsapp_twilio_auth_token', '') }}" placeholder="********">
+                                        <input type="password" name="whatsapp_twilio_auth_token" class="form-control" value="{{ notification_config('whatsapp_twilio_auth_token', '') }}" placeholder="********">
                                     </div>
                                     <div class="form-group">
                                         <label>Número de origem (WhatsApp Sandbox/Approved)</label>
-                                        <input type="text" name="whatsapp_twilio_from_number" class="form-control" value="{{ branding('notification_whatsapp_twilio_from_number', '') }}" placeholder="+14155238886">
+                                        <input type="text" name="whatsapp_twilio_from_number" class="form-control" value="{{ notification_config('whatsapp_twilio_from_number', '') }}" placeholder="+14155238886">
                                     </div>
                                 </div>
                             </div>
