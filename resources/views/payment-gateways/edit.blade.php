@@ -124,19 +124,13 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label>Cidade</label>
                             <input type="text" name="config[city]" class="form-control" value="{{ old('config.city', $paymentGateway->config['city'] ?? '') }}" placeholder="SAO PAULO">
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>GUI (Identificador)</label>
-                            <input type="text" name="config[gi]" class="form-control" value="{{ old('config.gi', $paymentGateway->config['gi'] ?? 'br.gov.bcb.pix') }}" placeholder="br.gov.bcb.pix">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label>URL (opcional)</label>
                             <input type="url" name="config[url]" class="form-control" value="{{ old('config.url', $paymentGateway->config['url'] ?? '') }}" placeholder="https://">

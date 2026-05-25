@@ -21,19 +21,19 @@ class PixService
     {
         $gateway = $gateway ?? PaymentGateway::where('provider', 'pix')->where('is_active', true)->first();
 
+        $this->gi = 'br.gov.bcb.pix';
+
         if ($gateway) {
             $cfg = $gateway->config ?? [];
             $this->pixKey = $gateway->public_key ?? config('pix.pix_key', '');
             $this->merchantName = $gateway->secret_key ?? config('pix.merchant_name', '');
             $this->city = $cfg['city'] ?? config('pix.city', 'SAO PAULO');
-            $this->gi = $cfg['gi'] ?? config('pix.gi', 'br.gov.bcb.pix');
             $this->url = $cfg['url'] ?? config('pix.url', '');
             $this->isUniquePayment = $cfg['is_unique_payment'] ?? config('pix.is_unique_payment', false);
         } else {
             $this->pixKey = config('pix.pix_key', '');
             $this->merchantName = config('pix.merchant_name', '');
             $this->city = config('pix.city', 'SAO PAULO');
-            $this->gi = config('pix.gi', 'br.gov.bcb.pix');
             $this->url = config('pix.url', '');
             $this->isUniquePayment = config('pix.is_unique_payment', false);
         }
