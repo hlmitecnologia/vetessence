@@ -26,7 +26,7 @@
         <div class="login-logo">
             @php
                 $logoUrl = branding_logo_url();
-                $hasLogo = $logoUrl && !str_contains($logoUrl, 'logo-default.png');
+                $hasLogo = (bool) $logoUrl;
                 $showName = branding('show_clinic_name', '1') === '1';
                 $pos = branding('clinic_name_position', 'right');
             @endphp

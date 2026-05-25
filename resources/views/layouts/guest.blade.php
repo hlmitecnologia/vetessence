@@ -25,7 +25,7 @@
     <div class="login-box">
         <div class="login-logo">
             <a href="/" class="d-flex align-items-center justify-content-center" style="min-height:60px;">
-                @php $logoUrl = branding_logo_url(); $hasLogo = $logoUrl && !str_contains($logoUrl, 'logo-default.png'); $showName = branding('show_clinic_name', '1') === '1'; @endphp
+                @php $logoUrl = branding_logo_url(); $hasLogo = (bool) $logoUrl; $showName = branding('show_clinic_name', '1') === '1'; @endphp
                 @if($hasLogo)
                     <img src="{{ $logoUrl }}" style="max-height:55px;max-width:100%;object-fit:contain;" alt="Logo">
                 @else

@@ -115,7 +115,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background: {{ $sidebarBg }} !important;">
             @php
                 $logoUrl = branding_logo_url();
-                $hasLogo = $logoUrl && !str_contains($logoUrl, 'logo-default.png');
+                $hasLogo = (bool) $logoUrl;
                 $showName = branding('show_clinic_name', '1') === '1';
                 $pos = branding('clinic_name_position', 'right');
                 $logoW = branding('sidebar_logo_width', 40);
