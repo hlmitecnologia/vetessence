@@ -14,8 +14,8 @@ if (!function_exists('branding_logo_url')) {
     function branding_logo_url(): string
     {
         $path = branding('logo_path');
-        if ($path && Storage::disk('public')->exists($path)) {
-            return Storage::url($path);
+        if ($path) {
+            return asset($path);
         }
         return asset('img/logo-default.png');
     }
