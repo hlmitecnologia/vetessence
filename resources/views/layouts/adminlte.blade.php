@@ -120,9 +120,9 @@
                 $pos = branding('clinic_name_position', 'right');
                 $logoW = branding('sidebar_logo_width', 40);
             @endphp
-            <a href="{{ route('dashboard') }}" class="brand-link d-flex align-items-center">
+            <a href="{{ route('dashboard') }}" class="brand-link d-flex align-items-center" style="min-height: 70px;">
                 @if($hasLogo)
-                    <img src="{{ $logoUrl }}" width="{{ $logoW }}" alt="Logo" class="brand-image img-circle">
+                    <img src="{{ $logoUrl }}" alt="Logo" style="max-height: 55px; max-width: 100%; object-fit: contain; margin: 0 auto; display: block;">
                 @else
                     <i class="fas fa-paw brand-image"></i>
                 @endif
