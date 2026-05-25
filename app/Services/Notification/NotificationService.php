@@ -35,14 +35,14 @@ class NotificationService
 
         return match ($channel) {
             NotificationChannel::Email => $provider->send(
-                branding('notification_email_from', $from),
+                notification_config('email_from', $from),
                 $destination,
                 $subject ?? 'Sem assunto',
                 $message,
                 $attachments
             ),
             NotificationChannel::Sms => $provider->send(
-                branding('notification_sms_from', $from),
+                $from,
                 $destination,
                 $message
             ),
@@ -56,32 +56,32 @@ class NotificationService
 
     public function resolveEmailProvider(): ?EmailProvider
     {
-        $provider = branding('notification_email_provider', '');
+        $provider = notification_config('email_provider', '');
 
         return match ($provider) {
             'smtp' => new SmtpProvider([
-                'host' => branding('notification_email_smtp_host', ''),
-                'port' => branding('notification_email_smtp_port', '587'),
-                'username' => branding('notification_email_smtp_username', ''),
-                'password' => branding('notification_email_smtp_password', ''),
-                'encryption' => branding('notification_email_smtp_encryption', 'tls'),
-                'from_name' => branding('notification_email_from_name', config('app.name')),
+                'host' => notification_config('email_smtp_host', ''),
+                'port' => notification_config('email_smtp_port', '587'),
+                'username' => notification_config('email_smtp_username', ''),
+                'password' => notification_config('email_smtp_password', ''),
+                'encryption' => notification_config('email_smtp_encryption', 'tls'),
+                'from_name' => notification_config('email_from_name', config('app.name')),
             ]),
             'mailgun' => new MailgunProvider([
-                'domain' => branding('notification_email_mailgun_domain', ''),
-                'secret' => branding('notification_email_mailgun_secret', ''),
-                'endpoint' => branding('notification_email_mailgun_endpoint', 'api.mailgun.net'),
-                'from_name' => branding('notification_email_from_name', config('app.name')),
+                'domain' => notification_config('email_mailgun_domain', ''),
+                'secret' => notification_config('email_mailgun_secret', ''),
+                'endpoint' => notification_config('email_mailgun_endpoint', 'api.mailgun.net'),
+                'from_name' => notification_config('email_from_name', config('app.name')),
             ]),
             'ses' => new SesProvider([
-                'key' => branding('notification_email_ses_key', ''),
-                'secret' => branding('notification_email_ses_secret', ''),
-                'region' => branding('notification_email_ses_region', 'us-east-1'),
-                'from_name' => branding('notification_email_from_name', config('app.name')),
+                'key' => notification_config('email_ses_key', ''),
+                'secret' => notification_config('email_ses_secret', ''),
+                'region' => notification_config('email_ses_region', 'us-east-1'),
+                'from_name' => notification_config('email_from_name', config('app.name')),
             ]),
             'sendgrid' => new SendGridProvider([
-                'api_key' => branding('notification_email_sendgrid_api_key', ''),
-                'from_name' => branding('notification_email_from_name', config('app.name')),
+                'api_key' => notification_config('email_sendgrid_api_key', ''),
+                'from_name' => notification_config('email_from_name', config('app.name')),
             ]),
             default => null,
         };
@@ -89,22 +89,22 @@ class NotificationService
 
     public function resolveSmsProvider(): ?SmsProvider
     {
-        $provider = branding('notification_sms_provider', '');
+        $provider = notification_config('sms_provider', '');
 
         return match ($provider) {
             'twilio' => new TwilioSmsProvider([
-                'account_sid' => branding('notification_sms_twilio_account_sid', ''),
-                'auth_token' => branding('notification_sms_twilio_auth_token', ''),
-                'from_number' => branding('notification_sms_twilio_from_number', ''),
+                'account_sid' => notification_config('sms_twilio_account_sid', ''),
+                'auth_token' => notification_config('sms_twilio_auth_token', ''),
+                'from_number' => notification_config('sms_twilio_from_number', ''),
             ]),
             'zenvio' => new ZenvioSmsProvider([
-                'api_key' => branding('notification_sms_zenvio_api_key', ''),
-                'from_number' => branding('notification_sms_zenvio_from_number', ''),
+                'api_key' => notification_config('sms_zenvio_api_key', ''),
+                'from_number' => notification_config('sms_zenvio_from_number', ''),
             ]),
             'sns' => new SnsSmsProvider([
-                'key' => branding('notification_sms_sns_key', ''),
-                'secret' => branding('notification_sms_sns_secret', ''),
-                'region' => branding('notification_sms_sns_region', 'us-east-1'),
+                'key' => notification_config('sms_sns_key', ''),
+                'secret' => notification_config('sms_sns_secret', ''),
+                'region' => notification_config('sms_sns_region', 'us-east-1'),
             ]),
             default => null,
         };
@@ -112,27 +112,27 @@ class NotificationService
 
     public function resolveWhatsAppProvider(): ?WhatsAppProvider
     {
-        $provider = branding('notification_whatsapp_provider', '');
+        $provider = notification_config('whatsapp_provider', '');
 
         return match ($provider) {
             'zapi' => new ZapiProvider([
-                'api_url' => branding('notification_whatsapp_zapi_url', ''),
-                'api_token' => branding('notification_whatsapp_zapi_token', ''),
-                'instance' => branding('notification_whatsapp_zapi_instance', ''),
+                'api_url' => notification_config('whatsapp_zapi_url', ''),
+                'api_token' => notification_config('whatsapp_zapi_token', ''),
+                'instance' => notification_config('whatsapp_zapi_instance', ''),
             ]),
             'weni' => new WeniProvider([
-                'api_key' => branding('notification_whatsapp_weni_api_key', ''),
-                'project_uuid' => branding('notification_whatsapp_weni_project_uuid', ''),
-                'from_number' => branding('notification_whatsapp_weni_from_number', ''),
+                'api_key' => notification_config('whatsapp_weni_api_key', ''),
+                'project_uuid' => notification_config('whatsapp_weni_project_uuid', ''),
+                'from_number' => notification_config('whatsapp_weni_from_number', ''),
             ]),
             'cloudapi' => new CloudApiProvider([
-                'access_token' => branding('notification_whatsapp_cloudapi_access_token', ''),
-                'phone_number_id' => branding('notification_whatsapp_cloudapi_phone_number_id', ''),
+                'access_token' => notification_config('whatsapp_cloudapi_access_token', ''),
+                'phone_number_id' => notification_config('whatsapp_cloudapi_phone_number_id', ''),
             ]),
             'twilio' => new TwilioWhatsAppProvider([
-                'account_sid' => branding('notification_whatsapp_twilio_account_sid', ''),
-                'auth_token' => branding('notification_whatsapp_twilio_auth_token', ''),
-                'from_number' => branding('notification_whatsapp_twilio_from_number', ''),
+                'account_sid' => notification_config('whatsapp_twilio_account_sid', ''),
+                'auth_token' => notification_config('whatsapp_twilio_auth_token', ''),
+                'from_number' => notification_config('whatsapp_twilio_from_number', ''),
             ]),
             default => null,
         };
