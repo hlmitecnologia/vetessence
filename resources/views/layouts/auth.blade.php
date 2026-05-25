@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icheck-bootstrap@3/icheck-bootstrap.min.css">
     <style>{!! branding_css_vars() !!}</style>
-    <style>body { background: {{ branding('login_background', '#f9edc3') }} !important; }
+    <style>body { background: {{ branding('sidebar_bg', '#051c12') }} !important; }
         .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
             background-color: var(--brand-primary, #455e36) !important;
             border-color: var(--brand-primary, #455e36) !important;
@@ -25,7 +25,7 @@
     <div class="login-box">
         <div class="login-logo">
             @php
-                $logoUrl = branding_logo_url();
+                $logoUrl = branding_sidebar_logo_url();
                 $hasLogo = (bool) $logoUrl;
                 $showName = branding('show_clinic_name', '0') === '1';
                 $pos = branding('clinic_name_position', 'right');

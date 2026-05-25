@@ -17,7 +17,7 @@
         }
         a { color: var(--brand-primary, #455e36); }
         a:hover { color: color-mix(in srgb, var(--brand-primary, #455e36) 80%, black); }
-        body { background: {{ branding('login_background', '#f9edc3') }} !important; }
+        body { background: {{ branding('sidebar_bg', '#051c12') }} !important; }
     </style>
     @stack('styles')
 </head>
@@ -25,7 +25,7 @@
     <div class="login-box">
         <div class="login-logo">
             <a href="/" class="d-flex align-items-center justify-content-center" style="min-height:60px;">
-                @php $logoUrl = branding_logo_url(); $hasLogo = (bool) $logoUrl; $showName = branding('show_clinic_name', '0') === '1'; @endphp
+                @php $logoUrl = branding_sidebar_logo_url(); $hasLogo = (bool) $logoUrl; $showName = branding('show_clinic_name', '0') === '1'; @endphp
                 @if($hasLogo)
                     <img src="{{ $logoUrl }}" style="max-height:55px;max-width:100%;object-fit:contain;" alt="Logo">
                 @else
