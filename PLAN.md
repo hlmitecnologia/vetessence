@@ -1805,3 +1805,300 @@ O roteamento será:
 - **Fallback silencioso**: se ViaCEP + AwesomeAPI falharem, o formulário continua editável normalmente — sem mensagem de erro para não frustrar o usuário
 - **CEP inválido**: se o usuário digitar um CEP que não existe, nenhum campo é alterado
 - **Rate limit**: ViaCEP não tem limite documentado, mas em caso de muitas requisições usar cache evita qualquer problema
+
+---
+
+## Phase AA — Sistema de Notificações Multicanal Configurável
+
+**Aprovado em:** Pendente — aguardando aprovação.
+
+**Objetivo:** Substituir as APIs fixas de notificação (WhatsApp Z-API, SMS genérico, Email API externa) por um sistema multicanal configurável pelo Super Admin em **Configurações > Notificações**, seguindo o mesmo padrão dos Gateways de Pagamento. As configurações são **sistêmicas** (não por unidade), e cada tutor escolhe os canais que prefere receber (email, SMS, WhatsApp).
+
+### AA0 — Diagnóstico do Sistema Atual
+
+**Problemas identificados:**
+
+| # | Problema | Detalhes |
+|---|----------|----------|
+| 1 | APIs fixas em `config/` | WhatsApp (z-api.io), SMS (API genérica), Email (API HTTP externa) — todas hardcoded em arquivos de config, sem interface de admin |
+| 2 | Sem fallback entre provedores | Se Z-API cair, WhatsApp para de funcionar. Não há opção de configurar um provedor alternativo |
+| 3 | SMTP não configurável pelo admin | `config/mail.php` exige edição manual do `.env`. Admin não pode configurar servidor SMTP pela UI |
+| 4 | `NotificationLog` não é processado | Registros de campanhas de aniversário e recall ficam `pending` para sempre — nunca são efetivamente enviados |
+| 5 | Duas tabelas de notificação concorrentes | `notification_logs` e `communication_queue` têm propósitos sobrepostos. Apenas `communication_queue` é processada |
+| 6 | Seleção de canal é fixa no código | `SendAppointmentReminders` escolhe WhatsApp → Email, sem considerar SMS ou configuração do admin |
+| 7 | Sem interface de admin para provedores | Diferente dos Gateways de Pagamento (`payment_gateways` CRUD), não há UI para gerenciar provedores de notificação |
+
+### AA1 — Arquitetura Proposta
+
+Modelo baseado no `PaymentGateway` existente: **model + provider interface + service + controller CRUD + views**.
+
+```
+settings (key-value)
+  ├── notification.email_provider       → "smtp" | "mailgun" | "ses" | "sendgrid"
+  ├── notification.email_smtp_*         → host, port, user, pass, encryption, from_address, from_name
+  ├── notification.email_mailgun_*      → domain, secret, endpoint
+  ├── notification.email_ses_*          → key, secret, region
+  ├── notification.email_sendgrid_*     → api_key
+  │
+  ├── notification.sms_provider         → "twilio" | "zenvio" | "sns"
+  ├── notification.sms_twilio_*         → account_sid, auth_token, from_number
+  ├── notification.sms_zenvio_*         → api_key, from_number
+  ├── notification.sms_sns_*            → key, secret, region
+  │
+  ├── notification.whatsapp_provider    → "zapi" | "weni" | "evolution" | "twilio"
+  ├── notification.whatsapp_zapi_*      → api_url, api_token, instance
+  ├── notification.whatsapp_weni_*      → api_key, project_uuid, from_number
+  ├── notification.whatsapp_evolution_* → api_url, api_key, instance
+  └── notification.whatsapp_twilio_*    → account_sid, auth_token, from_number
+```
+
+### AA2 — Provedores Sugeridos
+
+#### E-mail
+
+| Provedor | Tipo | Autenticação | Custo | Observação |
+|----------|------|-------------|-------|------------|
+| **SMTP** | Servidor próprio | host, port, user, pass, encryption | Gratuito (se tiver servidor) | Obrigatório ter — opção universal |
+| **Mailgun** | API | domain, api_key, endpoint (EUA/UE) | Grátis 5k/mês | Popular, fácil, bom deliverability |
+| **Amazon SES** | API SMTP | access_key, secret_key, region | Grátis 62k/mês | Muito barato, precisa verificar domínio |
+| **SendGrid** | API | api_key | Grátis 100/dia | Simples, boa dashboard |
+
+#### SMS
+
+| Provedor | Tipo | Autenticação | Custo | Observação |
+|----------|------|-------------|-------|------------|
+| **Twilio** | API | account_sid, auth_token, from_number | ~R$0,09/msg | Global, mais usado, documentação excelente |
+| **Zenvio** | API | api_key, from_number | ~R$0,05/msg | Brasileiro, suporte ANS, bom para BR |
+| **Amazon SNS** | API | access_key, secret_key, region | ~R$0,05/msg | Usa mesma credencial SES, econômico |
+
+#### WhatsApp
+
+| Provedor | Tipo | Autenticação | Custo | Observação |
+|----------|------|-------------|-------|------------|
+| **Z-API** | API | api_url, api_token, instance | ~R$0,03/msg | Já implementado, brasileiro, fácil |
+| **Weni** | API | api_key, project_uuid, from_number | ~R$0,02/msg | Brasileiro (antiga Weni.ai), canal oficial WhatsApp Business |
+| **Evolution API** | Self-hosted | api_url, api_key, instance | Gratuito (servidor próprio) | Open source, sem custo por mensagem, precisa de servidor |
+| **Twilio WhatsApp** | API | account_sid, auth_token, from_number | ~R$0,09/msg | Reusa credencial SMS, sandbox grátis |
+
+### AA3 — Estrutura de Dados
+
+Todas as credenciais armazenadas na tabela `settings` (já existe), chave `notification.*`. Nenhuma migration nova necessária — reaproveita o sistema de chave-valor existente.
+
+**Controllers:**
+
+| Controller | Ação | Descrição |
+|------------|------|-----------|
+| `NotificationConfigController` | `index` | Exibe formulário de configuração dividido em abas/cards: Email, SMS, WhatsApp |
+| `NotificationConfigController` | `update` | Salva configurações na tabela `settings` |
+
+**Permissões:** Reusa `configuracoes` (admin). Se necessário, criar `notification-config.edit`.
+
+### AA4 — Provider Interfaces (Services)
+
+Seguindo o padrão Adapter usado na NFSe (`NfseProvider`):
+
+```
+app/Services/Notification/
+├── Contracts/
+│   ├── EmailProvider.php          → send(from, to, subject, body, attachments): NotificationResult
+│   ├── SmsProvider.php            → send(from, to, message): NotificationResult
+│   └── WhatsAppProvider.php       → send(from, to, message, media?): NotificationResult
+│
+├── Email/
+│   ├── SmtpProvider.php           → Usa Laravel Mail (Mail::send()) com config dinâmica
+│   ├── MailgunProvider.php        → Usa Laravel Mail com mailgun mailer
+│   ├── SesProvider.php            → Usa Laravel Mail com ses mailer
+│   └── SendGridProvider.php       → API HTTP direta (ou SDK)
+│
+├── Sms/
+│   ├── TwilioSmsProvider.php      → SDK twilio/sdk
+│   ├── ZenvioSmsProvider.php      → API HTTP
+│   └── SnsSmsProvider.php         → AWS SDK SNS
+│
+├── WhatsApp/
+│   ├── ZapiProvider.php           → API HTTP (já existe, refatorar)
+│   ├── WeniProvider.php           → API HTTP
+│   ├── EvolutionProvider.php      → API HTTP
+│   └── TwilioWhatsAppProvider.php → SDK twilio/sdk
+│
+├── NotificationService.php        → Orquestrador: lê config do canal, instancia provider, envia
+├── NotificationResult.php         → DTO: success, messageId, error, provider
+└── NotificationChannel.php        → Enum/ValueObject: email, sms, whatsapp
+```
+
+### AA5 — Integração com o Sistema Existente
+
+#### Communication Queue (`ProcessCommunicationQueue`)
+
+Refatorar para usar `NotificationService`:
+
+```php
+// Antes (hardcoded):
+if ($queue->channel === 'email') app(EmailApiService::class)->send(...);
+if ($queue->channel === 'whatsapp') app(WhatsAppProvider::class)->send(...);
+if ($queue->channel === 'sms') app(SmsProvider::class)->send(...);
+
+// Depois (dinâmico):
+$service = app(NotificationService::class);
+$result = $service->send($queue->channel, $queue->destination, $queue->message_content);
+```
+
+#### Notification Log (`ProcessBirthdayCampaigns`, `ProcessRecallCampaigns`)
+
+Unificar com `CommunicationQueue` — em vez de criar `NotificationLog` diretamente, criar na `communication_queue` e deixar `ProcessCommunicationQueue` processar. Isso elimina o problema de logs nunca enviados.
+
+#### Tutor Preference Channel Selection
+
+Manter o campo `notify_email`, `notify_sms`, `notify_whatsapp` em `tutors` (já existe). O `SendAppointmentReminders` continua usando a mesma lógica:
+
+```
+if (tutor.notify_whatsapp && tutor.phone)  → whatsapp
+elseif (tutor.notify_email && tutor.email) → email
+elseif (tutor.notify_sms && tutor.phone)   → sms
+```
+
+Mas agora cada canal usa o provedor configurado pelo admin, não o fixo.
+
+### AA6 — Views (Configuração)
+
+**Rota:** `GET/PUT /configuracoes/notificacoes` → `configuracoes.notificacoes.index/update`
+
+**Layout:** cards com abas, similar ao Branding:
+
+```
++---------------------------------------------------+
+| Configurações de Notificação                       |
++---------------------------------------------------+
+| [E-mail]  [SMS]  [WhatsApp]                       |
++---------------------------------------------------+
+|                                                    |
+| Provedor ativo: [SMTP ▼]                          |
+|                                                    |
+| ┌─ SMTP ───────────────────────────────────────┐  |
+| │ Servidor:    [________________________]       |  |
+| │ Porta:       [________] Criptografia: [TLS ▼] |  |
+| │ Usuário:     [________________________]       |  |
+| │ Senha:       [________________________]       |  |
+| │ Remetente:   [________________________]       |  |
+| │ Nome:        [________________________]       |  |
+| └──────────────────────────────────────────────┘  |
+|                                                    |
+| ┌─ Mailgun ─────────────────────────────────────┐  |
+| │ Domínio:     [________________________]       |  |
+| │ API Key:     [________________________]       |  |
+| │ Endpoint:    [________________________]       |  |
+| └──────────────────────────────────────────────┘  |
+|                                                    |
+| [Salvar Configurações]                             |
++---------------------------------------------------+
+```
+
+**Observação:** campos de provedores não selecionados podem ficar ocultos ou colapsados para não poluir a tela.
+
+### AA7 — Sidebar
+
+Adicionar link em **Configurações > Notificações** (após "Personalização"), visível se `can:configuracoes`.
+
+```blade
+@can('configuracoes')
+<li class="nav-item">
+    <a href="{{ route('configuracoes.notificacoes.index') }}" class="nav-link">
+        <i class="fas fa-bell nav-icon"></i>
+        <p>Notificações</p>
+    </a>
+</li>
+@endcan
+```
+
+### AA8 — Tasks
+
+| # | Task | Arquivos | Testes |
+|---|------|----------|--------|
+| 1 | Criar `NotificationService` — orquestrador que lê settings do canal, instancia provider, executa send | `app/Services/Notification/NotificationService.php` | 4 unit (mock) |
+| 2 | Criar `NotificationResult` DTO | `app/Services/Notification/NotificationResult.php` | 2 unit |
+| 3 | Criar `NotificationChannel` enum/value object | `app/Services/Notification/NotificationChannel.php` | 1 unit |
+| 4 | Criar interface `EmailProvider` — `send(string $from, string $to, string $subject, string $body, array $attachments = []): NotificationResult` | `app/Services/Notification/Contracts/EmailProvider.php` | — |
+| 5 | Criar interface `SmsProvider` — `send(string $from, string $to, string $message): NotificationResult` | `app/Services/Notification/Contracts/SmsProvider.php` | — |
+| 6 | Criar interface `WhatsAppProvider` — `send(string $from, string $to, string $message, ?string $mediaUrl = null): NotificationResult` | `app/Services/Notification/Contracts/WhatsAppProvider.php` | — |
+| 7 | Implementar `SmtpProvider` — usa `Mail::mailer('dynamic-smtp')` com config temporária | `app/Services/Notification/Email/SmtpProvider.php` | 2 feature (mock Mail) |
+| 8 | Implementar `MailgunProvider` — usa `Mail::mailer('mailgun')` | `app/Services/Notification/Email/MailgunProvider.php` | 2 feature |
+| 9 | Implementar `SesProvider` — usa `Mail::mailer('ses')` | `app/Services/Notification/Email/SesProvider.php` | 2 feature |
+| 10 | Implementar `SendGridProvider` — API HTTP direta (sendgrid/sendgrid-php ou raw HTTP) | `app/Services/Notification/Email/SendGridProvider.php` | 2 feature |
+| 11 | Implementar `TwilioSmsProvider` — SDK twilio/sdk | `app/Services/Notification/Sms/TwilioSmsProvider.php` | 2 feature |
+| 12 | Implementar `ZenvioSmsProvider` — API HTTP | `app/Services/Notification/Sms/ZenvioSmsProvider.php` | 2 feature |
+| 13 | Implementar `SnsSmsProvider` — AWS SDK SNS | `app/Services/Notification/Sms/SnsSmsProvider.php` | 2 feature |
+| 14 | Implementar `ZapiProvider` — refatorar `WhatsAppProvider` existente | `app/Services/Notification/WhatsApp/ZapiProvider.php` | 2 feature (já tem teste) |
+| 15 | Implementar `WeniProvider` — API HTTP | `app/Services/Notification/WhatsApp/WeniProvider.php` | 2 feature |
+| 16 | Implementar `EvolutionProvider` — API HTTP | `app/Services/Notification/WhatsApp/EvolutionProvider.php` | 2 feature |
+| 17 | Implementar `TwilioWhatsAppProvider` — SDK twilio/sdk (reusa configuração) | `app/Services/Notification/WhatsApp/TwilioWhatsAppProvider.php` | 2 feature |
+| 18 | Criar `NotificationConfigController` — index + update | `app/Http/Controllers/NotificationConfigController.php` | 2 feature (permission, save) |
+| 19 | Criar view `configuracoes/notificacoes/index.blade.php` — abas E-mail/SMS/WhatsApp, campos condicionais por provedor | `resources/views/configuracoes/notificacoes/index.blade.php` | — |
+| 20 | Criar rota `GET/PUT /configuracoes/notificacoes` | `routes/web.php` | — |
+| 21 | Adicionar link na sidebar em Configurações | sidebar edit | — |
+| 22 | Refatorar `ProcessCommunicationQueue` — usar `NotificationService` em vez de providers fixos | `app/Console/Commands/ProcessCommunicationQueue.php` | 2 feature |
+| 23 | Refatorar `ProcessBirthdayCampaigns` — criar em `CommunicationQueue` em vez de `NotificationLog` | `app/Console/Commands/ProcessBirthdayCampaigns.php` | 2 feature |
+| 24 | Refatorar `ProcessRecallCampaigns` — mesmo padrão | `app/Console/Commands/ProcessRecallCampaigns.php` | 2 feature |
+| 25 | Remover `config/communication.php` e `config/email-api.php` — migrar para settings | cleanup | — |
+| 26 | Adicionar campo `notification_channel` (enum: email/sms/whatsapp) na `communication_queue` se não existir | migration (opcional) | — |
+
+### AA9 — Considerações de Segurança
+
+- **Senhas e tokens** armazenados na tabela `settings` em texto plano (como as demais chaves do sistema). Se necessário, usar `Crypt::encryptString()` no save e `Crypt::decryptString()` na leitura.
+- **SMTP**: credenciais de servidor de email são tão sensíveis quanto senha de banco — considerar criptografia.
+- **Twilio/Weni/Z-API**: tokens de API dão acesso a envio de mensagens — criptografar.
+- **Rate limiting**: o `ProcessCommunicationQueue` já tem `--limit=50`. Manter para evitar disparos em massa acidentais.
+
+### AA10 — Testes
+
+| Grupo | Testes |
+|-------|--------|
+| Unit — DTOs e Enums | ~3 |
+| Unit — `NotificationService` (mock) | ~4 |
+| Feature — cada provider Email (4) | ~8 |
+| Feature — cada provider SMS (3) | ~6 |
+| Feature — cada provider WhatsApp (4) | ~8 |
+| Feature — `NotificationConfigController` | ~4 |
+| Feature — `ProcessCommunicationQueue` refatorado | ~4 |
+| Feature — `ProcessBirthdayCampaigns` refatorado | ~4 |
+| Feature — `ProcessRecallCampaigns` refatorado | ~4 |
+| **Total** | **~45** |
+
+### Phase AA Totals
+
+| Subfase | Migrations | Models | Controllers | Services | Providers | Views | Tests |
+|---------|-----------|--------|-------------|----------|-----------|-------|-------|
+| AA3 Config | — | — | 1 | — | — | 1 | 4 |
+| AA4 Interfaces | — | — | — | 3 interfaces + 1 service | — | — | 8 |
+| AA4 Providers | — | — | — | — | 11 providers | — | 22 |
+| AA5 Integração | 0–1 | — | — | — | — | — | 12 |
+| AA6 Views | — | — | — | — | — | 1 | — |
+| AA7 Sidebar | — | — | — | — | — | 1 edit | — |
+| **Total** | **0–1** | **—** | **1** | **4** | **11** | **1 + 1 edit** | **~45** |
+
+### Fluxo de Uso
+
+```
+[Admin] → Configurações → Notificações
+    │
+    ├── Aba E-mail: seleciona "SMTP" → preenche servidor, porta, user, senha
+    │              ou "Mailgun" → preenche domínio, API key
+    │
+    ├── Aba SMS: seleciona "Twilio" → preenche account_sid, auth_token, from
+    │            ou "Zenvio" → preenche API key, from
+    │
+    ├── Aba WhatsApp: seleciona "Z-API" → preenche URL, token, instance
+    │                 ou "Evolution API" → preenche URL, key, instance
+    │
+    └── [Salvar]
+            │
+            ▼
+    [ProcessCommunicationQueue command]
+            │
+            ├── lê canal (email/sms/whatsapp)
+            ├── lê tutor preferência (T10)
+            ├── NotificationService::send(channel, destination, content)
+            │       ├── lê settings para o canal
+            │       ├── instancia provider correspondente
+            │       └── provider->send(...)
+            └── atualiza status (sent/failed)
+```
