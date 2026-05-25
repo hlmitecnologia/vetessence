@@ -21,6 +21,17 @@ if (!function_exists('branding_logo_url')) {
     }
 }
 
+if (!function_exists('branding_sidebar_logo_url')) {
+    function branding_sidebar_logo_url(): string
+    {
+        $path = branding('sidebar_logo_path');
+        if ($path) {
+            return asset($path);
+        }
+        return asset('img/logositebackft.png');
+    }
+}
+
 if (!function_exists('branding_favicon_url')) {
     function branding_favicon_url(): string
     {

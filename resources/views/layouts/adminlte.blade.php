@@ -114,15 +114,15 @@
         @php $sidebarBg = branding('sidebar_bg', '#051c12'); @endphp
         <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background: {{ $sidebarBg }} !important;">
             @php
-                $logoUrl = branding_logo_url();
+                $logoUrl = branding_sidebar_logo_url();
                 $hasLogo = (bool) $logoUrl;
                 $showName = branding('show_clinic_name', '0') === '1';
                 $pos = branding('clinic_name_position', 'right');
                 $logoW = branding('sidebar_logo_width', 40);
             @endphp
-            <a href="{{ route('dashboard') }}" class="brand-link d-flex align-items-center" style="height: 50px;">
+            <a href="{{ route('dashboard') }}" class="brand-link d-flex align-items-center px-2" style="gap: 8px;">
                 @if($hasLogo)
-                    <img src="{{ $logoUrl }}" alt="Logo" style="max-height: 40px; max-width: 100%; object-fit: contain; margin: 0 auto; display: block;">
+                    <img src="{{ $logoUrl }}" alt="Logo" style="max-height: 35px; max-width: 100%; object-fit: contain;">
                 @else
                     <i class="fas fa-paw brand-image"></i>
                 @endif

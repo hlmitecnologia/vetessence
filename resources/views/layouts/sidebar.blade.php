@@ -9,7 +9,7 @@
     
     <!-- Logo -->
     @php
-        $logoUrl = branding_logo_url();
+        $logoUrl = branding_sidebar_logo_url();
         $hasLogo = (bool) $logoUrl;
         $showName = branding('show_clinic_name', '0') === '1';
         $pos = branding('clinic_name_position', 'right');
@@ -22,7 +22,7 @@
             default => 'flex-row',
         };
     @endphp
-    <div class="flex items-center justify-center" style="height: 50px; background: {{ branding('primary_color', '#455e36') }}; padding: 4px 8px;">
+    <div class="flex items-center justify-center" style="height: 57px; background: {{ branding('primary_color', '#455e36') }}; padding: 4px 8px;">
         <div class="flex {{ $flexClass }} items-center justify-center text-center w-full">
             @if($hasLogo)
                 <img src="{{ $logoUrl }}" style="max-height: 40px; max-width: 100%; object-fit: contain;" alt="Logo">
