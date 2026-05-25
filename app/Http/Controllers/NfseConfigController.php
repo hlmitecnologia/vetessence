@@ -27,18 +27,36 @@ class NfseConfigController extends Controller
 
     public function update(Request $request)
     {
-        $validated = $request->validate([
+        $rules = [
             'branch_id' => 'required|exists:branches,id',
+            'provider' => 'required|in:webmania,focusnfe,ginfes',
             'cnpj' => 'required|string|max:18',
             'municipio_ibge' => 'required|string|max:7',
             'regime_tributario' => 'required|in:mei,simples_nacional,lucro_presumido',
             'serie' => 'required|string|max:3',
             'ambiente' => 'required|in:homologacao,producao',
-            'webmania_app_id' => 'required|string',
-            'webmania_app_secret' => 'required|string',
-            'webmania_consumer_key' => 'required|string',
-            'webmania_consumer_secret' => 'required|string',
-        ]);
+        ];
+
+        $provider = $request->input('provider', 'webmania');
+
+        $providerRules = match ($provider) {
+            'webmania' => [
+                'webmania_app_id' => 'required|string',
+                'webmania_app_secret' => 'required|string',
+                'webmania_consumer_key' => 'required|string',
+                'webmania_consumer_secret' => 'required|string',
+            ],
+            'focusnfe' => [
+                'focusnfe_token' => 'required|string',
+            ],
+            'ginfes' => [
+                'ginfes_username' => 'required|string',
+                'ginfes_password' => 'required|string',
+            ],
+            default => [],
+        };
+
+        $validated = $request->validate(array_merge($rules, $providerRules));
 
         NfseConfig::updateOrCreate(
             ['branch_id' => $validated['branch_id']],

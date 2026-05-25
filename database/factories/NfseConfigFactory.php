@@ -14,6 +14,7 @@ class NfseConfigFactory extends Factory
     {
         return [
             'branch_id' => Branch::factory(),
+            'provider' => 'webmania',
             'cnpj' => $this->faker->numerify('##.###.###/####-##'),
             'municipio_ibge' => '3550308',
             'regime_tributario' => 'simples_nacional',

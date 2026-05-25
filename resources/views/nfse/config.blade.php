@@ -2,6 +2,14 @@
     $title = 'Configuração NFS-e';
 @endphp
 @extends('layouts.adminlte')
+
+@push('styles')
+<style>
+.provider-fields { display:none; }
+.provider-fields[data-provider="{{ old('provider', $config->provider ?? 'webmania') }}"] { display:block; }
+</style>
+@endpush
+
 @section('content')
 <div class="row">
     <div class="col-md-8 offset-md-2">
@@ -13,7 +21,7 @@
                 @csrf
                 @method('PUT')
                 <div class="card-body">
-                    <p class="text-muted">Configure os dados fiscais para emissão de Nota Fiscal de Serviços Eletrônica via Webmania®.</p>
+                    <p class="text-muted">Configure os dados fiscais para emissão de Nota Fiscal de Serviços Eletrônica.</p>
 
                     <div class="form-group">
                         <label>Unidade *</label>
@@ -82,38 +90,86 @@
                     </div>
 
                     <hr>
-                    <h5>Credenciais Webmania®</h5>
+                    <h5>Provedor NFS-e</h5>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>App ID *</label>
-                                <input type="text" name="webmania_app_id" class="form-control @error('webmania_app_id') is-invalid @enderror" value="{{ old('webmania_app_id', $config->webmania_app_id ?? '') }}" required>
-                                @error('webmania_app_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    <div class="form-group">
+                        <label>Provedor *</label>
+                        <select name="provider" class="form-control provider-select @error('provider') is-invalid @enderror" data-group="nfse" required>
+                            <option value="webmania" {{ old('provider', $config->provider ?? 'webmania') == 'webmania' ? 'selected' : '' }}>Webmania®</option>
+                            <option value="focusnfe" {{ old('provider', $config->provider ?? '') == 'focusnfe' ? 'selected' : '' }}>FocusNFe</option>
+                            <option value="ginfes" {{ old('provider', $config->provider ?? '') == 'ginfes' ? 'selected' : '' }}>GinFes</option>
+                        </select>
+                        @error('provider') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    </div>
+
+                    {{-- WEBMANIA --}}
+                    <div class="provider-fields" data-provider="webmania" data-group="nfse">
+                        <h6 class="text-primary mt-3"><i class="fas fa-globe mr-1"></i>Credenciais Webmania®</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>App ID *</label>
+                                    <input type="text" name="webmania_app_id" class="form-control @error('webmania_app_id') is-invalid @enderror" value="{{ old('webmania_app_id', $config->webmania_app_id ?? '') }}">
+                                    @error('webmania_app_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>App Secret *</label>
+                                    <input type="password" name="webmania_app_secret" class="form-control @error('webmania_app_secret') is-invalid @enderror" value="{{ old('webmania_app_secret', $config->webmania_app_secret ?? '') }}">
+                                    @error('webmania_app_secret') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>App Secret *</label>
-                                <input type="password" name="webmania_app_secret" class="form-control @error('webmania_app_secret') is-invalid @enderror" value="{{ old('webmania_app_secret', $config->webmania_app_secret ?? '') }}" required>
-                                @error('webmania_app_secret') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Consumer Key *</label>
+                                    <input type="text" name="webmania_consumer_key" class="form-control @error('webmania_consumer_key') is-invalid @enderror" value="{{ old('webmania_consumer_key', $config->webmania_consumer_key ?? '') }}">
+                                    @error('webmania_consumer_key') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Consumer Secret *</label>
+                                    <input type="password" name="webmania_consumer_secret" class="form-control @error('webmania_consumer_secret') is-invalid @enderror" value="{{ old('webmania_consumer_secret', $config->webmania_consumer_secret ?? '') }}">
+                                    @error('webmania_consumer_secret') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Consumer Key *</label>
-                                <input type="text" name="webmania_consumer_key" class="form-control @error('webmania_consumer_key') is-invalid @enderror" value="{{ old('webmania_consumer_key', $config->webmania_consumer_key ?? '') }}" required>
-                                @error('webmania_consumer_key') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                            </div>
+                    {{-- FOCUS NFE --}}
+                    <div class="provider-fields" data-provider="focusnfe" data-group="nfse">
+                        <h6 class="text-primary mt-3"><i class="fas fa-bolt mr-1"></i>Credenciais FocusNFe</h6>
+                        <div class="form-group">
+                            <label>API Token *</label>
+                            <input type="text" name="focusnfe_token" class="form-control @error('focusnfe_token') is-invalid @enderror" value="{{ old('focusnfe_token', $config->focusnfe_token ?? '') }}" placeholder="Token de API">
+                            @error('focusnfe_token') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Consumer Secret *</label>
-                                <input type="password" name="webmania_consumer_secret" class="form-control @error('webmania_consumer_secret') is-invalid @enderror" value="{{ old('webmania_consumer_secret', $config->webmania_consumer_secret ?? '') }}" required>
-                                @error('webmania_consumer_secret') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        <p class="text-muted small mb-0">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            O token é enviado via HTTP Basic Auth (usuário: token, senha: vazio).
+                        </p>
+                    </div>
+
+                    {{-- GINFES --}}
+                    <div class="provider-fields" data-provider="ginfes" data-group="nfse">
+                        <h6 class="text-primary mt-3"><i class="fas fa-building mr-1"></i>Credenciais GinFes</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Usuário (e-mail) *</label>
+                                    <input type="email" name="ginfes_username" class="form-control @error('ginfes_username') is-invalid @enderror" value="{{ old('ginfes_username', $config->ginfes_username ?? '') }}" placeholder="email@exemplo.com">
+                                    @error('ginfes_username') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Senha *</label>
+                                    <input type="password" name="ginfes_password" class="form-control @error('ginfes_password') is-invalid @enderror" value="{{ old('ginfes_password', $config->ginfes_password ?? '') }}" placeholder="********">
+                                    @error('ginfes_password') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -129,14 +185,30 @@
 @endsection
 
 @push('scripts')
-<script>
-document.getElementById('branch_id').addEventListener('change', function () {
-    const cnpj = this.options[this.selectedIndex]?.dataset.cnpj || '';
-    document.getElementById('cnpj').value = cnpj;
-
-    const url = new URL(window.location);
-    url.searchParams.set('branch_id', this.value);
-    window.location.href = url.toString();
+function toggleNfseProviderFields() {
+    var select = document.querySelector('.provider-select[data-group="nfse"]');
+    if (!select) return;
+    var selected = select.value;
+    var fields = document.querySelectorAll('.provider-fields[data-group="nfse"]');
+    for (var i = 0; i < fields.length; i++) {
+        fields[i].style.display = fields[i].dataset.provider === selected ? 'block' : 'none';
+    }
+}
+document.addEventListener('DOMContentLoaded', function() {
+    toggleNfseProviderFields();
+    var select = document.querySelector('.provider-select[data-group="nfse"]');
+    if (select) {
+        select.addEventListener('change', toggleNfseProviderFields);
+    }
+    var branchSelect = document.getElementById('branch_id');
+    if (branchSelect) {
+        branchSelect.addEventListener('change', function() {
+            var cnpj = this.options[this.selectedIndex]?.dataset.cnpj || '';
+            document.getElementById('cnpj').value = cnpj;
+            var url = new URL(window.location);
+            url.searchParams.set('branch_id', this.value);
+            window.location.href = url.toString();
+        });
+    }
 });
-</script>
 @endpush

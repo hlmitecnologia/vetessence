@@ -47,7 +47,7 @@ class NfseServiceTest extends ModuleTestCase
     public function test_cancelar_success()
     {
         $provider = $this->createMock(NfseProvider::class);
-        $provider->method('cancelar')->willReturn(NfseResult::success('123456', rawResponse: []));
+        $provider->method('cancelar')->willReturn(NfseResult::success('123456', '', '', '', '', '', []));
 
         $config = NfseConfig::factory()->create(['is_active' => true]);
         $nfseInvoice = \App\Models\NfseInvoice::factory()->create([

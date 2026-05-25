@@ -10,9 +10,8 @@ use App\Models\NfseInvoice;
 class NfseService
 {
     public function __construct(
-        protected NfseProvider $provider,
+        protected ?NfseProvider $provider = null,
     ) {}
-
     public function emitir(Invoice $invoice): NfseResult
     {
         $config = $this->getConfig($invoice->branch_id);
@@ -25,7 +24,8 @@ class NfseService
             return NfseResult::error('Esta fatura já possui uma NFS-e emitida ou em processo.');
         }
 
-        $result = $this->provider->emitir($config, $invoice);
+        $provider = $this->resolveProvider($config);
+        $result = $provider->emitir($config, $invoice);
 
         if ($result->success) {
             $nfseInvoice = NfseInvoice::create([
@@ -71,7 +71,8 @@ class NfseService
             return NfseResult::error('Prazo de cancelamento de 24h excedido. Solicite o cancelamento junto à prefeitura.');
         }
 
-        $result = $this->provider->cancelar($config, $nfseInvoice->nfse_number, $motivo);
+        $provider = $this->resolveProvider($config);
+        $result = $provider->cancelar($config, $nfseInvoice->nfse_number, $motivo);
 
         if ($result->success) {
             $nfseInvoice->update([
@@ -92,6 +93,20 @@ class NfseService
             ->first();
     }
 
+    protected function resolveProvider(NfseConfig $config): NfseProvider
+    {
+        if ($this->provider) {
+            return $this->provider;
+        }
+
+        return match ($config->provider) {
+            'webmania' => app(WebmaniaProvider::class),
+            'focusnfe' => app(FocusNfeProvider::class),
+            'ginfes' => app(GinfesProvider::class),
+            default => throw new \InvalidArgumentException("Provedor NFS-e desconhecido: {$config->provider}"),
+        };
+    }
+
     protected function notifyTutor(Invoice $invoice, NfseInvoice $nfseInvoice): void
     {
         if (!$invoice->tutor || !$invoice->tutor->email) {
@@ -106,6 +121,7 @@ class NfseService
             'destination' => $invoice->tutor->email,
             'message_content' => "NFSe emitida: {$nfseInvoice->nfse_number} - Fatura {$invoice->invoice_number}. Acesse o sistema para visualizar o XML e PDF.",
             'status' => 'pending',
+            'scheduled_at' => now(),
         ]);
     }
 }

@@ -13,6 +13,7 @@ class NfseConfig extends Model
 
     protected $fillable = [
         'branch_id',
+        'provider',
         'cnpj',
         'municipio_ibge',
         'regime_tributario',
@@ -22,6 +23,9 @@ class NfseConfig extends Model
         'webmania_app_secret',
         'webmania_consumer_key',
         'webmania_consumer_secret',
+        'focusnfe_token',
+        'ginfes_username',
+        'ginfes_password',
         'is_active',
     ];
 
