@@ -1845,10 +1845,10 @@ settings (key-value)
   ├── notification.sms_zenvio_*         → api_key, from_number
   ├── notification.sms_sns_*            → key, secret, region
   │
-  ├── notification.whatsapp_provider    → "zapi" | "weni" | "evolution" | "twilio"
+  ├── notification.whatsapp_provider    → "zapi" | "weni" | "cloudapi" | "twilio"
   ├── notification.whatsapp_zapi_*      → api_url, api_token, instance
   ├── notification.whatsapp_weni_*      → api_key, project_uuid, from_number
-  ├── notification.whatsapp_evolution_* → api_url, api_key, instance
+  ├── notification.whatsapp_cloudapi_*  → access_token, phone_number_id, business_account_id
   └── notification.whatsapp_twilio_*    → account_sid, auth_token, from_number
 ```
 
@@ -1877,7 +1877,7 @@ settings (key-value)
 |----------|------|-------------|-------|------------|
 | **Z-API** | API | api_url, api_token, instance | ~R$0,03/msg | Já implementado, brasileiro, fácil |
 | **Weni** | API | api_key, project_uuid, from_number | ~R$0,02/msg | Brasileiro (antiga Weni.ai), canal oficial WhatsApp Business |
-| **Evolution API** | Self-hosted | api_url, api_key, instance | Gratuito (servidor próprio) | Open source, sem custo por mensagem, precisa de servidor |
+| **WhatsApp Cloud API** | API (Meta) | access_token, phone_number_id | Grátis (sem custo por msg) | Oficial Meta via graph.facebook.com, exige Meta Business Account, sem custo por mensagem (apenas 1% de taxa de conversa) |
 | **Twilio WhatsApp** | API | account_sid, auth_token, from_number | ~R$0,09/msg | Reusa credencial SMS, sandbox grátis |
 
 ### AA3 — Estrutura de Dados
@@ -1918,7 +1918,7 @@ app/Services/Notification/
 ├── WhatsApp/
 │   ├── ZapiProvider.php           → API HTTP (já existe, refatorar)
 │   ├── WeniProvider.php           → API HTTP
-│   ├── EvolutionProvider.php      → API HTTP
+│   ├── CloudApiProvider.php       → Graph API (graph.facebook.com)
 │   └── TwilioWhatsAppProvider.php → SDK twilio/sdk
 │
 ├── NotificationService.php        → Orquestrador: lê config do canal, instancia provider, envia
@@ -2029,7 +2029,7 @@ Adicionar link em **Configurações > Notificações** (após "Personalização"
 | 13 | Implementar `SnsSmsProvider` — AWS SDK SNS | `app/Services/Notification/Sms/SnsSmsProvider.php` | 2 feature |
 | 14 | Implementar `ZapiProvider` — refatorar `WhatsAppProvider` existente | `app/Services/Notification/WhatsApp/ZapiProvider.php` | 2 feature (já tem teste) |
 | 15 | Implementar `WeniProvider` — API HTTP | `app/Services/Notification/WhatsApp/WeniProvider.php` | 2 feature |
-| 16 | Implementar `EvolutionProvider` — API HTTP | `app/Services/Notification/WhatsApp/EvolutionProvider.php` | 2 feature |
+| 16 | Implementar `CloudApiProvider` — Graph API Facebook (WhatsApp Cloud API) | `app/Services/Notification/WhatsApp/CloudApiProvider.php` | 2 feature |
 | 17 | Implementar `TwilioWhatsAppProvider` — SDK twilio/sdk (reusa configuração) | `app/Services/Notification/WhatsApp/TwilioWhatsAppProvider.php` | 2 feature |
 | 18 | Criar `NotificationConfigController` — index + update | `app/Http/Controllers/NotificationConfigController.php` | 2 feature (permission, save) |
 | 19 | Criar view `configuracoes/notificacoes/index.blade.php` — abas E-mail/SMS/WhatsApp, campos condicionais por provedor | `resources/views/configuracoes/notificacoes/index.blade.php` | — |
@@ -2087,7 +2087,7 @@ Adicionar link em **Configurações > Notificações** (após "Personalização"
     │            ou "Zenvio" → preenche API key, from
     │
     ├── Aba WhatsApp: seleciona "Z-API" → preenche URL, token, instance
-    │                 ou "Evolution API" → preenche URL, key, instance
+    │                 ou "WhatsApp Cloud API" → preenche access_token, phone_number_id
     │
     └── [Salvar]
             │
