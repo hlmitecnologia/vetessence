@@ -35,13 +35,27 @@ class PaymentGatewayController extends Controller
             'secret_key' => 'nullable|string',
             'webhook_secret' => 'nullable|string',
             'config' => 'nullable|json',
+            'config.city' => 'nullable|string|max:50',
+            'config.gi' => 'nullable|string|max:50',
+            'config.url' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
             'branch_id' => 'nullable|exists:branches,id',
         ]);
 
         $validated['is_active'] = $request->boolean('is_active', false);
         $validated['is_sandbox'] = $request->boolean('is_sandbox', true);
-        $validated['config'] = $request->config ? json_decode($request->config, true) : null;
+
+        if ($request->has('config') && is_array($request->config)) {
+            $validated['config'] = array_merge([
+                'city' => '',
+                'gi' => 'br.gov.bcb.pix',
+                'url' => '',
+            ], $request->config);
+        } elseif ($request->config) {
+            $validated['config'] = json_decode($request->config, true);
+        } else {
+            $validated['config'] = null;
+        }
 
         if ($validated['is_active']) {
             PaymentGateway::where('is_active', true)->update(['is_active' => false]);
@@ -75,13 +89,27 @@ class PaymentGatewayController extends Controller
             'secret_key' => 'nullable|string',
             'webhook_secret' => 'nullable|string',
             'config' => 'nullable|json',
+            'config.city' => 'nullable|string|max:50',
+            'config.gi' => 'nullable|string|max:50',
+            'config.url' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
             'branch_id' => 'nullable|exists:branches,id',
         ]);
 
         $validated['is_active'] = $request->boolean('is_active', false);
         $validated['is_sandbox'] = $request->boolean('is_sandbox', true);
-        $validated['config'] = $request->config ? json_decode($request->config, true) : null;
+
+        if ($request->has('config') && is_array($request->config)) {
+            $validated['config'] = array_merge([
+                'city' => '',
+                'gi' => 'br.gov.bcb.pix',
+                'url' => '',
+            ], $request->config);
+        } elseif ($request->config) {
+            $validated['config'] = json_decode($request->config, true);
+        } else {
+            $validated['config'] = null;
+        }
 
         if ($validated['is_active']) {
             PaymentGateway::where('is_active', true)->where('id', '!=', $paymentGateway->id)->update(['is_active' => false]);

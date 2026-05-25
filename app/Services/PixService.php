@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\PaymentGateway;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
@@ -9,17 +10,33 @@ use Endroid\QrCode\Writer\PngWriter;
 
 class PixService
 {
-    protected $merchantName;
-    protected $city;
-    protected $gi;
-    protected $isUniquePayment;
+    protected string $pixKey;
+    protected string $merchantName;
+    protected string $city;
+    protected string $gi;
+    protected string $url;
+    protected bool $isUniquePayment;
 
-    public function __construct()
+    public function __construct(?PaymentGateway $gateway = null)
     {
-        $this->merchantName = config('pix.merchant_name', 'VETESSENCE CLINICA VETERINARIA');
-        $this->city = config('pix.city', 'SAO PAULO');
-        $this->gi = config('pix.gi', 'br.gov.bcb.pix');
-        $this->isUniquePayment = config('pix.is_unique_payment', false);
+        $gateway = $gateway ?? PaymentGateway::where('provider', 'pix')->where('is_active', true)->first();
+
+        if ($gateway) {
+            $cfg = $gateway->config ?? [];
+            $this->pixKey = $gateway->public_key ?? config('pix.pix_key', '');
+            $this->merchantName = $gateway->secret_key ?? config('pix.merchant_name', '');
+            $this->city = $cfg['city'] ?? config('pix.city', 'SAO PAULO');
+            $this->gi = $cfg['gi'] ?? config('pix.gi', 'br.gov.bcb.pix');
+            $this->url = $cfg['url'] ?? config('pix.url', '');
+            $this->isUniquePayment = $cfg['is_unique_payment'] ?? config('pix.is_unique_payment', false);
+        } else {
+            $this->pixKey = config('pix.pix_key', '');
+            $this->merchantName = config('pix.merchant_name', '');
+            $this->city = config('pix.city', 'SAO PAULO');
+            $this->gi = config('pix.gi', 'br.gov.bcb.pix');
+            $this->url = config('pix.url', '');
+            $this->isUniquePayment = config('pix.is_unique_payment', false);
+        }
     }
 
     public function getPayloadFormat()
@@ -60,14 +77,10 @@ class PixService
 
     protected function buildMerchantAccountInformation($txid)
     {
-        $gui = $this->gi;
-        $key = config('pix.pix_key', 'seuemail@exemplo.com');
-        $url = config('pix.url', '');
+        $mai = $this->gi . '01' . $this->pixKey;
         
-        $mai = $gui . '01' . $key;
-        
-        if (!empty($url)) {
-            $mai .= '02' . $url;
+        if (!empty($this->url)) {
+            $mai .= '02' . $this->url;
         }
         
         if (!empty($txid)) {

@@ -157,20 +157,7 @@ else
     MAIL_FROM_ADDRESS="$ADMIN_EMAIL"
 fi
 
-echo ""
-echo -e "${BLUE}══════════════════════════════════════════${NC}"
-echo -e "${BLUE}   PIX (opcional)                        ${NC}"
-echo -e "${BLUE}══════════════════════════════════════════${NC}"
-CONFIGURE_PIX=$(prompt "CONFIGURE_PIX" "Configurar chave PIX? (s/N)" "N")
-if [[ "$CONFIGURE_PIX" =~ ^[Ss]$ ]]; then
-    PIX_KEY=$(prompt "PIX_KEY" "Chave PIX" "")
-    PIX_MERCHANT_NAME=$(prompt "PIX_MERCHANT_NAME" "Nome do recebedor" "$APP_NAME")
-    PIX_CITY=$(prompt "PIX_CITY" "Cidade" "SAO PAULO")
-else
-    PIX_KEY=""
-    PIX_MERCHANT_NAME="$APP_NAME"
-    PIX_CITY="SAO PAULO"
-fi
+
 
 # ═══════════════════════════════════════════════════════════════════════════
 # RESUMO E CONFIRMAÇÃO
@@ -183,7 +170,7 @@ echo -e " ${CYAN}Domínio:${NC}          $APP_URL"
 echo -e " ${CYAN}Nome do sistema:${NC}  $APP_NAME"
 echo -e " ${CYAN}GitHub:${NC}           $GITHUB_REPO ($GITHUB_BRANCH)"
 echo -e " ${CYAN}Banco:${NC}            $DB_CONNECTION://$DB_HOST:$DB_PORT/$DB_DATABASE"
-echo -e " ${CYAN}Admin:${NC}            $ADMIN_EMAIL"
+echo -e " ${CYAN}Super-admin:${NC}      $ADMIN_EMAIL"
 echo ""
 
 CONFIRM=$(prompt "CONFIRM" "Confirmar instalação com estas configurações? (S/n)" "S")
@@ -461,10 +448,6 @@ PUSHER_APP_CLUSTER=mt1
 MIX_PUSHER_APP_KEY="\${PUSHER_APP_KEY}"
 MIX_PUSHER_APP_CLUSTER="\${PUSHER_APP_CLUSTER}"
 
-PIX_KEY=${PIX_KEY}
-PIX_GI=br.gov.bcb.pix
-PIX_MERCHANT_NAME="${PIX_MERCHANT_NAME}"
-PIX_CITY="${PIX_CITY}"
 ENVEOF
 
 ok ".env configurado."
@@ -721,11 +704,13 @@ echo -e " 2. Para HTTPS (recomendado), instale o Certbot:"
 echo -e "    sudo apt-get install -y certbot python3-certbot-nginx"
 echo -e "    sudo certbot --nginx -d ${DOMAIN}"
 echo ""
-echo -e " 3. Acesse o sistema e conclua a configuração em:"
-echo -e "    Configurações → Personalização"
+echo -e " 3. Configure os gateways de pagamento em:"
+echo -e "    Financeiro → Gateways de Pagamento (inclusive PIX por unidade)"
+echo ""
+echo -e " 4. Configure as notificações em:"
 echo -e "    Configurações → Notificações"
 echo ""
-echo -e " 4. Para atualizações futuras, use:"
+echo -e " 5. Para atualizações futuras, use:"
 echo -e "    Configurações → Atualizar Sistema"
 echo ""
 echo -e " ${YELLOW}Senhas importantes:${NC}"
