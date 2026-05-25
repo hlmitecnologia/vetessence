@@ -21,63 +21,27 @@
                 @csrf
                 @method('PUT')
                 <div class="card-body">
-                    <p class="text-muted">Configure os dados fiscais para emissão de Nota Fiscal de Serviços Eletrônica.</p>
-
-                    <div class="form-group">
-                        <label>Unidade *</label>
-                        <select name="branch_id" id="branch_id" class="form-control @error('branch_id') is-invalid @enderror" required>
-                            <option value="">Selecione a unidade</option>
-                            @foreach($branches as $branch)
-                                <option value="{{ $branch->id }}"
-                                    data-cnpj="{{ $branch->cnpj }}"
-                                    {{ old('branch_id', $branchId) == $branch->id ? 'selected' : '' }}>
-                                    {{ $branch->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('branch_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                    </div>
+                    <p class="text-muted">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Configure o provedor de emissão de NFS-e. Os dados fiscais (CNPJ, código IBGE, regime tributário e série) são obtidos automaticamente do cadastro da unidade que realizou o serviço.
+                    </p>
 
                     <hr>
-                    <h5>Dados Fiscais</h5>
+                    <h5>Provedor NFS-e</h5>
 
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>CNPJ *</label>
-                                <input type="text" name="cnpj" id="cnpj" class="form-control @error('cnpj') is-invalid @enderror" value="{{ old('cnpj', $config->cnpj ?? '') }}" required>
-                                @error('cnpj') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Código IBGE do Município *</label>
-                                <input type="text" name="municipio_ibge" class="form-control @error('municipio_ibge') is-invalid @enderror" value="{{ old('municipio_ibge', $config->municipio_ibge ?? '') }}" required>
-                                @error('municipio_ibge') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Regime Tributário *</label>
-                                <select name="regime_tributario" class="form-control @error('regime_tributario') is-invalid @enderror" required>
-                                    <option value="mei" @selected(old('regime_tributario', $config->regime_tributario ?? '') === 'mei')>MEI</option>
-                                    <option value="simples_nacional" @selected(old('regime_tributario', $config->regime_tributario ?? '') === 'simples_nacional')>Simples Nacional</option>
-                                    <option value="lucro_presumido" @selected(old('regime_tributario', $config->regime_tributario ?? '') === 'lucro_presumido')>Lucro Presumido</option>
+                                <label>Provedor *</label>
+                                <select name="provider" class="form-control provider-select @error('provider') is-invalid @enderror" data-group="nfse" required>
+                                    <option value="webmania" {{ old('provider', $config->provider ?? 'webmania') == 'webmania' ? 'selected' : '' }}>Webmania®</option>
+                                    <option value="focusnfe" {{ old('provider', $config->provider ?? '') == 'focusnfe' ? 'selected' : '' }}>FocusNFe</option>
+                                    <option value="ginfes" {{ old('provider', $config->provider ?? '') == 'ginfes' ? 'selected' : '' }}>GinFes</option>
                                 </select>
-                                @error('regime_tributario') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                @error('provider') <span class="invalid-feedback">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Série *</label>
-                                <input type="text" name="serie" class="form-control @error('serie') is-invalid @enderror" value="{{ old('serie', $config->serie ?? '1') }}" required>
-                                @error('serie') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>Ambiente *</label>
                                 <select name="ambiente" class="form-control @error('ambiente') is-invalid @enderror" required>
@@ -87,19 +51,6 @@
                                 @error('ambiente') <span class="invalid-feedback">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                    </div>
-
-                    <hr>
-                    <h5>Provedor NFS-e</h5>
-
-                    <div class="form-group">
-                        <label>Provedor *</label>
-                        <select name="provider" class="form-control provider-select @error('provider') is-invalid @enderror" data-group="nfse" required>
-                            <option value="webmania" {{ old('provider', $config->provider ?? 'webmania') == 'webmania' ? 'selected' : '' }}>Webmania®</option>
-                            <option value="focusnfe" {{ old('provider', $config->provider ?? '') == 'focusnfe' ? 'selected' : '' }}>FocusNFe</option>
-                            <option value="ginfes" {{ old('provider', $config->provider ?? '') == 'ginfes' ? 'selected' : '' }}>GinFes</option>
-                        </select>
-                        @error('provider') <span class="invalid-feedback">{{ $message }}</span> @enderror
                     </div>
 
                     {{-- WEBMANIA --}}
@@ -199,16 +150,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var select = document.querySelector('.provider-select[data-group="nfse"]');
     if (select) {
         select.addEventListener('change', toggleNfseProviderFields);
-    }
-    var branchSelect = document.getElementById('branch_id');
-    if (branchSelect) {
-        branchSelect.addEventListener('change', function() {
-            var cnpj = this.options[this.selectedIndex]?.dataset.cnpj || '';
-            document.getElementById('cnpj').value = cnpj;
-            var url = new URL(window.location);
-            url.searchParams.set('branch_id', this.value);
-            window.location.href = url.toString();
-        });
     }
 });
 @endpush

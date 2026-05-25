@@ -15,6 +15,7 @@ class Branch extends Model
         'name', 'slug', 'address', 'number', 'neighborhood', 'complement',
         'city', 'state',
         'zip_code', 'phone', 'email', 'cnpj',
+        'municipio_ibge', 'regime_tributario', 'serie',
         'is_active', 'is_main', 'notes',
         'state_id', 'city_id',
     ];

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Services\Nfse;
 
+use App\Models\Branch;
 use App\Models\Invoice;
 use App\Models\NfseConfig;
 use App\Services\Nfse\NfseResult;
@@ -18,9 +19,10 @@ class NfseServiceTest extends ModuleTestCase
             NfseResult::success('123456', 'COD123', 'https://xml', 'https://pdf', 'RPS001', 'ABCD-1234', [])
         );
 
-        $config = NfseConfig::factory()->create(['is_active' => true]);
+        $branch = Branch::factory()->create(['municipio_ibge' => '3550308']);
+        NfseConfig::factory()->create(['is_active' => true]);
         $invoice = Invoice::factory()->create([
-            'branch_id' => $config->branch_id,
+            'branch_id' => $branch->id,
             'nfse_status' => 'none',
         ]);
 
@@ -41,7 +43,24 @@ class NfseServiceTest extends ModuleTestCase
         $result = $service->emitir($invoice);
 
         $this->assertFalse($result->success);
-        $this->assertEquals('NFS-e não configurada para esta unidade.', $result->errorMessage);
+        $this->assertEquals('NFS-e não configurada para o sistema.', $result->errorMessage);
+    }
+
+    public function test_emitir_without_branch_fiscal_data()
+    {
+        $provider = $this->createMock(NfseProvider::class);
+        $branch = Branch::factory()->create(['municipio_ibge' => null]);
+        NfseConfig::factory()->create(['is_active' => true]);
+        $invoice = Invoice::factory()->create([
+            'branch_id' => $branch->id,
+            'nfse_status' => 'none',
+        ]);
+
+        $service = new NfseService($provider);
+        $result = $service->emitir($invoice);
+
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('Dados fiscais da unidade incompletos', $result->errorMessage);
     }
 
     public function test_cancelar_success()
@@ -49,14 +68,15 @@ class NfseServiceTest extends ModuleTestCase
         $provider = $this->createMock(NfseProvider::class);
         $provider->method('cancelar')->willReturn(NfseResult::success('123456', '', '', '', '', '', []));
 
-        $config = NfseConfig::factory()->create(['is_active' => true]);
+        $branch = Branch::factory()->create(['municipio_ibge' => '3550308']);
+        NfseConfig::factory()->create(['is_active' => true]);
         $nfseInvoice = \App\Models\NfseInvoice::factory()->create([
-            'branch_id' => $config->branch_id,
+            'branch_id' => $branch->id,
             'status' => 'issued',
             'issuance_date' => now()->subHours(2),
         ]);
         $invoice = Invoice::factory()->create([
-            'branch_id' => $config->branch_id,
+            'branch_id' => $branch->id,
             'nfse_status' => 'issued',
             'nfse_invoice_id' => $nfseInvoice->id,
         ]);
@@ -71,9 +91,10 @@ class NfseServiceTest extends ModuleTestCase
     public function test_cancelar_without_nfse()
     {
         $provider = $this->createMock(NfseProvider::class);
-        $config = NfseConfig::factory()->create(['is_active' => true]);
+        $branch = Branch::factory()->create(['municipio_ibge' => '3550308']);
+        NfseConfig::factory()->create(['is_active' => true]);
         $invoice = Invoice::factory()->create([
-            'branch_id' => $config->branch_id,
+            'branch_id' => $branch->id,
             'nfse_status' => 'none',
         ]);
 

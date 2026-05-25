@@ -4,20 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class NfseConfig extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'branch_id',
         'provider',
-        'cnpj',
-        'municipio_ibge',
-        'regime_tributario',
-        'serie',
         'ambiente',
         'webmania_app_id',
         'webmania_app_secret',
@@ -32,14 +25,4 @@ class NfseConfig extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
-
-    public function branch(): BelongsTo
-    {
-        return $this->belongsTo(Branch::class);
-    }
-
-    public function nfseInvoices(): HasMany
-    {
-        return $this->hasMany(NfseInvoice::class);
-    }
 }

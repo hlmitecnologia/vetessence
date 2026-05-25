@@ -30,8 +30,7 @@ class InvoiceController extends Controller
 
         $invoices = $query->orderBy('created_at', 'desc')->paginate(20);
 
-        $hasNfseConfig = NfseConfig::where('branch_id', auth()->user()->branch_id)
-            ->where('is_active', true)->exists();
+        $hasNfseConfig = NfseConfig::where('is_active', true)->exists();
 
         return view('invoices.index', compact('invoices', 'hasNfseConfig'));
     }
@@ -102,8 +101,7 @@ class InvoiceController extends Controller
     {
         $invoice->load(['tutor', 'pet', 'items', 'creator', 'nfseInvoice']);
 
-        $hasNfseConfig = NfseConfig::where('branch_id', auth()->user()->branch_id)
-            ->where('is_active', true)->exists();
+        $hasNfseConfig = NfseConfig::where('is_active', true)->exists();
 
         return view('invoices.show', compact('invoice', 'hasNfseConfig'));
     }

@@ -12,12 +12,17 @@ class NfseService
     public function __construct(
         protected ?NfseProvider $provider = null,
     ) {}
+
     public function emitir(Invoice $invoice): NfseResult
     {
-        $config = $this->getConfig($invoice->branch_id);
+        $config = $this->getConfig();
 
         if (!$config) {
-            return NfseResult::error('NFS-e não configurada para esta unidade.');
+            return NfseResult::error('NFS-e não configurada para o sistema.');
+        }
+
+        if (!$invoice->branch || !$invoice->branch->municipio_ibge) {
+            return NfseResult::error('Dados fiscais da unidade incompletos. Configure o código IBGE no cadastro da unidade.');
         }
 
         if ($invoice->nfse_status !== 'none') {
@@ -55,10 +60,10 @@ class NfseService
 
     public function cancelar(Invoice $invoice, string $motivo): NfseResult
     {
-        $config = $this->getConfig($invoice->branch_id);
+        $config = $this->getConfig();
 
         if (!$config) {
-            return NfseResult::error('NFS-e não configurada para esta unidade.');
+            return NfseResult::error('NFS-e não configurada para o sistema.');
         }
 
         $nfseInvoice = $invoice->nfseInvoice;
@@ -86,11 +91,9 @@ class NfseService
         return $result;
     }
 
-    public function getConfig(int $branchId): ?NfseConfig
+    public function getConfig(): ?NfseConfig
     {
-        return NfseConfig::where('branch_id', $branchId)
-            ->where('is_active', true)
-            ->first();
+        return NfseConfig::where('is_active', true)->first();
     }
 
     protected function resolveProvider(NfseConfig $config): NfseProvider

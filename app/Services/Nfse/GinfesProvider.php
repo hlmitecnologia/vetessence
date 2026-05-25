@@ -92,13 +92,13 @@ class GinfesProvider implements NfseProvider
     protected function buildPayload(NfseConfig $config, Invoice $invoice): array
     {
         $tutor = $invoice->tutor;
-        $branch = $config->branch;
+        $branch = $invoice->branch;
 
         return [
-            'cnpj' => $config->cnpj,
-            'municipio_ibge' => $config->municipio_ibge,
-            'regime_tributario' => $config->regime_tributario,
-            'serie' => $config->serie,
+            'cnpj' => $branch->cnpj,
+            'municipio_ibge' => $branch->municipio_ibge,
+            'regime_tributario' => $branch->regime_tributario,
+            'serie' => $branch->serie,
             'ambiente' => $config->ambiente,
             'rps_tipo' => '1',
             'tomador' => [

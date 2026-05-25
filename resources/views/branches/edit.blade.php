@@ -105,6 +105,34 @@
                     </div>
                 </div>
             </div>
+            <hr>
+            <h5>Dados Fiscais NFS-e</h5>
+            <p class="text-muted small">Utilizados na emissão de Nota Fiscal de Serviços Eletrônica.</p>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="municipio_ibge">Código IBGE do Município</label>
+                        <input type="text" name="municipio_ibge" class="form-control" value="{{ old('municipio_ibge', $branch->municipio_ibge) }}" placeholder="Ex.: 3550308" maxlength="7">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="regime_tributario">Regime Tributário</label>
+                        <select name="regime_tributario" class="form-control">
+                            <option value="">-- Selecione --</option>
+                            <option value="mei" @selected(old('regime_tributario', $branch->regime_tributario) === 'mei')>MEI</option>
+                            <option value="simples_nacional" @selected(old('regime_tributario', $branch->regime_tributario) === 'simples_nacional')>Simples Nacional</option>
+                            <option value="lucro_presumido" @selected(old('regime_tributario', $branch->regime_tributario) === 'lucro_presumido')>Lucro Presumido</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="serie">Série</label>
+                        <input type="text" name="serie" class="form-control" value="{{ old('serie', $branch->serie ?? '1') }}" maxlength="3">
+                    </div>
+                </div>
+            </div>
             <div class="form-group mt-3">
                 <label for="notes">Observações</label>
                 <textarea name="notes" rows="2" class="form-control">{{ old('notes', $branch->notes) }}</textarea>
