@@ -44,7 +44,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 ### Financeiro
 - **Faturas** — Faturamento de serviços/produtos com controle de pagamentos
 - **Auto-Faturamento** — Geração automática de fatura ao concluir consulta
-- **NFSe** — Nota Fiscal de Serviços Eletrônica integrada via Webmania®, emissão manual ou automática ao faturar, cancelamento, exportação XML/PDF
+- **NFSe** — Nota Fiscal de Serviços Eletrônica com suporte a múltiplos provedores (Webmania®, FocusNFe, Spedy, Tecnospeed, NFE.io), dados fiscais por unidade, emissão manual ou automática ao faturar, cancelamento, exportação XML/PDF
 - **Pagamentos** — Multi-forma (dinheiro, cartão, PIX via gateway), parcelamentos
 - **Conciliação Bancária** — Importação de extrato OFX/QIF/CSV, correspondência automática por valor
 - **Comissões** — Cálculo de comissão por procedimento ou produto por veterinário, relatório por período
@@ -69,10 +69,10 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 - **Hospedagem / Banho e Tosa** — Hotel, banho & tosa com check-in/check-out, tarefas diárias
 
 ### Comunicação
-- **WhatsApp/SMS** — Integração Z-API para WhatsApp, fallback SMS, canal configurável por modelo
+- **WhatsApp/SMS/E-mail** — Notificações multi-canal com painel de configuração por provedor (SMTP/Mailgun/SES/SendGrid, Twilio/Zenvio/SNS, Z-API/Weni/Cloud API/Twilio WhatsApp)
 - **Chat Interno** — Chat em tempo real com Livewire entre equipe, indicador de não lido
 - **Notas Internas** — Recados para a equipe da clínica
-- **Fila de Comunicação** — Processamento em lote via comando Artisan
+- **Fila de Comunicação** — Processamento em lote via comando Artisan, com agendamento
 - **Notificações** — Acompanhamento de entrega de todas as mensagens enviadas
 
 ### Calculadora de Dosagem
@@ -90,7 +90,9 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 - **Modelos de Termos** — Termos de consentimento reutilizáveis
 - **Modelos de Comunicação** — Mensagens pré-definidas por canal
 - **Backup** — Backup automatizado com retenção configurável
-- **Auto-Update** — Atualização do sistema via GitHub diretamente do painel admin (git pull + migrate)
+- **Auto-Update** — Atualização do sistema via GitHub diretamente do painel admin (git pull + migrate), com autenticação via GitHub PAT configurável
+- **Gateways de Pagamento** — Configuração multi-provedor com campos condicionais (Mercado Pago, PagSeguro, Stripe, PIX, Outro), sandbox por gateway
+- **PIX** — Gateway PIX nativo com chave PIX e suporte a PIX dinâmico, dados do recebedor obtidos da unidade
 - **Rebranding** — Personalização de logo, cores, nome da clínica, posição do nome, fundo do login
 - **Dashboard Corporativo** — Indicadores consolidados de todas as filiais (faturamento, agendamentos, ocupação)
 
@@ -114,7 +116,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 ## Suite de Testes
 
 ```
-Tests: 887 total (238 files, 865 methods), 1520 assertions, 52 failures (pre-existing permission/arg gaps), 17 skipped
+Tests: ~950 total (243 files, 926 methods), assertions vary, pre-existing failures/skipped
 ```
 
 ## Início Rápido
@@ -127,6 +129,15 @@ php artisan key:generate
 php artisan migrate --seed
 php artisan serve
 ```
+
+### Instalação em Produção (Ubuntu/Debian)
+
+```bash
+chmod +x install/install.sh
+sudo ./install/install.sh
+```
+
+O script interativo configura PHP, Nginx, MySQL/MariaDB, Node.js, Redis, Supervisor e Certbot automaticamente. Veja [install/install.sh](install/install.sh).
 
 ## Contas de Demonstração
 
