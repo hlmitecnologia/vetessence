@@ -105,7 +105,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Receita Mensal</h3>
@@ -115,23 +115,25 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+</div>
+<div class="row">
+    <div class="col-md-6">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Atendimentos por Tipo</h3>
             </div>
             <div class="card-body">
-                <canvas id="appointmentsChart" height="150"></canvas>
+                <canvas id="appointmentsChart" height="200"></canvas>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Distribuição por Espécie</h3>
             </div>
             <div class="card-body">
-                <canvas id="speciesChart" height="150"></canvas>
+                <canvas id="speciesChart" height="200"></canvas>
             </div>
         </div>
     </div>
