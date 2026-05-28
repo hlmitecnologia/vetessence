@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Tutor;
+use App\Models\NfseConfig;
 use App\Events\InvoicePaid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
