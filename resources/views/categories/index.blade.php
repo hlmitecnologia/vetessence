@@ -64,6 +64,7 @@
 @endpush
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() {
             $('#categoryModal').modal('hide');
@@ -85,4 +86,5 @@
         document.getElementById('categoryModalTitle').textContent = 'Editar Categoria';
         $('#categoryModal').modal('show');
     }
+</script>
 @endpush

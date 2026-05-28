@@ -119,6 +119,7 @@
 @endsection
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#serviceModal').modal('hide'); });
         Livewire.on('service-saved', function() { location.reload(); });
@@ -133,4 +134,5 @@
         document.getElementById('serviceModalTitle').textContent = 'Editar Serviço';
         $('#serviceModal').modal('show');
     }
+</script>
 @endpush

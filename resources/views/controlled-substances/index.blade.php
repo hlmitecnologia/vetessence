@@ -85,6 +85,7 @@
 @endsection
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#controlledSubstanceModal').modal('hide'); });
         Livewire.on('controlled-substance-saved', function() { location.reload(); });
@@ -99,4 +100,5 @@
         document.getElementById('controlledSubstanceModalTitle').textContent = 'Editar Substância';
         $('#controlledSubstanceModal').modal('show');
     }
+</script>
 @endpush

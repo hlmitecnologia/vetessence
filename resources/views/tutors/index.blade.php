@@ -86,6 +86,7 @@
 @endpush
 
 @push('scripts')
+<script>
 document.addEventListener('livewire:initialized', function() {
     Livewire.on('close-modal', function() { $('#tutorModal').modal('hide'); });
     Livewire.on('tutor-saved', function() { location.reload(); });
@@ -100,4 +101,5 @@ function openEditModal(id) {
     document.getElementById('tutorModalTitle').textContent = 'Editar Tutor';
     $('#tutorModal').modal('show');
 }
+</script>
 @endpush

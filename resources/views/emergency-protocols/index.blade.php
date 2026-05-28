@@ -89,6 +89,7 @@
 @endpush
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#emergencyProtocolModal').modal('hide'); });
         Livewire.on('emergency-protocol-saved', function() { location.reload(); });
@@ -103,4 +104,5 @@
         document.getElementById('emergencyProtocolModalTitle').textContent = 'Editar Protocolo';
         $('#emergencyProtocolModal').modal('show');
     }
+</script>
 @endpush

@@ -70,6 +70,7 @@
 @endsection
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#convenioModal').modal('hide'); });
         Livewire.on('convenio-saved', function() { location.reload(); });
@@ -84,4 +85,5 @@
         document.getElementById('convenioModalTitle').textContent = 'Editar Convênio';
         $('#convenioModal').modal('show');
     }
+</script>
 @endpush

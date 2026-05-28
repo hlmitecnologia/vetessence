@@ -177,6 +177,7 @@
 @endpush
 
 @push('scripts')
+<script>
 document.addEventListener('livewire:initialized', function() {
     Livewire.on('close-modal', function() { $('#tutorModal, #petModal').modal('hide'); });
     Livewire.on('tutor-saved', function() { location.reload(); });
@@ -192,4 +193,5 @@ function openNewPetModal() {
     document.getElementById('petModalTitle').textContent = 'Novo Pet';
     $('#petModal').modal('show');
 }
+</script>
 @endpush

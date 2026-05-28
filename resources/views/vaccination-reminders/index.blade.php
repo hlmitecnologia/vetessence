@@ -104,6 +104,7 @@
 @endsection
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#vaccinationReminderModal').modal('hide'); });
         Livewire.on('vaccination-reminder-saved', function() { location.reload(); });
@@ -118,4 +119,5 @@
         document.getElementById('vaccinationReminderModalTitle').textContent = 'Editar Lembrete';
         $('#vaccinationReminderModal').modal('show');
     }
+</script>
 @endpush

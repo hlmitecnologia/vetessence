@@ -121,6 +121,7 @@
 @endpush
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#drugInteractionModal').modal('hide'); });
         Livewire.on('drug-interaction-saved', function() { location.reload(); });
@@ -135,4 +136,5 @@
         document.getElementById('drugInteractionModalTitle').textContent = 'Editar Interação Medicamentosa';
         $('#drugInteractionModal').modal('show');
     }
+</script>
 @endpush

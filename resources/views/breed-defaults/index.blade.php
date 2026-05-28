@@ -68,6 +68,7 @@
 @endsection
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#breedDefaultModal').modal('hide'); });
         Livewire.on('breed-default-saved', function() { location.reload(); });
@@ -82,4 +83,5 @@
         document.getElementById('breedDefaultModalTitle').textContent = 'Editar Raça';
         $('#breedDefaultModal').modal('show');
     }
+</script>
 @endpush

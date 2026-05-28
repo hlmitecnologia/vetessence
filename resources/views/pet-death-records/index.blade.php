@@ -65,6 +65,7 @@
 @endsection
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#petDeathRecordModal').modal('hide'); });
         Livewire.on('pet-death-record-saved', function() { location.reload(); });
@@ -79,4 +80,5 @@
         document.getElementById('petDeathRecordModalTitle').textContent = 'Editar Registro de Óbito';
         $('#petDeathRecordModal').modal('show');
     }
+</script>
 @endpush

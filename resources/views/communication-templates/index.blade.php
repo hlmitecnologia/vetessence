@@ -94,6 +94,7 @@
 @endpush
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#communicationTemplateModal').modal('hide'); });
         Livewire.on('communication-template-saved', function() { location.reload(); });
@@ -108,4 +109,5 @@
         document.getElementById('communicationTemplateModalTitle').textContent = 'Editar Modelo de Comunicação';
         $('#communicationTemplateModal').modal('show');
     }
+</script>
 @endpush

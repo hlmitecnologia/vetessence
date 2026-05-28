@@ -66,6 +66,7 @@
 @endpush
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#supplierModal').modal('hide'); });
         Livewire.on('supplier-saved', function() { location.reload(); });
@@ -80,4 +81,5 @@
         document.getElementById('supplierModalTitle').textContent = 'Editar Fornecedor';
         $('#supplierModal').modal('show');
     }
+</script>
 @endpush

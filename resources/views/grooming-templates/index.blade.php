@@ -67,6 +67,7 @@
 @endsection
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#groomingTemplateModal').modal('hide'); });
         Livewire.on('grooming-template-saved', function() { location.reload(); });
@@ -81,4 +82,5 @@
         document.getElementById('groomingTemplateModalTitle').textContent = 'Editar Template de Banho/Tosa';
         $('#groomingTemplateModal').modal('show');
     }
+</script>
 @endpush

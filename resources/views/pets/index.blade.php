@@ -95,6 +95,7 @@
 @endsection
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#petModal').modal('hide'); });
         Livewire.on('pet-saved', function() { location.reload(); });
@@ -109,4 +110,5 @@
         document.getElementById('petModalTitle').textContent = 'Editar Pet';
         $('#petModal').modal('show');
     }
+</script>
 @endpush

@@ -42,6 +42,7 @@
 @endsection
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#convenioClaimModal').modal('hide'); });
         Livewire.on('convenio-claim-saved', function() { location.reload(); });
@@ -56,4 +57,5 @@
         document.getElementById('convenioClaimModalTitle').textContent = 'Editar Solicitação';
         $('#convenioClaimModal').modal('show');
     }
+</script>
 @endpush

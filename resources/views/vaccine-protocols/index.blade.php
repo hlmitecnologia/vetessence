@@ -109,6 +109,7 @@
 @endpush
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#vaccineProtocolModal').modal('hide'); });
         Livewire.on('vaccine-protocol-saved', function() { location.reload(); });
@@ -123,4 +124,5 @@
         document.getElementById('vaccineProtocolModalTitle').textContent = 'Editar Protocolo';
         $('#vaccineProtocolModal').modal('show');
     }
+</script>
 @endpush

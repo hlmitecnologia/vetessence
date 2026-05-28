@@ -69,6 +69,7 @@
 @endpush
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#positionModal').modal('hide'); });
         Livewire.on('position-saved', function() { location.reload(); });
@@ -83,4 +84,5 @@
         document.getElementById('positionModalTitle').textContent = 'Editar Cargo';
         $('#positionModal').modal('show');
     }
+</script>
 @endpush

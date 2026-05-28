@@ -69,6 +69,7 @@
 @endpush
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#departmentModal').modal('hide'); });
         Livewire.on('department-saved', function() { location.reload(); });
@@ -83,4 +84,5 @@
         document.getElementById('departmentModalTitle').textContent = 'Editar Departamento';
         $('#departmentModal').modal('show');
     }
+</script>
 @endpush

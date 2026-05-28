@@ -44,6 +44,7 @@
 @endsection
 
 @push('scripts')
+<script>
 (function() {
     function bindSvgLightbox() {
         document.querySelectorAll('.docs-content img[src*="/docs/imagem/"], .docs-content svg').forEach(function(img) {
@@ -77,6 +78,7 @@
 
     document.addEventListener('livewire:initialized', bindSvgLightbox);
 })();
+</script>
 @endpush
 
 @push('styles')

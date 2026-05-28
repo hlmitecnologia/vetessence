@@ -76,6 +76,7 @@
 @endsection
 
 @push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#userModal').modal('hide'); });
         Livewire.on('user-saved', function() { location.reload(); });
@@ -90,4 +91,5 @@
         document.getElementById('userModalTitle').textContent = 'Editar Usuário';
         $('#userModal').modal('show');
     }
+</script>
 @endpush
