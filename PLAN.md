@@ -18,7 +18,7 @@ Brazilian Portuguese. Follow existing patterns: migration → model → controll
 ## Test Suite Status
 
 ```
-Tests:  ~290 Unit  +  ~510 Feature  =  ~800 total  (0 failures, 17 skipped)
+Tests:  ~950 total  (243 files, 926 methods), pre-existing failures/skipped
 ```
 
 | Suite | Count | Notes |
@@ -1001,121 +1001,79 @@ php artisan test --env=testing --filter="DepartmentControllerTest::test_index" -
 
 ---
 
-## Phase W — NFSe (Nota Fiscal de Serviços Eletrônica)
+## Phase W — NFSe (Nota Fiscal de Serviços Eletrônica) ✅
 
-**Provider recomendado:** [Webmania®](https://webmania.com.br/) (API REST, SDK PHP, suporte NFSe em todos os municípios via Sistema Nacional, não exige certificado A1 do cliente).
+**Arquitetura:** Adapter Pattern — camada de abstração com 5 provedores. `NfseService` resolve o provider dinamicamente com base na config salva no banco. Suporte a **5 provedores:**
 
-**Arquitetura:** Adapter Pattern — camada de abstração que permite trocar de provedor sem impactar o resto do sistema.
+| Provedor | Classe | Credenciais |
+|----------|--------|-------------|
+| Webmania® | `WebmaniaProvider` | `webmania_app_id`, `webmania_app_secret`, `webmania_consumer_key`, `webmania_consumer_secret` |
+| FocusNFe | `FocusNfeProvider` | `focusnfe_token` |
+| Spedy | `SpedyProvider` | `spedy_api_key`, `spedy_api_secret` |
+| Tecnospeed | `TecnospeedProvider` | `tecnospeed_token` |
+| NFE.io | `NfeIoProvider` | `nfeio_api_key` |
 
-### W1 — Estrutura de Dados
+### Dados Fiscais
 
-**Por que**: Cada clínica (branch) tem seu próprio CNPJ, regime tributário, município de emissão. NFSe emitida precisa ser armazenada para consulta e reimpressão.
+- **`NfseConfig`** é **sistêmico (singleton)** — sem `branch_id`. Armazena apenas provider escolhido, ambiente e credenciais do provedor ativo.
+- **`Branch`** armazena os dados fiscais de cada filial: `cnpj`, `municipio_ibge`, `regime_tributario`, `serie`.
+- `NfseService::emitir()` lê `$invoice->branch->municipio_ibge` diretamente.
 
-| # | Task | Files | Tests |
-|---|------|-------|-------|
-| 1 | Migration `nfse_configs`: `id`, `branch_id` (FK, unique), `cnpj`, `municipio_ibge`, `regime_tributario` (enum: MEI/simples_nacional/lucro_presumido), `serie`, `ambiente` (enum: homologacao/producao), `webmania_app_id`, `webmania_app_secret`, `webmania_consumer_key`, `webmania_consumer_secret`, `is_active`, `created_at`, `updated_at` | migration | 2 unit |
-| 2 | Migration `nfse_invoices`: `id`, `branch_id`, `invoice_id` (nullable FK), `nfse_number`, `nfse_code`, `nfse_url_xml`, `nfse_url_pdf`, `rps_number`, `status` (enum: pending/issued/cancelled), `issuance_date`, `cancelled_at`, `verification_code`, `provider_response` (JSON log do retorno da API), `created_at`, `updated_at` | migration | 2 unit |
-| 3 | Model `NfseConfig` com fillable, casts (json: `response_data`), relationships (`branch`, `nfseInvoices`), scopes (`active`, `byBranch`) | `app/Models/NfseConfig.php` + factory | 3 unit |
-| 4 | Model `NfseInvoice` com fillable, casts, relationships (`branch`, `invoice`), scopes (`pending`, `issued`, `byPeriod`) | `app/Models/NfseInvoice.php` + factory | 3 unit |
+### Estrutura de Dados
 
-### W2 — Serviço de Emissão (Adapter)
+| Migration | Tabela | Destaques |
+|-----------|--------|-----------|
+| `create_nfse_configs_table` | `nfse_configs` | `provider`, `ambiente`, credenciais do provider, `is_active` |
+| `create_nfse_invoices_table` | `nfse_invoices` | `invoice_id` (FK), `nfse_number`, `nfse_code`, `rps_number`, `status` (enum), `xml_url`, `pdf_url`, `provider_response` (JSON), `issuance_date` |
+| `add_nfse_to_invoices` | `invoices` | `nfse_status` (enum: none/pending/issued/cancelled), `nfse_invoice_id` |
+| `add_provider_to_nfse_configs` | `nfse_configs` | `provider`, `focusnfe_token`, `ginfes_username`, `ginfes_password` |
+| `add_nfse_fields_to_branches` | `branches` | `cnpj`, `municipio_ibge`, `regime_tributario`, `serie` |
+| `remove_branch_fields_from_nfse_configs` | `nfse_configs` | Remove `branch_id`, `cnpj`, `municipio_ibge`, `regime_tributario`, `serie` |
 
-**Por que**: Isolar a lógica de comunicação com a API Webmania® para facilitar testes e eventual troca de provedor.
+| Model | Arquivo | Observações |
+|-------|---------|-------------|
+| `NfseConfig` | `app/Models/NfseConfig.php` | Sem relacionamentos (singleton), sem scopes |
+| `NfseInvoice` | `app/Models/NfseInvoice.php` | `belongsTo(Invoice::class)`, scopes `pending`, `issued`, `byPeriod` |
 
-| # | Task | Files | Tests |
-|---|------|-------|-------|
-| 5 | Interface `NfseProvider` — métodos: `emitir(array $data): NfseResult`, `consultar(string $nfseNumber): NfseResult`, `cancelar(string $nfseNumber, string $motivo): NfseResult` | `app/Services/Nfse/NfseProvider.php` | 1 unit |
-| 6 | DTO `NfseResult` — `success`, `nfseNumber`, `nfseCode`, `xmlUrl`, `pdfUrl`, `rpsNumber`, `verificationCode`, `rawResponse`, `errorMessage` | `app/Services/Nfse/NfseResult.php` | 1 unit |
-| 7 | Implementação `WebmaniaProvider` — HTTP client (Guzzle) para endpoints Webmania: `POST /v1/nfse/emitir`, `GET /v1/nfse/{id}`, `POST /v1/nfse/{id}/cancelar`. Autenticação via headers `X-App-Id`, `X-App-Secret`, `X-Consumer-Key`, `X-Consumer-Secret` | `app/Services/Nfse/WebmaniaProvider.php` | 4 feature (mock HTTP) |
-| 8 | Service `NfseService` — orquestra: busca `NfseConfig` da branch, monta payload (RPS), chama provider, persiste `NfseInvoice`, retorna resultado | `app/Services/Nfse/NfseService.php` | 3 feature |
-| 9 | Config `config/nfse.php` — ambiente padrão, timeout, endpoints, mapping de municípios | `config/nfse.php` | — |
+### Serviços
 
-### W3 — Integração com Faturas (Invoices)
+| Classe | Arquivo | Função |
+|--------|---------|--------|
+| `NfseProvider` (interface) | `app/Services/Nfse/NfseProvider.php` | `emitir()`, `consultar()`, `cancelar()` |
+| `NfseResult` (DTO) | `app/Services/Nfse/NfseResult.php` | `success()`, `error()` static factories |
+| `NfseService` | `app/Services/Nfse/NfseService.php` | Orquestrador: `getConfig()`, `resolveProvider()`, `emitir()`, `cancelar()`, `notifyTutor()` |
+| `WebmaniaProvider` | `app/Services/Nfse/WebmaniaProvider.php` | API Webmania® |
+| `FocusNfeProvider` | `app/Services/Nfse/FocusNfeProvider.php` | API FocusNFe |
+| `SpedyProvider` | `app/Services/Nfse/SpedyProvider.php` | API Spedy |
+| `TecnospeedProvider` | `app/Services/Nfse/TecnospeedProvider.php` | API Tecnospeed |
+| `NfeIoProvider` | `app/Services/Nfse/NfeIoProvider.php` | API NFE.io |
 
-**Por que**: NFSe deve ser emitida a partir de faturas de serviço já existentes no sistema. O fluxo é: faturar → emitir NFSe → armazenar XML/PDF.
+### Controllers e Views
 
-| # | Task | Files | Tests |
-|---|------|-------|-------|
-| 10 | Adicionar coluna `nfse_status` (enum: none/pending/issued/cancelled) + `nfse_invoice_id` (FK) em `invoices` | migration | 1 unit |
-| 11 | Relacionamentos `Invoice::nfseInvoice()` (HasOne) e `Invoice::nfseStatus()` accessor | `app/Models/Invoice.php` edit | 1 unit |
-| 12 | Botão "Emitir NFSe" na show/index de Invoice (visível apenas se `invoice.nfse_status === 'none'` e branch tem `nfse_config` ativo) | views edit | — |
-| 13 | Livewire ou Controller action `NfseController@emitir` — recebe `invoice_id`, chama `NfseService::emitir()`, atualiza invoice, mostra resultado (sucesso: links XML/PDF; erro: mensagem amigável) | `app/Http/Controllers/NfseController.php` + rotas | 2 feature |
-| 14 | Botão "Cancelar NFSe" na invoice (visível apenas se emitida há < 24h, prazo legal) | views edit | — |
-| 15 | Action `NfseController@cancelar` — chama `NfseService::cancelar()`, atualiza status | controller edit | 2 feature |
+| Recurso | Rotas | Views |
+|---------|-------|-------|
+| `NfseConfigController` | `GET/PUT nfse/config` | `nfse/config.blade.php` (formulário de configuração sistêmica) |
+| `NfseController` | `GET nfse`, `GET nfse/{id}`, `POST invoices/{i}/nfse-emitir`, `POST invoices/{i}/nfse-cancelar`, `GET nfse/export`, `POST nfse/export` | `index.blade.php`, `show.blade.php`, `export.blade.php` |
+| Download | `GET nfse/{id}/pdf`, `GET nfse/{id}/xml` | — |
 
-### W4 — Emissão Automática e Agendada
+### Permissões
 
-**Por que**: Clínicas com alto volume de faturamento não podem emitir manualmente nota por nota. A emissão automática ao faturar economiza horas por semana.
+| Permissão | Roles |
+|-----------|-------|
+| `nfse.view` | super-admin, branch-admin, financial, super-financial |
+| `nfse.emit` | super-admin, branch-admin, financial, super-financial |
+| `nfse.cancel` | super-admin, branch-admin, super-financial |
+| `nfse-config.edit` | super-admin, branch-admin |
 
-| # | Task | Files | Tests |
-|---|------|-------|-------|
-| 16 | Evento `InvoicePaid` (se não existir) + Listener `EmitirNfseOnPaid` — emite NFSe automaticamente quando invoice é marcada como paga (se branch tiver config ativa) | event + listener | 2 feature |
-| 17 | Commando `nfse:emit-pending` — emite NFSe de todas as invoices com `nfse_status = 'pending'` que ainda não foram emitidas | command | 2 feature |
-| 18 | Schedule no Kernel: `$schedule->command('nfse:emit-pending')->everyTenMinutes()` | Kernel edit | — |
+### Fluxo de Emissão
 
-### W5 — Views e Configuração
-
-**Por que**: Cada branch precisa configurar seus dados fiscais. Staff precisa ver e reimprimir NFSe emitidas.
-
-| # | Task | Files | Tests |
-|---|------|-------|-------|
-| 19 | View `nfse-config/index.blade.php` — formulário de configuração por branch (CNPJ, município, regime, credenciais Webmania, ambiente). Campos sensíveis (app_secret, consumer_secret) mascarados | views | — |
-| 20 | Controller `NfseConfigController` (CRUD) — apenas `edit` + `update` (1 config por branch, criada automática ao ativar) | controller + rotas | 2 feature |
-| 21 | View `nfse/index.blade.php` — listagem de NFSe emitidas com filtros (período, status, branch), colunas: número, RPS, invoice, data, status, ações (XML, PDF, cancelar) | views | — |
-| 22 | View `nfse/show.blade.php` — detalhes da NFSe: dados completos, links para XML/PDF, log de resposta da API | views | — |
-| 23 | Links no sidebar: "NFSe" no grupo "Financeiro" (visible se usuário tem permissão `nfse.view` e branch tem config ativa) | sidebar edit | — |
-
-### W6 — Permissões e Gates
-
-| # | Task | Files | Tests |
-|---|------|-------|-------|
-| 24 | Criar permissões: `nfse.view`, `nfse.emit`, `nfse.cancel`, `nfse-config.edit` | `PermissionSeeder.php` edit | — |
-| 25 | Adicionar às roles: `super-admin` (all), `branch-admin` (all), `financial` (view+emit), `super-financial` (view+emit+cancel) | `PermissionSeeder.php` edit | — |
-| 26 | Gates em `AppServiceProvider`: `nfse.view/emit/cancel`, `nfse-config.edit` | `AppServiceProvider.php` edit | 1 feature |
-
-### W7 — Testes Completos
-
-| # | Task | Files | Tests |
-|---|------|-------|-------|
-| 27 | Unit: models (fillable, casts, relationships, scopes) — 10 tests | `tests/Unit/Models/NfseConfigTest.php`, `NfseInvoiceTest.php` | 10 |
-| 28 | Unit: DTO `NfseResult` — 4 tests (success, error, getters) | `tests/Unit/Services/Nfse/NfseResultTest.php` | 4 |
-| 29 | Feature: `WebmaniaProvider` com HTTP mock — 6 tests (emit success, emit validation error, emit API error, consult, cancel success, cancel error) | `tests/Feature/Services/Nfse/WebmaniaProviderTest.php` | 6 |
-| 30 | Feature: `NfseService` — 4 tests (emit with valid config, emit without config, cancel, error handling) | `tests/Feature/Services/Nfse/NfseServiceTest.php` | 4 |
-| 31 | Feature: `NfseController` — 6 tests (emit, cancel, index, emit without config, cancel >24h, permissions) | `tests/Feature/Controllers/NfseControllerTest.php` | 6 |
-| 32 | Feature: `NfseConfigController` — 4 tests (edit, update, update validation, permissions) | `tests/Feature/Controllers/NfseConfigControllerTest.php` | 4 |
-| 33 | Feature: `NfseOnPaid` listener — 2 tests (auto-emit on paid, no config = skip) | `tests/Feature/Listeners/EmitirNfseOnPaidTest.php` | 2 |
-| 34 | Feature: `nfse:emit-pending` command — 3 tests (emits pending, skips already issued, logs errors) | `tests/Feature/Commands/NfseEmitPendingTest.php` | 3 |
-
-### W8 — Webhooks e Notificações
-
-| # | Task | Files | Tests |
-|---|------|-------|-------|
-| 35 | Endpoint webhook `POST /api/webhooks/nfse/{branch_id}` — recebe callback da Webmania® com atualização de status (opcional, para processamento síncrono alternativo) | controller + route | 2 feature |
-| 36 | Notificação por e-mail ao tutor quando NFSe é emitida (enviar PDF + XML como anexos) — integração com `CommunicationQueue` existente | listener/edit | 2 feature |
-
-### W9 — Integração com Contabilidade
-
-**Por que**: Contadores precisam do XML das NFSe emitidas para escrituração fiscal. Facilitar o download em lote reduz retrabalho.
-
-| # | Task | Files | Tests |
-|---|------|-------|-------|
-| 37 | View `nfse/export.blade.php` — seleciona período + branch, baixa ZIP com todos os XMLs | view + controller action | 1 feature |
-| 38 | Comando `nfse:export` — exporta XMLs de um período para diretório `storage/nfse/exports/` | command | 1 feature |
-
-### Phase W Totals
-
-| Subfase | Migrations | Models | Controllers | Services | Commands | Views | Tests |
-|---------|-----------|--------|-------------|----------|---------|-------|-------|
-| W1 Estrutura | 2 | 2 | — | — | — | — | 11 |
-| W2 Adapter | — | — | — | 3 | — | — | 8 |
-| W3 Integração | 1 | 1 edit | 1 | — | — | 2 edit | 5 |
-| W4 Automática | — | — | — | — | 1 | — | 4 |
-| W5 Views | — | — | 1+1 edit | — | — | 2 | 2 |
-| W6 Permissões | — | — | — | — | — | 1 edit | 1 |
-| W7 Testes | — | — | — | — | — | — | 39 |
-| W8 Webhooks | — | — | 1 | — | — | — | 4 |
-| W9 Export | — | — | 1 edit | — | 1 | 1 | 2 |
-| **Total** | **3** | **2 + 1 edit** | **3 + 2 edit** | **3** | **2** | **3 + 3 edit** | **~76** |
+| Gatilho | Ação |
+|---------|------|
+| **Manual** | Botão "Emitir NFSe" na fatura → `NfseController@emitir` → `NfseService::emitir()` |
+| **Automático** | Evento `InvoicePaid` → Listener `EmitirNfseOnPaid` → `NfseService::emitir()` |
+| **Agendado** | Comando `nfse:emit-pending` (a cada 10 min) emite pendentes |
+| **Cancelamento** | Botão "Cancelar" (até 24h) → `NfseController@cancelar` → `NfseService::cancelar()` |
+| **Exportação** | `nfse/export` ou comando `nfse:export` — ZIP com XMLs do período |
 
 ### Fluxo de uso
 
@@ -1126,23 +1084,23 @@ php artisan test --env=testing --filter="DepartmentControllerTest::test_index" -
                     ↓
           NfseService::emitir(invoice)
                     ↓
-          NfseConfig da branch (CNPJ, município, credenciais)
+          NfseConfig (sistêmico) + Branch (CNPJ/IBGE/série)
                     ↓
-          WebmaniaProvider (monta RPS, chama API)
+          Provider resolvido por $config->provider
                     ↓
           NfseInvoice salva (número, código, links XML/PDF)
                     ↓
           Invoice atualizada (nfse_status = 'issued', nfse_invoice_id)
                     ↓
-          [Opcional] ComunicaçãoQueue → e-mail do tutor com PDF
+          [Opcional] CommunicationQueue → e-mail do tutor com PDF
 ```
 
 ### Observações Legais
 
-- **Prazo de cancelamento**: até 24h após emissão (art. 7º da Lei 11.945/2009). Após isso, só via pedido administrativo na prefeitura.
-- **Regime Tributário**:影响 o cálculo do ISS (retenção na fonte, alíquota). Configurado por branch em `nfse_configs`.
-- **Sistema Nacional NFS-e**: obrigatório para todos os municípios desde jan/2026 (Padrão Nacional de NFS-e). Webmania® já suporta.
-- **Armazenamento**: XML deve ser guardado por no mínimo 5 anos (art. 195 do CTN). `nfse_invoices` mantém URL do XML no provedor + export opcional para storage local.
+- **Prazo de cancelamento**: até 24h após emissão (art. 7º da Lei 11.945/2009).
+- **Regime Tributário**: configurado por filial em `Branch.regime_tributario`.
+- **Sistema Nacional NFS-e**: obrigatório desde jan/2026. Todos os provedores suportam.
+- **Armazenamento**: XML deve ser guardado por no mínimo 5 anos (art. 195 do CTN).
 
 ---
 
@@ -1699,7 +1657,7 @@ PUT    /configuracoes/branding       → configuracoes.branding.update
 
 ---
 
-## Phase Z — Auto-Preenchimento de Endereço por CEP
+## Phase Z — Auto-Preenchimento de Endereço por CEP ✅
 
 **Objetivo:** Ao digitar o CEP em qualquer formulário de endereço (Tutor, Fornecedor, Unidade), buscar automaticamente logradouro, bairro, cidade e estado via API gratuita. Se não encontrado, o preenchimento manual continua funcionando normalmente.
 
@@ -1808,9 +1766,9 @@ O roteamento será:
 
 ---
 
-## Phase AA — Sistema de Notificações Multicanal Configurável
+## Phase AA — Sistema de Notificações Multicanal Configurável ✅
 
-**Aprovado em:** Pendente — aguardando aprovação.
+**Aprovado em:** 2026-05-25 — implementado.
 
 **Objetivo:** Substituir as APIs fixas de notificação (WhatsApp Z-API, SMS genérico, Email API externa) por um sistema multicanal configurável pelo Super Admin em **Configurações > Notificações**, seguindo o mesmo padrão dos Gateways de Pagamento. As configurações são **sistêmicas** (não por unidade), e cada tutor escolhe os canais que prefere receber (email, SMS, WhatsApp).
 

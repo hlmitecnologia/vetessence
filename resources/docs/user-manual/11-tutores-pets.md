@@ -11,7 +11,7 @@
    - **E-mail**
    - **Telefone** (celular obrigatório)
    - **Telefone 2**
-   - **Endereço**: CEP, logradouro, número, complemento, bairro, cidade, estado
+   - **Endereço**: CEP (auto-preenchimento via ViaCEP), logradouro, número, complemento, bairro, **cidade e estado com cascading select**
 4. Preferências:
    - **Notificações**: WhatsApp, SMS, E-mail
    - Aceita **comunicação promocional**?

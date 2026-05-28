@@ -61,7 +61,7 @@
 - Configure regras de lembrete por vacina
 - Defina **dias de antecedência** para alerta
 - Escolha **canais** de notificação (WhatsApp, SMS, E-mail)
-- Lembretes são processados pelo comando `vaccines:remind`
+- Lembretes são processados pelo comando `vaccines:remind`, agendado com `--days=7` e `--days=3` diariamente às 08h
 
 ## Regras de Negócio
 - Vacinas múltiplas podem ter intervalo mínimo entre doses

@@ -47,23 +47,34 @@
 
 ## Configuração
 
-### WhatsApp
-1. Acesse **Configurações > Integrações > WhatsApp**
-2. Configure:
-   - **API Key** (provedor: WATI, Twilio, Z-API)
-   - **Número remetente**
-   - **Template de mensagens**
-3. Teste o envio antes de ativar
+Acesse **Configurações > Notificações** para configurar os provedores de cada canal. As credenciais são salvas no banco de dados e gerenciadas pelo painel admin.
 
-### SMS
-1. Acesse **Configurações > Integrações > SMS**
-2. Configure provedor (Twilio, Zenvia, etc.)
-3. Defina limite mensal de SMS
+### Painel de Configuração (abas)
 
-### E-mail
-1. Configure servidor SMTP em **.env**
-2. Templates em `resources/views/emails/`
-3. Teste de envio na tela de configurações
+**Aba E-mail:**
+| Provedor | Campos |
+|----------|--------|
+| **SMTP** | Servidor, porta, usuário, senha, criptografia, remetente |
+| **Mailgun** | Domínio, API Key, endpoint |
+| **Amazon SES** | Access Key, Secret Key, região |
+| **SendGrid** | API Key |
+
+**Aba SMS:**
+| Provedor | Campos |
+|----------|--------|
+| **Twilio** | Account SID, Auth Token, número remetente |
+| **Zenvio** | API Key, número remetente |
+| **Amazon SNS** | Access Key, Secret Key, região |
+
+**Aba WhatsApp:**
+| Provedor | Campos |
+|----------|--------|
+| **Z-API** | URL da API, Token, Instância |
+| **Weni** | API Key, Project UUID, número remetente |
+| **WhatsApp Cloud API (Meta)** | Access Token, Phone Number ID |
+| **Twilio WhatsApp** | Account SID, Auth Token, número remetente |
+
+> **Importante**: Os templates de mensagem são configurados em **Configurações > Modelos de Comunicação**, independentemente do provedor escolhido.
 
 ## Relatórios
 - **Taxa de entrega** por canal

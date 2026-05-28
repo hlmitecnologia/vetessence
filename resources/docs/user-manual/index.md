@@ -18,13 +18,13 @@ Guia prático para utilização do VetEssence no dia a dia da clínica.
 | 10 | [Agendamento](10-agendamento) | Calendário visual (FullCalendar), agendamento online, recorrente, lembretes |
 | 11 | [Tutores e Pets](11-tutores-pets) | Cadastro, microchip/RG, timeline, óbito/cremação, múltiplos tutores, portal |
 | 12 | [Convênios](12-convenios) | Planos, tabela procedimentos, guias, claims, CVI, glosas |
-| 13 | [Usuários e Permissões](13-usuarios-e-permissoes) | 11 funções, 160+ permissões, controle de acesso |
+| 13 | [Usuários e Permissões](13-usuarios-e-permissoes) | 11 funções, 170+ permissões, controle de acesso |
 | 14 | [Multi-Filiais](14-multi-filiais) | Estrutura, corporate dashboard, transferências, isolamento de dados |
 | 15 | [Relatórios](15-relatorios) | Clínicos, estoque, financeiros, comissões, exportação PDF/Excel |
 | 16 | [Auditoria e LGPD](16-auditoria-lgpd) | Logs, direitos do titular, consentimento, política de retenção |
 | 17 | [Notificações](17-notificacoes) | WhatsApp, SMS, e-mail, preferências do tutor, campanhas |
 | 18 | [Chat](18-chat) | Comunicação tutor-clínica, mensagens, anexos, notificações |
-| 19 | [Configurações](19-configuracoes) | Sistema, integrações (WhatsApp, NFSe, Gateway, Lab), rebranding, auto-update |
+| 19 | [Configurações](19-configuracoes) | Sistema, notificações, integrações (NFSe, Gateway, Lab), rebranding, auto-update |
 | 20 | [Emergências](20-emergencias) | Protocolos de emergência, busca por espécie/categoria/gravidade |
 | 21 | [Mobile e Acessibilidade](21-mobile-acessibilidade) | Interface responsiva, modo mobile /m, atalhos, acessibilidade |
 | 22 | [Triagem](22-triagem) | Painel Livewire, classificação Manchester, avaliação pré-anestésica |

@@ -67,10 +67,9 @@
 - Bloqueio de horários (folga, feriado, reunião)
 
 ## Lembretes Automáticos
-- **24h antes**: Aviso por WhatsApp/SMS/E-mail
-- **2h antes**: Lembrete no horário
-- O tutor pode **confirmar** ou **solicitar reagendamento** pelo link
-- Comando `appointments:remind` processa lembretes diariamente às 18h
+- **24h antes**: Aviso por WhatsApp/SMS/E-mail (comando `appointments:remind` agendado diariamente às 18h)
+- O tutor pode **confirmar** ou **solicitar reagendamento** pelo link da notificação
+- Lembretes de **2h antes** podem ser configurados manualmente (não são automáticos)
 
 ## Reagendamento e Cancelamento
 - Arraste o compromisso para novo horário no calendário (drag & drop)

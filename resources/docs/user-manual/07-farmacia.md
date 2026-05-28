@@ -28,7 +28,20 @@
 - Configure em **Estoque > Produtos > Editar > Preços por Espécie**
 
 ## Fornecedores
-- Cadastre fornecedores com dados de contato
+
+### Cadastro
+1. Acesse **Estoque > Fornecedores**
+2. Clique em **Novo Fornecedor**
+3. Preencha:
+   - **Nome / Razão Social** (obrigatório)
+   - **CNPJ / CPF**
+   - **Inscrição Estadual**
+   - **Endereço**: CEP (auto-preenchimento via ViaCEP), logradouro, número, complemento, bairro, **cidade e estado com cascading select**
+   - **Telefone** e **E-mail**
+   - **Contato** (pessoa de referência)
+   - **Observações**
+4. Clique em **Salvar**
+
 - Associe produtos ao fornecedor padrão
 - Histórico de pedidos por fornecedor
 

@@ -70,30 +70,39 @@ Quando uma consulta é marcada como **concluída**, o sistema gera automaticamen
 
 ## Nota Fiscal de Serviços (NFSe)
 
-### Configuração por Filial
+### Provedores Suportados
+O sistema suporta **5 provedores** de NFSe, selecionáveis na configuração:
+
+| Provedor | Credenciais |
+|----------|-------------|
+| **Webmania®** | App ID, App Secret, Consumer Key, Consumer Secret |
+| **FocusNFe** | Token de API |
+| **Spedy** | API Key, API Secret |
+| **Tecnospeed** | Token |
+| **NFE.io** | API Key |
+
+### Configuração do Provedor
 
 1. Acesse **Financeiro > NFSe > Configurações**
-2. Configure por filial:
-   - **CNPJ** do prestador
-   - **Município** (código IBGE)
-   - **Regime tributário**: MEI, Simples Nacional, Lucro Presumido
-   - **Série** da nota
-   - **Ambiente**: Homologação (testes) ou Produção
-   - **Credenciais Webmania®**: App ID, App Secret, Consumer Key, Consumer Secret
-3. Ative a configuração para começar a emitir
+2. Selecione o **provedor** desejado
+3. Escolha o **ambiente**: Homologação (testes) ou Produção
+4. Preencha as **credenciais** do provedor escolhido
+5. Ative a configuração
+
+> **Dados fiscais por filial**: CNPJ, código IBGE do município, regime tributário e série da nota são configurados no **cadastro da filial** (Configurações > Unidades), não na tela de NFSe.
 
 ### Emitir NFSe
 
 **Manual:**
 1. Acesse **Financeiro > NFSe**
 2. Clique em **Emitir NFSe** na fatura desejada
-3. O sistema monta o RPS automaticamente com dados da fatura
+3. O sistema monta o RPS automaticamente com dados da fatura + dados fiscais da filial
 4. Confirme a emissão
 5. Links para **XML** e **PDF** da nota são gerados
 
 **Automático:**
 - Quando uma fatura é **marcada como paga**, a NFSe é emitida automaticamente
-- Funciona apenas para filiais com configuração ativa
+- Funciona apenas para filiais com dados fiscais configurados
 - Comando `nfse:emit-pending` emite notas pendentes a cada 10 min
 
 ### Cancelar NFSe
@@ -101,12 +110,12 @@ Quando uma consulta é marcada como **concluída**, o sistema gera automaticamen
 1. Acesse a NFSe emitida
 2. Clique em **Cancelar** (prazo legal: até 24h da emissão)
 3. Informe o **motivo do cancelamento**
-4. O sistema comunica o cancelamento à prefeitura via Webmania®
+4. O sistema comunica o cancelamento à prefeitura
 
 ### Consultar NFSe
 
 - Listagem com filtros por **período**, **status**, **filial**
-- Colunas: número NFSe, RPS, fatura vinculada, data, status
+- Colunas: número NFSe, RPS, fatura vinculada, data, status, provedor
 - Ações: visualizar XML, baixar PDF, cancelar
 - Detalhes completos com log da resposta da API
 
@@ -122,7 +131,7 @@ Quando uma consulta é marcada como **concluída**, o sistema gera automaticamen
 - `nfse.view` — Visualizar notas emitidas
 - `nfse.emit` — Emitir novas NFSe
 - `nfse.cancel` — Cancelar NFSe
-- `nfse-config.edit` — Configurar dados fiscais da filial
+- `nfse-config.edit` — Configurar provedor de NFSe
 
 ### Regras NFSe
 - Prazo de cancelamento: até 24h após emissão (Lei 11.945/2009)

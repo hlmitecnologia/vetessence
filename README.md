@@ -60,7 +60,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 - **Zoonoses** — Cadastro de notificação compulsória (raiva, leptospirose, leishmaniose), relatórios epidemiológicos
 
 ### Pets & Tutores
-- **Cadastro de Tutores e Pets** — Registro global compartilhado entre unidades
+- **Cadastro de Tutores e Pets** — Registro global compartilhado entre unidades, com cascading select de estado/cidade, auto-preenchimento de endereço por CEP (ViaCEP + AwesomeAPI)
 - **Microchip / RG Animal** — Número do microchip, data de implantação, registro geral animal (RG)
 - **Timeline do Paciente** — Histórico unificado: consultas, vacinas, exames, cirurgias, internações, triagens
 - **Atestados Sanitários** — Modelos CVI com selo CRMV, campos de transporte/destino
@@ -85,7 +85,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 
 ### Administração
 - **Usuários** — Controle de acesso por papel (11 perfis), 160+ permissões CRUD
-- **Unidades (Multi-filiais)** — Suporte multi-unidade com dados escopados por filial, dashboard corporativo
+- **Unidades (Multi-filiais)** — Suporte multi-unidade com dados escopados por filial, dashboard corporativo; endereço com estado/cidade via cascading select e CEP
 - **Categorias** — Classificação de serviços/produtos
 - **Modelos de Termos** — Termos de consentimento reutilizáveis
 - **Modelos de Comunicação** — Mensagens pré-definidas por canal
@@ -95,6 +95,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 - **PIX** — Gateway PIX nativo com chave PIX e suporte a PIX dinâmico, dados do recebedor obtidos da unidade
 - **Rebranding** — Personalização de logo, cores, nome da clínica, posição do nome, fundo do login
 - **Dashboard Corporativo** — Indicadores consolidados de todas as filiais (faturamento, agendamentos, ocupação)
+- **Documentação do Sistema (/docs)** — Manuais do usuário (25 módulos), manual técnico e manual do tutor, renderizados em Markdown com diagramas BPMN interativos
 
 ---
 

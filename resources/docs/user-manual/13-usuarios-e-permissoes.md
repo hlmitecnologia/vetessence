@@ -79,6 +79,8 @@
 - **Financeiro**: view, create, edit, delete, reconcile, refund
 - **NFSe**: view, emit, cancel
 - **NFSe Config**: edit
+- **Gateway de Pagamento**: gateway-pagamento.view, gateway-pagamento.create, gateway-pagamento.edit, gateway-pagamento.delete
+- **Configurações de Notificação**: notification-config.edit
 - **Comissões**: view, pay
 - **Conciliação Bancária**: view, reconcile
 - **Pedidos de Compra**: view, create, edit, delete, approve, receive
@@ -104,7 +106,7 @@
 
 ### Gerenciar Permissões
 1. Acesse **Configurações > Permissões**
-2. Visualize lista de todas as permissões (160+)
+2. Visualize lista de todas as permissões (170+)
 3. Associe permissões a funções ou usuários específicos
 4. Permissões concedidas individualmente sobressaem as da função
 5. Novas permissões são adicionadas automaticamente via `PermissionSeeder`

@@ -20,93 +20,85 @@
 - Armazenado com segurança na tabela `settings`
 - O token valida requisições de atualização
 
-## Integrações
+## Notificações
 
-As integrações são configuradas via **arquivo `.env`** na raiz do sistema (acesso via servidor/SSH) ou via painel admin conforme indicado.
+### Painel de Configuração
+Acesse **Configurações > Notificações** para configurar os provedores de cada canal. As configurações são salvas no banco de dados e gerenciadas pelo painel admin — sem necessidade de editar `.env`.
 
-### WhatsApp (Z-API)
-| Variável | Descrição | Onde configurar |
-|----------|-----------|-----------------|
-| `WHATSAPP_API_URL` | URL base da API Z-API | `.env` |
-| `WHATSAPP_API_TOKEN` | Token de autenticação Bearer | `.env` |
-| `WHATSAPP_INSTANCE` | ID da instância Z-API | `.env` |
+### E-mail
 
-**Provider**: Z-API ([https://z-api.io](https://z-api.io))
-**Uso**: Lembretes de consulta, vacinas, campanhas, notificações em geral.
-**Como obter**: Crie uma conta no Z-API, crie uma instância e copie o token.
+| Provedor | Campos |
+|----------|--------|
+| **SMTP** | Servidor, porta, usuário, senha, criptografia (TLS/SSL), remetente, nome do remetente |
+| **Mailgun** | Domínio, API Key, endpoint (EUA/UE) |
+| **Amazon SES** | Access Key, Secret Key, região |
+| **SendGrid** | API Key |
+
+**Uso**: Envio de e-mails transacionais (notificações, campanhas, recuperação de senha).
 
 ### SMS
-| Variável | Descrição | Onde configurar |
-|----------|-----------|-----------------|
-| `SMS_API_URL` | URL base da API de SMS | `.env` |
-| `SMS_API_KEY` | Chave de API (Bearer token) | `.env` |
 
-**Provider**: Twilio, Zenvia ou similar
-**Uso**: Fallback quando WhatsApp não está disponível.
+| Provedor | Campos |
+|----------|--------|
+| **Twilio** | Account SID, Auth Token, número remetente |
+| **Zenvio** | API Key, número remetente |
+| **Amazon SNS** | Access Key, Secret Key, região |
 
-### E-mail Transacional
-| Variável | Descrição | Onde configurar |
-|----------|-----------|-----------------|
-| `EMAIL_API_URL` | URL base da API de e-mail | `.env` |
-| `EMAIL_API_TOKEN` | Token de autenticação | `.env` |
-| `EMAIL_API_TIMEOUT` | Timeout em segundos (padrão: 15) | `.env` |
+**Uso**: Envio de SMS como canal de notificação (fallback do WhatsApp).
 
-**Uso**: Envio de e-mails transacionais (notificações, campanhas).
+### WhatsApp
 
-### SMTP (E-mail Padrão)
-| Variável | Descrição | Onde configurar |
-|----------|-----------|-----------------|
-| `MAIL_MAILER` | Driver (smtp, mailgun, ses, postmark) | `.env` |
-| `MAIL_HOST` | Servidor SMTP | `.env` |
-| `MAIL_PORT` | Porta SMTP | `.env` |
-| `MAIL_USERNAME` | Usuário SMTP | `.env` |
-| `MAIL_PASSWORD` | Senha SMTP | `.env` |
+| Provedor | Campos |
+|----------|--------|
+| **Z-API** | URL da API, Token, Instância |
+| **Weni** | API Key, Project UUID, número remetente |
+| **WhatsApp Cloud API (Meta)** | Access Token, Phone Number ID, Business Account ID |
+| **Twilio WhatsApp** | Account SID, Auth Token, número remetente |
 
-**Uso**: Recuperação de senha, e-mails do sistema.
+**Uso**: Canal prioritário para lembretes, confirmações e campanhas.
 
-### PIX
-| Variável | Descrição | Onde configurar |
-|----------|-----------|-----------------|
-| `PIX_KEY` | Chave PIX (CPF, CNPJ, e-mail, telefone) | `.env` |
-| `PIX_MERCHANT_NAME` | Nome do recebedor (até 25 caracteres) | `.env` |
-| `PIX_CITY` | Cidade do recebedor | `.env` |
+### Preferências do Tutor
+Cada tutor escolhe os canais que deseja receber (WhatsApp, SMS, E-mail) no cadastro ou pelo Portal do Tutor. O sistema respeita as preferências ao enviar.
 
-**Uso**: Geração de QR Code PIX para pagamento de faturas.
-**Nota**: O sistema gera o QR Code localmente — não depende de API externa.
+## Integrações
 
-### Gateway de Pagamento (Cartão/Boleto)
+As integrações abaixo são configuradas via painel admin.
+
+### Gateway de Pagamento
 1. Acesse **Financeiro > Gateways de Pagamento**
 2. Clique em **Novo**
 3. Configure:
-   - **Provedor**: Mercado Pago, PagSeguro, Stripe, PIX
+   - **Provedor**: Mercado Pago, PagSeguro, Stripe, PIX, Outro
    - **Chave pública**
    - **Chave secreta**
    - **Webhook secret** (para notificações)
    - **Webhook URL** (URL de callback)
+   - **Configurações adicionais** (JSON, específicas por provedor)
    - **Modo de teste** (sandbox)
-4. Clique em **Salvar**
+4. Apenas um gateway pode estar ativo por vez
+5. As credenciais do PIX (chave PIX, nome do recebedor, cidade) são obtidas dos dados da filial (cadastro da unidade)
 
-> **Nota**: O cadastro do gateway está implementado. A chamada real para a SDK do provedor está em desenvolvimento (stub).
+> **Nota**: O cadastro e a configuração do gateway estão implementados. A integração com a SDK de cada provedor está em desenvolvimento.
 
-### NFSe (Webmania®)
+### NFSe — Configuração do Provedor
 1. Acesse **Financeiro > NFSe > Configurações**
-2. Configure por filial:
-   - **CNPJ do prestador**
-   - **Município IBGE** (código da cidade)
-   - **Regime tributário**: MEI, Simples Nacional, Lucro Presumido
-   - **Série** das notas
-   - **Ambiente**: Homologação ou Produção
-3. Credenciais Webmania®:
-   - `WEBMANIA_APP_ID` — ID do aplicativo
-   - `WEBMANIA_APP_SECRET` — Segredo (mascarado na UI)
-   - `WEBMANIA_CONSUMER_KEY` — Chave do consumidor
-   - `WEBMANIA_CONSUMER_SECRET` — Segredo do consumidor (mascarado)
-4. Cada filial tem sua própria configuração (1 por filial)
-5. Ative a configuração para começar a emitir notas
+2. Configure o provedor de nota fiscal:
+   - **Provedor**: Webmania®, FocusNFe, Spedy, Tecnospeed, NFE.io
+   - **Ambiente**: Homologação (testes) ou Produção
+3. Preencha as credenciais conforme o provedor escolhido:
+   - **Webmania®**: App ID, App Secret, Consumer Key, Consumer Secret
+   - **FocusNFe**: Token de API
+   - **Spedy**: API Key, API Secret
+   - **Tecnospeed**: Token
+   - **NFE.io**: API Key
+4. Ative a configuração
 
-**Provider**: Webmania® ([https://webmania.com.br](https://webmania.com.br))
-**Uso**: Emissão de NFSe a partir de faturas de serviço.
-**Arquitetura**: Adapter Pattern — pode ser trocado sem alterar regras de negócio.
+> **Dados fiscais por filial**: CNPJ, código IBGE do município, regime tributário e série da nota são configurados no **cadastro da filial** (Configurações > Unidades), não na tela de NFSe.
+
+### NFSe (Webmania®, FocusNFe, Spedy, Tecnospeed, NFE.io)
+- **Arquitetura**: Adapter Pattern — múltiplos provedores com interface única
+- **Fluxo**: Fatura paga → emissão automática ou manual → XML/PDF disponíveis
+- **Permissões**: `nfse.view`, `nfse.emit`, `nfse.cancel`, `nfse-config.edit`
 
 ### Convênios (Porto Seguro)
 | Variável | Descrição | Onde configurar |

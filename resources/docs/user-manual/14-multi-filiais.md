@@ -13,10 +13,14 @@ O VetEssence suporta múltiplas filiais (unidades) com:
 3. Preencha:
    - **Nome** (obrigatório)
    - **CNPJ**
-   - **Endereço**: CEP, logradouro, número, bairro, cidade, estado
+   - **Endereço**: CEP (auto-preenchimento via ViaCEP), logradouro, número, bairro, **cidade e estado com cascading select**
    - **Telefone**
    - **E-mail**
    - **Responsável**
+   - **Dados Fiscais (NFSe)**:
+     - **Código IBGE do município** (necessário para emissão de NFSe)
+     - **Regime tributário**: MEI, Simples Nacional, Lucro Presumido
+     - **Série da nota** (ex: 1, 2, ÚNICA)
    - **Ativa?**
 4. Clique em **Salvar**
 
