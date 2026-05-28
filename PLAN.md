@@ -66,7 +66,7 @@ Tests:  ~950 total  (243 files, 926 methods), pre-existing failures/skipped
 
 ## Test Phases
 
-### Phase H — Model Unit Tests ✅ (214 tests, 68 files)
+### Phase H — Model Unit Tests ✅ (335 tests, 90 files)
 
 **Files:** `tests/Unit/Models/*Test.php`
 
@@ -88,7 +88,7 @@ Every model tested for:
 | Table fix | `CommunicationQueue.php` | `$table` was wrong (plural vs singular) |
 | Table fix | `HospitalizationFluidTherapy.php` | `$table` was wrong |
 
-### Phase I — Controller Feature Tests ✅ (272 tests, 52 controllers)
+### Phase I — Controller Feature Tests ✅ (313 tests, 53 controllers)
 
 **Files:** `tests/Feature/Controllers/*Test.php`
 
@@ -127,7 +127,7 @@ Every model tested for:
 | GenerateRecurringAppointments | `appointments:generate-recurring` | 2 |
 | ProcessRecallCampaigns | `recall:process` | 2 |
 
-### Phase K — Service Tests ✅ (18 tests, 3 files)
+### Phase K — Service Tests ✅ (34 tests, 7 files)
 
 **Files:** `tests/Unit/Services/*Test.php`
 

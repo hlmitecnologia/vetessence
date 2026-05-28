@@ -117,7 +117,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 ## Suite de Testes
 
 ```
-Tests: ~950 total (243 files, 926 methods), assertions vary, pre-existing failures/skipped
+Tests: ~1,060 total (261 files, 1,057 methods), assertions vary, pre-existing failures/skipped
 ```
 
 ## Início Rápido
