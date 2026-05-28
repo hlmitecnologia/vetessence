@@ -850,6 +850,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('form').forEach(function(f) {
+                if (f.hasAttribute('wire:submit.prevent')) f.setAttribute('novalidate', '');
+            });
             initTomSelects();
 
             if (typeof jQuery !== 'undefined' && typeof jQuery.fn.DataTable === 'function') {
