@@ -77,6 +77,7 @@ class DashboardController extends Controller
         // Appointments by type (current month)
         $appointmentsByType = Appointment::select('type', DB::raw('COUNT(*) as count'))
             ->whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
             ->groupBy('type')
             ->get();
 
