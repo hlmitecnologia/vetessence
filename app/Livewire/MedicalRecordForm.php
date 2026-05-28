@@ -198,7 +198,7 @@ class MedicalRecordForm extends Component
         try {
             $data = [
                 'pet_id' => $this->pet_id,
-                'vet_id' => $this->vet_id,
+                'user_id' => $this->vet_id,
                 'appointment_id' => $this->appointment_id ?: null,
                 'date' => $this->date,
                 'time' => $this->time,
