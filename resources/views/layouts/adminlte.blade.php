@@ -809,33 +809,39 @@
 
         function initTomSelects(container) {
             container = container || document;
-            container.querySelectorAll('select.tom-select:not([data-ts-ready])').forEach(function(el) {
+            container.querySelectorAll('select.tom-select').forEach(function(el) {
+                if (el.dataset.tsReady) return;
                 if (el.closest('.ts-wrapper')) return;
+
                 var wrapper = el.closest('.tom-select-wrapper');
                 var initialValue = wrapper ? wrapper.dataset.value : '';
                 if (initialValue) el.value = initialValue;
 
                 el.dataset.tsReady = '1';
-                new TomSelect(el, {
-                    maxOptions: 200,
-                    onChange: function(value) {
-                        var wireModel = el.dataset.wire;
-                        if (wireModel && window.Livewire) {
-                            var componentEl = el.closest('[wire\\:id]');
-                            if (componentEl) {
-                                var component = Livewire.find(componentEl.getAttribute('wire:id'));
-                                if (component) component.set(wireModel, value);
+                try {
+                    new TomSelect(el, {
+                        maxOptions: 200,
+                        onChange: function(value) {
+                            var wireModel = el.dataset.wire;
+                            if (wireModel && window.Livewire) {
+                                var componentEl = el.closest('[wire\\:id]');
+                                if (componentEl) {
+                                    var component = Livewire.find(componentEl.getAttribute('wire:id'));
+                                    if (component) component.set(wireModel, value);
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                } catch (e) {
+                    if (e.message !== 'Tom Select already initialized on this element') throw e;
+                }
             });
         }
 
         function destroyTomSelects(container) {
             container = container || document;
             container.querySelectorAll('.ts-wrapper').forEach(function(wrapper) {
-                if (wrapper.tomselect) wrapper.tomselect.destroy();
+                try { if (wrapper.tomselect) wrapper.tomselect.destroy(); } catch (e) {}
                 wrapper.remove();
             });
             container.querySelectorAll('select.tom-select[data-ts-ready]').forEach(function(el) {
