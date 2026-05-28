@@ -78,7 +78,9 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="7">Nenhuma NFSe encontrada.</td></tr>
+                    <tr class="text-center">
+                        <td colspan="7">Nenhuma NFSe encontrada.</td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>

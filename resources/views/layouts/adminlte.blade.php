@@ -858,6 +858,7 @@
             if (typeof jQuery !== 'undefined' && typeof jQuery.fn.DataTable === 'function') {
                 jQuery('table.table-bordered').each(function() {
                     if (!jQuery(this).find('thead').length) return;
+                    var colCount = jQuery(this).find('thead th').length;
                     jQuery(this).DataTable({
                         "paging": true,
                         "lengthChange": true,
@@ -865,6 +866,7 @@
                         "ordering": true,
                         "info": true,
                         "autoWidth": false,
+                        "columns": Array.from({length: colCount}, function() { return {}; }),
                         "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
                         "language": {
                             "sEmptyTable": "Nenhum registro encontrado",
