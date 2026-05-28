@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\ServiceTypeMap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -141,6 +142,17 @@ class MedicalRecordController extends Controller
             return back()->with('error', 'Pet não possui tutor cadastrado.');
         }
 
+        $map = ServiceTypeMap::where('type', $medicalRecord->type)
+            ->where(function ($q) use ($medicalRecord) {
+                $q->whereNull('branch_id')
+                  ->orWhere('branch_id', $medicalRecord->branch_id);
+            })
+            ->orderBy('branch_id', 'desc')
+            ->first();
+
+        $service = $map?->service;
+        $unitPrice = $service?->price ?? 0;
+
         $invoice = Invoice::create([
             'invoice_number' => Invoice::generateNumber(),
             'pet_id' => $medicalRecord->pet_id,
@@ -148,22 +160,25 @@ class MedicalRecordController extends Controller
             'user_id' => $medicalRecord->user_id,
             'branch_id' => $medicalRecord->branch_id,
             'status' => 'pending',
-            'total' => 0,
-            'subtotal' => 0,
+            'total' => $unitPrice,
+            'subtotal' => $unitPrice,
             'due_date' => $medicalRecord->date,
             'notes' => "Gerado a partir do prontuário #{$medicalRecord->id}",
         ]);
 
         InvoiceItem::create([
             'invoice_id' => $invoice->id,
-            'description' => $this->getTypeLabel($medicalRecord->type),
+            'description' => $service?->name ?? $this->getTypeLabel($medicalRecord->type),
             'quantity' => 1,
-            'unit_price' => 0,
-            'total' => 0,
+            'unit_price' => $unitPrice,
+            'total' => $unitPrice,
         ]);
 
-        return redirect()->route('invoices.show', $invoice)
-            ->with('success', 'Fatura criada com sucesso! Adicione os itens e valores.');
+        $msg = $unitPrice > 0
+            ? "Fatura criada com sucesso!"
+            : "Fatura criada com valor R$ 0,00 — nenhum serviço mapeado para o tipo \"{$medicalRecord->type}\". Configure em Serviços > Mapeamento Tipos.";
+
+        return redirect()->route('invoices.show', $invoice)->with('success', $msg);
     }
 
     protected function getTypeLabel($type): string

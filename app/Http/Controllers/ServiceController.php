@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Service;
 use App\Models\Category;
 use App\Models\ServicePriceTier;
+use App\Models\ServiceTypeMap;
+use App\Models\Branch;
+use App\Services\BranchContext;
 use Illuminate\Http\Request;
 
 class ServiceController extends Controller
@@ -25,7 +28,17 @@ class ServiceController extends Controller
 
         $categories = Category::where('type', 'service')->orderBy('name')->get();
 
-        return view('services.index', compact('services', 'categories'));
+        $medicalTypes = ['consulta', 'cirurgia', 'emergencia', 'vacina', 'retorno', 'exame'];
+        $branchId = BranchContext::hasBranch() ? BranchContext::get() : null;
+        $typeMaps = ServiceTypeMap::with('service')
+            ->where(function ($q) use ($branchId) {
+                $q->whereNull('branch_id')
+                  ->orWhere('branch_id', $branchId);
+            })
+            ->get()
+            ->keyBy('type');
+
+        return view('services.index', compact('services', 'categories', 'medicalTypes', 'typeMaps', 'branchId'));
     }
 
     public function create()
@@ -105,5 +118,26 @@ class ServiceController extends Controller
     {
         $service->delete();
         return redirect()->route('services.index')->with('success', 'Serviço excluído!');
+    }
+
+    public function updateTypeMap(Request $request, string $type)
+    {
+        $validated = $request->validate([
+            'service_id' => 'nullable|exists:services,id',
+            'branch_id' => 'nullable|exists:branches,id',
+        ]);
+
+        if ($validated['service_id']) {
+            ServiceTypeMap::updateOrCreate(
+                ['type' => $type, 'branch_id' => $validated['branch_id'] ?? null],
+                ['service_id' => $validated['service_id']]
+            );
+        } else {
+            ServiceTypeMap::where('type', $type)
+                ->where('branch_id', $validated['branch_id'] ?? null)
+                ->delete();
+        }
+
+        return redirect()->route('services.index')->with('success', 'Mapeamento atualizado!');
     }
 }

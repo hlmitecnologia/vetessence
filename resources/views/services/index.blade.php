@@ -58,6 +58,50 @@
     </div>
 </div>
 
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Mapeamento: Tipo de Atendimento → Serviço</h3>
+        <span class="text-muted small ml-2">Define qual serviço será usado ao gerar fatura a partir de um prontuário.</span>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-bordered mb-0">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Serviço Vinculado</th>
+                    <th>Preço</th>
+                    <th style="width: 250px;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($medicalTypes as $type)
+                @php $map = $typeMaps->get($type); @endphp
+                <tr>
+                    <td><span class="badge badge-info">{{ ucfirst($type) }}</span></td>
+                    <td>{{ $map?->service?->name ?? '<span class="text-muted">Nenhum</span>' }}</td>
+                    <td>{{ $map?->service ? 'R$ '.number_format($map->service->price, 2, ',', '.') : '-' }}</td>
+                    <td>
+                        <form action="{{ route('services.type-map.update', $type) }}" method="POST" class="form-inline" style="gap: .5rem;">
+                            @csrf @method('PUT')
+                            <input type="hidden" name="branch_id" value="{{ $branchId }}">
+                            <select name="service_id" class="form-control form-control-sm" style="min-width: 180px;">
+                                <option value="">— Nenhum —</option>
+                                @foreach($services as $svc)
+                                <option value="{{ $svc->id }}" @selected($map && $map->service_id === $svc->id)>
+                                    {{ $svc->name }} (R$ {{ number_format($svc->price, 2, ',', '.') }})
+                                </option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-save"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <!-- Service Modal -->
 <div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">

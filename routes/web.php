@@ -233,6 +233,8 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'services.update',
         'destroy' => 'services.destroy',
     ]);
+    Route::put('services/type-map/{type}', 'App\Http\Controllers\ServiceController@updateTypeMap')
+        ->name('services.type-map.update');
 
     // Stock
     Route::get('stock/movements', 'App\Http\Controllers\StockController@movements')->name('stock.movements');
