@@ -119,8 +119,14 @@
         @endif
 
         <div class="d-flex justify-content-between mt-3">
-            <a href="{{ route('medical-records.index') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left mr-1"></i> Voltar</a>
-            <a href="{{ route('medical-records.edit', $medicalRecord) }}" class="btn btn-primary"><i class="fas fa-edit mr-1"></i> Editar</a>
+            <div>
+                <a href="{{ route('medical-records.index') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left mr-1"></i> Voltar</a>
+                <a href="{{ route('medical-records.edit', $medicalRecord) }}" class="btn btn-primary"><i class="fas fa-edit mr-1"></i> Editar</a>
+            </div>
+            <form action="{{ route('medical-records.generate-invoice', $medicalRecord) }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-success"><i class="fas fa-file-invoice mr-1"></i> Gerar Fatura</button>
+            </form>
         </div>
     </div>
 </div>

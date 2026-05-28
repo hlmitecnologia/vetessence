@@ -7,6 +7,8 @@ use App\Models\Pet;
 use App\Models\Prescription;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -125,6 +127,57 @@ class MedicalRecordController extends Controller
     {
         $medicalRecord->delete();
         return redirect()->route('medical-records.index')->with('success', 'Registro excluído!');
+    }
+
+    public function generateInvoice(MedicalRecord $medicalRecord)
+    {
+        $medicalRecord->load(['pet.tutors', 'vet']);
+
+        $tutor = $medicalRecord->pet->tutors()
+            ->wherePivot('is_primary', true)
+            ->first() ?? $medicalRecord->pet->tutors()->first();
+
+        if (!$tutor) {
+            return back()->with('error', 'Pet não possui tutor cadastrado.');
+        }
+
+        $invoice = Invoice::create([
+            'invoice_number' => Invoice::generateNumber(),
+            'pet_id' => $medicalRecord->pet_id,
+            'tutor_id' => $tutor->id,
+            'user_id' => $medicalRecord->user_id,
+            'branch_id' => $medicalRecord->branch_id,
+            'status' => 'pending',
+            'total' => 0,
+            'subtotal' => 0,
+            'due_date' => $medicalRecord->date,
+            'notes' => "Gerado a partir do prontuário #{$medicalRecord->id}",
+        ]);
+
+        InvoiceItem::create([
+            'invoice_id' => $invoice->id,
+            'description' => $this->getTypeLabel($medicalRecord->type),
+            'quantity' => 1,
+            'unit_price' => 0,
+            'total' => 0,
+        ]);
+
+        return redirect()->route('invoices.show', $invoice)
+            ->with('success', 'Fatura criada com sucesso! Adicione os itens e valores.');
+    }
+
+    protected function getTypeLabel($type): string
+    {
+        $labels = [
+            'consulta' => 'Consulta',
+            'cirurgia' => 'Cirurgia',
+            'emergencia' => 'Emergência',
+            'vacina' => 'Vacina',
+            'retorno' => 'Retorno',
+            'exame' => 'Exame',
+            'consultation' => 'Consulta',
+        ];
+        return $labels[$type] ?? ucfirst($type);
     }
 
     protected function getVeterinarians()

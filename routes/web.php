@@ -104,6 +104,8 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'medical-records.update',
         'destroy' => 'medical-records.destroy',
     ]);
+    Route::post('medical-records/{medicalRecord}/generate-invoice', 'App\Http\Controllers\MedicalRecordController@generateInvoice')
+        ->name('medical-records.generate-invoice');
 
     // Vaccinations
     Route::get('vaccinations/forecast', 'App\Http\Controllers\VaccinationController@forecast')->name('vaccinations.forecast');
