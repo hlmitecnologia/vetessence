@@ -29,7 +29,7 @@
                     <td>
                         <div class="d-flex align-items-center">
                             @if($pet->photo_url)
-                                <img src="{{ $pet->photo_url }}" alt="{{ $pet->name }}" class="w-10 h-10 rounded-circle object-cover">
+                                <img src="{{ $pet->photo_url }}" alt="{{ $pet->name }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
                             @else
                                 <div class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 40px; height: 40px; background: color-mix(in srgb, var(--brand-primary, #455e36) 15%, white); color: var(--brand-primary, #455e36);">
                                     <i class="fas fa-paw"></i>
