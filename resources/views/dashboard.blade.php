@@ -250,21 +250,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    const appointmentsCtx = document.getElementById('appointmentsChart').getContext('2d');
-    new Chart(appointmentsCtx, {
-        type: 'doughnut',
-        data: {
-            labels: {!! json_encode($appointmentsByType->pluck('type')->toArray()) !!},
-            datasets: [{
-                data: {!! json_encode($appointmentsByType->pluck('count')->toArray()) !!},
-                backgroundColor: ['#17a2b8', '#28a745', '#ffc107', '#dc3545', '#6f42c1']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } }
-        }
-    });
+    var apptLabels = {!! json_encode($appointmentsByType->pluck('type')->toArray()) !!};
+    var apptData = {!! json_encode($appointmentsByType->pluck('count')->toArray()) !!};
+    console.log('appointmentsByType labels:', apptLabels, 'data:', apptData);
+    if (apptLabels.length) {
+        var appointmentsCtx = document.getElementById('appointmentsChart').getContext('2d');
+        new Chart(appointmentsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: apptLabels,
+                datasets: [{
+                    data: apptData,
+                    backgroundColor: ['#17a2b8', '#28a745', '#ffc107', '#dc3545', '#6f42c1']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    }
 
     const speciesCtx = document.getElementById('speciesChart').getContext('2d');
     new Chart(speciesCtx, {
