@@ -65,6 +65,18 @@
   - Resultados de exames
 - Os anexos ficam disponíveis no histórico do pet
 
+## Gerar Fatura
+
+A partir do prontuário, é possível gerar uma fatura com os serviços prestados:
+
+1. Acesse o prontuário na tela de exibição
+2. Clique em **Gerar Fatura**
+3. O sistema busca automaticamente o serviço mapeado para o tipo de atendimento (consulta, cirurgia, etc.) em **Financeiro > Serviços > Mapeamento**
+4. A fatura é criada com o item e o preço do serviço configurado
+5. Se não houver mapeamento, a fatura é criada com R$ 0,00 — edite manualmente
+
+> **Pré-requisito:** Configure o mapeamento em Financeiro > Serviços antes de gerar faturas de prontuário.
+
 ## Histórico
 - Todos os prontuários do pet são listados em ordem cronológica
 - A **Timeline do Paciente** unifica prontuários com outros eventos

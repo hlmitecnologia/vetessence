@@ -42,8 +42,10 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 - **Fornecedores** — Gestão de fornecedores e histórico de pedidos
 
 ### Financeiro
-- **Faturas** — Faturamento de serviços/produtos com controle de pagamentos
-- **Auto-Faturamento** — Geração automática de fatura ao concluir consulta
+- **Faturas** — Faturamento de serviços/produtos com controle de pagamentos e cancelamento
+- **Auto-Faturamento** — Geração automática de fatura ao concluir consulta (com fallback via mapeamento tipo→serviço)
+- **Serviços** — Cadastro de serviços com preço base e preços por espécie/porte
+- **Mapeamento Tipo→Serviço** — Associa cada tipo de atendimento a um serviço com preço para faturas de prontuário
 - **NFSe** — Nota Fiscal de Serviços Eletrônica com suporte a múltiplos provedores (Webmania®, FocusNFe, Spedy, Tecnospeed, NFE.io), dados fiscais por unidade, emissão manual ou automática ao faturar, cancelamento, exportação XML/PDF
 - **Pagamentos** — Multi-forma (dinheiro, cartão, PIX via gateway), parcelamentos
 - **Conciliação Bancária** — Importação de extrato OFX/QIF/CSV, correspondência automática por valor

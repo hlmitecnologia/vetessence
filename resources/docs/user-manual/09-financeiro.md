@@ -27,6 +27,13 @@
 - Configure número de parcelas e intervalo
 - Cada parcela é um lançamento individual
 
+### Cancelar Fatura
+1. Acesse a fatura na listagem ou na tela de detalhes
+2. Clique em **Cancelar** (ícone <i class="fas fa-ban"></i>)
+3. Confirme a operação — o status da fatura muda para **Cancelado**
+4. Faturas pagas **não** podem ser canceladas (apenas estorno manual)
+5. Faturas canceladas saem da lista de "a receber" mas permanecem no histórico
+
 ## Contas a Pagar
 - Fluxo: Lançamento → Vencimento → Baixa
 - Categorias: Fornecedores, Aluguel, Salários, Impostos, etc.
@@ -56,6 +63,37 @@
 - **Fluxo de Caixa** projetado
 - Exportação em Excel e PDF
 
+## Serviços
+
+### Cadastrar Serviço
+1. Acesse **Financeiro > Serviços**
+2. Clique em **Novo**
+3. Preencha:
+   - **Nome** (obrigatório, ex: Consulta Clínica, Aplicação de Vacina, Cirurgia)
+   - **Categoria**
+   - **Preço Base** (valor padrão)
+   - **Duração** estimada em minutos
+4. Clique em **Salvar**
+
+### Preços por Espécie/Porte
+- Após cadastrar o serviço, configure **preços diferenciados** por espécie e porte
+- Ex: Consulta felino R$ 120, canino grande R$ 180
+- Acesse o serviço → aba **Tabela de Preços**
+- Adicione linhas combinando espécie (canino, felino, equino) + porte (PP, P, M, G, GG) + valor
+
+### Mapeamento: Tipo de Atendimento → Serviço
+
+Para que o sistema saiba qual serviço usar ao gerar uma fatura automaticamente, é preciso associar cada **tipo de atendimento** a um **serviço**:
+
+1. Acesse **Financeiro > Serviços**
+2. Role até a seção **Mapeamento: Tipo de Atendimento → Serviço**
+3. Para cada tipo (consulta, vacina, cirurgia, retorno, exame...), selecione o serviço correspondente
+4. Clique no ícone <i class="fas fa-save"></i> para salvar
+
+**Impacto:**
+- Ao clicar **Gerar Fatura** no prontuário, o sistema busca o serviço mapeado e cria o item da fatura com o preço configurado
+- Se não houver mapeamento, a fatura é criada com R$ 0,00 e um aviso é exibido
+
 ## Auto-Faturamento Pós-Consulta
 
 Quando uma consulta é marcada como **concluída**, o sistema gera automaticamente uma fatura com os serviços prestados:
@@ -65,7 +103,9 @@ Quando uma consulta é marcada como **concluída**, o sistema gera automaticamen
 3. Fatura é criada com os serviços do agendamento
 4. Fatura fica em status `pending` para recebimento
 
-- Apenas consultas com serviço(s) associado(s) geram fatura
+- Se o agendamento tiver serviços vinculados, usa os preços deles
+- Caso contrário, o sistema busca o **Mapeamento: Tipo → Serviço** configurado como fallback
+- Se não houver serviço nem mapeamento, a fatura é gerada com R$ 0,00
 - O veterinário pode editar a fatura antes de finalizar o recebimento
 
 ## Nota Fiscal de Serviços (NFSe)

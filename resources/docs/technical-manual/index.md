@@ -30,7 +30,7 @@ app/
 │  ├─ Livewire/         # Componentes Livewire (~35)
 │  └─ Middleware/       # Middlewares (SetBranchContext, etc.)
 ├─ Listeners/           # Listeners de eventos
-├─ Models/              # Eloquent Models (~60)
+├─ Models/              # Eloquent Models (~61: +ServiceTypeMap)
 ├─ Providers/           # Service Providers
 └─ Services/            # Classes de serviço
     ├─ Communication/   # WhatsAppProvider, SmsProvider
@@ -103,6 +103,28 @@ CRUDs de Tier 1 e Tier 2 usam modais Bootstrap + Livewire form components:
 - Delete via SweetAlert2 global interceptador de `form[method=DELETE]`
 - ~29 Livewire form components, 27 index views com modal
 
+### Service Type Maps (Pós-Fase W)
+Mapeamento entre tipo de atendimento e serviço com preço para geração de faturas:
+
+| Item | Detalhe |
+|------|---------|
+| Tabela | `service_type_maps` |
+| Model | `app/Models/ServiceTypeMap.php` — relations: `service()`, `branch()` |
+| Controller | `ServiceController@updateTypeMap` — método PUT |
+| Rota | `PUT services/type-map/{type}` |
+| Uso | `MedicalRecordController@generateInvoice` busca o mapeamento por tipo+branch e cria `InvoiceItem` com `unit_price = service.price` |
+| Uso 2 | `GenerateInvoiceFromAppointment` listener usa `appointment.services` com fallback para `service_type_maps` |
+
+**Controllers atualizados:**
+- `InvoiceController` — novo método `cancel()` (altera status para `cancelled`); `pay()` agora dispara `InvoicePaid::dispatch()`
+- `MedicalRecordController` — método `generateInvoice()` usa `ServiceTypeMap` para definir preço
+- `ServiceController` — `index()` passa `medicalTypes`, `typeMaps`, `branchId`; `updateTypeMap()` cria/remove mapeamento
+
+**Rotas adicionadas:**
+- `POST invoices/{invoice}/cancel` — `invoices.cancel`
+- `PUT services/type-map/{type}` — `services.type-map.update`
+- `GET medical-records/{record}/generate-invoice` — `medical-records.generate-invoice`
+
 ---
 
 ## Módulos
@@ -134,7 +156,7 @@ CRUDs de Tier 1 e Tier 2 usam modais Bootstrap + Livewire form components:
 | 06 | Internações | Registro, evolução, prescrição diária, alta |
 | 07 | Farmácia | Produtos, categorias, fornecedores, calculadora dosagem, lotes |
 | 08 | Estoque | Movimentações, pedidos compra, substâncias controladas, scanner |
-| 09 | Financeiro | Faturas, recebimentos, NFSe, comissões, conciliação bancária |
+| 09 | Financeiro | Faturas, recebimentos, cancelamento, NFSe, comissões, conciliação bancária, serviços, mapeamento tipo→serviço |
 | 10 | Agendamento | Calendário visual, agendamento online, recorrente, lembretes |
 | 11 | Tutores e Pets | Cadastro, microchip/RG, timeline, óbito, portal |
 | 12 | Convênios | Cadastro, tabelas, guias, faturamento, claims, CVI |
