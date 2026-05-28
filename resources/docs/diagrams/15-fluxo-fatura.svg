@@ -62,7 +62,8 @@ Bancária</text>
 <rect x="1050" y="247.0" width="140" height="46" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="1120.0" y="270.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Reconcilied</text>
 <ellipse cx="1511.0" cy="190.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="1511.0" cy="190.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="1511.0" y="213.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Fim</text>
 <path d="M 76 190 L 131 190 L 131 190 L 200 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-<path d="M 270 213 L 270 297.5 L 270 297.5 L 270 382" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 270 213 L 267 270" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 267 324 L 270 382" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 <path d="M 270 382 L 270 299.5 L 427 299.5 L 427 217" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 <path d="M 454 190 L 517 190 L 517 270 L 580 270" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 <path d="M 602 270 L 676 270 L 676 270 L 750 270" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
@@ -81,6 +82,28 @@ Bancária</text>
 <path d="M 1190 190 L 1345 190 L 1345 190 L 1500 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 <path d="M 1520 190 L 1510 190 L 1510 190 L 1500 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 <path d="M 1190 270 L 1345 270 L 1345 190 L 1500 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<!-- 3 origens da fatura -->
+<rect x="0" y="80" width="100" height="36" rx="4" ry="4" fill="#d5e8d4" stroke="#82b366" stroke-width="1.5"/><text x="50.0" y="98.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="8" font-family="Arial">Auto-faturamento</text>
+<path d="M 50 116 L 50 150 L 65 150 L 65 179" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrowhead)"/>
+<rect x="0" y="150" width="100" height="36" rx="4" ry="4" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.5"/><text x="50.0" y="168.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="8" font-family="Arial">Financeiro Manual</text>
+<path d="M 100 168 L 65 168 L 65 179" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrowhead)"/>
+<rect x="0" y="260" width="100" height="36" rx="4" ry="4" fill="#d5e8d4" stroke="#82b366" stroke-width="1.5"/><text x="50.0" y="278.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="8" font-family="Arial">Prontuário (Fatura)</text>
+<path d="M 50 260 L 50 230 L 65 230 L 65 179" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrowhead)"/>
+
+<!-- Cancelar fatura -->
+<polygon points="240.0,297.0 267,270.0 294,297.0 267,324.0" fill="#ffe6cc" stroke="#d79b00" stroke-width="2"/><text x="267.0" y="297.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="8" font-family="Arial">Cancelar?</text>
+<rect x="350" y="274.0" width="100" height="46" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="400.0" y="297.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Fatura
+Cancelada</text>
+<path d="M 294 297 L 315 297 L 315 297 L 350 297" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<text x="320.0" y="290.0" text-anchor="middle" fill="#000" font-size="8" font-family="Arial">Sim</text>
+<ellipse cx="510.0" cy="297.0" rx="11.0" ry="11.0" fill="#f8cecc" stroke="#b85450" stroke-width="2"/><ellipse cx="510.0" cy="297.0" rx="7.0" ry="7.0" fill="none" stroke="#b85450" stroke-width="2"/><text x="510.0" y="320.0" text-anchor="middle" fill="#000" font-size="9" font-family="Arial">Fim</text>
+<path d="M 450 297 L 475 297 L 475 297 L 499 297" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<text x="250.0" y="310.0" text-anchor="middle" fill="#000" font-size="8" font-family="Arial">Não</text>
+
+<!-- ServiceTypeMap annotation -->
+<rect x="140" y="140" width="90" height="26" rx="2" ry="2" fill="#fff" stroke="#000" stroke-width="1" stroke-dasharray="2,2"/><text x="185.0" y="153.0" text-anchor="middle" fill="#000" font-size="7" font-family="Arial">ServiceTypeMap</text>
+<path d="M 185 166 L 185 178 L 200 178" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="2,2" marker-end="url(#arrowhead)"/>
+
 </g>
 <foreignObject width="1300" height="600"><div xmlns="http://www.w3.org/1999/xhtml"><mxfile host="Generator" modified="2026-05-21T07:35:39.400015" agent="BPMN-PHASEX" version="24.0.5" type="device"><diagram id="15-fluxo-fatura.svg" name="Page-1"><mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" page="0" pageWidth="1300" pageHeight="600" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="c475" value="Fluxo de Faturamento, NFSe e Comissões" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontStyle=1" vertex="1" parent="1"><mxGeometry x="10" y="5" width="1280" height="28" as="geometry"/></mxCell><mxCell id="c476" value="Veterinário" style="swimlane;startSize=18;fillColor=#d5e8d4;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="70" width="1270" height="80" as="geometry"/></mxCell><mxCell id="c477" value="Financeiro" style="swimlane;startSize=18;fillColor=#ffe6cc;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="150" width="1270" height="80" as="geometry"/></mxCell><mxCell id="c478" value="Sistema" style="swimlane;startSize=18;fillColor=#f5f5f5;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="230" width="1270" height="80" as="geometry"/></mxCell><mxCell id="c479" value="Clínica" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="40" width="1300" height="280" as="geometry"/></mxCell><mxCell id="c480" value="Tutor" style="swimlane;startSize=18;fillColor=#e1d5e7;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="365" width="1270" height="80" as="geometry"/></mxCell><mxCell id="c481" value="Tutor" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="335" width="1300" height="120" as="geometry"/></mxCell><mxCell id="c482" value="Webmania" style="swimlane;startSize=18;fillColor=#ffe6cc;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="500" width="1270" height="80" as="geometry"/></mxCell><mxCell id="c483" value="Webmania®" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="470" width="1300" height="120" as="geometry"/></mxCell><mxCell id="c484" value="Banco" style="swimlane;startSize=18;fillColor=#ffe6cc;strokeColor=#000;horizontal=1;" vertex="1" parent="1"><mxGeometry x="30" y="635" width="1270" height="80" as="geometry"/></mxCell><mxCell id="c485" value="Banco" style="swimlane;startSize=0;fillColor=none;strokeColor=#000;" vertex="1" parent="1"><mxGeometry x="0" y="605" width="1300" height="120" as="geometry"/></mxCell><mxCell id="c486" value="Fatura
 Gerada" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="40" y="179.0" width="22" height="22" as="geometry"/></mxCell><mxCell id="c487" value="Adicionar
