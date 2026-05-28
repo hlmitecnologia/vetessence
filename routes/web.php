@@ -176,6 +176,7 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('invoices/{invoice}/pix', 'App\Http\Controllers\InvoiceController@generatePix')->name('invoices.pix');
     Route::post('invoices/{invoice}/pay', 'App\Http\Controllers\InvoiceController@pay')->name('invoices.pay');
+    Route::post('invoices/{invoice}/cancel', 'App\Http\Controllers\InvoiceController@cancel')->name('invoices.cancel');
 
     // NFSe
     Route::get('nfse', 'App\Http\Controllers\NfseController@index')->name('nfse.index');

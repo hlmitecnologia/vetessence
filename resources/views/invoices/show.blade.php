@@ -62,6 +62,10 @@
                 <a href="{{ route('invoices.index') }}" class="btn btn-default"><i class="fas fa-arrow-left"></i> Voltar</a>
                 @if($invoice->status !== 'paid')
                 <a href="{{ route('invoices.edit', $invoice) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Editar</a>
+                <form action="{{ route('invoices.cancel', $invoice) }}" method="POST" class="d-inline" onsubmit="return confirm('Cancelar esta fatura?')">
+                    @csrf
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-ban"></i> Cancelar</button>
+                </form>
                 @endif
             </div>
         </div>

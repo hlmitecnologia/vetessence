@@ -160,6 +160,17 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.index')->with('success', 'Fatura excluída!');
     }
 
+    public function cancel(Invoice $invoice)
+    {
+        if ($invoice->status === 'paid') {
+            return back()->with('error', 'Não é possível cancelar fatura paga.');
+        }
+
+        $invoice->update(['status' => 'cancelled']);
+
+        return redirect()->route('invoices.index')->with('success', 'Fatura cancelada!');
+    }
+
     public function pay(Request $request, Invoice $invoice)
     {
         $validated = $request->validate([

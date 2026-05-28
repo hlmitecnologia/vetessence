@@ -58,6 +58,14 @@
                         <a href="{{ route('invoices.edit', $inv) }}" class="btn btn-action btn-primary" title="Editar">
                             <i class="fas fa-edit"></i>
                         </a>
+                        @if($inv->status !== 'paid')
+                        <form action="{{ route('invoices.cancel', $inv) }}" method="POST" class="d-inline" onsubmit="return confirm('Cancelar esta fatura?')">
+                            @csrf
+                            <button type="submit" class="btn btn-action btn-danger" title="Cancelar">
+                                <i class="fas fa-ban"></i>
+                            </button>
+                        </form>
+                        @endif
                         @can('nfse.emit')
                         @if($inv->nfse_status === 'none' && $hasNfseConfig)
                         <form action="{{ route('nfse.emitir', $inv) }}" method="POST" class="d-inline" onsubmit="return confirm('Emitir NFSe para esta fatura?')">
