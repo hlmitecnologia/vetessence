@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
-use App\Models\NfseConfig;
-use App\Models\Pet;
 use App\Models\Tutor;
+use App\Events\InvoicePaid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -171,6 +170,8 @@ class InvoiceController extends Controller
             'paid_at' => now(),
             'payment_method' => $validated['payment_method'],
         ]);
+
+        InvoicePaid::dispatch($invoice);
 
         return redirect()->back()->with('success', 'Pagamento registrado!');
     }
