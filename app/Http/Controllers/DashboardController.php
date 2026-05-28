@@ -75,8 +75,7 @@ class DashboardController extends Controller
             ->get();
 
         // Appointments by type (current month)
-        $appointmentsByType = Appointment::withoutGlobalScope(\App\Scopes\BranchScope::class)
-            ->select('type', DB::raw('COUNT(*) as count'))
+        $appointmentsByType = MedicalRecord::select('type', DB::raw('COUNT(*) as count'))
             ->whereMonth('date', now()->month)
             ->whereYear('date', now()->year)
             ->groupBy('type')
