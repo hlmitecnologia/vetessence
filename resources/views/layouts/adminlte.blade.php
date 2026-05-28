@@ -894,9 +894,12 @@
         // Livewire integration
         document.addEventListener('livewire:initialized', function() {
             Livewire.hook('morph.updated', function(params) {
+                var el = params.el;
+                if (el.matches && el.matches('form')) { el.setAttribute('novalidate', ''); }
+                else if (el.querySelectorAll) { el.querySelectorAll('form').forEach(function(f) { f.setAttribute('novalidate', ''); }); }
                 setTimeout(function() {
-                    destroyTomSelects(params.el);
-                    initTomSelects(params.el);
+                    destroyTomSelects(el);
+                    initTomSelects(el);
                 }, 0);
             });
         });
