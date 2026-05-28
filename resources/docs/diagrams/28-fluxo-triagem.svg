@@ -10,6 +10,7 @@
 
 
 
+
 <rect x="10" y="5" width="1080" height="28" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="550.0" y="19.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Fluxo de Triagem Manchester</text>
 <rect x="30" y="70" width="1070" height="80" fill="#fff" stroke="#000" stroke-width="1.5"/><rect x="30" y="70" width="18" height="80" fill="#fff" stroke="#000" stroke-width="1"/><text x="39" y="110.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="9" font-family="Arial" transform="rotate(-90,39,110.0)">Recepcionista</text>
 <rect x="30" y="150" width="1070" height="80" fill="#fff" stroke="#000" stroke-width="1.5"/><rect x="30" y="150" width="18" height="80" fill="#fff" stroke="#000" stroke-width="1"/><text x="39" y="190.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="9" font-family="Arial" transform="rotate(-90,39,190.0)">Veterinário</text>
@@ -28,7 +29,7 @@ Manchester (cor)</text>
 <polygon points="627.0,243.0 654,270.0 627.0,297.0 600,270.0" fill="#ffe6cc" stroke="#d79b00" stroke-width="2"/><text x="627.0" y="270.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="18" font-family="Arial">✕</text>
 <rect x="760" y="247.0" width="140" height="46" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="830.0" y="270.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Escalar
 Prioridade</text>
-<rect x="760" y="247.0" width="140" height="46" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="830.0" y="270.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Sugerir
+<rect x="760" y="303.0" width="140" height="46" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="830.0" y="326.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Sugerir
 Protocolo</text>
 <rect x="760" y="167.0" width="140" height="46" rx="4" ry="4" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="830.0" y="190.0" text-anchor="middle" dominant-baseline="central" fill="#000" font-size="10" font-family="Arial">Realizar
 Atendimento</text>
@@ -41,8 +42,8 @@ Timeline do Pet</text>
 <path d="M 442 270 L 521 270 L 521 270 L 600 270" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 <path d="M 654 270 L 707 270 L 707 270 L 760 270" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 <path d="M 654 270 L 707 270 L 707 190 L 760 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-<path d="M 830 247 L 830 270 L 830 270 L 830 293" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-<path d="M 830 247 L 830 230 L 830 230 L 830 213" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 830 303 L 830 270 L 830 270 L 830 349" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+<path d="M 830 303 L 830 230 L 830 230 L 830 213" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 <path d="M 900 190 L 930 190 L 930 190 L 960 190" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 <path d="M 1100 190 L 1100 190 L 1100 110 L 1100 110" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 </g>
@@ -53,7 +54,7 @@ Manchester (cor)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1
 (cor++)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="420" y="259.0" width="22" height="22" as="geometry"/></mxCell><mxCell id="c824" value="Tempo Máx
 Excedido?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="600" y="243.0" width="54" height="54" as="geometry"/></mxCell><mxCell id="c825" value="Escalar
 Prioridade" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="760" y="247.0" width="140" height="46" as="geometry"/></mxCell><mxCell id="c826" value="Sugerir
-Protocolo" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="760" y="247.0" width="140" height="46" as="geometry"/></mxCell><mxCell id="c827" value="Realizar
+Protocolo" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="760" y="303.0" width="140" height="46" as="geometry"/></mxCell><mxCell id="c827" value="Realizar
 Atendimento" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="760" y="167.0" width="140" height="46" as="geometry"/></mxCell><mxCell id="c828" value="Registrar na
 Timeline do Pet" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="960" y="167.0" width="140" height="46" as="geometry"/></mxCell><mxCell id="c829" value="Fim" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1"><mxGeometry x="1100" y="99.0" width="22" height="22" as="geometry"/></mxCell><mxCell id="c830" edge="1" parent="1" source="c820" target="c821" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="c831" edge="1" parent="1" source="c821" target="c822" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="c832" edge="1" parent="1" source="c822" target="c823" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="c833" edge="1" parent="1" source="c823" target="c824" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="c834" edge="1" parent="1" source="c824" target="c825" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="c835" edge="1" parent="1" source="c824" target="c827" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="c836" edge="1" parent="1" source="c825" target="c826" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="c837" edge="1" parent="1" source="c826" target="c827" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="c838" edge="1" parent="1" source="c827" target="c828" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="c839" edge="1" parent="1" source="c828" target="c829" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;"><mxGeometry relative="1" as="geometry"/></mxCell></root></mxGraphModel></diagram></mxfile></div></foreignObject></switch>
 </svg>
