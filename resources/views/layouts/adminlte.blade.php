@@ -898,7 +898,6 @@
                 if (el.matches && el.matches('form')) { el.setAttribute('novalidate', ''); }
                 else if (el.querySelectorAll) { el.querySelectorAll('form').forEach(function(f) { f.setAttribute('novalidate', ''); }); }
                 setTimeout(function() {
-                    destroyTomSelects(el);
                     initTomSelects(el);
                 }, 0);
             });
