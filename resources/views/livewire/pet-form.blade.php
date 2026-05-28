@@ -2,7 +2,7 @@
     <form wire:submit.prevent="save">
         <div class="form-group text-center">
             @if ($photo)
-                <img src="{{ $photo->temporaryUrl() }}" class="rounded-circle mb-2" style="width: 96px; height: 96px; object-fit: cover;">
+                <img src="{{ $photo->temporaryUrl() }}" class="rounded-circle mb-2" style="width: 96px; height: 96px; object-fit: cover;" onerror="this.remove()">
             @elseif ($petId && ($existing = \App\Models\Pet::find($petId)) && $existing->photo_url)
                 <img src="{{ $existing->photo_url }}" class="rounded-circle mb-2" style="width: 96px; height: 96px; object-fit: cover;">
             @else

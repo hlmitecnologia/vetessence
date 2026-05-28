@@ -6,7 +6,7 @@
 >
     <select
         @if(isset($id) && $id) id="{{ $id }}" @endif
-        @if(isset($name) && $name) name="{{ $name }}" @endif
+        name="{{ $name ?? $wire ?? '' }}"
         @if(isset($required) && $required) required @endif
         @if(isset($multiple) && $multiple) multiple @endif
         @if(isset($placeholder) && $placeholder) data-placeholder="{{ $placeholder }}" @endif

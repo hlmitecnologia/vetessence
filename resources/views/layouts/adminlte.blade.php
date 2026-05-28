@@ -810,6 +810,7 @@
         function initTomSelects(container) {
             container = container || document;
             container.querySelectorAll('select.tom-select:not([data-ts-ready])').forEach(function(el) {
+                if (el.closest('.ts-wrapper')) return;
                 var wrapper = el.closest('.tom-select-wrapper');
                 var initialValue = wrapper ? wrapper.dataset.value : '';
                 if (initialValue) el.value = initialValue;
@@ -835,6 +836,7 @@
             container = container || document;
             container.querySelectorAll('.ts-wrapper').forEach(function(wrapper) {
                 if (wrapper.tomselect) wrapper.tomselect.destroy();
+                wrapper.remove();
             });
             container.querySelectorAll('select.tom-select[data-ts-ready]').forEach(function(el) {
                 delete el.dataset.tsReady;
