@@ -910,7 +910,7 @@
             });
         }
 
-        @stack('scripts')
     </script>
+        @stack('scripts')
 </body>
 </html>

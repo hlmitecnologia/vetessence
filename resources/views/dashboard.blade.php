@@ -1,9 +1,5 @@
 @extends('layouts.adminlte', ['title' => 'Dashboard'])
 
-@push('styles')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
-@endpush
-
 @section('content')
 <div class="row">
     <div class="col-lg-3 col-6">
