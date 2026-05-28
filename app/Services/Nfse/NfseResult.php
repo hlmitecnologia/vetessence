@@ -17,13 +17,13 @@ class NfseResult
     ) {}
 
     public static function success(
-        string $nfseNumber,
-        string $nfseCode,
-        string $xmlUrl,
-        string $pdfUrl,
-        string $rpsNumber,
-        string $verificationCode,
-        array $rawResponse,
+        string $nfseNumber = '',
+        string $nfseCode = '',
+        string $xmlUrl = '',
+        string $pdfUrl = '',
+        string $rpsNumber = '',
+        string $verificationCode = '',
+        array $rawResponse = [],
     ): self {
         return new self(
             success: true,

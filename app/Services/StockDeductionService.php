@@ -19,10 +19,13 @@ class StockDeductionService
             throw new \RuntimeException("Estoque insuficiente de {$product->name} para dar baixa.");
         }
 
+        $product->decrement('stock', 1);
+
         StockMovement::create([
             'product_id' => $product->id,
             'quantity' => 1,
             'type' => 'out',
+            'balance_after' => $product->stock,
             'branch_id' => $vaccination->branch_id ?? auth()->user()->branch_id,
             'user_id' => auth()->id(),
             'notes' => "Baixa automática - Vacinação: {$vaccination->vaccine} - Pet #{$vaccination->pet_id}",

@@ -24,10 +24,7 @@ class NfseConfigControllerTest extends ModuleTestCase
     public function test_update()
     {
         $response = $this->put(route('nfse.config.update'), [
-            'cnpj' => '11.222.333/0001-44',
-            'municipio_ibge' => '3550308',
-            'regime_tributario' => 'simples_nacional',
-            'serie' => '1',
+            'provider' => 'webmania',
             'ambiente' => 'homologacao',
             'webmania_app_id' => 'app-id',
             'webmania_app_secret' => 'app-secret',
@@ -36,14 +33,15 @@ class NfseConfigControllerTest extends ModuleTestCase
         ]);
         $response->assertRedirect();
         $this->assertDatabaseHas('nfse_configs', [
-            'cnpj' => '11.222.333/0001-44',
-            'regime_tributario' => 'simples_nacional',
+            'provider' => 'webmania',
+            'ambiente' => 'homologacao',
+            'is_active' => true,
         ]);
     }
 
     public function test_update_validates_required_fields()
     {
         $response = $this->put(route('nfse.config.update'), []);
-        $response->assertSessionHasErrors(['cnpj', 'municipio_ibge', 'regime_tributario', 'ambiente']);
+        $response->assertSessionHasErrors(['provider', 'ambiente']);
     }
 }

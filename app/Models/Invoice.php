@@ -16,7 +16,7 @@ class Invoice extends Model
         'invoice_number', 'tutor_id', 'pet_id', 'appointment_id',
         'subtotal', 'discount', 'total', 'status', 'due_date',
         'paid_at', 'payment_method', 'payment_proof', 'pix_code',
-        'pix_expiration', 'convenio_discount', 'notes', 'created_by', 'branch_id',
+        'pix_expiration', 'convenio_discount', 'notes', 'user_id', 'branch_id',
         'nfse_status', 'nfse_invoice_id',
     ];
 
@@ -46,7 +46,7 @@ class Invoice extends Model
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by', 'branch_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function items(): HasMany

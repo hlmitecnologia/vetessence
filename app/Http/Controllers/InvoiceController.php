@@ -76,7 +76,7 @@ class InvoiceController extends Controller
                 'total' => $total,
                 'due_date' => $validated['due_date'],
                 'status' => 'pending',
-                'created_by' => auth()->id(),
+                'user_id' => auth()->id(),
             ]);
 
             foreach ($validated['items'] as $item) {

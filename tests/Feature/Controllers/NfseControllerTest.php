@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Controllers;
 
+use App\Models\Branch;
 use App\Models\Invoice;
 use App\Models\NfseConfig;
 use App\Models\NfseInvoice;
@@ -41,9 +42,10 @@ class NfseControllerTest extends ModuleTestCase
 
     public function test_emitir_success()
     {
-        $config = NfseConfig::factory()->create(['is_active' => true]);
+        $branch = Branch::factory()->create();
+        NfseConfig::factory()->create(['is_active' => true]);
         $invoice = Invoice::factory()->create([
-            'branch_id' => $config->branch_id,
+            'branch_id' => $branch->id,
             'nfse_status' => 'none',
         ]);
 
@@ -76,14 +78,15 @@ class NfseControllerTest extends ModuleTestCase
 
     public function test_cancelar_success()
     {
-        $config = NfseConfig::factory()->create(['is_active' => true]);
+        $branch = Branch::factory()->create();
+        NfseConfig::factory()->create(['is_active' => true]);
         $nfseInvoice = NfseInvoice::factory()->create([
-            'branch_id' => $config->branch_id,
+            'branch_id' => $branch->id,
             'status' => 'issued',
             'issuance_date' => now()->subHours(2),
         ]);
         $invoice = Invoice::factory()->create([
-            'branch_id' => $config->branch_id,
+            'branch_id' => $branch->id,
             'nfse_status' => 'issued',
             'nfse_invoice_id' => $nfseInvoice->id,
         ]);

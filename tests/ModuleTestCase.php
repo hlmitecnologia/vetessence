@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -15,8 +16,14 @@ abstract class ModuleTestCase extends TestCase
     {
         parent::setUp();
 
-        if (SpatieRole::count() === 0) {
-            SpatieRole::create(['name' => 'super-admin', 'guard_name' => 'web']);
+        $this->withoutMiddleware(VerifyCsrfToken::class);
+
+        if (!SpatieRole::where('name', 'super-admin')->where('guard_name', 'web')->exists()) {
+            SpatieRole::create([
+                'name' => 'super-admin',
+                'guard_name' => 'web',
+                'slug' => 'super-admin-role',
+            ]);
         }
     }
 

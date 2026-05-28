@@ -19,12 +19,17 @@ Brazilian Portuguese. Follow existing patterns: migration → model → controll
 
 ```
 Tests:  ~950 total  (243 files, 926 methods), pre-existing failures/skipped
+
+⚠️ 2 test files BROKEN (NFSe refactor — reference dropped columns)
+⚠️ 18 service/provider classes with ZERO tests (Notification + NFSe)
+⚠️ 22 controllers without dedicated feature tests
+⚠️ 6 models without unit tests
 ```
 
 | Suite | Count | Notes |
 |-------|-------|-------|
-| Unit/Models | ~290 | All models covered |
-| Feature/Controllers | ~400 | All controllers tested |
+| Unit/Models | ~290 | Most models covered (6 missing) |
+| Feature/Controllers | ~400 | Most controllers tested (22 missing) |
 | Feature/Commands | ~25 | All commands |
 | Feature/Integrations | ~12 | Flow scenarios |
 | Feature/Api | ~18 | Endpoints |
@@ -2059,4 +2064,209 @@ Adicionar link em **Configurações > Notificações** (após "Personalização"
             │       ├── instancia provider correspondente
             │       └── provider->send(...)
             └── atualiza status (sent/failed)
+```
+
+---
+
+## Phase AB — Test Gap Closure (NFSe + Notification + New Modules)
+
+### AB0 — Diagnóstico
+
+| # | Problema | Gravidade | Origem |
+|---|----------|-----------|--------|
+| 1 | `NfseConfigControllerTest::test_update` envia `cnpj`, `municipio_ibge`, `regime_tributario`, `serie` — colunas removidas da `nfse_configs` | 🔴 **Quebrado** | Migration `remove_branch_fields_from_nfse_configs` |
+| 2 | `NfseConfigControllerTest::test_update_validates_required_fields` espera erro para campos que não existem mais | 🔴 **Quebrado** | Mesma migration |
+| 3 | `NfseControllerTest::test_emitir_success` usa `$config->branch_id` — coluna removida | 🔴 **Quebrado** | Mesma migration |
+| 4 | `NfseControllerTest::test_cancelar_success` mesmo problema de `$config->branch_id` | 🔴 **Quebrado** | Mesma migration |
+| 5 | `NfseServiceTest` não testa `resolveProvider()` para 5 providers | 🟡 Parcial | Nunca foi implementado |
+| 6 | `NfseConfigTest` não testa ausência de relacionamentos/scopes | 🟡 Parcial | Nunca foi implementado |
+| 7 | 0 testes para 4 NFSe providers (FocusNFe, Spedy, Tecnospeed, NFE.io) | 🔴 **Ausente** | Phase W não incluiu testes |
+| 8 | 0 testes para `NotificationService` (orquestrador + 3 `resolve*Provider`) | 🔴 **Ausente** | Phase AA não incluiu testes |
+| 9 | 0 testes para 11 providers de notificação (4 email, 3 SMS, 4 WhatsApp) | 🔴 **Ausente** | Phase AA não incluiu testes |
+| 10 | 0 testes para `NotificationConfigController` | 🟡 Ausente | Phase AA não incluiu testes |
+| 11 | 22 controllers sem testes dedicados | 🟡 Ausente | Acumulado de várias phases |
+| 12 | 6 models sem unit tests | 🟢 Leve | Acumulado de várias phases |
+| 13 | `StockDeductionService` sem testes | 🟡 Ausente | Phase T2 |
+| 14 | `NfseConfigTest::test_active_scope` nome enganoso (testa query crua, não scope) | 🟢 Cosmético | Nunca foi corrigido |
+
+### AB1 — Correções Urgentes (🔥 4 testes quebrados)
+
+| # | Arquivo | Problema | Correção |
+|---|---------|----------|----------|
+| 1 | `NfseConfigControllerTest::test_update` | Envia `cnpj`, `municipio_ibge`, `regime_tributario`, `serie` (não existem) + não envia `provider` (obrigatório) | Substituir payload: `provider`, `ambiente`, `webmania_app_id`, `webmania_app_secret` |
+| 2 | `NfseConfigControllerTest::test_update_validates_required_fields` | Espera erro para campos que não existem | Trocar por: `provider`, `ambiente` como required |
+| 3 | `NfseControllerTest::test_emitir_success` | Usa `$config->branch_id` (null) | Usar `Branch::factory()->create()->id` direto |
+| 4 | `NfseControllerTest::test_cancelar_success` | Mesmo problema | Mesma correção |
+
+### AB2 — NFSe Provider Tests (4 arquivos novos)
+
+Provider interface contract (same adapter pattern):
+
+```
+tests/Feature/Services/Nfse/FocusNfeProviderTest.php     → emitir, consultar, cancelar (Http fake)
+tests/Feature/Services/Nfse/SpedyProviderTest.php         → emitir, consultar, cancelar (Http fake)
+tests/Feature/Services/Nfse/TecnospeedProviderTest.php    → emitir, consultar, cancelar (Http fake)
+tests/Feature/Services/Nfse/NfeIoProviderTest.php         → emitir, consultar, cancelar (Http fake)
+```
+
+**Padrão por teste (3 tests cada):**
+- `test_emitir_success` — POST /v1/nfse → stub response 201 com XML + protocolo
+- `test_consultar_success` — GET /v1/nfse/{id} → stub com status NFSe
+- `test_cancelar_success` — POST /v1/nfse/{id}/cancelar → stub 200
+
+**Total: ~12 tests**
+
+### AB3 — NfseService Enhancement Tests (editar existente)
+
+Adicionar ao `tests/Feature/Services/Nfse/NfseServiceTest.php`:
+
+| Test | O que cobre |
+|------|-------------|
+| `test_resolve_provider_webmania` | Config provider=webmania → resolve WebmaniaProvider |
+| `test_resolve_provider_focusnfe` | Config provider=focusnfe → resolve FocusNfeProvider |
+| `test_resolve_provider_spedy` | Config provider=spedy → resolve SpedyProvider |
+| `test_resolve_provider_tecnospeed` | Config provider=tecnospeed → resolve TecnospeedProvider |
+| `test_resolve_provider_nfeio` | Config provider=nfeio → resolve NfeIoProvider |
+| `test_resolve_provider_invalid` | Config provider=unknown → exception |
+| `test_notify_tutor_sends_email` | notifyTutor() com tutor com email → queue entry |
+
+**Total: ~7 tests adicionados**
+
+### AB4 — NfseConfig Model Tests (editar existente)
+
+| Test | O que cobre |
+|------|-------------|
+| `test_no_relationships` | Assert não tem `branch()`, `nfseInvoices()`, `invoices()` |
+| `test_no_custom_scopes` | Assert não tem métodos `scope*` |
+| `test_fillable_does_not_include_old_fields` | Assert `branch_id`, `cnpj`, `municipio_ibge`, `regime_tributario`, `serie` NÃO estão em `$fillable` |
+| `test_provider_constants` | Assert existem 5 providers definidos |
+
+**Total: ~4 tests adicionados**
+
+### AB5 — Notification Service Tests (4 arquivos novos)
+
+```
+tests/Feature/Services/Notification/NotificationServiceTest.php     → send(), resolve*Provider() (14 tests)
+tests/Feature/Services/Notification/EmailProviderTest.php           → Smtp, Mailgun, Ses, SendGrid (8 tests)
+tests/Feature/Services/Notification/SmsProviderTest.php             → Twilio, Zenvio, Sns (6 tests)
+tests/Feature/Services/Notification/WhatsAppProviderTest.php        → Zapi, Weni, CloudApi, TwilioWhatsApp (8 tests)
+```
+
+**Padrão NotificationService (mock settings + providers):**
+| Test | O que cobre |
+|------|-------------|
+| `test_send_email_resolves_correct_provider` | settings `notification.email_provider=smtp` → instancia SmtpProvider |
+| `test_send_sms_resolves_correct_provider` | settings `notification.sms_provider=twilio` → TwilioSmsProvider |
+| `test_send_whatsapp_resolves_correct_provider` | settings `notification.whatsapp_provider=zapi` → ZapiProvider |
+| `test_send_invalid_channel` | Canal inválido → exception |
+| `test_send_provider_returns_success` | Provider mockado → retorna NotificationResult::success |
+| `test_send_provider_returns_error` | Provider mockado → retorna NotificationResult::error |
+| `test_send_with_attachment` | Email com attachment → repassa ao provider |
+| `test_resolve_email_provider_all` | Testa todos os 4 email providers |
+| `test_resolve_sms_provider_all` | Testa todos os 3 SMS providers |
+| `test_resolve_whatsapp_provider_all` | Testa todos os 4 WhatsApp providers |
+
+**+ provider-specific tests com Http fake:**
+
+| Provider | Tests | Lógica testada |
+|----------|-------|----------------|
+| SmtpProvider | 2 | `Mail::mailer('dynamic-smtp')` com config dinâmica |
+| MailgunProvider | 2 | `Mail::mailer('mailgun')` |
+| SesProvider | 2 | `Mail::mailer('ses')` |
+| SendGridProvider | 2 | POST para sendgrid API com API key |
+| TwilioSmsProvider | 2 | POST para Twilio API |
+| ZenvioSmsProvider | 2 | POST para Zenvio API com headers |
+| SnsSmsProvider | 2 | POST para AWS SNS com message attributes |
+| ZapiProvider | 2 | POST para Z-API |
+| WeniProvider | 2 | POST para Weni API |
+| CloudApiProvider | 2 | POST para graph.facebook.com/v21.0 |
+| TwilioWhatsAppProvider | 2 | POST para Twilio WhatsApp API |
+
+**Total: ~14 (service) + 22 (providers) = ~36 tests**
+
+### AB6 — NotificationConfigController Tests (1 arquivo novo)
+
+```
+tests/Feature/Controllers/NotificationConfigControllerTest.php
+```
+
+| Test | O que cobre |
+|------|-------------|
+| `test_index_returns_form` | GET → 200, view has provider selects |
+| `test_update_saves_smtp_config` | PUT with SMTP settings → saved in `settings` |
+| `test_update_validates_provider_required` | PUT sem provider → validation error |
+| `test_update_requires_authentication` | PUT sem auth → redirect/login |
+
+**Total: ~4 tests**
+
+### AB7 — Controllers Sem Teste (prioritário: 8 controllers core)
+
+| Controller | Tests planejados | Prioridade |
+|------------|-----------------|------------|
+| `BranchController` | 6 (CRUD + fiscal fields validation) | 🔴 Alta — NFSe depende de dados fiscais |
+| `InvoiceController` | 6 (CRUD + NFSe emission trigger) | 🔴 Alta — core financeiro |
+| `NotificationConfigController` | 4 (index + update + validation + auth) | 🔴 Alta — Phase AA |
+| `UserController` | 4 (index + edit + update + roles) | 🟡 Média |
+| `DashboardController` | 2 (render + branch stats) | 🟡 Média |
+| `AppointmentController` | 4 (create + edit + update status + calendar) | 🟡 Média |
+
+**Total: ~26 tests**
+
+### AB8 — Models Sem Unit Test (6 files)
+
+| Model | Tests planejados |
+|-------|-----------------|
+| `Setting` | 3 (fillable, casts, scope byKey) |
+| `ServicePriceTier` | 3 (fillable, casts, relationship to Service) |
+| `EmergencyProtocol` | 3 (fillable, casts, scope active/bySpecies) |
+| `DrugFormulary` | 3 (fillable, casts, scope byDrug) |
+| `PurchaseOrderItem` | 3 (fillable, casts, relationship to PurchaseOrder) |
+| `VaccinationReminder` | 3 (fillable, casts, relationship to Vaccination) |
+
+**Total: ~18 tests**
+
+### AB9 — StockDeductionService (1 arquivo novo)
+
+```
+tests/Feature/Services/StockDeductionServiceTest.php
+```
+
+| Test | O que cobre |
+|------|-------------|
+| `test_deduct_reduces_stock` | Produto com estoque → deduz + cria StockMovement |
+| `test_deduct_insufficient_stock` | Produto sem estoque → exception |
+| `test_deduct_with_product_id` | Vacinação com `product_id` → deduz automaticamente |
+| `test_restore_increases_stock` | Restore após cancelamento |
+
+**Total: ~4 tests**
+
+### AB10 — Resumo Phase AB
+
+| Subfase | Arquivos | Tests |
+|---------|----------|-------|
+| AB1 Correções urgentes | 2 edit | 4 fixes |
+| AB2 NFSe Providers | 4 new | 12 |
+| AB3 NfseService | 1 edit | 7 |
+| AB4 NfseConfig Model | 1 edit | 4 |
+| AB5 Notification Service | 4 new | 36 |
+| AB6 NotificationConfigController | 1 new | 4 |
+| AB7 Controllers Core | 6 new | 26 |
+| AB8 Models | 6 new | 18 |
+| AB9 StockDeductionService | 1 new | 4 |
+| **Total** | **14 new + 4 edit = 18 files** | **~115** |
+
+### Comandos para verificação
+
+```bash
+# Verificar se os testes quebrados foram corrigidos
+php artisan test --filter="NfseConfigControllerTest|NfseControllerTest" --verbose
+
+# Rodar todos os testes NFSe
+php artisan test --filter="Nfse" --verbose
+
+# Rodar todos os testes de Notification
+php artisan test --filter="Notification" --verbose
+
+# Full test suite (excluindo Portal)
+php artisan test --filter="!Portal" --verbose 2>&1 | tail -20
 ```
