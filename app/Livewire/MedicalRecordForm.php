@@ -109,7 +109,7 @@ class MedicalRecordForm extends Component
             $this->recordId = $recordId;
 
             $record = MedicalRecord::with('appointment')->find($recordId);
-            if ($record && $record->appointment && $record->appointment->hasPaidInvoice()) {
+            if ($record && $record->hasGeneratedPaidInvoice()) {
                 session()->flash('error', 'Este prontuário não pode ser editado porque o atendimento já possui uma fatura paga.');
                 return redirect()->route('medical-records.show', $recordId);
             }

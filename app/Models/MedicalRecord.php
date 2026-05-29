@@ -65,4 +65,17 @@ class MedicalRecord extends Model
         return $this->belongsToMany(ZoonoticDisease::class, 'diagnosis_disease')
             ->withPivot('is_suspected', 'notes');
     }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function hasGeneratedPaidInvoice(): bool
+    {
+        if ($this->appointment && $this->appointment->hasPaidInvoice()) {
+            return true;
+        }
+        return $this->invoices()->where('status', 'paid')->exists();
+    }
 }

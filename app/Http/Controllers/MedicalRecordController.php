@@ -100,7 +100,7 @@ class MedicalRecordController extends Controller
 
     public function edit(MedicalRecord $medicalRecord)
     {
-        if ($medicalRecord->appointment && $medicalRecord->appointment->hasPaidInvoice()) {
+        if ($medicalRecord->hasGeneratedPaidInvoice()) {
             return back()->with('error', 'Este prontuário não pode ser editado porque o atendimento já possui uma fatura paga.');
         }
 
@@ -113,7 +113,7 @@ class MedicalRecordController extends Controller
 
     public function update(Request $request, MedicalRecord $medicalRecord)
     {
-        if ($medicalRecord->appointment && $medicalRecord->appointment->hasPaidInvoice()) {
+        if ($medicalRecord->hasGeneratedPaidInvoice()) {
             return back()->with('error', 'Este prontuário não pode ser editado porque o atendimento já possui uma fatura paga.');
         }
 
@@ -140,7 +140,7 @@ class MedicalRecordController extends Controller
 
     public function generateInvoice(MedicalRecord $medicalRecord)
     {
-        if ($medicalRecord->appointment && $medicalRecord->appointment->hasPaidInvoice()) {
+        if ($medicalRecord->hasGeneratedPaidInvoice()) {
             return back()->with('error', 'Não é possível gerar fatura para este prontuário pois o atendimento já possui uma fatura paga.');
         }
 
@@ -190,6 +190,7 @@ class MedicalRecordController extends Controller
                 'tutor_id' => $tutor->id,
                 'user_id' => $medicalRecord->user_id,
                 'branch_id' => $medicalRecord->branch_id,
+                'medical_record_id' => $medicalRecord->id,
                 'status' => 'pending',
                 'total' => $unitPrice,
                 'subtotal' => $unitPrice,

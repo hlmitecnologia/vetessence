@@ -177,4 +177,60 @@ class MedicalRecordControllerTest extends ModuleTestCase
         $response->assertRedirect();
         $response->assertSessionHas('error');
     }
+
+    public function test_generate_invoice_blocks_when_record_has_direct_paid_invoice()
+    {
+        $tutor = Tutor::factory()->create();
+        $pet = Pet::factory()->create();
+        $pet->tutors()->attach($tutor->id, ['is_primary' => true]);
+        $vet = User::factory()->create();
+        $record = MedicalRecord::factory()->create([
+            'pet_id' => $pet->id,
+            'user_id' => $vet->id,
+        ]);
+        Invoice::create([
+            'invoice_number' => Invoice::generateNumber(),
+            'pet_id' => $pet->id,
+            'tutor_id' => $tutor->id,
+            'user_id' => $vet->id,
+            'medical_record_id' => $record->id,
+            'total' => 100,
+            'subtotal' => 100,
+            'status' => 'paid',
+            'paid_at' => now(),
+            'due_date' => now(),
+        ]);
+
+        $response = $this->post(route('medical-records.generate-invoice', $record));
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+    }
+
+    public function test_edit_blocks_when_record_has_direct_paid_invoice()
+    {
+        $tutor = Tutor::factory()->create();
+        $pet = Pet::factory()->create();
+        $pet->tutors()->attach($tutor->id, ['is_primary' => true]);
+        $vet = User::factory()->create();
+        $record = MedicalRecord::factory()->create([
+            'pet_id' => $pet->id,
+            'user_id' => $vet->id,
+        ]);
+        Invoice::create([
+            'invoice_number' => Invoice::generateNumber(),
+            'pet_id' => $pet->id,
+            'tutor_id' => $tutor->id,
+            'user_id' => $vet->id,
+            'medical_record_id' => $record->id,
+            'total' => 100,
+            'subtotal' => 100,
+            'status' => 'paid',
+            'paid_at' => now(),
+            'due_date' => now(),
+        ]);
+
+        $response = $this->get(route('medical-records.edit', $record));
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+    }
 }

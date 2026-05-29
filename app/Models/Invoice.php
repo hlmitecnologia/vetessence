@@ -18,7 +18,7 @@ class Invoice extends Model
         'subtotal', 'discount', 'total', 'status', 'due_date',
         'paid_at', 'payment_method', 'payment_proof', 'pix_code',
         'pix_expiration', 'convenio_discount', 'notes', 'user_id', 'branch_id',
-        'nfse_status', 'nfse_invoice_id',
+        'nfse_status', 'nfse_invoice_id', 'medical_record_id',
     ];
 
     protected $casts = [
@@ -59,6 +59,11 @@ class Invoice extends Model
     public function nfseInvoice()
     {
         return $this->belongsTo(NfseInvoice::class);
+    }
+
+    public function medicalRecord(): BelongsTo
+    {
+        return $this->belongsTo(MedicalRecord::class);
     }
 
     public static function generateNumber(): string
