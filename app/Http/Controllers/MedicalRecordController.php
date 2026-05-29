@@ -180,6 +180,9 @@ class MedicalRecordController extends Controller
                 ? $invoice->notes . " | Prontuário #{$medicalRecord->id}"
                 : "Gerado a partir do prontuário #{$medicalRecord->id}";
             $invoice->update(['notes' => $notes]);
+            if ($medicalRecord->appointment) {
+                $invoice->appointments()->syncWithoutDetaching([$medicalRecord->appointment->id]);
+            }
         } else {
             $invoice = Invoice::create([
                 'invoice_number' => Invoice::generateNumber(),
@@ -193,6 +196,9 @@ class MedicalRecordController extends Controller
                 'due_date' => $medicalRecord->date,
                 'notes' => "Gerado a partir do prontuário #{$medicalRecord->id}",
             ]);
+            if ($medicalRecord->appointment) {
+                $invoice->appointments()->attach($medicalRecord->appointment->id);
+            }
         }
 
         InvoiceItem::create([
