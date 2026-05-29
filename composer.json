@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.2",
         "almasaeed2010/adminlte": "^3.2",
+        "aws/aws-sdk-php": "^3.383",
         "barryvdh/laravel-dompdf": "^3.0",
         "endroid/qr-code": "^4.6",
         "guzzlehttp/guzzle": "^7.0.1",

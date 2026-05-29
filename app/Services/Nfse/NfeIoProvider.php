@@ -115,7 +115,7 @@ class NfeIoProvider implements NfseProvider
                 'email' => $tutor->email ?? '',
                 'telefone' => preg_replace('/\D/', '', $tutor->phone ?? ''),
                 'logradouro' => $tutor->address ?? '',
-                'numero' => $tutor->address_number ?? 'S/N',
+                'numero' => $tutor->number ?? 'S/N',
                 'bairro' => $tutor->neighborhood ?? '',
                 'cidade' => $tutor->city ?? '',
                 'uf' => $tutor->state ?? '',

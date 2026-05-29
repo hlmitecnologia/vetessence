@@ -16,7 +16,7 @@ class EmitirNfseOnPaid
     {
         $invoice = $event->invoice;
 
-        $config = $this->nfseService->getConfig($invoice->branch_id);
+        $config = $this->nfseService->getConfig();
 
         if (!$config) {
             return;

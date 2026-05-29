@@ -179,16 +179,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('invoices/{invoice}/cancel', 'App\Http\Controllers\InvoiceController@cancel')->name('invoices.cancel');
 
     // NFSe
-    Route::get('nfse', 'App\Http\Controllers\NfseController@index')->name('nfse.index');
-    Route::get('nfse/config', 'App\Http\Controllers\NfseConfigController@edit')->name('nfse.config');
-    Route::put('nfse/config', 'App\Http\Controllers\NfseConfigController@update')->name('nfse.config.update');
-    Route::get('nfse/export', 'App\Http\Controllers\NfseController@exportForm')->name('nfse.export-form');
-    Route::post('nfse/export', 'App\Http\Controllers\NfseController@export')->name('nfse.export');
-    Route::get('nfse/{nfseInvoice}', 'App\Http\Controllers\NfseController@show')->name('nfse.show');
-    Route::get('nfse/{nfseInvoice}/xml', 'App\Http\Controllers\NfseController@downloadXml')->name('nfse.download-xml');
-    Route::get('nfse/{nfseInvoice}/pdf', 'App\Http\Controllers\NfseController@downloadPdf')->name('nfse.download-pdf');
-    Route::post('invoices/{invoice}/nfse-emitir', 'App\Http\Controllers\NfseController@emitir')->name('nfse.emitir');
-    Route::post('invoices/{invoice}/nfse-cancelar', 'App\Http\Controllers\NfseController@cancelar')->name('nfse.cancelar');
+    Route::get('nfse', 'App\Http\Controllers\NfseController@index')->name('nfse.index')->middleware('can:nfse.view');
+    Route::get('nfse/config', 'App\Http\Controllers\NfseConfigController@edit')->name('nfse.config')->middleware('can:nfse-config.edit');
+    Route::put('nfse/config', 'App\Http\Controllers\NfseConfigController@update')->name('nfse.config.update')->middleware('can:nfse-config.edit');
+    Route::get('nfse/export', 'App\Http\Controllers\NfseController@exportForm')->name('nfse.export-form')->middleware('can:nfse.view');
+    Route::post('nfse/export', 'App\Http\Controllers\NfseController@export')->name('nfse.export')->middleware('can:nfse.view');
+    Route::get('nfse/{nfseInvoice}', 'App\Http\Controllers\NfseController@show')->name('nfse.show')->middleware('can:nfse.view');
+    Route::get('nfse/{nfseInvoice}/xml', 'App\Http\Controllers\NfseController@downloadXml')->name('nfse.download-xml')->middleware('can:nfse.view');
+    Route::get('nfse/{nfseInvoice}/pdf', 'App\Http\Controllers\NfseController@downloadPdf')->name('nfse.download-pdf')->middleware('can:nfse.view');
+    Route::post('invoices/{invoice}/nfse-emitir', 'App\Http\Controllers\NfseController@emitir')->name('nfse.emitir')->middleware('can:nfse.emit');
+    Route::post('invoices/{invoice}/nfse-cancelar', 'App\Http\Controllers\NfseController@cancelar')->name('nfse.cancelar')->middleware('can:nfse.cancel');
 
     // Bank Reconciliation
     Route::resource('bank-accounts', 'App\Http\Controllers\BankAccountController')->names([

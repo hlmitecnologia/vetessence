@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ServiceTypeMap extends Model
 {
+    use HasFactory;
     protected $fillable = ['type', 'service_id', 'branch_id'];
 
     public function service(): BelongsTo

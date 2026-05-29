@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class NotificationLogController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:communication.view')->only(['index', 'show']);
+        $this->middleware('can:communication.delete')->only(['destroy']);
+    }
+
     public function index(Request $request)
     {
         $query = NotificationLog::with(['pet', 'tutor']);

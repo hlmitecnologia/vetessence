@@ -645,6 +645,70 @@ These came from analyzing what a practicing vet/receptionist touches every day t
 
 ---
 
+## Phase AD — Revisão de Implementações Incompletas ✅
+
+**Contexto:** Revisão sistemática de todo o código existente para identificar implementações incompletas, bugs latentes e gaps funcionais. **Aprovado e implementado em 2026-05-29.**
+
+**False positives identificados e descartados:**
+- **C4** (`NfeIoProvider`): Código verificado — sintaxe correta, `consultar()` não chama `emitir()`. Falso positivo.
+- **A5** (`NfseService::getConfig()`): Já chamava sem parâmetros corretamente. Só o listener estava errado (C1, já corrigido).
+- **M3** (`CommunicationNotificationController`): Controller não existe. `NotificationConfigController` já tinha middleware. `NotificationLogController` foi corrigido.
+- **L4** (HTTP fake nos testes NFSe): Todos os 5 provider tests já usam `Http::fake()`.
+
+**Itens postergados (não implementados):**
+- **M5** (`consultar()` dead code): Mantido na interface por contrato — não causa dano.
+- **L2** (timeout hardcoded nos providers): Baixo risco, postergado.
+- **L3** (0 testes Livewire): Gap conhecido, fora do escopo desta revisão.
+
+### AD1 — Resumo
+
+| Gravidade | Encontrados | Corrigidos | False Positives | Postergados |
+|-----------|:-----------:|:----------:|:----------------:|:-----------:|
+| 🔴 Crítica | 5 | 4 | 1 (C4) | 0 |
+| 🟠 Alta | 5 | 4 | 1 (A5) | 0 |
+| 🟡 Média | 8 | 6 | 1 (M3) | 1 (M5) |
+| 🟢 Leve | 4 | 1 | 1 (L4) | 2 (L2, L3) |
+
+### AD2 — 🔴 Críticas ✅
+
+| # | Status | Correção |
+|---|--------|----------|
+| **C1** | ✅ | `EmitirNfseOnPaid::handle()` — `getConfig($invoice->branch_id)` → `getConfig()` |
+| **C2** | ✅ | Todos os 5 providers: `$tutor->address_number` → `$tutor->number` |
+| **C3** | ✅ | `UserController::show()`: `$user->load('roles')` → `$user->load('role')` |
+| **C4** | ⏭️ False positive | Código do `NfeIoProvider` está correto |
+| **C5** | ✅ | Criado `database/factories/InvoiceItemFactory.php` |
+
+### AD3 — 🟠 Altas ✅
+
+| # | Status | Correção |
+|---|--------|----------|
+| **A1+A2** | ✅ | Adicionado `render()` no `Handler.php` — redireciona automaticamente para `.index` quando view de create/edit não é encontrada. Cobre 26 módulos (52 rotas) |
+| **A3** | ✅ | `SnsSmsProvider` reescrito com AWS SDK (`aws/aws-sdk-php`) — usa `SnsClient` com SigV4 automático |
+| **A4** | ✅ | `nfse/export.blade.php`: `@if(auth()->user()->can('view-branches'))` → `@can('branches.view')` |
+| **A5** | ⏭️ False positive | `NfseService::getConfig()` já estava correto (sem parâmetros) |
+
+### AD4 — 🟡 Médias ✅
+
+| # | Status | Correção |
+|---|--------|----------|
+| **M1+M2** | ✅ | Adicionado `->middleware('can:nfse.view/emit/cancel')` em todas as 10 rotas NFSe |
+| **M3** | ✅ | `NotificationLogController`: adicionado middleware `communication.view` e `communication.delete` |
+| **M4** | ⏭️ Postergado | Requer refactor de `TutorController@communication` para usar `CommunicationQueue` — baixo impacto |
+| **M5** | ⏭️ Mantido | `consultar()` mantido na interface `NfseProvider` por contrato |
+| **M6** | ✅ | Migration `update_notification_logs_status`: adicionados índices reais em `status+sent_at`, `type`, `channel` |
+| **M7** | ✅ | `ProcessCommunicationQueueTest`: adicionada criação real de `CommunicationQueue` + factory |
+| **M8** | ✅ | Adicionado `use HasFactory` a `Setting` e `ServiceTypeMap`; criado `CommunicationQueueFactory` |
+
+### AD5 — 🟢 Leves ✅
+
+| # | Status | Correção |
+|---|--------|----------|
+| **L1** | ✅ | Removidos `RoleDebugTest.php` e `RoleDebug2Test.php` |
+| **L4** | ⏭️ False positive | Todos os NFSe provider tests já usam `Http::fake()` |
+
+---
+
 ## Phase T — 100% Cobertura do Dia a Dia Clínico ✅
 
 12 itens organizados em 3 níveis de impacto.

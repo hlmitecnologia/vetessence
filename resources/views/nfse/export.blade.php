@@ -20,7 +20,7 @@
                         <label>Data Final</label>
                         <input type="date" name="date_to" class="form-control" required>
                     </div>
-                    @if(auth()->user()->can('view-branches'))
+                    @can('branches.view')
                     <div class="form-group">
                         <label>Unidade</label>
                         <select name="branch_id" class="form-control">
@@ -30,7 +30,7 @@
                             @endforeach
                         </select>
                     </div>
-                    @endif
+                    @endcan
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-file-export"></i> Exportar ZIP
                     </button>

@@ -70,7 +70,7 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        $user->load('roles');
+        $user->load('role');
         return view('users.show', compact('user'));
     }
 
