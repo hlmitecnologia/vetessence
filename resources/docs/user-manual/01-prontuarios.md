@@ -91,6 +91,7 @@ A partir do prontuário, é possível gerar uma fatura com os serviços prestado
 - O tutor tem acesso apenas de leitura via portal
 - Alterações são registradas na trilha de auditoria
 - **Prontuários com fatura paga não podem ser editados** — se a consulta gerou uma fatura quitada, a edição do prontuário é bloqueada (inclusive via Livewire) para garantir a integridade do registro clínico faturado. Também não é possível gerar nova fatura a partir de um prontuário que já possui fatura paga.
+- A proteção funciona tanto para prontuários vinculados a um agendamento (via tabela pivot `appointment_invoice`) quanto para prontuários sem agendamento (via FK `medical_record_id` na tabela `invoices`).
 
 ---
 
