@@ -2352,8 +2352,9 @@ resources/views/llm/config.blade.php           → Form com JS toggle de campos 
 
 | Tipo | Arquivos |
 |------|----------|
-| **Criados** | `database/migrations/2026_05_29_101000_create_llm_configs_table.php`, `app/Models/LlmConfig.php`, `app/Services/Llm/LlmProvider.php`, `app/Services/Llm/LlmResult.php`, `app/Services/Llm/OpenAiProvider.php`, `app/Services/Llm/AnthropicProvider.php`, `app/Services/Llm/GeminiProvider.php`, `app/Services/Llm/GrokProvider.php`, `app/Services/Llm/OllamaProvider.php`, `app/Services/Llm/LlmService.php`, `app/Http/Controllers/LlmConfigController.php`, `resources/views/llm/config.blade.php` — **12 novos** |
-| **Modificados** | `routes/web.php`, `resources/views/layouts/adminlte.blade.php`, `database/seeders/PermissionSeeder.php`, `app/Livewire/MedicalRecordForm.php`, `resources/views/livewire/medical-record-form.blade.php`, `resources/views/livewire/medical-record-form.blade.php`, `app/Services/Llm/LlmService.php`, `app/Services/Llm/GeminiProvider.php`, `resources/docs/user-manual/19-configuracoes.md`, `README.md`, `PLAN.md` — **10 modificados** |
+| **Criados (código)** | `database/migrations/2026_05_29_101000_create_llm_configs_table.php`, `app/Models/LlmConfig.php`, `app/Services/Llm/LlmProvider.php`, `app/Services/Llm/LlmResult.php`, `app/Services/Llm/OpenAiProvider.php`, `app/Services/Llm/AnthropicProvider.php`, `app/Services/Llm/GeminiProvider.php`, `app/Services/Llm/GrokProvider.php`, `app/Services/Llm/OllamaProvider.php`, `app/Services/Llm/LlmService.php`, `app/Http/Controllers/LlmConfigController.php`, `resources/views/llm/config.blade.php` — **12 novos** |
+| **Criados (testes)** | `database/factories/LlmConfigFactory.php`, `tests/Unit/Models/LlmConfigTest.php`, `tests/Unit/Services/Llm/LlmResultTest.php`, `tests/Unit/Services/Llm/LlmServiceTest.php`, `tests/Feature/Services/Llm/OpenAiProviderTest.php`, `tests/Feature/Services/Llm/AnthropicProviderTest.php`, `tests/Feature/Services/Llm/GeminiProviderTest.php`, `tests/Feature/Services/Llm/GrokProviderTest.php`, `tests/Feature/Services/Llm/OllamaProviderTest.php`, `tests/Feature/Services/Llm/LlmServiceTest.php`, `tests/Feature/Controllers/LlmConfigControllerTest.php` — **11 novos** |
+| **Modificados** | `routes/web.php`, `resources/views/layouts/adminlte.blade.php`, `database/seeders/PermissionSeeder.php`, `app/Livewire/MedicalRecordForm.php`, `resources/views/livewire/medical-record-form.blade.php`, `app/Services/Llm/LlmService.php`, `app/Services/Llm/GeminiProvider.php`, `resources/docs/user-manual/19-configuracoes.md`, `README.md`, `PLAN.md` — **10 modificados** |
 
 ### AC7 — Observações
 
@@ -2363,5 +2364,23 @@ resources/views/llm/config.blade.php           → Form com JS toggle de campos 
 - Apenas usuários com `configuracoes.llm` podem configurar o provedor
 - **OpenCode foi avaliado e excluído** dos provedores: é um CLI tool sem API pública de inferência; Ollama é a alternativa self-hosted recomendada
 - **Token-limit detection** centralizada em `LlmService::isTokenLimitError()` — cobre padrões de todos os 5 provedores; para Gemini, verificação específica de `finishReason === 'MAX_TOKENS'`
-- Testes existentes (44 pre-existing failures) não são afetados — nenhuma alteração em código legado
+- Testes existentes (132 pre-existing failures) não são afetados — nenhuma alteração em código legado
+
+### AC8 — Testes (11 arquivos, 72 testes, 172 assertions)
+
+| Classe | Tipo | Testes | O que cobre |
+|--------|------|--------|-------------|
+| `LlmConfigFactory` | Factory | — | Dados padrão para todos os testes |
+| `LlmConfigTest` | Unit/Model | 8 | fillable, casts (boolean/decimal/integer), active scope, sem relationships/scopes, provider constants |
+| `LlmResultTest` | Unit/DTO | 6 | success/error factories, defaults, readonly, rawResponse |
+| `LlmServiceTest` (Unit) | Unit/Service | 29 | 13 padrões token-limit, 6 resolveProvider, 3 buildPrompt, 4 suggestDiagnosis, 3 getConfig |
+| `OpenAiProviderTest` | Feature | 4 | HTTP fake: sucesso, 401, context_length, timeout 408 |
+| `AnthropicProviderTest` | Feature | 3 | HTTP fake: sucesso, 401, prompt too long |
+| `GeminiProviderTest` | Feature | 4 | HTTP fake: sucesso, MAX_TOKENS, empty candidates, 403 |
+| `GrokProviderTest` | Feature | 3 | HTTP fake: sucesso, 402, context_length |
+| `OllamaProviderTest` | Feature | 4 | HTTP fake: sucesso, custom URL, input too long, 503 |
+| `LlmServiceTest` (Feature) | Feature | 4 | Mock provider: sucesso, tratamento no prompt, prescriptions, create mode |
+| `LlmConfigControllerTest` | Feature | 7 | HTTP: edit, update, validação por provider, exibição config existente |
+
+**Total: 72/72 passando, 0 falhas.**
 ```
