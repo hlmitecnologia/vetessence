@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Invoice extends Model
 {
     use HasFactory, BranchScoped;
 
     protected $fillable = [
-        'invoice_number', 'tutor_id', 'pet_id', 'appointment_id',
+        'invoice_number', 'tutor_id', 'pet_id',
         'subtotal', 'discount', 'total', 'status', 'due_date',
         'paid_at', 'payment_method', 'payment_proof', 'pix_code',
         'pix_expiration', 'convenio_discount', 'notes', 'user_id', 'branch_id',
@@ -39,9 +40,10 @@ class Invoice extends Model
         return $this->belongsTo(Pet::class);
     }
 
-    public function appointment(): BelongsTo
+    public function appointments(): BelongsToMany
     {
-        return $this->belongsTo(Appointment::class);
+        return $this->belongsToMany(Appointment::class, 'appointment_invoice')
+            ->withTimestamps();
     }
 
     public function creator(): BelongsTo

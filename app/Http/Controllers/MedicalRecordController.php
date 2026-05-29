@@ -153,18 +153,35 @@ class MedicalRecordController extends Controller
         $service = $map?->service;
         $unitPrice = $service?->price ?? 0;
 
-        $invoice = Invoice::create([
-            'invoice_number' => Invoice::generateNumber(),
-            'pet_id' => $medicalRecord->pet_id,
-            'tutor_id' => $tutor->id,
-            'user_id' => $medicalRecord->user_id,
-            'branch_id' => $medicalRecord->branch_id,
-            'status' => 'pending',
-            'total' => $unitPrice,
-            'subtotal' => $unitPrice,
-            'due_date' => $medicalRecord->date,
-            'notes' => "Gerado a partir do prontuário #{$medicalRecord->id}",
-        ]);
+        $existingInvoice = Invoice::where('tutor_id', $tutor->id)
+            ->where('pet_id', $medicalRecord->pet_id)
+            ->where('status', 'pending')
+            ->first();
+
+        if ($existingInvoice) {
+            $invoice = $existingInvoice;
+            $invoice->update([
+                'total' => $invoice->total + $unitPrice,
+                'subtotal' => $invoice->subtotal + $unitPrice,
+            ]);
+            $notes = $invoice->notes
+                ? $invoice->notes . " | Prontuário #{$medicalRecord->id}"
+                : "Gerado a partir do prontuário #{$medicalRecord->id}";
+            $invoice->update(['notes' => $notes]);
+        } else {
+            $invoice = Invoice::create([
+                'invoice_number' => Invoice::generateNumber(),
+                'pet_id' => $medicalRecord->pet_id,
+                'tutor_id' => $tutor->id,
+                'user_id' => $medicalRecord->user_id,
+                'branch_id' => $medicalRecord->branch_id,
+                'status' => 'pending',
+                'total' => $unitPrice,
+                'subtotal' => $unitPrice,
+                'due_date' => $medicalRecord->date,
+                'notes' => "Gerado a partir do prontuário #{$medicalRecord->id}",
+            ]);
+        }
 
         InvoiceItem::create([
             'invoice_id' => $invoice->id,
@@ -175,7 +192,9 @@ class MedicalRecordController extends Controller
         ]);
 
         $msg = $unitPrice > 0
-            ? "Fatura criada com sucesso!"
+            ? ($existingInvoice
+                ? "Atendimento adicionado à fatura {$invoice->invoice_number}!"
+                : "Fatura criada com sucesso!")
             : "Fatura criada com valor R$ 0,00 — nenhum serviço mapeado para o tipo \"{$medicalRecord->type}\". Configure em Serviços > Mapeamento Tipos.";
 
         return redirect()->route('invoices.show', $invoice)->with('success', $msg);

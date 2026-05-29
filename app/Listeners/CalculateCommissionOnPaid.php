@@ -12,40 +12,45 @@ class CalculateCommissionOnPaid
     {
         $invoice = $event->invoice;
 
-        $appointment = $invoice->appointment;
+        $appointments = $invoice->appointments;
 
-        $vetId = null;
-        if ($appointment) {
-            $vetId = $appointment->vet_id ?? $appointment->user_id;
-        }
-
-        if (!$vetId) {
+        if ($appointments->isEmpty()) {
             return;
         }
 
-        $rates = CommissionRate::where('user_id', $vetId)
-            ->where('is_active', true)
-            ->get();
+        $vetIds = $appointments->pluck('vet_id')->merge($appointments->pluck('user_id'))->unique()->filter();
 
-        foreach ($invoice->items as $item) {
-            foreach ($rates as $rate) {
-                $baseValue = (float) $item->total;
+        foreach ($vetIds as $vetId) {
+            $rates = CommissionRate::where('user_id', $vetId)
+                ->where('is_active', true)
+                ->get();
 
-                if ($rate->rate_type === 'percentage') {
-                    $commissionValue = $baseValue * ((float) $rate->rate_value / 100);
-                } else {
-                    $commissionValue = (float) $rate->rate_value;
+            if ($rates->isEmpty()) {
+                continue;
+            }
+
+            $vetItems = $invoice->items;
+
+            foreach ($vetItems as $item) {
+                foreach ($rates as $rate) {
+                    $baseValue = (float) $item->total;
+
+                    if ($rate->rate_type === 'percentage') {
+                        $commissionValue = $baseValue * ((float) $rate->rate_value / 100);
+                    } else {
+                        $commissionValue = (float) $rate->rate_value;
+                    }
+
+                    CommissionLog::create([
+                        'user_id' => $vetId,
+                        'invoice_id' => $invoice->id,
+                        'commission_rate_id' => $rate->id,
+                        'description' => $item->description ?? 'Item da fatura',
+                        'base_value' => $baseValue,
+                        'commission_value' => $commissionValue,
+                        'status' => 'pending',
+                    ]);
                 }
-
-                CommissionLog::create([
-                    'user_id' => $vetId,
-                    'invoice_id' => $invoice->id,
-                    'commission_rate_id' => $rate->id,
-                    'description' => $item->description ?? 'Item da fatura',
-                    'base_value' => $baseValue,
-                    'commission_value' => $commissionValue,
-                    'status' => 'pending',
-                ]);
             }
         }
     }

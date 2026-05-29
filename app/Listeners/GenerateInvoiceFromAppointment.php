@@ -19,22 +19,40 @@ class GenerateInvoiceFromAppointment
             return;
         }
 
+        $existingInvoice = Invoice::where('tutor_id', $tutor->id)
+            ->where('pet_id', $pet->id)
+            ->where('branch_id', $appointment->branch_id)
+            ->where('status', 'pending')
+            ->first();
+
         $appointmentServices = $appointment->services;
 
         if ($appointmentServices->isNotEmpty()) {
             $total = $appointmentServices->sum(fn($s) => ($s->price * $s->quantity) - $s->discount);
-            $invoice = Invoice::create([
-                'pet_id' => $pet->id,
-                'tutor_id' => $tutor->id,
-                'user_id' => $appointment->vet_id,
-                'branch_id' => $appointment->branch_id,
-                'invoice_number' => Invoice::generateNumber(),
-                'appointment_id' => $appointment->id,
-                'status' => 'pending',
-                'total' => $total,
-                'subtotal' => $total,
-                'due_date' => $appointment->date,
-            ]);
+
+            if ($existingInvoice) {
+                $invoice = $existingInvoice;
+                $invoice->appointments()->syncWithoutDetaching([$appointment->id]);
+
+                $newTotal = $invoice->subtotal + $total;
+                $invoice->update([
+                    'total' => $newTotal,
+                    'subtotal' => $newTotal,
+                ]);
+            } else {
+                $invoice = Invoice::create([
+                    'pet_id' => $pet->id,
+                    'tutor_id' => $tutor->id,
+                    'user_id' => $appointment->vet_id,
+                    'branch_id' => $appointment->branch_id,
+                    'invoice_number' => Invoice::generateNumber(),
+                    'status' => 'pending',
+                    'total' => $total,
+                    'subtotal' => $total,
+                    'due_date' => $appointment->date,
+                ]);
+                $invoice->appointments()->attach($appointment->id);
+            }
 
             foreach ($appointmentServices as $as) {
                 InvoiceItem::create([
@@ -60,18 +78,29 @@ class GenerateInvoiceFromAppointment
         $service = $map?->service;
         $price = $service?->price ?? 0;
 
-        $invoice = Invoice::create([
-            'pet_id' => $pet->id,
-            'tutor_id' => $tutor->id,
-            'user_id' => $appointment->vet_id,
-            'branch_id' => $appointment->branch_id,
-            'invoice_number' => Invoice::generateNumber(),
-            'appointment_id' => $appointment->id,
-            'status' => 'pending',
-            'total' => $price,
-            'subtotal' => $price,
-            'due_date' => $appointment->date,
-        ]);
+        if ($existingInvoice) {
+            $invoice = $existingInvoice;
+            $invoice->appointments()->syncWithoutDetaching([$appointment->id]);
+
+            $newTotal = $invoice->subtotal + $price;
+            $invoice->update([
+                'total' => $newTotal,
+                'subtotal' => $newTotal,
+            ]);
+        } else {
+            $invoice = Invoice::create([
+                'pet_id' => $pet->id,
+                'tutor_id' => $tutor->id,
+                'user_id' => $appointment->vet_id,
+                'branch_id' => $appointment->branch_id,
+                'invoice_number' => Invoice::generateNumber(),
+                'status' => 'pending',
+                'total' => $price,
+                'subtotal' => $price,
+                'due_date' => $appointment->date,
+            ]);
+            $invoice->appointments()->attach($appointment->id);
+        }
 
         InvoiceItem::create([
             'invoice_id' => $invoice->id,

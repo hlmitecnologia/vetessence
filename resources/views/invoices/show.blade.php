@@ -29,6 +29,22 @@
                     </div>
                 </div>
 
+                @if($invoice->appointments->isNotEmpty())
+                <div class="mb-3">
+                    <strong>Atendimentos:</strong>
+                    <ul class="list-unstyled mb-0">
+                        @foreach($invoice->appointments as $apt)
+                        <li>
+                            <a href="{{ route('appointments.show', $apt) }}" class="small">
+                                #{{ $apt->id }} — {{ ucfirst($apt->type) }} em {{ $apt->date->format('d/m/Y') }}
+                                (@if($apt->vet){{ $apt->vet->name }}@elseif($apt->creator){{ $apt->creator->name }}@endif)
+                            </a>
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
                 <table class="table table-striped">
                     <thead>
                         <tr>

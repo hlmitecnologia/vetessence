@@ -72,8 +72,11 @@ A partir do prontuário, é possível gerar uma fatura com os serviços prestado
 1. Acesse o prontuário na tela de exibição
 2. Clique em **Gerar Fatura**
 3. O sistema busca automaticamente o serviço mapeado para o tipo de atendimento (consulta, cirurgia, etc.) em **Financeiro > Serviços > Mapeamento**
-4. A fatura é criada com o item e o preço do serviço configurado
-5. Se não houver mapeamento, a fatura é criada com R$ 0,00 — edite manualmente
+4. Se já existir uma fatura **pendente** para o mesmo tutor/pet, o sistema **adiciona** este atendimento à fatura existente (acumulando o valor total)
+5. Se não houver fatura pendente, uma nova é criada com o item e o preço do serviço configurado
+6. Se não houver mapeamento, a fatura é criada com R$ 0,00 — edite manualmente
+
+**Agrupamento de atendimentos:** Quando múltiplos atendimentos do mesmo pet (consulta + cirurgia + vacina, por exemplo) acontecem no mesmo período, o sistema automaticamente os agrupa em uma única fatura pendente. Basta clicar em **Gerar Fatura** em cada prontuário — o sistema identifica a fatura em aberto e acumula os valores.
 
 > **Pré-requisito:** Configure o mapeamento em Financeiro > Serviços antes de gerar faturas de prontuário.
 

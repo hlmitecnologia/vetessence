@@ -92,6 +92,7 @@ Para que o sistema saiba qual serviço usar ao gerar uma fatura automaticamente,
 
 **Impacto:**
 - Ao clicar **Gerar Fatura** no prontuário, o sistema busca o serviço mapeado e cria o item da fatura com o preço configurado
+- Se já existir uma fatura **pendente** para o mesmo tutor/pet, o sistema **adiciona** o novo atendimento à fatura existente em vez de criar uma nova
 - Se não houver mapeamento, a fatura é criada com R$ 0,00 e um aviso é exibido
 
 ## Auto-Faturamento Pós-Consulta
@@ -100,13 +101,24 @@ Quando uma consulta é marcada como **concluída**, o sistema gera automaticamen
 
 1. **Appointment** é finalizado como `completed`
 2. Listener `GenerateInvoiceFromAppointment` é disparado
-3. Fatura é criada com os serviços do agendamento
-4. Fatura fica em status `pending` para recebimento
+3. Se já existir uma fatura **pendente** para o mesmo tutor/pet, o sistema **adiciona** este atendimento à fatura existente (acumula serviços e valores)
+4. Se não houver fatura pendente, uma nova é criada com os serviços do agendamento
+5. Fatura fica em status `pending` para recebimento
 
 - Se o agendamento tiver serviços vinculados, usa os preços deles
 - Caso contrário, o sistema busca o **Mapeamento: Tipo → Serviço** configurado como fallback
 - Se não houver serviço nem mapeamento, a fatura é gerada com R$ 0,00
 - O veterinário pode editar a fatura antes de finalizar o recebimento
+
+### Agrupamento de Atendimentos na Mesma Fatura
+
+É possível agrupar **múltiplos atendimentos** em uma única fatura para facilitar o pagamento do tutor:
+
+- **Como funciona:** Quando um atendimento é concluído, o sistema procura automaticamente por uma fatura **pendente** do mesmo tutor/pet na mesma filial. Se encontrar, adiciona os serviços à fatura existente em vez de criar uma nova
+- **Cenário típico:** Pet vem para consulta, durante o atendimento o vet decide fazer cirurgia + vacinas no mesmo dia. Cada procedimento é um atendimento separado, mas o sistema os agrupa em uma única fatura automaticamente
+- **Visualização:** Na tela de detalhes da fatura, todos os atendimentos vinculados são listados com links para cada um
+- **Comissões:** Quando a fatura é paga, as comissões são calculadas para **cada veterinário** envolvido nos atendimentos agrupados
+- **NFSe:** A NFSe é emitida com o valor total da fatura, independentemente da quantidade de atendimentos agrupados
 
 ## Nota Fiscal de Serviços (NFSe)
 

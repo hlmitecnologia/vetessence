@@ -99,7 +99,7 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        $invoice->load(['tutor', 'pet', 'items', 'creator', 'nfseInvoice']);
+        $invoice->load(['tutor', 'pet', 'items', 'creator', 'nfseInvoice', 'appointments']);
 
         $hasNfseConfig = NfseConfig::where('is_active', true)->exists();
 

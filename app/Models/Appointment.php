@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Appointment extends Model
 {
@@ -56,9 +57,10 @@ class Appointment extends Model
         return $this->hasOne(Exam::class);
     }
 
-    public function invoice(): HasOne
+    public function invoices(): BelongsToMany
     {
-        return $this->hasOne(Invoice::class);
+        return $this->belongsToMany(Invoice::class, 'appointment_invoice')
+            ->withTimestamps();
     }
 
     public function parent(): BelongsTo
