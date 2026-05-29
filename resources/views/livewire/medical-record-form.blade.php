@@ -129,7 +129,18 @@
                 <h5 class="card-title">Diagnóstico e Tratamento</h5>
                 <div class="form-group">
                     <label>Diagnóstico</label>
-                    <textarea wire:model="diagnosis" rows="2" class="form-control"></textarea>
+                    <div class="input-group">
+                        <textarea wire:model="diagnosis" rows="2" class="form-control" style="resize:vertical;"></textarea>
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-outline-info" wire:click="suggestDiagnosis" wire:loading.attr="disabled" wire:target="suggestDiagnosis" title="Sugerir diagnóstico com IA">
+                                <span wire:loading.remove wire:target="suggestDiagnosis"><i class="fas fa-robot"></i> Sugerir (IA)</span>
+                                <span wire:loading wire:target="suggestDiagnosis"><i class="fas fa-spinner fa-spin"></i> Analisando...</span>
+                            </button>
+                        </div>
+                    </div>
+                    @if($suggestionError)
+                        <small class="text-danger">{{ $suggestionError }}</small>
+                    @endif
                 </div>
                 <div class="form-group">
                     <label>Tratamento</label>

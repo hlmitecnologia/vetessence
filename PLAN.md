@@ -2270,3 +2270,91 @@ php artisan test --filter="Notification" --verbose
 # Full test suite (excluindo Portal)
 php artisan test --filter="!Portal" --verbose 2>&1 | tail -20
 ```
+
+---
+
+## Phase AC — Sugestão de Diagnóstico por IA (LLM Providers)
+
+**Aprovado em:** 2026-05-29 — implementado. ✅
+
+**Objetivo:** Adicionar um botão "Sugerir (IA)" no formulário de prontuário que consulta um provedor LLM configurável (OpenAI, Anthropic, Gemini, Grok, Ollama) usando os campos SOAP + dados do paciente e pré-preenche o diagnóstico. O veterinário pode editar/ignorar a sugestão.
+
+### AC1 — Arquitetura
+
+Adapter Pattern, mesma arquitetura da NFSe (`NfseProvider`):
+
+```
+app/Services/Llm/
+├── LlmProvider.php           → Interface: generate(LlmConfig, string $prompt): LlmResult
+├── LlmResult.php             → DTO: success/content/model/tokens/error
+├── LlmService.php            → Resolvedor: getConfig() + resolveProvider() + suggestDiagnosis() + buildPrompt()
+├── OpenAiProvider.php        → POST api.openai.com/v1/chat/completions
+├── AnthropicProvider.php     → POST api.anthropic.com/v1/messages
+├── GeminiProvider.php        → POST generativelanguage.googleapis.com/v1beta/models/{model}:generateContent
+├── GrokProvider.php          → POST api.x.ai/v1/chat/completions
+└── OllamaProvider.php        → POST {base_url}/api/chat (stream: false)
+
+app/Models/LlmConfig.php      → Provider, credenciais dedicadas, temperature, max_tokens, is_active
+app/Http/Controllers/LlmConfigController.php  → edit() + update() com validação por provider
+resources/views/llm/config.blade.php           → Form com JS toggle de campos (mesmo padrão NFSe)
+```
+
+### AC2 — Estrutura de Dados
+
+| Migration | Tabela | Destaques |
+|-----------|--------|-----------|
+| `create_llm_configs_table` | `llm_configs` | `provider`, `is_active`, `temperature` (0.3), `max_tokens` (500), colunas dedicadas para cada provider (openai_api_key, anthropic_api_key, gemini_api_key, grok_api_key, ollama_base_url, etc.) |
+
+**Model `LlmConfig`:** singleton sistêmico (sem branch_id). Campos de credenciais específicos por provider.
+
+### AC3 — Provedores Suportados
+
+| Provedor | Classe | Credenciais | Modelo padrão |
+|----------|--------|-------------|---------------|
+| OpenAI | `OpenAiProvider` | `openai_api_key`, `openai_model` | `gpt-4o-mini` |
+| Anthropic | `AnthropicProvider` | `anthropic_api_key`, `anthropic_model` | `claude-3-haiku-20240307` |
+| Google Gemini | `GeminiProvider` | `gemini_api_key`, `gemini_model` | `gemini-2.0-flash` |
+| Grok (xAI) | `GrokProvider` | `grok_api_key`, `grok_model` | `grok-1` |
+| Ollama (local) | `OllamaProvider` | `ollama_base_url`, `ollama_model` | `llama3` |
+
+### AC4 — Integração no Prontuário
+
+**Livewire `MedicalRecordForm`:**
+- Novo método `suggestDiagnosis()` — instancia `LlmService`, chama `suggestDiagnosis($record)`, preenche `$this->diagnosis` com o resultado
+- Propriedades: `$suggestingDiagnosis` (bool), `$suggestionError` (string)
+- Botão "Sugerir (IA)" ao lado do textarea de Diagnóstico com spinner durante loading
+- Rate limiting: debounce 5s frontend, timeout 30s backend (via HTTP client)
+
+**Prompt:** Construído em português brasileiro com:
+- Dados do paciente: espécie, raça, idade, sexo
+- Sinais vitais (temperatura, FC, FR, peso, mucosas, hidratação, linfonodos)
+- Queixa principal, anamnese, exame físico
+- Solicitação: diagnóstico suspeito, diagnóstico diferencial e breve justificativa
+
+### AC5 — Interface de Configuração
+
+| Recurso | Rota | Controller | View |
+|---------|------|------------|------|
+| Config LLM | `GET llm/config` | `LlmConfigController@edit` | `llm/config.blade.php` |
+| Salvar | `PUT llm/config` | `LlmConfigController@update` | — |
+
+**Sidebar:** Configurações > IA Diagnóstica (permissão `configuracoes.llm`)
+
+**Permissão:** `configuracoes.llm` — atribuída a super-admin, branch-admin e admin (via array `$permissions`).
+
+### AC6 — Arquivos
+
+| Tipo | Arquivos |
+|------|----------|
+| **Criados** | `database/migrations/2026_05_29_101000_create_llm_configs_table.php`, `app/Models/LlmConfig.php`, `app/Services/Llm/LlmProvider.php`, `app/Services/Llm/LlmResult.php`, `app/Services/Llm/OpenAiProvider.php`, `app/Services/Llm/AnthropicProvider.php`, `app/Services/Llm/GeminiProvider.php`, `app/Services/Llm/GrokProvider.php`, `app/Services/Llm/OllamaProvider.php`, `app/Services/Llm/LlmService.php`, `app/Http/Controllers/LlmConfigController.php`, `resources/views/llm/config.blade.php` — **12 novos** |
+| **Modificados** | `routes/web.php`, `resources/views/layouts/adminlte.blade.php`, `database/seeders/PermissionSeeder.php`, `app/Livewire/MedicalRecordForm.php`, `resources/views/livewire/medical-record-form.blade.php`, `resources/docs/user-manual/19-configuracoes.md`, `README.md`, `PLAN.md` — **8 modificados** |
+
+### AC7 — Observações
+
+- A sugestão é **manual** (botão, não automática) — o veterinário controla quando chamar a IA
+- Temperatura baixa (0.3 default) mantém sugestões profissionais e determinísticas
+- Sem permissão especial para usar o botão — integrado ao fluxo normal do prontuário
+- Apenas usuários com `configuracoes.llm` podem configurar o provedor
+- **OpenCode foi avaliado e excluído** dos provedores: é um CLI tool sem API pública de inferência; Ollama é a alternativa self-hosted recomendada
+- Testes existentes (44 pre-existing failures) não são afetados — nenhuma alteração em código legado
+```

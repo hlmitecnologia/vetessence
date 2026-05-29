@@ -875,6 +875,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('docs/{section}/{page}', 'App\Http\Controllers\DocController@show')->name('docs.page');
 
 
+    // LLM / IA Diagnóstica
+    Route::get('llm/config', 'App\Http\Controllers\LlmConfigController@edit')->name('llm.config')->middleware('can:configuracoes.llm');
+    Route::put('llm/config', 'App\Http\Controllers\LlmConfigController@update')->name('llm.config.update')->middleware('can:configuracoes.llm');
+
     // Branding / Personalização
     Route::prefix('configuracoes')->group(function () {
         Route::get('branding', 'App\Http\Controllers\BrandingController@index')->name('configuracoes.branding.index');

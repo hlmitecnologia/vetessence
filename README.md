@@ -10,6 +10,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 
 ### Clínico
 - **Prontuários** — Registros SOAP com diagnóstico, anamnese, plano terapêutico, aprovação de orçamento pelo tutor
+- **Sugestão de Diagnóstico por IA** — Botão no prontuário que envia sinais clínicos + dados do paciente para provedores LLM (OpenAI, Anthropic, Gemini, Grok, Ollama) e pré-preenche o diagnóstico
 - **Prescrições** — Receitas digitais com medicamento, dosagem, duração; verificação via QR code
 - **Vacinas** — Aplicação por protocolo, multi-dose, certificado PDF (layout CFMV), previsão de vencimento, recall
 - **Cirurgias** — Agendamento, checklist pré-operatório, monitoramento anestésico
@@ -119,7 +120,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 ## Suite de Testes
 
 ```
-Tests: ~1,060 total (261 files, 1,057 methods), assertions vary, pre-existing failures/skipped
+Tests: ~1,060 total (261 files, 1,057 methods), assertions vary, pre-existing failures/skipped; +13 new files (LLM provider architecture)
 ```
 
 ## Início Rápido

@@ -151,6 +151,9 @@ class PermissionSeeder extends Seeder
             // NFSe
             'nfse.view', 'nfse.emit', 'nfse.cancel',
             'nfse-config.edit',
+
+            // LLM / IA Diagnóstica
+            'configuracoes.llm',
         ];
 
         // Create all permissions

@@ -9,6 +9,7 @@ use App\Models\MedicalRecord;
 use App\Models\Prescription;
 use App\Models\Appointment;
 use App\Models\ZoonoticDisease;
+use App\Services\Llm\LlmService;
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 
@@ -38,6 +39,9 @@ class MedicalRecordForm extends Component
     public $notes = '';
     public $prescriptions = [];
     public $selectedDiseases = [];
+
+    public $suggestingDiagnosis = false;
+    public $suggestionError = '';
 
     public $pets = [];
     public $veterinarians = [];
@@ -169,6 +173,42 @@ class MedicalRecordForm extends Component
     {
         unset($this->selectedDiseases[$index]);
         $this->selectedDiseases = array_values($this->selectedDiseases);
+    }
+
+    public function suggestDiagnosis()
+    {
+        if ($this->suggestingDiagnosis) {
+            return;
+        }
+
+        $this->suggestingDiagnosis = true;
+        $this->suggestionError = '';
+
+        try {
+            if ($this->recordId) {
+                $record = MedicalRecord::findOrFail($this->recordId);
+            } else {
+                $record = new MedicalRecord();
+                $record->pet_id = $this->pet_id;
+                $record->chief_complaint = $this->chief_complaint;
+                $record->anamnesis = $this->anamnesis;
+                $record->physical_exam = $this->physical_exam;
+                $record->vital_signs = array_filter($this->vital_signs);
+            }
+
+            $service = app(LlmService::class);
+            $result = $service->suggestDiagnosis($record);
+
+            if ($result->success && $result->content) {
+                $this->diagnosis = $result->content;
+            } else {
+                $this->suggestionError = $result->errorMessage ?? 'Erro ao obter sugestão.';
+            }
+        } catch (\Exception $e) {
+            $this->suggestionError = 'Erro ao comunicar com o provedor de IA.';
+        } finally {
+            $this->suggestingDiagnosis = false;
+        }
     }
 
     public function addPrescription()

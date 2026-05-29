@@ -95,6 +95,30 @@ As integrações abaixo são configuradas via painel admin.
 
 > **Dados fiscais por filial**: CNPJ, código IBGE do município, regime tributário e série da nota são configurados no **cadastro da filial** (Configurações > Unidades), não na tela de NFSe.
 
+### IA Diagnóstica — Sugestão de Diagnóstico por IA
+1. Acesse **Configurações > IA Diagnóstica**
+2. Ative o recurso com o switch **Ativar sugestão de diagnóstico por IA**
+3. Configure o provedor:
+   - **Provedor**: OpenAI, Anthropic (Claude), Google Gemini, Grok (xAI), Ollama (Local)
+   - **Temperatura**: 0.0 (preciso) a 1.0 (criativo) — recomendado 0.3
+   - **Max. Tokens**: limite da resposta (100–4096)
+4. Preencha as credenciais conforme o provedor escolhido:
+   - **OpenAI**: API Key, modelo (ex: `gpt-4o-mini`)
+   - **Anthropic**: API Key, modelo (ex: `claude-3-haiku-20240307`)
+   - **Gemini**: API Key, modelo (ex: `gemini-2.0-flash`)
+   - **Grok**: API Key, modelo (ex: `grok-1`)
+   - **Ollama**: Base URL (ex: `http://localhost:11434`), modelo (ex: `llama3`)
+5. Salve a configuração
+
+### Uso no Prontuário
+1. Acesse um prontuário (criação ou edição)
+2. Preencha os campos: Queixa Principal, Anamnese, Exame Físico e Sinais Vitais
+3. Clique no botão **Sugerir (IA)** ao lado do campo Diagnóstico
+4. O sistema enviará os dados do paciente + sinais ao provedor configurado e preencherá o diagnóstico com a sugestão
+5. O veterinário pode editar, complementar ou ignorar a sugestão
+
+> **Observações**: A sugestão é manual (não automática). O prompt é construído com dados do paciente (espécie, raça, idade, sexo), sinais vitais, queixa principal, anamnese e exame físico. A temperatura baixa (0.3) mantém as sugestões profissionais e determinísticas.
+
 ### NFSe (Webmania®, FocusNFe, Spedy, Tecnospeed, NFE.io)
 - **Arquitetura**: Adapter Pattern — múltiplos provedores com interface única
 - **Fluxo**: Fatura paga → emissão automática ou manual → XML/PDF disponíveis
