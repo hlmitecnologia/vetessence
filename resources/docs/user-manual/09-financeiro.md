@@ -110,6 +110,11 @@ Quando uma consulta é marcada como **concluída**, o sistema gera automaticamen
 - Se não houver serviço nem mapeamento, a fatura é gerada com R$ 0,00
 - O veterinário pode editar a fatura antes de finalizar o recebimento
 
+### Proteção Contra Duplicidade de Faturamento
+- Se o agendamento já possui **fatura paga**, o auto-faturamento é **ignorado** — nenhuma nova fatura é gerada e nenhum erro é exibido
+- Da mesma forma, o botão **Gerar Fatura** no prontuário é bloqueado quando já existe fatura paga
+- Essa proteção evita que um mesmo atendimento seja faturado mais de uma vez
+
 ### Agrupamento de Atendimentos na Mesma Fatura
 
 É possível agrupar **múltiplos atendimentos** em uma única fatura para facilitar o pagamento do tutor:

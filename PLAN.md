@@ -18,12 +18,14 @@ Brazilian Portuguese. Follow existing patterns: migration → model → controll
 ## Test Suite Status
 
 ```
-Tests:  ~950 total  (243 files, 926 methods), pre-existing failures/skipped
+Tests:  ~960 total  (244 files), ~132 pre-existing failures/skipped
 
 ⚠️ 2 test files BROKEN (NFSe refactor — reference dropped columns)
 ⚠️ 18 service/provider classes with ZERO tests (Notification + NFSe)
 ⚠️ 22 controllers without dedicated feature tests
 ⚠️ 6 models without unit tests
+
++81 novos testes (72 LLM + 9 proteção fatura) — 0 falhas
 ```
 
 | Suite | Count | Notes |
@@ -2366,7 +2368,9 @@ resources/views/llm/config.blade.php           → Form com JS toggle de campos 
 - **Token-limit detection** centralizada em `LlmService::isTokenLimitError()` — cobre padrões de todos os 5 provedores; para Gemini, verificação específica de `finishReason === 'MAX_TOKENS'`
 - Testes existentes (132 pre-existing failures) não são afetados — nenhuma alteração em código legado
 
-### AC8 — Testes (11 arquivos, 72 testes, 172 assertions)
+### AC8 — Testes (14 arquivos, 81 testes, 198 assertions)
+
+#### LLM (72 testes — 11 arquivos)
 
 | Classe | Tipo | Testes | O que cobre |
 |--------|------|--------|-------------|
@@ -2382,5 +2386,15 @@ resources/views/llm/config.blade.php           → Form com JS toggle de campos 
 | `LlmServiceTest` (Feature) | Feature | 4 | Mock provider: sucesso, tratamento no prompt, prescriptions, create mode |
 | `LlmConfigControllerTest` | Feature | 7 | HTTP: edit, update, validação por provider, exibição config existente |
 
-**Total: 72/72 passando, 0 falhas.**
+**LLM: 72/72 passando, 0 falhas.**
+
+#### Proteção de Prontuários com Fatura Paga (9 testes — 1 novo arquivo + 2 editados)
+
+| Classe | Tipo | Testes | O que cobre |
+|--------|------|--------|-------------|
+| `AppointmentTest` | Unit/Model | 4 novos | `hasPaidInvoice()`: true quando paid, false quando pending/cancelled/sem invoice |
+| `MedicalRecordControllerTest` | Feature | 3 novos | `edit`/`update`/`generateInvoice` bloqueiam quando appointment tem fatura paga |
+| `GenerateInvoiceFromAppointmentTest` | Feature | 2 (novo arquivo) | Listener skip quando appointment tem fatura paga; gera quando não tem |
+
+**Proteção: 9/9 passando, 0 falhas.**
 ```
