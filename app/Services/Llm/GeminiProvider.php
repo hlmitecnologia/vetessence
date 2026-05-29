@@ -35,6 +35,20 @@ class GeminiProvider implements LlmProvider
             );
         }
 
+        $candidate = $body['candidates'][0] ?? null;
+
+        if (!$candidate) {
+            return LlmResult::error('Resposta vazia da API Gemini.', $body);
+        }
+
+        $finishReason = $candidate['finishReason'] ?? null;
+        if ($finishReason === 'MAX_TOKENS') {
+            return LlmResult::error(
+                'O limite de tokens do modelo Gemini foi excedido. O prompt é muito longo para o modelo configurado.',
+                $body
+            );
+        }
+
         $content = '';
         if (isset($body['candidates'][0]['content']['parts'])) {
             $parts = $body['candidates'][0]['content']['parts'];

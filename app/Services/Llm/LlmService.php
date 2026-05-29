@@ -27,9 +27,53 @@ class LlmService
 
         $prompt = $this->buildPrompt($record, $pet);
 
-        $provider = $this->resolveProvider($config);
+        $result = $this->resolveProvider($config)->generate($config, $prompt);
 
-        return $provider->generate($config, $prompt);
+        if (!$result->success && $this->isTokenLimitError($result)) {
+            return LlmResult::error(
+                'O limite de tokens do modelo foi excedido porque o histórico do paciente contém muitos dados para a configuração atual. '
+                . 'Para resolver, tente: (1) usar um modelo com janela de contexto maior '
+                . '(ex: gpt-4o, claude-3-sonnet, gemini-1.5-flash), '
+                . '(2) aumentar o limite de tokens máximo em Configurações > IA Diagnóstica, '
+                . 'ou (3) reduzir o histórico de atendimentos. '
+                . 'Nenhuma sugestão de diagnóstico será exibida até que o problema seja resolvido.'
+            );
+        }
+
+        return $result;
+    }
+
+    protected function isTokenLimitError(LlmResult $result): bool
+    {
+        if ($result->success) {
+            return false;
+        }
+
+        $msg = mb_strtolower($result->errorMessage ?? '');
+
+        $patterns = [
+            'context_length',
+            'maximum context',
+            'max tokens',
+            'max_tokens',
+            'too many tokens',
+            'prompt is too long',
+            'token limit',
+            'context window',
+            'token count',
+            'input too long',
+            'exceeds maximum',
+            'too large',
+            'reduce the length',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (str_contains($msg, $pattern)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getConfig(): ?LlmConfig
