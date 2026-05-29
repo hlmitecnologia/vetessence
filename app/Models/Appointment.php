@@ -68,6 +68,11 @@ class Appointment extends Model
         return $this->belongsTo(Appointment::class, 'parent_appointment_id');
     }
 
+    public function hasPaidInvoice(): bool
+    {
+        return $this->invoices()->where('status', 'paid')->exists();
+    }
+
     public function children(): HasMany
     {
         return $this->hasMany(Appointment::class, 'parent_appointment_id');

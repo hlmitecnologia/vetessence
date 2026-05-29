@@ -3,8 +3,10 @@
 namespace Tests\Feature\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Invoice;
 use App\Models\MedicalRecord;
 use App\Models\Pet;
+use App\Models\Tutor;
 use App\Models\User;
 use Tests\ModuleTestCase;
 
@@ -82,5 +84,97 @@ class MedicalRecordControllerTest extends ModuleTestCase
         $response = $this->delete(route('medical-records.destroy', $record));
         $response->assertRedirect();
         $this->assertDatabaseMissing('medical_records', ['id' => $record->id]);
+    }
+
+    public function test_edit_blocks_when_appointment_has_paid_invoice()
+    {
+        $tutor = Tutor::factory()->create();
+        $pet = Pet::factory()->create();
+        $vet = User::factory()->create();
+        $appointment = Appointment::create([
+            'pet_id' => $pet->id,
+            'vet_id' => $vet->id,
+            'date' => now(),
+            'time' => '10:00',
+            'type' => 'consulta',
+            'status' => 'completed',
+        ]);
+        $invoice = Invoice::factory()->create([
+            'tutor_id' => $tutor->id,
+            'status' => 'paid',
+            'paid_at' => now(),
+        ]);
+        $appointment->invoices()->attach($invoice->id);
+        $record = MedicalRecord::factory()->create([
+            'appointment_id' => $appointment->id,
+            'pet_id' => $pet->id,
+            'user_id' => $vet->id,
+        ]);
+
+        $response = $this->get(route('medical-records.edit', $record));
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+    }
+
+    public function test_update_blocks_when_appointment_has_paid_invoice()
+    {
+        $tutor = Tutor::factory()->create();
+        $pet = Pet::factory()->create();
+        $vet = User::factory()->create();
+        $appointment = Appointment::create([
+            'pet_id' => $pet->id,
+            'vet_id' => $vet->id,
+            'date' => now(),
+            'time' => '10:00',
+            'type' => 'consulta',
+            'status' => 'completed',
+        ]);
+        $invoice = Invoice::factory()->create([
+            'tutor_id' => $tutor->id,
+            'status' => 'paid',
+            'paid_at' => now(),
+        ]);
+        $appointment->invoices()->attach($invoice->id);
+        $record = MedicalRecord::factory()->create([
+            'appointment_id' => $appointment->id,
+            'pet_id' => $pet->id,
+            'user_id' => $vet->id,
+        ]);
+
+        $response = $this->put(route('medical-records.update', $record), [
+            'diagnosis' => 'Tentativa de alteração',
+        ]);
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+    }
+
+    public function test_generate_invoice_blocks_when_appointment_has_paid_invoice()
+    {
+        $tutor = Tutor::factory()->create();
+        $pet = Pet::factory()->create();
+        $vet = User::factory()->create();
+        $appointment = Appointment::create([
+            'pet_id' => $pet->id,
+            'vet_id' => $vet->id,
+            'date' => now(),
+            'time' => '10:00',
+            'type' => 'consulta',
+            'status' => 'completed',
+        ]);
+        $invoice = Invoice::factory()->create([
+            'tutor_id' => $tutor->id,
+            'status' => 'paid',
+            'paid_at' => now(),
+        ]);
+        $appointment->invoices()->attach($invoice->id);
+        $record = MedicalRecord::factory()->create([
+            'appointment_id' => $appointment->id,
+            'pet_id' => $pet->id,
+            'user_id' => $vet->id,
+        ]);
+
+        $response = $this->post(route('medical-records.generate-invoice', $record));
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
     }
 }

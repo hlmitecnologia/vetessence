@@ -100,6 +100,10 @@ class MedicalRecordController extends Controller
 
     public function edit(MedicalRecord $medicalRecord)
     {
+        if ($medicalRecord->appointment && $medicalRecord->appointment->hasPaidInvoice()) {
+            return back()->with('error', 'Este prontuário não pode ser editado porque o atendimento já possui uma fatura paga.');
+        }
+
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
         $veterinarians = $this->getVeterinarians();
         $medicalRecord->load('prescriptions');
@@ -109,6 +113,10 @@ class MedicalRecordController extends Controller
 
     public function update(Request $request, MedicalRecord $medicalRecord)
     {
+        if ($medicalRecord->appointment && $medicalRecord->appointment->hasPaidInvoice()) {
+            return back()->with('error', 'Este prontuário não pode ser editado porque o atendimento já possui uma fatura paga.');
+        }
+
         $validated = $request->validate([
             'chief_complaint' => 'nullable|string',
             'anamnesis' => 'nullable|string',
@@ -132,6 +140,10 @@ class MedicalRecordController extends Controller
 
     public function generateInvoice(MedicalRecord $medicalRecord)
     {
+        if ($medicalRecord->appointment && $medicalRecord->appointment->hasPaidInvoice()) {
+            return back()->with('error', 'Não é possível gerar fatura para este prontuário pois o atendimento já possui uma fatura paga.');
+        }
+
         $medicalRecord->load(['pet.tutors', 'vet']);
 
         $tutor = $medicalRecord->pet->tutors()

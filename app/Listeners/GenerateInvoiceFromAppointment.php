@@ -12,6 +12,11 @@ class GenerateInvoiceFromAppointment
     public function handle(AppointmentCompleted $event)
     {
         $appointment = $event->appointment->load(['pet.tutors', 'services.service']);
+
+        if ($appointment->hasPaidInvoice()) {
+            return;
+        }
+
         $pet = $appointment->pet;
         $tutor = $pet->tutors()->wherePivot('is_primary', true)->first() ?? $pet->tutors()->first();
 

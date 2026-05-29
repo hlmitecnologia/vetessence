@@ -4,8 +4,10 @@ namespace Tests\Unit\Models;
 
 use App\Models\Appointment;
 use App\Models\AppointmentService;
+use App\Models\Invoice;
 use App\Models\Pet;
 use App\Models\Service;
+use App\Models\Tutor;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -21,8 +23,8 @@ class AppointmentTest extends TestCase
         Appointment::create([
             'pet_id' => $pet->id,
             'vet_id' => $vet->id,
-            'date' => now(),
-            'time' => now(),
+            'date' => now()->format('Y-m-d'),
+            'time' => '10:00',
             'type' => 'consultation',
             'status' => 'scheduled',
             'reason' => 'Checkup',
@@ -49,8 +51,8 @@ class AppointmentTest extends TestCase
         $appointment = Appointment::create([
             'pet_id' => $pet->id,
             'vet_id' => $vet->id,
-            'date' => now(),
-            'time' => now(),
+            'date' => now()->format('Y-m-d'),
+            'time' => '10:00',
             'type' => 'consultation',
             'status' => 'scheduled',
         ]);
@@ -65,8 +67,8 @@ class AppointmentTest extends TestCase
         $appointment = Appointment::create([
             'pet_id' => $pet->id,
             'vet_id' => $vet->id,
-            'date' => now(),
-            'time' => now(),
+            'date' => now()->format('Y-m-d'),
+            'time' => '10:00',
             'type' => 'consultation',
             'status' => 'scheduled',
         ]);
@@ -81,8 +83,8 @@ class AppointmentTest extends TestCase
         $appointment = Appointment::create([
             'pet_id' => $pet->id,
             'vet_id' => $vet->id,
-            'date' => now(),
-            'time' => now(),
+            'date' => now()->format('Y-m-d'),
+            'time' => '10:00',
             'type' => 'consultation',
             'status' => 'scheduled',
         ]);
@@ -96,5 +98,88 @@ class AppointmentTest extends TestCase
 
         $this->assertCount(1, $appointment->services);
         $this->assertInstanceOf(AppointmentService::class, $appointment->services->first());
+    }
+
+    public function test_has_paid_invoice_returns_true_when_paid()
+    {
+        $pet = Pet::factory()->create();
+        $tutor = Tutor::factory()->create();
+        $vet = User::factory()->create();
+        $appointment = Appointment::create([
+            'pet_id' => $pet->id,
+            'vet_id' => $vet->id,
+            'date' => now(),
+            'time' => '10:00',
+            'type' => 'consultation',
+            'status' => 'completed',
+        ]);
+        $invoice = Invoice::factory()->create([
+            'tutor_id' => $tutor->id,
+            'status' => 'paid',
+            'paid_at' => now(),
+        ]);
+        $appointment->invoices()->attach($invoice->id);
+
+        $this->assertTrue($appointment->hasPaidInvoice());
+    }
+
+    public function test_has_paid_invoice_returns_false_when_pending()
+    {
+        $pet = Pet::factory()->create();
+        $tutor = Tutor::factory()->create();
+        $vet = User::factory()->create();
+        $appointment = Appointment::create([
+            'pet_id' => $pet->id,
+            'vet_id' => $vet->id,
+            'date' => now(),
+            'time' => '10:00',
+            'type' => 'consultation',
+            'status' => 'completed',
+        ]);
+        $invoice = Invoice::factory()->create([
+            'tutor_id' => $tutor->id,
+            'status' => 'pending',
+        ]);
+        $appointment->invoices()->attach($invoice->id);
+
+        $this->assertFalse($appointment->hasPaidInvoice());
+    }
+
+    public function test_has_paid_invoice_returns_false_when_cancelled()
+    {
+        $pet = Pet::factory()->create();
+        $tutor = Tutor::factory()->create();
+        $vet = User::factory()->create();
+        $appointment = Appointment::create([
+            'pet_id' => $pet->id,
+            'vet_id' => $vet->id,
+            'date' => now(),
+            'time' => '10:00',
+            'type' => 'consultation',
+            'status' => 'completed',
+        ]);
+        $invoice = Invoice::factory()->create([
+            'tutor_id' => $tutor->id,
+            'status' => 'cancelled',
+        ]);
+        $appointment->invoices()->attach($invoice->id);
+
+        $this->assertFalse($appointment->hasPaidInvoice());
+    }
+
+    public function test_has_paid_invoice_returns_false_without_invoices()
+    {
+        $pet = Pet::factory()->create();
+        $vet = User::factory()->create();
+        $appointment = Appointment::create([
+            'pet_id' => $pet->id,
+            'vet_id' => $vet->id,
+            'date' => now(),
+            'time' => '10:00',
+            'type' => 'consultation',
+            'status' => 'completed',
+        ]);
+
+        $this->assertFalse($appointment->hasPaidInvoice());
     }
 }
