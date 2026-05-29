@@ -2322,14 +2322,20 @@ resources/views/llm/config.blade.php           → Form com JS toggle de campos 
 **Livewire `MedicalRecordForm`:**
 - Novo método `suggestDiagnosis()` — instancia `LlmService`, chama `suggestDiagnosis($record)`, preenche `$this->diagnosis` com o resultado
 - Propriedades: `$suggestingDiagnosis` (bool), `$suggestionError` (string)
-- Botão "Sugerir (IA)" ao lado do textarea de Diagnóstico com spinner durante loading
+- Botão "Sugerir (IA)" posicionado inline com o label "Diagnóstico" (flexbox `justify-content-between`, `btn-sm` à direita), textarea abaixo — sem wrapping em mobile
 - Rate limiting: debounce 5s frontend, timeout 30s backend (via HTTP client)
 
 **Prompt:** Construído em português brasileiro com:
 - Dados do paciente: espécie, raça, idade, sexo
 - Sinais vitais (temperatura, FC, FR, peso, mucosas, hidratação, linfonodos)
+- **Histórico de atendimentos** (últimos 5: data, diagnóstico, tratamento)
+- **Vacinações** (últimas 5: vacina, data, próximo reforço)
 - Queixa principal, anamnese, exame físico
-- Solicitação: diagnóstico suspeito, diagnóstico diferencial e breve justificativa
+- **Tratamento atual** e **medicações em andamento** (prescrições formatadas)
+- Solicitação: diagnóstico suspeito, diagnóstico diferencial, breve justificativa, **sugestão de ajustes ou confirmação do tratamento em andamento**
+- System message: "Você é um veterinário especialista em diagnóstico animal"
+
+**Token-limit detection:** Centralizado em `LlmService::isTokenLimitError()` — verifica padrões nos erros retornados por OpenAI/Grok/Anthropic/Ollama (ex: `context_length`, `too many tokens`, `input too long`). Para Gemini, verifica `finishReason === 'MAX_TOKENS'` (Gemini retorna HTTP 200 mesmo no limite). Exibe mensagem amigável em português com sugestões de resolução. Nenhuma sugestão de diagnóstico é exibida até que o problema seja resolvido.
 
 ### AC5 — Interface de Configuração
 
@@ -2347,7 +2353,7 @@ resources/views/llm/config.blade.php           → Form com JS toggle de campos 
 | Tipo | Arquivos |
 |------|----------|
 | **Criados** | `database/migrations/2026_05_29_101000_create_llm_configs_table.php`, `app/Models/LlmConfig.php`, `app/Services/Llm/LlmProvider.php`, `app/Services/Llm/LlmResult.php`, `app/Services/Llm/OpenAiProvider.php`, `app/Services/Llm/AnthropicProvider.php`, `app/Services/Llm/GeminiProvider.php`, `app/Services/Llm/GrokProvider.php`, `app/Services/Llm/OllamaProvider.php`, `app/Services/Llm/LlmService.php`, `app/Http/Controllers/LlmConfigController.php`, `resources/views/llm/config.blade.php` — **12 novos** |
-| **Modificados** | `routes/web.php`, `resources/views/layouts/adminlte.blade.php`, `database/seeders/PermissionSeeder.php`, `app/Livewire/MedicalRecordForm.php`, `resources/views/livewire/medical-record-form.blade.php`, `resources/docs/user-manual/19-configuracoes.md`, `README.md`, `PLAN.md` — **8 modificados** |
+| **Modificados** | `routes/web.php`, `resources/views/layouts/adminlte.blade.php`, `database/seeders/PermissionSeeder.php`, `app/Livewire/MedicalRecordForm.php`, `resources/views/livewire/medical-record-form.blade.php`, `resources/views/livewire/medical-record-form.blade.php`, `app/Services/Llm/LlmService.php`, `app/Services/Llm/GeminiProvider.php`, `resources/docs/user-manual/19-configuracoes.md`, `README.md`, `PLAN.md` — **10 modificados** |
 
 ### AC7 — Observações
 
@@ -2356,5 +2362,6 @@ resources/views/llm/config.blade.php           → Form com JS toggle de campos 
 - Sem permissão especial para usar o botão — integrado ao fluxo normal do prontuário
 - Apenas usuários com `configuracoes.llm` podem configurar o provedor
 - **OpenCode foi avaliado e excluído** dos provedores: é um CLI tool sem API pública de inferência; Ollama é a alternativa self-hosted recomendada
+- **Token-limit detection** centralizada em `LlmService::isTokenLimitError()` — cobre padrões de todos os 5 provedores; para Gemini, verificação específica de `finishReason === 'MAX_TOKENS'`
 - Testes existentes (44 pre-existing failures) não são afetados — nenhuma alteração em código legado
 ```
