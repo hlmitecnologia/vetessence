@@ -128,16 +128,14 @@
             <div class="card-body">
                 <h5 class="card-title">Diagnóstico e Tratamento</h5>
                 <div class="form-group">
-                    <label>Diagnóstico</label>
-                    <div class="input-group">
-                        <textarea wire:model="diagnosis" rows="2" class="form-control" style="resize:vertical;"></textarea>
-                        <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-info" wire:click="suggestDiagnosis" wire:loading.attr="disabled" wire:target="suggestDiagnosis" title="Sugerir diagnóstico com IA">
-                                <span wire:loading.remove wire:target="suggestDiagnosis"><i class="fas fa-robot"></i> Sugerir (IA)</span>
-                                <span wire:loading wire:target="suggestDiagnosis"><i class="fas fa-spinner fa-spin"></i> Analisando...</span>
-                            </button>
-                        </div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="mb-0">Diagnóstico</label>
+                        <button type="button" class="btn btn-outline-info btn-sm" wire:click="suggestDiagnosis" wire:loading.attr="disabled" wire:target="suggestDiagnosis" title="Sugerir diagnóstico com IA">
+                            <span wire:loading.remove wire:target="suggestDiagnosis"><i class="fas fa-robot"></i> Sugerir (IA)</span>
+                            <span wire:loading wire:target="suggestDiagnosis"><i class="fas fa-spinner fa-spin"></i> Analisando...</span>
+                        </button>
                     </div>
+                    <textarea wire:model="diagnosis" rows="2" class="form-control" style="resize:vertical;"></textarea>
                     @if($suggestionError)
                         <small class="text-danger">{{ $suggestionError }}</small>
                     @endif
