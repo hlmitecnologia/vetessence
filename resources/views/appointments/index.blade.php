@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!calendarEl) return;
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
-        plugins: ['dayGrid', 'timeGrid', 'interaction'],
+        plugins: [FullCalendar.dayGridPlugin, FullCalendar.timeGridPlugin, FullCalendar.interactionPlugin],
         header: {
             left: 'prev,next today',
             center: 'title',
