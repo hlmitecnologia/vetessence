@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
             url: '/api/v1/appointments/calendar/data',
             method: 'GET',
             extraParams: function () {
-                var v = calendar.view;
+                var v = calendar && calendar.view;
                 return v ? {
                     start: v.currentStart.toISOString(),
                     end: v.currentEnd.toISOString()
