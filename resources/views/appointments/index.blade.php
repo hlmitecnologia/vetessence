@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
         // plugins auto-registram via core.globalPlugins.push ao carregar o CDN
-        header: {
+        headerToolbar: {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
@@ -97,10 +97,11 @@ document.addEventListener('DOMContentLoaded', function () {
             url: '/api/v1/appointments/calendar/data',
             method: 'GET',
             extraParams: function () {
-                return {
-                    start: calendar.view.currentStart.toISOString(),
-                    end: calendar.view.currentEnd.toISOString()
-                };
+                var v = calendar.view;
+                return v ? {
+                    start: v.currentStart.toISOString(),
+                    end: v.currentEnd.toISOString()
+                } : {};
             },
             failure: function () {
                 console.error('Erro ao carregar agendamentos');
