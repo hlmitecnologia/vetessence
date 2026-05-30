@@ -83,6 +83,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('appointments/{appointment}/status', 'App\Http\Controllers\AppointmentController@updateStatus')->name('appointments.update-status');
 
     // Appointments
+    Route::get('appointments/calendar-json', 'App\Http\Controllers\Api\AppointmentController@calendar')->name('appointments.calendar-json');
     Route::resource('appointments', 'App\Http\Controllers\AppointmentController')->names([
         'index' => 'appointments.index',
         'create' => 'appointments.create',
@@ -93,7 +94,6 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'appointments.destroy',
     ]);
     Route::put('appointments/{appointment}/reschedule', 'App\Http\Controllers\AppointmentController@reschedule');
-    Route::get('appointments/calendar-json', 'App\Http\Controllers\Api\AppointmentController@calendar')->name('appointments.calendar-json');
 
     // Medical Records
     Route::resource('medical-records', 'App\Http\Controllers\MedicalRecordController')->names([
