@@ -93,6 +93,7 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'appointments.destroy',
     ]);
     Route::put('appointments/{appointment}/reschedule', 'App\Http\Controllers\AppointmentController@reschedule');
+    Route::get('appointments/calendar-json', 'App\Http\Controllers\Api\AppointmentController@calendar')->name('appointments.calendar-json');
 
     // Medical Records
     Route::resource('medical-records', 'App\Http\Controllers\MedicalRecordController')->names([

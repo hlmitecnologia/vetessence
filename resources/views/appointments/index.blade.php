@@ -94,10 +94,10 @@ document.addEventListener('DOMContentLoaded', function () {
         dayMaxEvents: 3,
         noEventsText: 'Nenhum agendamento',
         events: function (fetchInfo, successCallback, failureCallback) {
-            fetch('/api/v1/appointments/calendar/data?' + new URLSearchParams({
+            fetch('/appointments/calendar-json?' + new URLSearchParams({
                 start: fetchInfo.startStr.slice(0, 10),
                 end: fetchInfo.endStr.slice(0, 10)
-            }), { headers: { 'Accept': 'application/json' } })
+            })
             .then(function (res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 return res.json();
