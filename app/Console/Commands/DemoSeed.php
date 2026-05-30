@@ -910,7 +910,6 @@ class DemoSeed extends Command
                     'unit_price' => 150.00,
                     'total' => 150.00,
                     'is_authorized' => $statuses[$i] !== 'draft',
-                    'branch_id' => $tp->branch_id,
                 ]);
             }
         }
