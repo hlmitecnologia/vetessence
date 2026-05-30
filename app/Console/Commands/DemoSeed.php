@@ -641,11 +641,17 @@ class DemoSeed extends Command
     {
         $paidInvoices = Invoice::where('status', 'paid')->get();
         $vets = $this->getAllVets();
+        $firstService = Service::first();
 
         foreach ($vets as $vet) {
             CommissionRate::firstOrCreate(
                 ['user_id' => $vet->id, 'rate_type' => 'percentage'],
-                ['rate_value' => 10.00, 'is_active' => true, 'commissionable_type' => Service::class]
+                [
+                    'rate_value' => 10.00,
+                    'is_active' => true,
+                    'commissionable_type' => $firstService ? Service::class : null,
+                    'commissionable_id' => $firstService?->id,
+                ]
             );
         }
 
