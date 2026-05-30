@@ -93,19 +93,20 @@ document.addEventListener('DOMContentLoaded', function () {
         selectMirror: true,
         dayMaxEvents: 3,
         noEventsText: 'Nenhum agendamento',
-        events: {
-            url: '/api/v1/appointments/calendar/data',
-            method: 'GET',
-            extraParams: function () {
-                var v = calendar && calendar.view;
-                return v ? {
-                    start: v.currentStart.toISOString(),
-                    end: v.currentEnd.toISOString()
-                } : {};
-            },
-            failure: function () {
-                console.error('Erro ao carregar agendamentos');
-            }
+        events: function (fetchInfo, successCallback, failureCallback) {
+            fetch('/api/v1/appointments/calendar/data?' + new URLSearchParams({
+                start: fetchInfo.startStr.slice(0, 10),
+                end: fetchInfo.endStr.slice(0, 10)
+            }))
+            .then(function (res) {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
+            })
+            .then(function (data) { successCallback(data); })
+            .catch(function (err) {
+                console.error('Erro ao carregar agendamentos', err);
+                failureCallback(err);
+            });
         },
         eventClick: function (info) {
             var props = info.event.extendedProps;
