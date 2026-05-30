@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch('/appointments/calendar-json?' + new URLSearchParams({
                 start: fetchInfo.startStr.slice(0, 10),
                 end: fetchInfo.endStr.slice(0, 10)
-            })
+            }))
             .then(function (res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 return res.json();
