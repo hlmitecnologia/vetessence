@@ -79,7 +79,13 @@
                     </tr>
                     @empty
                     <tr class="text-center">
-                        <td colspan="7">Nenhuma NFSe encontrada.</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-muted py-3">Nenhuma NFSe encontrada.</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     @endforelse
                 </tbody>

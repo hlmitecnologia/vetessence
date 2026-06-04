@@ -870,6 +870,13 @@
                 jQuery('table.table-bordered').each(function() {
                     if (!jQuery(this).find('thead').length) return;
                     var colCount = jQuery(this).find('thead th').length;
+                    // Remove empty-state rows with colspan to avoid "Incorrect column count" error
+                    jQuery(this).find('tbody tr').each(function() {
+                        var $row = jQuery(this);
+                        if ($row.find('td').length === 1 && $row.find('td').attr('colspan')) {
+                            $row.remove();
+                        }
+                    });
                     jQuery(this).DataTable({
                         "paging": true,
                         "lengthChange": true,
