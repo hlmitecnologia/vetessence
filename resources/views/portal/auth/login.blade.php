@@ -7,6 +7,7 @@
     $hasLogo = (bool) $logoUrl;
     $showName = branding('show_clinic_name', '0') === '1';
 @endphp
+<style>.portal-input:focus{box-shadow:0 0 0 2px {{ $primary }};border-color:{{ $primary }};outline:none}</style>
 <div class="min-h-[70vh] flex items-center justify-center" style="background: {{ branding('login_background', '#f9edc3') }};">
     <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
         <div class="text-center mb-8">
@@ -29,8 +30,7 @@
                 <div class="relative">
                     <i class="fas fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     <input type="email" name="email" value="{{ old('email') }}" required autofocus
-                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 outline-none transition text-sm"
-                        style="focus:ring-{{ $primary }}; focus:border-{{ $primary }}">
+                        class="portal-input w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg transition text-sm">
                 </div>
             </div>
 
@@ -39,8 +39,7 @@
                 <div class="relative">
                     <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     <input type="password" name="password" required autocomplete="current-password"
-                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 outline-none transition text-sm"
-                        style="focus:ring-{{ $primary }}; focus:border-{{ $primary }}">
+                        class="portal-input w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg transition text-sm">
                 </div>
             </div>
 
