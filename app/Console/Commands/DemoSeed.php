@@ -32,7 +32,7 @@ use App\Models\TreatmentPlan;
 use App\Models\TreatmentPlanItem;
 use App\Models\Tutor;
 use App\Models\User;
-use App\Models\Vaccination;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -255,25 +255,30 @@ class DemoSeed extends Command
     private function createTutors(): void
     {
         $tutors = [
-            ['name' => 'Ana Lúcia Mendes', 'cpf' => '111.222.333-44', 'phone' => '(11) 98765-0101', 'city' => 'São Paulo', 'state' => 'SP', 'notify_whatsapp' => true],
-            ['name' => 'Roberto Ferreira', 'cpf' => '222.333.444-55', 'phone' => '(11) 98765-0202', 'city' => 'São Paulo', 'state' => 'SP'],
-            ['name' => 'Carla Dias', 'cpf' => '333.444.555-66', 'phone' => '(21) 98765-0303', 'city' => 'Rio de Janeiro', 'state' => 'RJ'],
-            ['name' => 'Fernando Lima', 'cpf' => '444.555.666-77', 'phone' => '(21) 98765-0404', 'city' => 'Rio de Janeiro', 'state' => 'RJ'],
-            ['name' => 'Juliana Martins', 'cpf' => '555.666.777-88', 'phone' => '(31) 98765-0505', 'city' => 'Belo Horizonte', 'state' => 'MG'],
-            ['name' => 'Marcos Andrade', 'cpf' => '666.777.888-99', 'phone' => '(31) 98765-0606', 'city' => 'Belo Horizonte', 'state' => 'MG'],
-            ['name' => 'Patrícia Nunes', 'cpf' => '777.888.999-00', 'phone' => '(11) 98765-0707', 'city' => 'São Paulo', 'state' => 'SP', 'notify_email' => true, 'notify_sms' => true],
-            ['name' => 'Gustavo Rocha', 'cpf' => '888.999.000-11', 'phone' => '(11) 98765-0808', 'city' => 'São Paulo', 'state' => 'SP'],
-            ['name' => 'Simone Barbosa', 'cpf' => '999.000.111-22', 'phone' => '(11) 98765-0909', 'city' => 'São Paulo', 'state' => 'SP'],
-            ['name' => 'Lucas Oliveira', 'cpf' => '000.111.222-33', 'phone' => '(11) 98765-1010', 'city' => 'São Paulo', 'state' => 'SP'],
-            ['name' => 'Amanda Torres', 'cpf' => '123.456.789-01', 'phone' => '(11) 98765-1111', 'city' => 'São Paulo', 'state' => 'SP', 'notify_whatsapp' => true],
-            ['name' => 'Eduardo Campos', 'cpf' => '234.567.890-12', 'phone' => '(11) 98765-1212', 'city' => 'São Paulo', 'state' => 'SP'],
+            ['name' => 'Ana Lúcia Mendes',     'cpf' => '111.222.333-44', 'phone' => '(11) 98765-0101', 'city' => 'São Paulo',      'state' => 'SP', 'notify_whatsapp' => true],
+            ['name' => 'Roberto Ferreira',      'cpf' => '222.333.444-55', 'phone' => '(11) 98765-0202', 'city' => 'São Paulo',      'state' => 'SP'],
+            ['name' => 'Carla Dias',            'cpf' => '333.444.555-66', 'phone' => '(21) 98765-0303', 'city' => 'Rio de Janeiro', 'state' => 'RJ'],
+            ['name' => 'Fernando Lima',         'cpf' => '444.555.666-77', 'phone' => '(21) 98765-0404', 'city' => 'Rio de Janeiro', 'state' => 'RJ'],
+            ['name' => 'Juliana Martins',       'cpf' => '555.666.777-88', 'phone' => '(31) 98765-0505', 'city' => 'Belo Horizonte', 'state' => 'MG'],
+            ['name' => 'Marcos Andrade',        'cpf' => '666.777.888-99', 'phone' => '(31) 98765-0606', 'city' => 'Belo Horizonte', 'state' => 'MG'],
+            ['name' => 'Patrícia Nunes',        'cpf' => '777.888.999-00', 'phone' => '(11) 98765-0707', 'city' => 'São Paulo',      'state' => 'SP', 'notify_email' => true, 'notify_sms' => true],
+            ['name' => 'Gustavo Rocha',         'cpf' => '888.999.000-11', 'phone' => '(11) 98765-0808', 'city' => 'São Paulo',      'state' => 'SP'],
+            ['name' => 'Simone Barbosa',        'cpf' => '999.000.111-22', 'phone' => '(11) 98765-0909', 'city' => 'São Paulo',      'state' => 'SP'],
+            ['name' => 'Lucas Oliveira',        'cpf' => '000.111.222-33', 'phone' => '(11) 98765-1010', 'city' => 'São Paulo',      'state' => 'SP'],
+            ['name' => 'Amanda Torres',         'cpf' => '123.456.789-01', 'phone' => '(11) 98765-1111', 'city' => 'São Paulo',      'state' => 'SP', 'notify_whatsapp' => true],
+            ['name' => 'Eduardo Campos',        'cpf' => '234.567.890-12', 'phone' => '(11) 98765-1212', 'city' => 'São Paulo',      'state' => 'SP'],
         ];
 
-        foreach ($tutors as $data) {
-            Tutor::firstOrCreate(
+        $password = Hash::make('tutor123');
+
+        foreach ($tutors as $i => $data) {
+            $email = 'demo.tutor' . ($i + 1) . '@vetessence.com.br';
+            Tutor::updateOrCreate(
                 ['cpf' => $data['cpf']],
                 [
                     'name' => $data['name'],
+                    'email' => $email,
+                    'password' => $password,
                     'phone' => $data['phone'],
                     'city' => $data['city'],
                     'state' => $data['state'],

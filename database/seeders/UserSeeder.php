@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Branch;
+use App\Models\Tutor;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
@@ -42,7 +43,7 @@ class UserSeeder extends Seeder
         $defaultBranchId = Branch::where('is_main', true)->value('id');
 
         foreach ($users as $user) {
-            User::firstOrCreate(
+            $u = User::firstOrCreate(
                 ['email' => $user['email']],
                 [
                     'name' => $user['name'],
@@ -52,6 +53,22 @@ class UserSeeder extends Seeder
                     'is_active' => true,
                 ]
             );
+
+            if ($user['role']->slug === 'tutor') {
+                Tutor::firstOrCreate(
+                    ['user_id' => $u->id],
+                    [
+                        'name' => $user['name'],
+                        'email' => $user['email'],
+                        'password' => Hash::make($user['password']),
+                        'cpf' => '111.222.333-44',
+                        'phone' => '(11) 98765-0000',
+                        'address' => 'Rua dos Tutores, 100',
+                        'city' => 'São Paulo',
+                        'state' => 'SP',
+                    ]
+                );
+            }
         }
     }
 }
