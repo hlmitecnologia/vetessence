@@ -63,9 +63,14 @@
         @foreach($upcomingAppointmentsList as $appt)
         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
             <div class="flex items-center gap-3">
+                @if($appt->pet->photo_url)
+                <img src="{{ $appt->pet->photo_url }}" alt="{{ $appt->pet->name }}"
+                     class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                @else
                 <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                     <i class="fas fa-paw text-blue-600"></i>
                 </div>
+                @endif
                 <div>
                     <p class="text-sm font-medium text-gray-800">{{ $appt->pet->name ?? 'Pet' }}</p>
                     <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($appt->start_time)->format('d/m/Y H:i') }}</p>
