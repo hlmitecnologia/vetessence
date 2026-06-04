@@ -14,6 +14,8 @@ use App\Http\Controllers\Portal\PrescriptionController;
 use App\Http\Controllers\Portal\DocController;
 use Illuminate\Support\Facades\Route;
 
+Route::redirect('/', 'login')->name('portal.home');
+
 Route::middleware('guest:tutor')->group(function () {
     Route::get('login', [LoginController::class, 'create'])->name('portal.login');
     Route::post('login', [LoginController::class, 'store'])->name('portal.login.store');
