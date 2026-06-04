@@ -8,7 +8,7 @@
     $showName = branding('show_clinic_name', '0') === '1';
 @endphp
 <style>.portal-input:focus{box-shadow:0 0 0 2px {{ $primary }};border-color:{{ $primary }};outline:none}</style>
-<div class="min-h-[70vh] flex items-center justify-center" style="background: {{ branding('login_background', '#f9edc3') }};">
+<div class="min-h-[70vh] flex items-center justify-center" style="background: {{ branding('sidebar_bg', '#051c12') }};">
     <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
         <div class="text-center mb-8">
             @if($hasLogo)
