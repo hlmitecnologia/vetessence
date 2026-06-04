@@ -55,7 +55,7 @@ class UserSeeder extends Seeder
             );
 
             if ($user['role']->slug === 'tutor') {
-                Tutor::firstOrCreate(
+                Tutor::updateOrCreate(
                     ['user_id' => $u->id],
                     [
                         'name' => $user['name'],
