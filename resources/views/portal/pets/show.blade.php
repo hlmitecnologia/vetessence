@@ -1,6 +1,9 @@
 @extends('portal.layouts.app', ['title' => $pet->name])
 
 @section('content')
+@php
+    $speciesMap = ['canine' => 'Cão', 'feline' => 'Gato', 'equine' => 'Cavalo', 'bovine' => 'Boi', 'ovine' => 'Ovelha', 'caprine' => 'Cabra', 'swine' => 'Porco', 'avian' => 'Ave', 'reptile' => 'Réptil'];
+@endphp
 <div class="mb-6">
     <a href="{{ route('portal.pets.index') }}" class="text-sm text-blue-600 hover:text-blue-700">
         <i class="fas fa-arrow-left mr-1"></i>Meus Pets
@@ -19,7 +22,7 @@
         @endif
         <div>
             <h1 class="text-2xl font-bold text-gray-800">{{ $pet->name }}</h1>
-            <p class="text-sm text-gray-500">{{ $pet->species }} - {{ $pet->breed ?? 'SRD' }}</p>
+            <p class="text-sm text-gray-500">{{ $speciesMap[$pet->species] ?? $pet->species }} - {{ $pet->breed ?? 'SRD' }}</p>
         </div>
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">

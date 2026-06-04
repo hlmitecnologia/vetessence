@@ -1,6 +1,9 @@
 @extends('portal.layouts.app', ['title' => 'Meus Pets'])
 
 @section('content')
+@php
+    $speciesMap = ['canine' => 'Cão', 'feline' => 'Gato', 'equine' => 'Cavalo', 'bovine' => 'Boi', 'ovine' => 'Ovelha', 'caprine' => 'Cabra', 'swine' => 'Porco', 'avian' => 'Ave', 'reptile' => 'Réptil'];
+@endphp
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-2xl font-bold text-gray-800">Meus Pets</h1>
 </div>
@@ -25,7 +28,7 @@
             @endif
             <div>
                 <h3 class="font-semibold text-gray-800">{{ $pet->name }}</h3>
-                <p class="text-sm text-gray-500">{{ $pet->species }} - {{ $pet->breed ?? 'SRD' }}</p>
+                <p class="text-sm text-gray-500">{{ $speciesMap[$pet->species] ?? $pet->species }} - {{ $pet->breed ?? 'SRD' }}</p>
             </div>
         </div>
         <div class="flex gap-3 text-xs text-gray-500">
