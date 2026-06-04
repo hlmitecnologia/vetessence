@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Tutor;
 use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
@@ -27,7 +28,11 @@ class RedirectIfAuthenticated
                     return redirect()->route('portal.dashboard');
                 }
                 if (Auth::guard($guard)->user()->hasRole('tutor')) {
-                    return redirect()->route('portal.login');
+                    $tutor = Tutor::where('user_id', Auth::guard($guard)->id())->first();
+                    if ($tutor) {
+                        Auth::guard('tutor')->login($tutor);
+                    }
+                    return redirect()->route('portal.dashboard');
                 }
                 return redirect(RouteServiceProvider::HOME);
             }
