@@ -598,6 +598,17 @@
                         </li>
                         @endcan
 
+                        <!-- DOCUMENTAÇÃO -->
+                        @can('docs.view')
+                        <li class="nav-header"><i class="fas fa-book"></i> DOCUMENTAÇÃO</li>
+                        <li class="nav-item">
+                            <a href="{{ route('docs.index') }}" class="nav-link {{ request()->routeIs('docs.*') ? 'active' : '' }}">
+                                <i class="fas fa-book nav-icon"></i>
+                                <p>Manual</p>
+                            </a>
+                        </li>
+                        @endcan
+
                         <!-- ADMINISTRAÇÃO -->
                         @can('admin')
                         <li class="nav-header"><i class="fas fa-cog"></i> ADMINISTRAÇÃO</li>
@@ -716,14 +727,6 @@
                                     <a href="{{ route('llm.config') }}" class="nav-link {{ request()->routeIs('llm.config') ? 'active' : '' }}">
                                         <i class="fas fa-brain nav-icon"></i>
                                         <p>IA Diagnóstica</p>
-                                    </a>
-                                </li>
-                                @endcan
-                                @can('docs.view')
-                                <li class="nav-item">
-                                    <a href="{{ route('docs.index') }}" class="nav-link {{ request()->routeIs('docs.*') ? 'active' : '' }}">
-                                        <i class="fas fa-book nav-icon"></i>
-                                        <p>Manual</p>
                                     </a>
                                 </li>
                                 @endcan

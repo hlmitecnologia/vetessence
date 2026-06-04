@@ -170,6 +170,7 @@ class PermissionSeeder extends Seeder
             'admin' => array_values(array_diff($permissions, ['configuracoes.branding'])),
 
             'veterinario' => [
+                'docs.view',
                 'tutors.view', 'tutors.create', 'tutors.edit',
                 'pets.view', 'pets.create', 'pets.edit',
                 'appointments.view', 'appointments.create', 'appointments.edit',
@@ -221,6 +222,7 @@ class PermissionSeeder extends Seeder
             ],
 
             'recepcionista' => [
+                'docs.view',
                 'tutors.view', 'tutors.create', 'tutors.edit',
                 'pets.view', 'pets.create', 'pets.edit',
                 'appointments.view', 'appointments.create', 'appointments.edit',
@@ -243,6 +245,7 @@ class PermissionSeeder extends Seeder
             ],
 
             'financeiro' => [
+                'docs.view',
                 'invoices.view', 'invoices.create', 'invoices.edit', 'invoices.delete',
                 'payments.view', 'payments.create', 'payments.edit',
                 'financial-reports.view', 'financial-reports.create',
@@ -257,6 +260,7 @@ class PermissionSeeder extends Seeder
             ],
 
             'super-financial' => [
+                'docs.view',
                 'invoices.view', 'invoices.create', 'invoices.edit', 'invoices.delete',
                 'payments.view', 'payments.create', 'payments.edit',
                 'financial-reports.view', 'financial-reports.create',
@@ -273,6 +277,7 @@ class PermissionSeeder extends Seeder
             ],
 
             'estoque' => [
+                'docs.view',
                 'products.view', 'products.create', 'products.edit', 'products.delete',
                 'stock.view', 'stock.create', 'stock.edit',
                 'suppliers.view', 'suppliers.create', 'suppliers.edit', 'suppliers.delete',
@@ -287,6 +292,7 @@ class PermissionSeeder extends Seeder
             ],
 
             'human-resources' => [
+                'docs.view',
                 'departments.view', 'departments.create', 'departments.edit', 'departments.delete',
                 'positions.view', 'positions.create', 'positions.edit', 'positions.delete',
                 'employees.view', 'employees.create', 'employees.edit', 'employees.delete',
@@ -302,9 +308,9 @@ class PermissionSeeder extends Seeder
             'auditor' => [],
         ];
 
-        // Add all view-only permissions to auditor (except docs and branding)
+        // Add all view-only permissions to auditor (except branding)
         foreach ($permissions as $perm) {
-            if (!in_array($perm, ['docs.view', 'branding']) && (str_ends_with($perm, '.view') || str_ends_with($perm, '.delete'))) {
+            if ($perm != 'branding' && (str_ends_with($perm, '.view') || str_ends_with($perm, '.delete'))) {
                 $rolePermissions['auditor'][] = $perm;
             }
         }
