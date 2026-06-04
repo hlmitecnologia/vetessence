@@ -17,7 +17,7 @@
             <div class="flex justify-between h-16 items-center">
                 <a href="{{ route('portal.dashboard') }}" class="flex items-center gap-2 text-xl font-bold" style="color: var(--brand-primary, #455e36)">
                     @php
-                        $logoUrl = branding_sidebar_logo_url();
+                        $logoUrl = branding_logo_url();
                         $hasLogo = (bool) $logoUrl;
                         $showName = branding('show_clinic_name', '0') === '1';
                     @endphp
