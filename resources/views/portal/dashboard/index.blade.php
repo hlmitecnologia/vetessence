@@ -77,7 +77,13 @@
                 </div>
             </div>
             <span class="text-xs px-2 py-1 rounded-full {{ $appt->status == 'scheduled' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
-                {{ $appt->status }}
+                @switch($appt->status)
+                    @case('scheduled') Agendado @break
+                    @case('confirmed') Confirmado @break
+                    @case('completed') Realizada @break
+                    @case('cancelled') Cancelada @break
+                    @default {{ $appt->status }}
+                @endswitch
             </span>
         </div>
         @endforeach
