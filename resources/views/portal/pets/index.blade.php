@@ -15,9 +15,14 @@
     @foreach($pets as $pet)
     <a href="{{ route('portal.pets.show', $pet->id) }}" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition block">
         <div class="flex items-center gap-4 mb-3">
+            @if($pet->photo_url)
+            <img src="{{ $pet->photo_url }}" alt="{{ $pet->name }}"
+                 class="w-14 h-14 rounded-full object-cover border border-gray-200">
+            @else
             <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center">
                 <i class="fas fa-paw text-blue-600 text-2xl"></i>
             </div>
+            @endif
             <div>
                 <h3 class="font-semibold text-gray-800">{{ $pet->name }}</h3>
                 <p class="text-sm text-gray-500">{{ $pet->species }} - {{ $pet->breed ?? 'SRD' }}</p>

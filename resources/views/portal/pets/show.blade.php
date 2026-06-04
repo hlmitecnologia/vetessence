@@ -9,9 +9,14 @@
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
     <div class="flex items-center gap-4 mb-4">
+        @if($pet->photo_url)
+        <img src="{{ $pet->photo_url }}" alt="{{ $pet->name }}"
+             class="w-16 h-16 rounded-full object-cover border border-gray-200">
+        @else
         <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
             <i class="fas fa-paw text-blue-600 text-3xl"></i>
         </div>
+        @endif
         <div>
             <h1 class="text-2xl font-bold text-gray-800">{{ $pet->name }}</h1>
             <p class="text-sm text-gray-500">{{ $pet->species }} - {{ $pet->breed ?? 'SRD' }}</p>
