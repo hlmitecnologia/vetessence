@@ -32,6 +32,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if (Auth::user()->hasRole('tutor')) {
+            return redirect()->route('portal.login');
+        }
+
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
