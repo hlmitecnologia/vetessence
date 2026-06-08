@@ -9,10 +9,21 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Vacina</label>
-                                <input type="text" name="vaccine" value="{{ $vaccination->vaccine }}" class="form-control">
-                            </div>
+                    <div class="form-group">
+                        <label>Vacina</label>
+                        <input type="text" name="vaccine" value="{{ $vaccination->vaccine }}" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Produto (para baixa de estoque)</label>
+                        <select name="product_id" class="form-control">
+                            <option value="">— Sem produto —</option>
+                            @foreach($products as $p)
+                            <option value="{{ $p->id }}" {{ $vaccination->product_id == $p->id ? 'selected' : '' }}>
+                                {{ $p->name }} (estoque: {{ $p->stock }}) — R$ {{ number_format($p->sale_price, 2, ',', '.') }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">

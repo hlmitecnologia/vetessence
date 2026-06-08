@@ -152,6 +152,10 @@ class PermissionSeeder extends Seeder
             'nfse.view', 'nfse.emit', 'nfse.cancel',
             'nfse-config.edit',
 
+            // NF-e
+            'nfe.view', 'nfe.emit', 'nfe.cancel',
+            'nfe-config.edit',
+
             // LLM / IA Diagnóstica
             'configuracoes.llm',
         ];
@@ -257,8 +261,8 @@ class PermissionSeeder extends Seeder
                 'notification-logs.view',
                 'purchase-orders.view',
                 'nfse.view', 'nfse.emit',
+                'nfe.view', 'nfe.emit',
             ],
-
             'super-financial' => [
                 'docs.view',
                 'invoices.view', 'invoices.create', 'invoices.edit', 'invoices.delete',
@@ -274,6 +278,7 @@ class PermissionSeeder extends Seeder
                 'purchase-orders.view',
                 'corporate-dashboard.view',
                 'nfse.view', 'nfse.emit', 'nfse.cancel',
+                'nfe.view', 'nfe.emit', 'nfe.cancel',
             ],
 
             'estoque' => [

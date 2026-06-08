@@ -120,5 +120,11 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('nfse.emit', fn($user) => $user->hasPermissionTo('nfse.emit'));
         Gate::define('nfse.cancel', fn($user) => $user->hasPermissionTo('nfse.cancel'));
         Gate::define('nfse-config.edit', fn($user) => $user->hasPermissionTo('nfse-config.edit'));
+
+        // NF-e
+        Gate::define('nfe.view', fn($user) => $user->hasPermissionTo('nfe.view'));
+        Gate::define('nfe.emit', fn($user) => $user->hasPermissionTo('nfe.emit'));
+        Gate::define('nfe.cancel', fn($user) => $user->hasPermissionTo('nfe.cancel'));
+        Gate::define('nfe-config.edit', fn($user) => $user->hasPermissionTo('nfe-config.edit'));
     }
 }

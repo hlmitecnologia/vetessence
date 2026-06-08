@@ -50,6 +50,11 @@ class MedicalRecord extends Model
         return $this->hasMany(Prescription::class);
     }
 
+    public function vaccinations(): HasMany
+    {
+        return $this->hasMany(Vaccination::class);
+    }
+
     public function parentRecord(): BelongsTo
     {
         return $this->belongsTo(MedicalRecord::class, 'record_id');

@@ -34,8 +34,9 @@ class VaccinationController extends Controller
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
         $veterinarians = $this->getVeterinarians();
         $selectedPet = $request->pet_id ? Pet::find($request->pet_id) : null;
+        $products = \App\Models\Product::where('is_active', true)->where('stock', '>', 0)->orderBy('name')->get();
 
-        return view('vaccinations.create', compact('pets', 'veterinarians', 'selectedPet'));
+        return view('vaccinations.create', compact('pets', 'veterinarians', 'selectedPet', 'products'));
     }
 
     public function store(Request $request)
@@ -69,8 +70,9 @@ class VaccinationController extends Controller
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
         $veterinarians = $this->getVeterinarians();
+        $products = \App\Models\Product::where('is_active', true)->where('stock', '>', 0)->orderBy('name')->get();
 
-        return view('vaccinations.edit', compact('vaccination', 'pets', 'veterinarians'));
+        return view('vaccinations.edit', compact('vaccination', 'pets', 'veterinarians', 'products'));
     }
 
     public function update(Request $request, Vaccination $vaccination)
@@ -81,6 +83,7 @@ class VaccinationController extends Controller
             'next_date' => 'nullable|date|after:date',
             'batch' => 'nullable|string|max:50',
             'vet_id' => 'required|exists:users,id',
+            'product_id' => 'nullable|exists:products,id',
             'notes' => 'nullable|string',
         ]);
 

@@ -14,7 +14,7 @@ class Vaccination extends Model
     protected $fillable = [
         'pet_id', 'vaccine', 'batch', 'date', 'next_date',
         'lot', 'manufacturer', 'application_site', 'vet_id',
-        'medical_record_id', 'notes', 'branch_id'
+        'medical_record_id', 'product_id', 'notes', 'branch_id'
     ];
 
     protected $casts = [
@@ -35,5 +35,10 @@ class Vaccination extends Model
     public function medicalRecord(): BelongsTo
     {
         return $this->belongsTo(MedicalRecord::class);
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
     }
 }

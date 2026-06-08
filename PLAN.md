@@ -1062,6 +1062,272 @@ php artisan test --env=testing --filter="DepartmentControllerTest::test_index" -
 **Index views atualizados:** 27 com modal Bootstrap  
 **Delete:** interceptador global SweetAlert2 no layout (substitui `confirm()` nativo)
 
+---
+
+## Phase NFe — Nota Fiscal Eletrônica de Produto (NF-e)
+
+**Objetivo:** Suporte a emissão de NF-e para vendas de produtos com baixa automática de estoque e tributação completa (NCM, CFOP, CST, ICMS, IPI, PIS, COFINS).
+
+**Arquitetura:** Mesmo padrão do NFSe: Provider interface → `NfeService` orchestrator → `NfeResult` DTO. Providers que já existem no código e suportam NF-e: FocusNFe, NFE.io, Webmania® (todos com API para NF-e além de NFSe).
+
+### NFe-0 — Correção da Vacinação (Pré-requisito)
+
+**Problema:** `Vaccination` model não tem `product_id` no `$fillable`, então a baixa de estoque nunca ocorre via controller web. Além disso, o custo da vacina não é incluído na fatura gerada pela consulta.
+
+| # | Tarefa | Detalhes | Arquivos |
+|---|--------|----------|----------|
+| 0.1 | Adicionar `product_id` ao `$fillable` do `Vaccination` | Corrige bug que impedia persistência do produto na vacinação | `app/Models/Vaccination.php` |
+| 0.2 | Adicionar seletor de produto na view de criação de vacinação | Select2 com busca de produtos (apenas com estoque > 0 e is_active), carrega `sale_price` automaticamente | `resources/views/vaccinations/create.blade.php` |
+| 0.3 | Adicionar seletor de produto na view de edição de vacinação | Campo `product_id` com valor pré-selecionado | `resources/views/vaccinations/edit.blade.php` |
+| 0.4 | Incluir o custo da vacina como `InvoiceItem` na fatura gerada | Modificar `GenerateInvoiceFromAppointment` para buscar vacinas vinculadas ao `medical_record_id` da consulta e criar `InvoiceItem` com `product_id`, `description = vaccine.nome`, `quantity = 1`, `unit_price = product.sale_price`, `item_type = product` | `app/Listeners/GenerateInvoiceFromAppointment.php` |
+| 0.5 | Incluir vacinas no escopo de `InvoiceItem.product_id` | Ensure `InvoiceItem` pode receber `product_id` e `item_type` no fillable (preparatório para NF-e) | `app/Models/InvoiceItem.php` |
+| 0.6 | **Testes** | Unit: fillable do Vaccination. Feature: vacinação com produto → stock deduzido + item de fatura gerado | ~6 testes |
+
+**Fluxo corrigido:**
+```
+Vacinação registrada com produto
+         ↓
+Vaccination::create() — product_id agora persiste
+         ↓
+ProcedurePerformed → DeductStockListener → StockDeductionService
+         ↓
+Estoque deduzido (-1), StockMovement registrado
+         ↓
+[Separadamente] Consulta concluída → AppointmentCompleted
+         ↓
+GenerateInvoiceFromAppointment busca vacinas do medical_record_id
+         ↓
+Cria InvoiceItem com product_id, descrição, preço de venda
+         ↓
+Fatura inclui o custo da vacina + NF-e pode ser emitida
+```
+
+### NFe-1 — Data Model (Migrations)
+
+| # | Migration | Tabela | Colunas |
+|---|-----------|--------|---------|
+| 1 | `add_tax_fields_to_products` | `products` | `ncm` (string 8), `cest` (string 7 nullable), `cfop` (string 4), `cst` (string 3 nullable — para Simples Nacional usar `csosn`), `csosn` (string 3 nullable), `ibpt_percentage` (decimal 5.2), `weight_kg` (decimal 8.3), `icms_origin` (tinyInt — 0=nacional, 1/2/3=estrangeiro), `icms_cst` (string 3), `icms_modbc` (tinyInt — 0=Margem Valor Agregado, 1= Pauta, 2=Preço Tabelado, 3=Valor Operação), `icms_vbc` (decimal 12.2 nullable), `icms_picms` (decimal 5.2), `icms_predbc` (decimal 5.2 nullable), `ipi_cst` (string 2 nullable), `ipi_aliquot` (decimal 5.2 nullable), `pis_cst` (string 2), `cofins_cst` (string 2), `pis_aliquot` (decimal 5.2 nullable), `cofins_aliquot` (decimal 5.2 nullable), `fiscal_classification` (string 255 nullable) |
+| 2 | `add_fiscal_fields_to_services` | `services` | `service_code` (string 20 — código LC 116, ex: `01.02`), `cnae` (string 7 nullable), `iss_aliquot` (decimal 5.2 nullable), `iss_municipio_ibge` (string 7 nullable — fallback para o da branch quando diferente) |
+| 3 | `create_nfe_configs_table` | `nfe_configs` | `provider` (string), `ambiente` (enum: homologacao/producao), `focusnfe_token`, `nfeio_api_key`, `webmania_app_id`, `webmania_app_secret`, `webmania_consumer_key`, `webmania_consumer_secret`, `is_active` (boolean). **Sistêmico (sem branch_id)** — igual NfseConfig |
+| 4 | `create_nfe_invoices_table` | `nfe_invoices` | `branch_id` (FK), `invoice_id` (FK), `nfe_number` (string), `nfe_key` (string 44 — chave de acesso), `status` (enum: issuing/issued/cancelled), `issuance_date`, `cancelled_at`, `nfe_url_xml`, `nfe_url_pdf`, `danfe_url`, `provider_response` (JSON nullable), `error_message` (text nullable) |
+| 5 | `add_nfe_to_invoices` | `invoices` | `nfe_status` (enum: none/pending/issued/cancelled, default 'none'), `nfe_invoice_id` (FK nullable para nfe_invoices) |
+| 6 | `add_nfe_fields_to_branches` | `branches` | `ie` (string 20 — Inscrição Estadual), `ie_st` (string 20 nullable — IE Substituição Tributária), `crt` (tinyInt — 1=Simples Nacional, 2=SN excesso sublimite, 3=Regime Normal) |
+| 7 | `add_product_id_and_type_to_invoice_items` | `invoice_items` | `product_id` (FK nullable para products), `service_id` (FK nullable para services), `item_type` (enum: service/product/avulso, default 'avulso') — NOTA: colunas `item_type` e `item_id` já existem como polimórficas na tabela mas não estão em `$fillable` |
+
+### NFe-2 — Models
+
+| Model | Arquivo | Ações |
+|-------|---------|-------|
+| `NfeConfig` | `app/Models/NfeConfig.php` | Novo, sem branch_id (sistêmico), casts boolean is_active |
+| `NfeInvoice` | `app/Models/NfeInvoice.php` | Novo, `belongsTo(Invoice)`, `belongsTo(Branch)`, scopes `issued/pending` |
+| `Product` | `app/Models/Product.php` | Add fillable + casts para: `ncm`, `cest`, `cfop`, `cst`, `csosn`, `ibpt_percentage`, `weight_kg`, `icms_origin`, `icms_cst`, `icms_modbc`, `icms_vbc`, `icms_picms`, `icms_predbc`, `ipi_cst`, `ipi_aliquot`, `pis_cst`, `cofins_cst`, `pis_aliquot`, `cofins_aliquot`, `fiscal_classification`. Scopes `withNcm`, `active` |
+| `Service` | `app/Models/Service.php` | Add fillable + casts para: `service_code` (string 20 — código da LC 116, ex: `01.02` para serviços veterinários), `cnae` (string 7), `iss_aliquot` (decimal), `iss_municipio_ibge` (string 7) |
+| `InvoiceItem` | `app/Models/InvoiceItem.php` | Add `product_id`, `service_id`, `item_type` ao fillable. Relacionamentos: `belongsTo(Product)`, `belongsTo(Service)`. Scope `byType()` |
+| `Invoice` | `app/Models/Invoice.php` | Add `nfe_status` fillable/casts, `belongsTo(NfeInvoice, 'nfe_invoice_id')` |
+| `Branch` | `app/Models/Branch.php` | Add `ie`, `ie_st`, `crt` fillable |
+
+### NFe-3 — Provider Pattern (Serviços)
+
+| Classe | Arquivo | Descrição |
+|--------|---------|-----------|
+| `NfeProvider` (interface) | `app/Services/Nfe/NfeProvider.php` | `emitir()`, `consultar()`, `cancelar()` |
+| `NfeResult` (DTO) | `app/Services/Nfe/NfeResult.php` | `success()`, `error()` static factories, campos: `nfeNumber`, `nfeKey` (chave 44 dígitos), `xmlUrl`, `pdfUrl`, `danfeUrl`, `rawResponse` |
+| `NfeService` | `app/Services/Nfe/NfeService.php` | Orquestrador: `getConfig()`, `resolveProvider()`, `emitir()`, `cancelar()`, `notifyTutor()` |
+| `FocusNfeNfeProvider` | `app/Services/Nfe/FocusNfeNfeProvider.php` | API FocusNFe para NF-e (endpoint `/v2/nfe/`) |
+| `NfeIoNfeProvider` | `app/Services/Nfe/NfeIoNfeProvider.php` | API NFE.io para NF-e |
+| `WebmaniaNfeProvider` | `app/Services/Nfe/WebmaniaNfeProvider.php` | API Webmania® para NF-e |
+
+**Nota:** Providers separados dos de NFSe porque os endpoints/contratos são diferentes (NF-e usa SEFAZ, NFSe usa prefeituras), mas reutilizam credenciais quando o mesmo provedor atende ambos (FocusNFe, NFE.io).
+
+### NFe-4 — Eventos / Dedução de Estoque e Emissão Inteligente
+
+**Estratégia:** Ao pagar a fatura, o sistema analisa cada `InvoiceItem` pelo `item_type`:
+- `item_type = 'service'` → emite NFSe (lógica existente em `EmitirNfseOnPaid`)
+- `item_type = 'product'` → deduz estoque + emite NF-e
+- `item_type = 'avulso'` → não gera nota fiscal (item genérico)
+
+| # | Componente | Ação |
+|---|------------|------|
+| 1 | Criar `DeductStockOnPaid` (Listener) | Escuta `InvoicePaid` → para cada `InvoiceItem` com `item_type = 'product'`, deduz `quantity` do estoque, cria `StockMovement` tipo `out` com `reference = "Fatura {$invoice->invoice_number}"`. **Valida estoque antes de deduzir** |
+| 2 | Criar `EmitirNfeOnPaid` (Listener) | Escuta `InvoicePaid` → se `NfeConfig` ativo e invoice tem itens `item_type = 'product'`, emite NF-e automaticamente com os itens de produto |
+| 3 | Atualizar `EmitirNfseOnPaid` (existente) | Modificar para filtrar apenas itens com `item_type = 'service'` (hoje emite NFSe para a fatura inteira, independente dos tipos de item) |
+| 4 | Atualizar `EventServiceProvider` | Adicionar `DeductStockOnPaid` e `EmitirNfeOnPaid` ao evento `InvoicePaid` |
+| 5 | Atualizar `CalculateCommissionOnPaid` | Já itera `$invoice->items` e aplica `CommissionRate` — funciona normalmente |
+
+### NFe-5 — Tela Única de Vendas (Controllers & Views)
+
+**Decisão arquitetural:** A tela de criação de fatura (`invoices/create.blade.php`) é **redesenhada como Tela Única de Vendas**, permitindo adicionar serviços, produtos e itens avulsos no mesmo formulário. Uma única fatura pode conter itens mistos.
+
+| # | Componente | Descrição |
+|---|-------------|-----------|
+| 5.1 | **Redesign `InvoiceController@create`** | Carrega lista de serviços (`Service`), produtos (`Product` com estoque > 0), e tutores (já existente). View recebe `$services` e `$products` além de `$tutors` |
+| 5.2 | **Nova view `invoices/create.blade.php`** | Três abas no painel de itens: |
+|     | └ Aba **"Serviços"** | Busca/seleção de serviços via Select2; ao selecionar, carrega descrição + preço + `item_type = 'service'`. Quantidade default 1 |
+|     | └ Aba **"Produtos"** | Busca/seleção de produtos com filtro de estoque (> 0); ao selecionar, carrega nome + `sale_price` + `product_id` + `item_type = 'product'`. Quantidade deduz do estoque. Badge de estoque atual visível |
+|     | └ Aba **"Avulso"** | Comportamento atual (descrição livre + qtd + valor) — para itens que não são serviço nem produto. `item_type = 'avulso'` |
+| 5.3 | **Atualizar `InvoiceController@store`** | `items.*.item_type` validado como `required|in:service,product,avulso`; `items.*.product_id` validado como `required_if:item_type,product|exists:products,id`; `items.*.service_id` validado como `required_if:item_type,service|exists:services,id` |
+| 5.4 | **Atualizar `InvoiceController@show`** | `show.blade.php`: Bloco NFSe (apenas itens service) + Bloco NF-e (apenas itens product). Cada bloco com badge status e botão emitir/cancelar independente |
+| 5.5 | **Atualizar `InvoiceController@edit`** | `edit.blade.php`: mesma estrutura de abas do create. Itens existentes carregados com tipo correto. `item_type` não pode ser alterado após criação (apenas excluir e recriar) |
+| 5.6 | **Atualizar `ProductForm` (Livewire)** | Adicionar accordion "Dados Fiscais" com todos os campos de tributação necessários para NF-e: | 
+|     | └ NCM | Código NCM de 8 dígitos (obrigatório para NF-e). Select2 com busca ou input manual |
+|     | └ CEST | Código CEST de 7 dígitos (opcional, para substituição tributária) |
+|     | └ CFOP | CFOP de 4 dígitos, ex: `5102` (venda dentro do estado). Select com valores comuns de clínica veterinária |
+|     | └ Regime | Select: Simples Nacional (CSOSN) / Regime Normal (CST) |
+|     | └ CSOSN | `101`, `102`, `103`, `201`, `202`, `203`, `300`, `400`, `500`, `900` (se Simples Nacional) |
+|     | └ CST (ICMS) | `00`, `10`, `20`, `40`, `41`, `60`, `90` (se Regime Normal) |
+|     | └ ICMS | Origem (0=nac/1-estr), alíquota %, modBC, predBC |
+|     | └ IPI | CST + alíquota % (opcional) |
+|     | └ PIS | CST + alíquota % |
+|     | └ COFINS | CST + alíquota % |
+|     | └ Peso | Peso líquido em kg (obrigatório para transporte na NF-e) |
+|     | **Validação:** `required_if` para NCM/CFOP quando produto for usado em vendas. Regras de negócio: CFOP 5xxx para operações internas, 6xxx para interestaduais |
+| 5.7 | **Nova view `invoices/index.blade.php`** | Adicionar colunas "Itens Serviço" e "Itens Produto" com contadores, filtro por tipo de item |
+| 5.8 | **Criar `NfeConfigController`** | `GET/PUT nfe/config` → `nfe/config.blade.php` (formulário provedor + ambiente, mesmo padrão NfseConfig) |
+| 5.9 | **Criar `NfeController`** | `GET nfe`, `GET nfe/{id}`, `POST invoices/{i}/nfe-emitir`, `POST invoices/{i}/nfe-cancelar`, `GET nfe/export`, `POST nfe/export` → `index/show/export` |
+| 5.10| **Atualizar `ServiceForm` (Livewire)** | Adicionar accordion "Dados Fiscais" com campos para NFSe: |
+|     | └ Código Serviço (LC 116) | Código de 4-5 dígitos conforme Lei Complementar 116. Ex: `01.02` = Serviços veterinários. Select com os principais códigos para clínica veterinária |
+|     | └ CNAE | Código CNAE de 7 dígitos (opcional, alguns municípios exigem) |
+|     | └ Alíquota ISS | Percentual do ISS municipal (ex: `2.00`, `5.00`). Default carregado da branch |
+|     | └ Município IBGE (opcional) | Código IBGE para ISS distinto da branch (prestação em município diferente) |
+| 5.11| **Atualizar `BranchController`** | `create/edit`: campos IE (Inscrição Estadual), IE ST, CRT |
+| 5.11| **Atualizar `GenerateInvoiceFromAppointment`** | Ao gerar fatura de consulta concluída: itens de `AppointmentService` viram `InvoiceItem` com `item_type = 'service'`, `service_id` vinculado. Vacinas da `MedicalRecord` viram itens com `item_type = 'product'`, `product_id` vinculado |
+
+**Preview da nova tela de criação:**
+
+```
+┌─────────────────────────────────────────────────────┐
+│ Tutor: [_______________________]  Vencimento: [____] │
+│ Pet: [_______________________]                       │
+├─────────────────────────────────────────────────────┤
+│ [Serviços] [Produtos] [Avulso]                       │
+├─────────────────────────────────────────────────────┤
+│ (conteúdo da aba ativa)                              │
+│                                                      │
+│ Aba Serviços:                                        │
+│   Serviço: [Select2 com busca _______]  Qtd: [1]     │
+│   [+ Adicionar]                                      │
+│                                                      │
+│ Aba Produtos:                                        │
+│   Produto: [Select2 com busca _______]  Qtd: [1]     │
+│   Estoque: 15 unid.  Preço: R$ 25,00                 │
+│   [+ Adicionar]                                      │
+│                                                      │
+│ Aba Avulso:                                          │
+│   Descrição: [______________]  Qtd: [1]  Valor: [__] │
+│   [+ Adicionar]                                      │
+├─────────────────────────────────────────────────────┤
+│ Itens adicionados:                                   │
+│ ├ Tipo │ Descrição              │ Qtd │ Valor │      │
+│ │ S    │ Consulta Clínica       │  1  │ 120,00│      │
+│ │ P    │ Antifúngico 50mg       │  2  │  50,00│      │
+│ │ A    │ Taxa de Emergência     │  1  │  30,00│      │
+│ └──────┴────────────────────────┴─────┴───────┘      │
+│                                    Total: R$ 200,00  │
+├─────────────────────────────────────────────────────┤
+│ [Cancelar]                    [Criar Fatura]         │
+└─────────────────────────────────────────────────────┘
+```
+
+**Detalhes:**
+- Item tipo **S** (serviço) → badge azul, emitirá NFSe
+- Item tipo **P** (produto) → badge verde, emitirá NF-e + baixa estoque
+- Item tipo **A** (avulso) → badge cinza, sem nota fiscal
+- Itens P e S mostram tooltip com dados fiscais (NCM, CFOP para P; NCM/Tributação para S)
+
+### NFe-6 — Permissões
+
+| Permissão | Roles |
+|-----------|-------|
+| `nfe.view` | super-admin, branch-admin, financial, super-financial, stock-manager |
+| `nfe.emit` | super-admin, branch-admin, financial, super-financial |
+| `nfe.cancel` | super-admin, branch-admin, super-financial |
+| `nfe-config.edit` | super-admin, branch-admin |
+
+### NFe-7 — Commands
+
+| Comando | Função |
+|---------|--------|
+| `nfe:emit-pending` | Emite NF-e pendentes (faturas com `nfe_status=pending` e itens product) — executado a cada 10 min no Kernel |
+| `nfe:export` | Exporta XMLs de NF-e do período em ZIP |
+
+### NFe-8 — Fluxo de Emissão (Itens Mistos)
+
+```
+Tela Única de Vendas — fatura com itens service + product + avulso
+                    ↓
+         InvoiceController@store
+                    ↓
+   Invoice criada com itens de tipos mistos
+                    ↓
+         [Pagamento] → InvoicePaid
+                    ↓
+      ┌──────────────────────────────┐
+      ↓                              ↓
+DeductStockOnPaid           InvoicePaid dispara listeners
+(apenas itens product)               ↓
+      ↓                    ┌──────────────────────┐
+StockMovement('out')       ↓                      ↓
+por cada product_id  EmitirNfseOnPaid     EmitirNfeOnPaid
+                  (filtra itens         (filtra itens
+                   item_type=service)    item_type=product)
+                          ↓                      ↓
+                   NFSe emitida           NF-e emitida
+                   (apenas serviços)      (apenas produtos)
+                          ↓                      ↓
+                   NfseInvoice salva     NfeInvoice salva
+                   + atualiza invoice    + atualiza invoice
+                          ↓                      ↓
+              ┌─────────┤ Tutor recebe ambos os XMLs/PDFs ├──────────┐
+              ↓              (e-mail com 2 anexos)                   ↓
+       CommunicationQueue                                   Dashboard alerta
+       (1 para NFSe, 1 para NF-e)                           se NF-e pendente
+```
+
+### NFe-9 — Integração com Estoque
+
+A dedução automática de estoque ao pagar a fatura substitui o fluxo manual. O usuário não precisa mais ir no módulo Estoque para dar baixa.
+
+**Regras:**
+- Apenas itens `item_type = 'product'` têm estoque deduzido
+- Se estoque insuficiente para algum item, a NF-e **não é emitida** e `nfe_status = 'pending'`
+- O pagamento da fatura continua — o cliente não fica impedido de pagar por falta de estoque
+- O comando `nfe:emit-pending` tenta re-emitir a cada 10 min
+- Um alerta no dashboard mostra faturas pagas com NF-e pendente por falta de estoque
+- Itens `item_type = 'avulso'` não afetam estoque nem emitem nota fiscal
+
+### NFe-10 — Testes
+
+| Grupo | Testes |
+|-------|--------|
+| Unit: Models | NfeConfig, NfeInvoice, Product (tax fields), Service (fiscal fields), InvoiceItem (item_type, product_id, service_id) — ~10 |
+| Feature: NfeConfig | CRUD config — ~4 |
+| Feature: NfeController | list, show, emitir, cancelar, export — ~8 |
+| Feature: Stock Deduction | InvoicePaid → DeductStockOnPaid (product items only) — ~4 |
+| Feature: NF-e Emission | InvoicePaid → EmitirNfeOnPaid — ~4 |
+| Feature: NFSe + NF-e mista | Fatura com itens service + product → ambos emitidos — ~4 |
+| Feature: Unified Invoice Create | Criar fatura com serviço, produto e avulso — ~4 |
+| Feature: Invoice show | Renderizar badges S/P/A, blocos NFSe e NF-e — ~2 |
+| Feature: NFe export command | — ~2 |
+| Feature: Product tax fields | Create/update product with NCM/CFOP/ICMS — ~4 |
+| Feature: Service fiscal fields | Create/update service with service_code/ISS — ~2 |
+| Feature: Branch IE/CRT | Update branch with fiscal fields — ~2 |
+| **Total estimado** | **~50** |
+
+### NFe Totals
+
+| Feature | Migrations | Models | Controllers | Commands | Views | Tests |
+|---------|-----------|--------|-------------|----------|-------|-------|
+| NFe-0 Vacinação | — | 1 edit | 1 edit | — | 2 edit | 6 |
+| NFe-1 Data Model | 7 | 5 edit + 2 new | — | — | — | 10 |
+| NFe-2 Models | — | 2 new + 5 edit | — | — | — | (incluído) |
+| NFe-3 Provider Pattern | — | — | 6 new | — | — | — |
+| NFe-4 Events/Stock | — | — | 2 new + 3 edit | — | — | 12 |
+| NFe-5 UI | — | — | 1 new + 5 edit | — | 4 new + 7 edit | 14 |
+| NFe-6 Permissions | — | — | — | 1 edit seed | — | — |
+| NFe-7 Commands | — | — | — | 2 | — | 2 |
+| NFe-8 Fluxo | (incluído) | (incluído) | — | — | — | 4 |
+| **Total** | **7** | **4 new + 5 edit** | **3 new + 9 edit + 2 listen.** | **2** | **4 new + 9 edit** | **~48** |
+
 ## Rules
 1. Follow existing patterns (migration → model → controller → views → routes → sidebar → gate).
 2. Verify: `php artisan route:list 2>&1 | grep -c 'Target class'` (must be 0)

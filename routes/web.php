@@ -191,6 +191,19 @@ Route::middleware(['auth'])->group(function () {
     Route::post('invoices/{invoice}/nfse-emitir', 'App\Http\Controllers\NfseController@emitir')->name('nfse.emitir')->middleware('can:nfse.emit');
     Route::post('invoices/{invoice}/nfse-cancelar', 'App\Http\Controllers\NfseController@cancelar')->name('nfse.cancelar')->middleware('can:nfse.cancel');
 
+    // NF-e
+    Route::get('nfe', 'App\Http\Controllers\NfeController@index')->name('nfe.index')->middleware('can:nfe.view');
+    Route::get('nfe/config', 'App\Http\Controllers\NfeConfigController@edit')->name('nfe.config')->middleware('can:nfe-config.edit');
+    Route::put('nfe/config', 'App\Http\Controllers\NfeConfigController@update')->name('nfe.config.update')->middleware('can:nfe-config.edit');
+    Route::get('nfe/export', 'App\Http\Controllers\NfeController@exportForm')->name('nfe.export-form')->middleware('can:nfe.view');
+    Route::post('nfe/export', 'App\Http\Controllers\NfeController@export')->name('nfe.export')->middleware('can:nfe.view');
+    Route::get('nfe/{nfeInvoice}', 'App\Http\Controllers\NfeController@show')->name('nfe.show')->middleware('can:nfe.view');
+    Route::get('nfe/{nfeInvoice}/xml', 'App\Http\Controllers\NfeController@downloadXml')->name('nfe.download-xml')->middleware('can:nfe.view');
+    Route::get('nfe/{nfeInvoice}/pdf', 'App\Http\Controllers\NfeController@downloadPdf')->name('nfe.download-pdf')->middleware('can:nfe.view');
+    Route::get('nfe/{nfeInvoice}/danfe', 'App\Http\Controllers\NfeController@downloadDanfe')->name('nfe.download-danfe')->middleware('can:nfe.view');
+    Route::post('invoices/{invoice}/nfe-emitir', 'App\Http\Controllers\NfeController@emitir')->name('nfe.emitir')->middleware('can:nfe.emit');
+    Route::post('invoices/{invoice}/nfe-cancelar', 'App\Http\Controllers\NfeController@cancelar')->name('nfe.cancelar')->middleware('can:nfe.cancel');
+
     // Bank Reconciliation
     Route::resource('bank-accounts', 'App\Http\Controllers\BankAccountController')->names([
         'index' => 'bank-accounts.index',

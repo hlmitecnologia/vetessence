@@ -15,6 +15,7 @@ class Branch extends Model
         'name', 'slug', 'address', 'number', 'neighborhood', 'complement',
         'city', 'state',
         'zip_code', 'phone', 'email', 'cnpj',
+        'ie', 'crt',
         'municipio_ibge', 'regime_tributario', 'serie',
         'is_active', 'is_main', 'notes',
         'state_id', 'city_id',
@@ -38,5 +39,10 @@ class Branch extends Model
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);
+    }
+
+    public function nfeInvoices(): HasMany
+    {
+        return $this->hasMany(NfeInvoice::class);
     }
 }

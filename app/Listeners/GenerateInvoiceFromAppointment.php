@@ -11,7 +11,7 @@ class GenerateInvoiceFromAppointment
 {
     public function handle(AppointmentCompleted $event)
     {
-        $appointment = $event->appointment->load(['pet.tutors', 'services.service']);
+        $appointment = $event->appointment->load(['pet.tutors', 'services.service', 'medicalRecord.vaccinations.product']);
 
         if ($appointment->hasPaidInvoice()) {
             return;
@@ -66,53 +66,82 @@ class GenerateInvoiceFromAppointment
                     'quantity' => $as->quantity,
                     'unit_price' => $as->price,
                     'total' => ($as->price * $as->quantity) - $as->discount,
+                    'service_id' => $as->service_id,
+                    'item_type' => 'service',
                 ]);
             }
-            return;
-        }
-
-        // Fallback: usar mapeamento tipo → serviço
-        $map = ServiceTypeMap::where('type', $appointment->type)
-            ->where(function ($q) use ($appointment) {
-                $q->whereNull('branch_id')
-                  ->orWhere('branch_id', $appointment->branch_id);
-            })
-            ->orderBy('branch_id', 'desc')
-            ->first();
-
-        $service = $map?->service;
-        $price = $service?->price ?? 0;
-
-        if ($existingInvoice) {
-            $invoice = $existingInvoice;
-            $invoice->appointments()->syncWithoutDetaching([$appointment->id]);
-
-            $newTotal = $invoice->subtotal + $price;
-            $invoice->update([
-                'total' => $newTotal,
-                'subtotal' => $newTotal,
-            ]);
         } else {
-            $invoice = Invoice::create([
-                'pet_id' => $pet->id,
-                'tutor_id' => $tutor->id,
-                'user_id' => $appointment->vet_id,
-                'branch_id' => $appointment->branch_id,
-                'invoice_number' => Invoice::generateNumber(),
-                'status' => 'pending',
+            // Fallback: usar mapeamento tipo → serviço
+            $map = ServiceTypeMap::where('type', $appointment->type)
+                ->where(function ($q) use ($appointment) {
+                    $q->whereNull('branch_id')
+                      ->orWhere('branch_id', $appointment->branch_id);
+                })
+                ->orderBy('branch_id', 'desc')
+                ->first();
+
+            $service = $map?->service;
+            $price = $service?->price ?? 0;
+
+            if ($existingInvoice) {
+                $invoice = $existingInvoice;
+                $invoice->appointments()->syncWithoutDetaching([$appointment->id]);
+
+                $newTotal = $invoice->subtotal + $price;
+                $invoice->update([
+                    'total' => $newTotal,
+                    'subtotal' => $newTotal,
+                ]);
+            } else {
+                $invoice = Invoice::create([
+                    'pet_id' => $pet->id,
+                    'tutor_id' => $tutor->id,
+                    'user_id' => $appointment->vet_id,
+                    'branch_id' => $appointment->branch_id,
+                    'invoice_number' => Invoice::generateNumber(),
+                    'status' => 'pending',
+                    'total' => $price,
+                    'subtotal' => $price,
+                    'due_date' => $appointment->date,
+                ]);
+                $invoice->appointments()->attach($appointment->id);
+            }
+
+            InvoiceItem::create([
+                'invoice_id' => $invoice->id,
+                'description' => $service?->name ?? "Consulta: {$appointment->type}",
+                'quantity' => 1,
+                'unit_price' => $price,
                 'total' => $price,
-                'subtotal' => $price,
-                'due_date' => $appointment->date,
+                'service_id' => $service?->id,
+                'item_type' => 'service',
             ]);
-            $invoice->appointments()->attach($appointment->id);
         }
 
-        InvoiceItem::create([
-            'invoice_id' => $invoice->id,
-            'description' => $service?->name ?? "Consulta: {$appointment->type}",
-            'quantity' => 1,
-            'unit_price' => $price,
-            'total' => $price,
-        ]);
+        // Incluir vacinas da medical record como itens de produto na fatura
+        $medicalRecord = $appointment->medicalRecord;
+        if ($medicalRecord && $medicalRecord->vaccinations->isNotEmpty()) {
+            foreach ($medicalRecord->vaccinations as $vaccination) {
+                if (!$vaccination->product) {
+                    continue;
+                }
+
+                $product = $vaccination->product;
+                $itemTotal = $product->sale_price;
+
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'description' => "Vacina: {$vaccination->vaccine}",
+                    'quantity' => 1,
+                    'unit_price' => $product->sale_price,
+                    'total' => $itemTotal,
+                    'product_id' => $product->id,
+                    'item_type' => 'product',
+                ]);
+
+                $invoice->increment('subtotal', $itemTotal);
+                $invoice->increment('total', $itemTotal);
+            }
+        }
     }
 }

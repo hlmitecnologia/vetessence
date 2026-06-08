@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Tutor;
 use App\Models\NfseConfig;
+use App\Models\NfeConfig;
 use App\Events\InvoicePaid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +15,7 @@ class InvoiceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Invoice::with(['tutor', 'pet', 'nfseInvoice']);
+        $query = Invoice::with(['tutor', 'pet', 'nfseInvoice', 'nfeInvoice']);
 
         if ($request->status) {
             $query->where('status', $request->status);
@@ -31,8 +32,9 @@ class InvoiceController extends Controller
         $invoices = $query->orderBy('created_at', 'desc')->paginate(20);
 
         $hasNfseConfig = NfseConfig::where('is_active', true)->exists();
+        $hasNfeConfig = NfeConfig::where('is_active', true)->exists();
 
-        return view('invoices.index', compact('invoices', 'hasNfseConfig'));
+        return view('invoices.index', compact('invoices', 'hasNfseConfig', 'hasNfeConfig'));
     }
 
     public function create(Request $request)
@@ -55,6 +57,9 @@ class InvoiceController extends Controller
             'items.*.description' => 'required|string',
             'items.*.quantity' => 'required|numeric|min:1',
             'items.*.unit_price' => 'required|numeric|min:0',
+            'items.*.item_type' => 'nullable|string|in:service,product,avulso',
+            'items.*.product_id' => 'nullable|exists:products,id',
+            'items.*.service_id' => 'nullable|exists:services,id',
         ]);
 
         DB::beginTransaction();
@@ -86,6 +91,9 @@ class InvoiceController extends Controller
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['unit_price'],
                     'total' => $item['quantity'] * $item['unit_price'],
+                    'item_type' => $item['item_type'] ?? 'service',
+                    'product_id' => $item['product_id'] ?? null,
+                    'service_id' => $item['service_id'] ?? null,
                 ]);
             }
 
@@ -99,11 +107,12 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        $invoice->load(['tutor', 'pet', 'items', 'creator', 'nfseInvoice', 'appointments']);
+        $invoice->load(['tutor', 'pet', 'items', 'creator', 'nfseInvoice', 'nfeInvoice', 'appointments']);
 
         $hasNfseConfig = NfseConfig::where('is_active', true)->exists();
+        $hasNfeConfig = NfeConfig::where('is_active', true)->exists();
 
-        return view('invoices.show', compact('invoice', 'hasNfseConfig'));
+        return view('invoices.show', compact('invoice', 'hasNfseConfig', 'hasNfeConfig'));
     }
 
     public function generatePix(Invoice $invoice)

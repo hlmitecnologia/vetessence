@@ -16,6 +16,12 @@ class EmitirNfseOnPaid
     {
         $invoice = $event->invoice;
 
+        $hasServices = $invoice->items()->where('item_type', 'service')->exists();
+
+        if (!$hasServices) {
+            return;
+        }
+
         $config = $this->nfseService->getConfig();
 
         if (!$config) {

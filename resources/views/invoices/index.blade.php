@@ -22,6 +22,7 @@
                     <th>Vencimento</th>
                     <th>Status</th>
                     <th>NFSe</th>
+                    <th>NF-e</th>
                     <th style="width: 180px;">Ações</th>
                 </tr>
             </thead>
@@ -47,6 +48,17 @@
                         @endphp
                         @if($inv->nfse_status && $inv->nfse_status !== 'none')
                         <span class="badge {{ $nfseColors[$inv->nfse_status] ?? '' }}">{{ $nfseLabels[$inv->nfse_status] ?? $inv->nfse_status }}</span>
+                        @else
+                        —
+                        @endif
+                    </td>
+                    <td>
+                        @php
+                            $nfeLabels = ['none' => '—', 'issuing' => 'Pendente', 'issued' => 'Emitida', 'cancelled' => 'Cancelada'];
+                            $nfeColors = ['none' => '', 'issuing' => 'badge-warning', 'issued' => 'badge-success', 'cancelled' => 'badge-secondary'];
+                        @endphp
+                        @if($inv->nfe_status && $inv->nfe_status !== 'none')
+                        <span class="badge {{ $nfeColors[$inv->nfe_status] ?? '' }}">{{ $nfeLabels[$inv->nfe_status] ?? $inv->nfe_status }}</span>
                         @else
                         —
                         @endif
@@ -82,6 +94,27 @@
                             @csrf
                             <input type="hidden" name="motivo" value="Cancelamento solicitado pelo usuário" required>
                             <button type="submit" class="btn btn-action btn-danger" title="Cancelar NFSe">
+                                <i class="fas fa-ban"></i>
+                            </button>
+                        </form>
+                        @endif
+                        @endcan
+                        @can('nfe.emit')
+                        @if($inv->nfe_status === 'none' && $hasNfeConfig)
+                        <form action="{{ route('nfe.emitir', $inv) }}" method="POST" class="d-inline" onsubmit="return confirm('Emitir NF-e para esta fatura?')">
+                            @csrf
+                            <button type="submit" class="btn btn-action btn-success" title="Emitir NF-e">
+                                <i class="fas fa-box"></i>
+                            </button>
+                        </form>
+                        @endif
+                        @endcan
+                        @can('nfe.cancel')
+                        @if($inv->nfe_status === 'issued' && $inv->nfeInvoice && $inv->nfeInvoice->issuance_date && $inv->nfeInvoice->issuance_date->diffInHours(now()) <= 24)
+                        <form action="{{ route('nfe.cancelar', $inv) }}" method="POST" class="d-inline" onsubmit="return confirm('Cancelar NF-e? Informe o motivo no campo abaixo.')">
+                            @csrf
+                            <input type="hidden" name="motivo" value="Cancelamento solicitado pelo usuário" required>
+                            <button type="submit" class="btn btn-action btn-danger" title="Cancelar NF-e">
                                 <i class="fas fa-ban"></i>
                             </button>
                         </form>

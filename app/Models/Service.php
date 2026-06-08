@@ -11,11 +11,12 @@ class Service extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category_id', 'name', 'description', 'price', 'duration', 'is_active'];
+    protected $fillable = ['category_id', 'name', 'description', 'price', 'duration', 'is_active', 'service_code', 'cnae', 'iss_aliquot', 'iss_municipio_ibge'];
 
     protected $casts = [
         'price' => 'decimal:2',
         'is_active' => 'boolean',
+        'iss_aliquot' => 'decimal:2',
     ];
 
     public function category(): BelongsTo

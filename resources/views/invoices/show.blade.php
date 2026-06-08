@@ -208,6 +208,73 @@
                 @endcan
             </div>
         </div>
+
+        {{-- NF-e --}}
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-box"></i> NF-e</h3>
+            </div>
+            <div class="card-body text-center">
+                @php
+                    $nfeLabels = ['none' => 'Não emitida', 'issuing' => 'Emitindo...', 'issued' => 'Emitida', 'cancelled' => 'Cancelada'];
+                    $nfeColors = ['none' => 'secondary', 'issuing' => 'warning', 'issued' => 'success', 'cancelled' => 'secondary'];
+                @endphp
+                <span class="badge badge-{{ $nfeColors[$invoice->nfe_status ?? 'none'] ?? 'secondary' }}" style="font-size: 14px;">
+                    {{ $nfeLabels[$invoice->nfe_status ?? 'none'] ?? $invoice->nfe_status }}
+                </span>
+
+                @if($invoice->nfe_status === 'issued' && $invoice->nfeInvoice)
+                <hr>
+                <p class="mb-1"><strong>Nº NF-e:</strong> {{ $invoice->nfeInvoice->nfe_number ?? '-' }}</p>
+                <p class="mb-1"><strong>Chave:</strong> {{ $invoice->nfeInvoice->nfe_key ?? '-' }}</p>
+                <hr>
+                <div class="btn-group">
+                    @if($invoice->nfeInvoice->nfe_url_xml)
+                    <a href="{{ route('nfe.download-xml', $invoice->nfeInvoice) }}" class="btn btn-sm btn-default" target="_blank">
+                        <i class="fas fa-file-code"></i> XML
+                    </a>
+                    @endif
+                    @if($invoice->nfeInvoice->nfe_url_pdf)
+                    <a href="{{ route('nfe.download-pdf', $invoice->nfeInvoice) }}" class="btn btn-sm btn-default" target="_blank">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </a>
+                    @endif
+                    @if($invoice->nfeInvoice->danfe_url)
+                    <a href="{{ route('nfe.download-danfe', $invoice->nfeInvoice) }}" class="btn btn-sm btn-default" target="_blank">
+                        <i class="fas fa-print"></i> DANFE
+                    </a>
+                    @endif
+                </div>
+                @endif
+
+                @can('nfe.emit')
+                @if(($invoice->nfe_status ?? 'none') === 'none' && $hasNfeConfig && $invoice->items->where('item_type', 'product')->isNotEmpty())
+                <hr>
+                <form action="{{ route('nfe.emitir', $invoice) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-success btn-block">
+                        <i class="fas fa-box"></i> Emitir NF-e
+                    </button>
+                </form>
+                @endif
+                @endcan
+
+                @can('nfe.cancel')
+                @if($invoice->nfe_status === 'issued' && $invoice->nfeInvoice && $invoice->nfeInvoice->issuance_date && $invoice->nfeInvoice->issuance_date->diffInHours(now()) <= 24)
+                <hr>
+                <form action="{{ route('nfe.cancelar', $invoice) }}" method="POST" onsubmit="return confirm('Confirmar cancelamento da NF-e?')">
+                    @csrf
+                    <div class="form-group">
+                        <input type="text" name="motivo" class="form-control form-control-sm" placeholder="Motivo do cancelamento" required>
+                    </div>
+                    <button type="submit" class="btn btn-danger btn-block">
+                        <i class="fas fa-ban"></i> Cancelar NF-e
+                    </button>
+                </form>
+                @endif
+                @endcan
+            </div>
+        </div>
     </div>
 </div>
 @endsection
