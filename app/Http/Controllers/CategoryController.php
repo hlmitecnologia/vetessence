@@ -28,8 +28,7 @@ class CategoryController extends Controller
 
     public function create()
     {
-        $parentCategories = Category::whereNull('parent_id')->orderBy('name')->get();
-        return view('categories.create', compact('parentCategories'));
+        return redirect()->route('categories.index');
     }
 
     public function store(Request $request)
