@@ -37,10 +37,12 @@ class StaffScheduleController extends Controller
             'notes' => 'nullable|string',
             'is_on_call' => 'nullable|boolean',
             'on_call_type' => 'nullable|string|max:30',
+            'is_vet_shift' => 'nullable|boolean',
         ]);
 
         $data['created_by'] = auth()->id();
         $data['is_on_call'] = $request->boolean('is_on_call');
+        $data['is_vet_shift'] = $request->boolean('is_vet_shift');
         $data['branch_id'] = \App\Services\BranchContext::hasBranch() ? \App\Services\BranchContext::get() : null;
 
         $conflict = $this->detectConflict($data['user_id'], $data['work_date'], $data['start_time'], $data['end_time']);
@@ -72,9 +74,11 @@ class StaffScheduleController extends Controller
             'notes' => 'nullable|string',
             'is_on_call' => 'nullable|boolean',
             'on_call_type' => 'nullable|string|max:30',
+            'is_vet_shift' => 'nullable|boolean',
         ]);
 
         $data['is_on_call'] = $request->boolean('is_on_call');
+        $data['is_vet_shift'] = $request->boolean('is_vet_shift');
         $data['branch_id'] = \App\Services\BranchContext::hasBranch() ? \App\Services\BranchContext::get() : null;
 
         $conflict = $this->detectConflict($data['user_id'], $data['work_date'], $data['start_time'], $data['end_time'], $staffSchedule->id);
@@ -130,7 +134,61 @@ class StaffScheduleController extends Controller
             $query->where('id', '!=', $excludeId);
         }
 
-        return $query->first();
+        $directConflict = $query->first();
+
+        if ($directConflict) {
+            return $directConflict;
+        }
+
+        return $this->detectDisplacementConflict($userId, $workDate, $startTime, $endTime, $excludeId);
+    }
+
+    protected function detectDisplacementConflict($userId, $workDate, $startTime, $endTime, $excludeId = null)
+    {
+        $startCarbon = \Carbon\Carbon::parse($workDate . ' ' . $startTime);
+        $endCarbon = \Carbon\Carbon::parse($workDate . ' ' . $endTime);
+        $minGapMinutes = 120;
+
+        $query = StaffSchedule::where('user_id', $userId)
+            ->where('work_date', $workDate);
+
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        $daySchedules = $query->get();
+
+        foreach ($daySchedules as $schedule) {
+            $existingStart = \Carbon\Carbon::parse($schedule->work_date . ' ' . $schedule->start_time);
+            $existingEnd = \Carbon\Carbon::parse($schedule->work_date . ' ' . $schedule->end_time);
+
+            if ($startCarbon->between($existingStart, $existingEnd) || $endCarbon->between($existingStart, $existingEnd)) {
+                continue;
+            }
+
+            $gapAfterStart = $startCarbon->diffInMinutes($existingEnd, false);
+            $gapBeforeEnd = $endCarbon->diffInMinutes($existingStart, false);
+
+            if ($gapAfterStart > 0 && $gapAfterStart < $minGapMinutes) {
+                return $schedule;
+            }
+
+            if ($gapBeforeEnd > 0 && $gapBeforeEnd < $minGapMinutes) {
+                return $schedule;
+            }
+        }
+
+        return null;
+    }
+
+    public function vetShifts()
+    {
+        $schedules = StaffSchedule::with('user', 'branch')
+            ->where('is_vet_shift', true)
+            ->orderBy('work_date', 'desc')
+            ->paginate(20);
+
+        return view('staff-schedules.vet-shifts', compact('schedules'));
     }
 
     public function timeOff()

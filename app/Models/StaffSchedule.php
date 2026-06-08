@@ -13,6 +13,7 @@ class StaffSchedule extends Model
         'user_id', 'work_date', 'start_time', 'end_time',
         'shift_type', 'notes', 'created_by',
         'is_on_call', 'on_call_type', 'branch_id',
+        'is_vet_shift',
     ];
 
     protected $casts = [

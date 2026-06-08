@@ -64,6 +64,11 @@
                 <a href="{{ route('appointments.create') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-plus w-5 mr-2"></i> Novo
                 </a>
+                @can('vet-shifts.view')
+                <a href="{{ route('staff-schedules.vet-shifts') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-clock w-5 mr-2"></i> Plantões
+                </a>
+                @endcan
             </div>
         </div>
         @endrole

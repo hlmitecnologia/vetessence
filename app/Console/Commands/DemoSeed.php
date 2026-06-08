@@ -25,6 +25,7 @@ use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
 use App\Models\Role;
 use App\Models\Service;
+use App\Models\StaffSchedule;
 use App\Models\Setting;
 use App\Models\StockMovement;
 use App\Models\Supplier;
@@ -82,6 +83,7 @@ class DemoSeed extends Command
         try {
             $this->createBranches();
             $this->createUsers();
+            $this->createVetShifts();
             $this->createCategoriesAndServices();
             $this->createProducts();
             $this->createSuppliers();
@@ -170,6 +172,46 @@ class DemoSeed extends Command
                 'crmv' => $crmv,
             ]
         );
+    }
+
+    private function createVetShifts(): void
+    {
+        $today = today();
+        $branches = [$this->mainBranch, $this->sulBranch, $this->norteBranch];
+        $vets = [$this->vetCarlos, $this->vetBeatriz, $this->vetRafael];
+
+        $shiftTypes = ['morning', 'afternoon', 'night'];
+
+        foreach ($vets as $vet) {
+            for ($day = 0; $day < 30; $day++) {
+                if (rand(0, 2) === 0) {
+                    continue;
+                }
+
+                $date = $today->copy()->addDays($day);
+                $branch = $branches[array_rand($branches)];
+                $shiftType = $shiftTypes[array_rand($shiftTypes)];
+
+                $times = match ($shiftType) {
+                    'morning' => ['start' => '08:00', 'end' => '12:00'],
+                    'afternoon' => ['start' => '13:00', 'end' => '18:00'],
+                    'night' => ['start' => '18:00', 'end' => '22:00'],
+                };
+
+                StaffSchedule::create([
+                    'user_id' => $vet->id,
+                    'work_date' => $date,
+                    'start_time' => $times['start'],
+                    'end_time' => $times['end'],
+                    'shift_type' => $shiftType,
+                    'is_vet_shift' => true,
+                    'branch_id' => $branch->id,
+                    'created_by' => $vet->id,
+                ]);
+            }
+        }
+
+        $this->line('  [ shifts ]     30 dias de plantões para 3 veterinários');
     }
 
     private function createCategoriesAndServices(): void
@@ -749,6 +791,7 @@ class DemoSeed extends Command
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
         CommunicationQueue::truncate();
         CommissionLog::truncate();
+        StaffSchedule::truncate();
         StockMovement::truncate();
         DB::table('appointment_invoice')->truncate();
         InvoiceItem::truncate();

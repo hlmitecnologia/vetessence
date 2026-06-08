@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Observers\AuditObserver;
+use App\Observers\StaffScheduleObserver;
 use App\Models\Invoice;
 use App\Models\Appointment;
 use App\Models\Pet;
@@ -12,6 +13,7 @@ use App\Models\MedicalRecord;
 use App\Models\Vaccination;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\StaffSchedule;
 
 class ObserverServiceProvider extends ServiceProvider
 {
@@ -25,5 +27,6 @@ class ObserverServiceProvider extends ServiceProvider
         Vaccination::observe(AuditObserver::class);
         Product::observe(AuditObserver::class);
         User::observe(AuditObserver::class);
+        StaffSchedule::observe(StaffScheduleObserver::class);
     }
 }

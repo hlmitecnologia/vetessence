@@ -694,6 +694,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Staff Schedules (on-call-calendar must be before resource to avoid matching show route)
     Route::get('staff-schedules/on-call-calendar', 'App\Http\Controllers\StaffScheduleController@onCallCalendar')->name('staff-schedules.on-call-calendar');
+    Route::get('staff-schedules/vet-shifts', 'App\Http\Controllers\StaffScheduleController@vetShifts')->name('staff-schedules.vet-shifts');
     Route::resource('staff-schedules', 'App\Http\Controllers\StaffScheduleController')->names([
         'index' => 'staff-schedules.index',
         'create' => 'staff-schedules.create',

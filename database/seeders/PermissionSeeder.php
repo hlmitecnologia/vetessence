@@ -115,6 +115,7 @@ class PermissionSeeder extends Seeder
             // Agenda
             'staff-schedules.view', 'staff-schedules.create', 'staff-schedules.edit', 'staff-schedules.delete',
             'schedules-on-call.view', 'schedules-on-call.create', 'schedules-on-call.edit', 'schedules-on-call.delete',
+            'vet-shifts.view', 'vet-shifts.create', 'vet-shifts.edit', 'vet-shifts.delete',
 
             // Administracao
             'audit-logs.view', 'audit-logs.delete',
@@ -219,6 +220,7 @@ class PermissionSeeder extends Seeder
                 'staff-notes.view', 'staff-notes.create',
                 'staff-schedules.view',
                 'schedules-on-call.view',
+                'vet-shifts.view',
                 'online-bookings.view',
                 'chat.view', 'chat.create', 'chat.edit', 'chat.delete',
                 'drug-formulary.view', 'drug-formulary.create', 'drug-formulary.edit',
@@ -304,6 +306,7 @@ class PermissionSeeder extends Seeder
                 'users.view',
                 'staff-schedules.view',
                 'schedules-on-call.view',
+                'vet-shifts.view', 'vet-shifts.create', 'vet-shifts.edit', 'vet-shifts.delete',
             ],
 
             'tutor' => [

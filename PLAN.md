@@ -1328,6 +1328,79 @@ A dedução automática de estoque ao pagar a fatura substitui o fluxo manual. O
 | NFe-8 Fluxo | (incluído) | (incluído) | — | — | — | 4 |
 | **Total** | **7** | **4 new + 5 edit** | **3 new + 9 edit + 2 listen.** | **2** | **4 new + 9 edit** | **~48** |
 
+## Phase Shift — Escala de Plantões (Vet Shifts) ✅
+
+**Objetivo:** Permitir que veterinários sejam escalados para plantões em qualquer clínica da rede (matriz ou filiais), com detecção de conflitos entre horários (incluindo intervalo mínimo de 2h entre plantões em filiais diferentes), e integração com o portal do tutor para agendamento direto com escolha de veterinário.
+
+### SHIFT-1 — Migration `is_vet_shift` + Conflito com 2h
+
+| # | Tarefa | Arquivos |
+|---|--------|----------|
+| 1.1 | Migration: adicionar `is_vet_shift` (boolean) à `staff_schedules` | `database/migrations/2026_06_08_100000_add_is_vet_shift_to_staff_schedules.php` |
+| 1.2 | Model: adicionar `is_vet_shift` ao `$fillable` do `StaffSchedule` | `app/Models/StaffSchedule.php` |
+| 1.3 | Controller: `detectConflict` expandido para verificar intervalo < 2h entre plantões em filiais diferentes | `app/Http/Controllers/StaffScheduleController.php` |
+| 1.4 | Controller: método `vetShifts()` para listar apenas plantões de veterinários | `app/Http/Controllers/StaffScheduleController.php` |
+
+### SHIFT-2 — VetAvailabilityService
+
+| # | Tarefa | Arquivos |
+|---|--------|----------|
+| 2.1 | Criar `VetAvailabilityService`: `getAvailableSlots()`, `getAvailableVets()`, `hasShiftOnDate()`, `isSlotAvailable()`, `getVetShiftsForPeriod()` | `app/Services/VetAvailabilityService.php` |
+
+### SHIFT-3 — Portal: Agendamento com Escolha de Veterinário
+
+| # | Tarefa | Arquivos |
+|---|--------|----------|
+| 3.1 | Criar `VetAvailabilityController` (portal, JSON): `availableVets()`, `vetSlots()`, `vetDates()` | `app/Http/Controllers/Portal/VetAvailabilityController.php` |
+| 3.2 | Atualizar `Portal\AppointmentController`: `create` passa `$vets`, `store` cria appointment com validação de slot | `app/Http/Controllers/Portal/AppointmentController.php` |
+| 3.3 | Reformular view `portal/appointments/create` com seleção data → vet → horário via JS | `resources/views/portal/appointments/create.blade.php` |
+| 3.4 | Adicionar rotas portal: `appointments.store`, `vet-availability.*` | `routes/portal.php` |
+
+### SHIFT-4 — Auto-cancelamento por Mudança de Escala
+
+| # | Tarefa | Arquivos |
+|---|--------|----------|
+| 4.1 | Criar `StaffScheduleObserver`: ao deletar/atualizar plantão de vet, verifica appointments futuros e cancela se horário ficou indisponível | `app/Observers/StaffScheduleObserver.php` |
+| 4.2 | Registrar observer no `ObserverServiceProvider` | `app/Providers/ObserverServiceProvider.php` |
+
+### SHIFT-5 — Permissões e Menu
+
+| # | Tarefa | Arquivos |
+|---|--------|----------|
+| 5.1 | Adicionar permissões `vet-shifts.*` (view/create/edit/delete) | `database/seeders/PermissionSeeder.php` |
+| 5.2 | Associar `vet-shifts.view` ao role `veterinario` (leitura) | `database/seeders/PermissionSeeder.php` |
+| 5.3 | Associar `vet-shifts.*` ao role `human-resources` (gestão) | `database/seeders/PermissionSeeder.php` |
+| 5.4 | Adicionar menu "Plantões" no sidebar (submenu da Agenda) | `resources/views/layouts/sidebar.blade.php` |
+| 5.5 | Adicionar rota `staff-schedules.vet-shifts` | `routes/web.php` |
+
+### SHIFT-6 — View de Plantões (Admin)
+
+| # | Tarefa | Arquivos |
+|---|--------|----------|
+| 6.1 | Criar `staff-schedules/vet-shifts.blade.php` — tabela com vet, data, horário, unidade, tipo | `resources/views/staff-schedules/vet-shifts.blade.php` |
+
+### SHIFT-7 — DemoSeed
+
+| # | Tarefa | Arquivos |
+|---|--------|----------|
+| 7.1 | Adicionar `createVetShifts()` ao `DemoSeed`: 30 dias de plantões para 3 veterinários, distribuídos entre as filiais | `app/Console/Commands/DemoSeed.php` |
+| 7.2 | Limpar `StaffSchedule` no `cleanExistingData()` | `app/Console/Commands/DemoSeed.php` |
+
+### Shift Totals
+
+| Feature | Migrations | Models | Controllers | Services | Observers | Views | Tests |
+|---------|-----------|--------|-------------|----------|-----------|-------|-------|
+| SHIFT-1 | 1 | 1 edit | 1 edit | — | — | — | — |
+| SHIFT-2 | — | — | — | 1 new | — | — | — |
+| SHIFT-3 | — | — | 1 new + 1 edit | — | — | 1 edit | — |
+| SHIFT-4 | — | — | — | — | 1 new | — | — |
+| SHIFT-5 | — | — | — | — | — | 1 edit | — |
+| SHIFT-6 | — | — | — | — | — | 1 new | — |
+| SHIFT-7 | — | — | 1 edit | — | — | — | — |
+| **Total** | **1** | **1 edit** | **2 new + 3 edit** | **1 new** | **1 new** | **2 new + 1 edit** | **~12** |
+
+---
+
 ## Rules
 1. Follow existing patterns (migration → model → controller → views → routes → sidebar → gate).
 2. Verify: `php artisan route:list 2>&1 | grep -c 'Target class'` (must be 0)
