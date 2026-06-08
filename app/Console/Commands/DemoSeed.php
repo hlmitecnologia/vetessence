@@ -32,6 +32,7 @@ use App\Models\TreatmentPlan;
 use App\Models\TreatmentPlanItem;
 use App\Models\Tutor;
 use App\Models\User;
+use App\Models\Vaccination;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -68,6 +69,10 @@ class DemoSeed extends Command
                 $this->info('Comando abortado.');
                 return Command::SUCCESS;
             }
+        }
+
+        if ($this->option('force')) {
+            $this->cleanExistingData();
         }
 
         $this->line('Criando dados de demonstração...');
@@ -174,18 +179,25 @@ class DemoSeed extends Command
         $catConsultas = Category::where('name', 'Consultas')->where('type', 'service')->first();
 
         $extraServices = [
-            ['name' => 'Cirurgia Castração Canina', 'price' => 450.00, 'duration' => 90, 'cat' => $catServicos],
-            ['name' => 'Cirurgia Castração Felina', 'price' => 350.00, 'duration' => 60, 'cat' => $catServicos],
-            ['name' => 'Retirada de Tártaro', 'price' => 280.00, 'duration' => 45, 'cat' => $catServicos],
-            ['name' => 'Exame de Fezes', 'price' => 60.00, 'duration' => 10, 'cat' => $catExames],
-            ['name' => 'Teste Rápido FIV/FeLV', 'price' => 120.00, 'duration' => 15, 'cat' => $catExames],
-            ['name' => 'Aferição de Pressão Arterial', 'price' => 50.00, 'duration' => 15, 'cat' => $catConsultas],
+            ['name' => 'Cirurgia Castração Canina', 'price' => 450.00, 'duration' => 90, 'cat' => $catServicos, 'code' => '6.01', 'iss' => 2.00],
+            ['name' => 'Cirurgia Castração Felina', 'price' => 350.00, 'duration' => 60, 'cat' => $catServicos, 'code' => '6.01', 'iss' => 2.00],
+            ['name' => 'Retirada de Tártaro', 'price' => 280.00, 'duration' => 45, 'cat' => $catServicos, 'code' => '6.02', 'iss' => 2.00],
+            ['name' => 'Exame de Fezes', 'price' => 60.00, 'duration' => 10, 'cat' => $catExames, 'code' => '6.03', 'iss' => 3.00],
+            ['name' => 'Teste Rápido FIV/FeLV', 'price' => 120.00, 'duration' => 15, 'cat' => $catExames, 'code' => '6.03', 'iss' => 3.00],
+            ['name' => 'Aferição de Pressão Arterial', 'price' => 50.00, 'duration' => 15, 'cat' => $catConsultas, 'code' => '6.04', 'iss' => 2.00],
         ];
 
         foreach ($extraServices as $s) {
             Service::firstOrCreate(
                 ['name' => $s['name']],
-                ['description' => $s['name'], 'price' => $s['price'], 'duration' => $s['duration'], 'category_id' => $s['cat']?->id]
+                [
+                    'description' => $s['name'],
+                    'price' => $s['price'],
+                    'duration' => $s['duration'],
+                    'category_id' => $s['cat']?->id,
+                    'service_code' => $s['code'],
+                    'iss_aliquot' => $s['iss'],
+                ]
             );
         }
 
@@ -199,14 +211,14 @@ class DemoSeed extends Command
         $catAcess = Category::where('name', 'Acessórios')->where('type', 'product')->first();
 
         $products = [
-            ['sku' => 'AMOXI001', 'name' => 'Amoxicilina 50mg', 'cost' => 18.00, 'sale' => 45.00, 'stock' => 60, 'min' => 15, 'cat' => $catMed],
-            ['sku' => 'MELOX001', 'name' => 'Meloxicam 0,5%', 'cost' => 22.00, 'sale' => 52.00, 'stock' => 45, 'min' => 10, 'cat' => $catMed],
-            ['sku' => 'NEXG001', 'name' => 'Antipulgas NexGard', 'cost' => 55.00, 'sale' => 119.90, 'stock' => 35, 'min' => 8, 'cat' => $catMed],
-            ['sku' => 'OMEP001', 'name' => 'Omeprazol 20mg', 'cost' => 12.00, 'sale' => 32.00, 'stock' => 50, 'min' => 10, 'cat' => $catMed],
-            ['sku' => 'RACAOC001', 'name' => 'Ração Premium Cães Filhotes', 'cost' => 90.00, 'sale' => 165.00, 'stock' => 20, 'min' => 5, 'cat' => $catRacao],
-            ['sku' => 'RACAOG001', 'name' => 'Ração Terapêutica Renal', 'cost' => 120.00, 'sale' => 210.00, 'stock' => 15, 'min' => 3, 'cat' => $catRacao],
-            ['sku' => 'CAMA001', 'name' => 'Cama Ortopédica Média', 'cost' => 65.00, 'sale' => 149.90, 'stock' => 12, 'min' => 4, 'cat' => $catAcess],
-            ['sku' => 'SHAMP001', 'name' => 'Shampoo Medicinal Clorexidine', 'cost' => 28.00, 'sale' => 69.90, 'stock' => 25, 'min' => 6, 'cat' => $catMed],
+            ['sku' => 'AMOXI001', 'name' => 'Amoxicilina 50mg', 'cost' => 18.00, 'sale' => 45.00, 'stock' => 60, 'min' => 15, 'cat' => $catMed, 'ncm' => '30041000', 'cfop' => '5102', 'cst' => '00', 'csosn' => null, 'unit' => 'COMP'],
+            ['sku' => 'MELOX001', 'name' => 'Meloxicam 0,5%', 'cost' => 22.00, 'sale' => 52.00, 'stock' => 45, 'min' => 10, 'cat' => $catMed, 'ncm' => '30049099', 'cfop' => '5102', 'cst' => '00', 'csosn' => null, 'unit' => 'FR'],
+            ['sku' => 'NEXG001', 'name' => 'Antipulgas NexGard', 'cost' => 55.00, 'sale' => 119.90, 'stock' => 35, 'min' => 8, 'cat' => $catMed, 'ncm' => '30049099', 'cfop' => '5102', 'cst' => '00', 'csosn' => null, 'unit' => 'UN'],
+            ['sku' => 'OMEP001', 'name' => 'Omeprazol 20mg', 'cost' => 12.00, 'sale' => 32.00, 'stock' => 50, 'min' => 10, 'cat' => $catMed, 'ncm' => '30049099', 'cfop' => '5102', 'cst' => '00', 'csosn' => null, 'unit' => 'COMP'],
+            ['sku' => 'RACAOC001', 'name' => 'Ração Premium Cães Filhotes', 'cost' => 90.00, 'sale' => 165.00, 'stock' => 20, 'min' => 5, 'cat' => $catRacao, 'ncm' => '23099090', 'cfop' => '5102', 'cst' => '00', 'csosn' => null, 'unit' => 'KG'],
+            ['sku' => 'RACAOG001', 'name' => 'Ração Terapêutica Renal', 'cost' => 120.00, 'sale' => 210.00, 'stock' => 15, 'min' => 3, 'cat' => $catRacao, 'ncm' => '23099090', 'cfop' => '5102', 'cst' => '00', 'csosn' => null, 'unit' => 'KG'],
+            ['sku' => 'CAMA001', 'name' => 'Cama Ortopédica Média', 'cost' => 65.00, 'sale' => 149.90, 'stock' => 12, 'min' => 4, 'cat' => $catAcess, 'ncm' => '94049000', 'cfop' => '5102', 'cst' => '00', 'csosn' => null, 'unit' => 'UN'],
+            ['sku' => 'SHAMP001', 'name' => 'Shampoo Medicinal Clorexidine', 'cost' => 28.00, 'sale' => 69.90, 'stock' => 25, 'min' => 6, 'cat' => $catMed, 'ncm' => '33051000', 'cfop' => '5102', 'cst' => '00', 'csosn' => null, 'unit' => 'FR'],
         ];
 
         foreach ($products as $p) {
@@ -219,11 +231,16 @@ class DemoSeed extends Command
                     'stock' => $p['stock'],
                     'min_stock' => $p['min'],
                     'category_id' => $p['cat']?->id,
+                    'ncm' => $p['ncm'],
+                    'cfop' => $p['cfop'],
+                    'cst' => $p['cst'],
+                    'csosn' => $p['csosn'],
+                    'unit' => $p['unit'],
                 ]
             );
         }
 
-        $this->line('  [ products ]   8 novos produtos');
+        $this->line('  [ products ]   8 novos produtos com NCM/CFOP/CST');
     }
 
     private function createSuppliers(): void
@@ -500,6 +517,8 @@ class DemoSeed extends Command
     private function createVaccinations(): void
     {
         $pets = Pet::where('is_active', true)->get();
+        $products = Product::all();
+
         $vaccines = [
             ['vaccine' => 'V10', 'batch' => 'LOT2401', 'manufacturer' => 'Zoetis'],
             ['vaccine' => 'Antirrábica', 'batch' => 'LOT2402', 'manufacturer' => 'Merial'],
@@ -519,11 +538,12 @@ class DemoSeed extends Command
                     'date' => now()->subMonths(random_int(1, 6)),
                     'next_date' => now()->addMonths(random_int(6, 12)),
                     'manufacturer' => $vac['manufacturer'],
+                    'product_id' => $products->isNotEmpty() ? $products[$i % $products->count()]->id : null,
                 ]
             );
         }
 
-        $this->line('  [ vaccinations ]  6 vacinas');
+        $this->line('  [ vaccinations ]  6 vacinas (com produto vinculado)');
     }
 
     private function createExams(): void
@@ -564,82 +584,228 @@ class DemoSeed extends Command
         $vets = $this->getAllVets();
         $branches = $this->getBranches();
 
-        $invoicesData = [
-            ['paid', now()->subDays(random_int(5, 30)), 'credit_card'],
-            ['paid', now()->subDays(random_int(2, 10)), 'pix'],
-            ['paid', now()->subDays(random_int(1, 5)), 'cash'],
-            ['paid', now()->subDays(random_int(15, 40)), 'credit_card'],
-            ['pending', null, null],
-            ['pending', null, null],
-            ['pending', null, null],
-            ['overdue', null, null],
-            ['overdue', null, null],
-            ['cancelled', null, null],
-        ];
+        if ($services->isEmpty() || $products->isEmpty()) return;
 
-        foreach ($invoicesData as $i => $invData) {
-            [$status, $paidAt, $paymentMethod] = $invData;
-            $tutor = $tutors[$i % $tutors->count()];
-            $pet = $pets[$i % $pets->count()];
-            $vet = $vets[array_rand($vets)];
-            $branch = $branches[array_rand($branches)];
+        // ── Cenário 1: Apenas serviço (NFSe) ──
+        $info = $this->makeInvoice('paid', now()->subDays(3), 'pix', $tutors, $pets, $vets, $branches, 0);
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => $services[0]->name,
+            'quantity' => 1, 'unit_price' => $services[0]->price, 'total' => $services[0]->price,
+            'service_id' => $services[0]->id, 'item_type' => 'service', 'branch_id' => $info['branch']->id,
+        ]);
+        $this->refreshInvoiceTotal($info['invoice']);
 
-            $itemDesc = $services->isNotEmpty() ? $services->random()->name : 'Consulta';
-            $itemPrice = random_int(80, 350);
-            $qty = 1;
-            $subtotal = $itemPrice * $qty;
-            $discount = $i % 3 === 0 ? round($subtotal * 0.1, 2) : 0;
-            $total = $subtotal - $discount;
+        // ── Cenário 2: Apenas produto (NF-e + baixa estoque) ──
+        $info = $this->makeInvoice('paid', now()->subDays(2), 'credit_card', $tutors, $pets, $vets, $branches, 1);
+        $prod = $products[0];
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => $prod->name,
+            'quantity' => 2, 'unit_price' => $prod->sale_price, 'total' => $prod->sale_price * 2,
+            'product_id' => $prod->id, 'item_type' => 'product', 'branch_id' => $info['branch']->id,
+        ]);
+        $this->refreshInvoiceTotal($info['invoice']);
 
-            $dueDate = match ($status) {
-                'overdue' => now()->subDays(random_int(15, 45)),
-                'paid' => now()->subDays(random_int(1, 15)),
-                default => now()->addDays(random_int(5, 30)),
-            };
+        // ── Cenário 3: Misto (serviço + produto → NFSe + NF-e) ──
+        $info = $this->makeInvoice('paid', now()->subDays(1), 'cash', $tutors, $pets, $vets, $branches, 2);
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => $services[1]->name,
+            'quantity' => 1, 'unit_price' => $services[1]->price, 'total' => $services[1]->price,
+            'service_id' => $services[1]->id, 'item_type' => 'service', 'branch_id' => $info['branch']->id,
+        ]);
+        $prod2 = $products[1];
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => $prod2->name,
+            'quantity' => 1, 'unit_price' => $prod2->sale_price, 'total' => $prod2->sale_price,
+            'product_id' => $prod2->id, 'item_type' => 'product', 'branch_id' => $info['branch']->id,
+        ]);
+        $this->refreshInvoiceTotal($info['invoice']);
 
-            $invoice = Invoice::firstOrCreate(
-                ['invoice_number' => Invoice::generateNumber()],
-                [
-                    'tutor_id' => $tutor->id,
-                    'pet_id' => $pet->id,
-                    'user_id' => $vet->id,
-                    'subtotal' => $subtotal,
-                    'discount' => $discount,
-                    'total' => $total,
-                    'status' => $status,
-                    'due_date' => $dueDate,
-                    'paid_at' => $paidAt,
-                    'payment_method' => $paymentMethod,
-                    'branch_id' => $branch->id,
-                ]
-            );
+        // ── Cenário 4: Só avulso (sem NF, sem estoque) ──
+        $info = $this->makeInvoice('paid', now()->subDays(5), 'pix', $tutors, $pets, $vets, $branches, 3);
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => 'Taxa de transporte',
+            'quantity' => 1, 'unit_price' => 25.00, 'total' => 25.00,
+            'item_type' => 'avulso', 'branch_id' => $info['branch']->id,
+        ]);
+        $this->refreshInvoiceTotal($info['invoice']);
 
-            if ($invoice->wasRecentlyCreated) {
-                InvoiceItem::create([
-                    'invoice_id' => $invoice->id,
-                    'description' => $itemDesc,
-                    'quantity' => $qty,
-                    'unit_price' => $itemPrice,
-                    'total' => $itemPrice,
-                    'branch_id' => $branch->id,
-                ]);
-
-                if ($products->isNotEmpty() && $i % 2 === 0) {
-                    $prod = $products->random();
-                    InvoiceItem::create([
-                        'invoice_id' => $invoice->id,
-                        'description' => $prod->name,
-                        'quantity' => 1,
-                        'unit_price' => $prod->sale_price,
-                        'total' => $prod->sale_price,
-                        'branch_id' => $branch->id,
-                    ]);
-                    $invoice->increment('total', $prod->sale_price);
-                }
-            }
+        // ── Cenário 5: Misto com 2 produtos + 1 serviço ──
+        $info = $this->makeInvoice('paid', now()->subDays(7), 'credit_card', $tutors, $pets, $vets, $branches, 4);
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => $services[2]->name,
+            'quantity' => 1, 'unit_price' => $services[2]->price, 'total' => $services[2]->price,
+            'service_id' => $services[2]->id, 'item_type' => 'service', 'branch_id' => $info['branch']->id,
+        ]);
+        foreach ([$products[2], $products[3]] as $p) {
+            InvoiceItem::create([
+                'invoice_id' => $info['invoice']->id,
+                'description' => $p->name,
+                'quantity' => 1, 'unit_price' => $p->sale_price, 'total' => $p->sale_price,
+                'product_id' => $p->id, 'item_type' => 'product', 'branch_id' => $info['branch']->id,
+            ]);
         }
+        $this->refreshInvoiceTotal($info['invoice']);
 
-        $this->line('  [ invoices ]    10 faturas (recebíveis)');
+        // ── Cenário 6: Pendente (só serviço) ──
+        $info = $this->makeInvoice('pending', null, null, $tutors, $pets, $vets, $branches, 5);
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => $services[3]->name,
+            'quantity' => 1, 'unit_price' => $services[3]->price, 'total' => $services[3]->price,
+            'service_id' => $services[3]->id, 'item_type' => 'service', 'branch_id' => $info['branch']->id,
+        ]);
+        $this->refreshInvoiceTotal($info['invoice']);
+
+        // ── Cenário 7: Pendente (só produto) ──
+        $info = $this->makeInvoice('pending', null, null, $tutors, $pets, $vets, $branches, 6);
+        $p7 = $products[4];
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => $p7->name,
+            'quantity' => 1, 'unit_price' => $p7->sale_price, 'total' => $p7->sale_price,
+            'product_id' => $p7->id, 'item_type' => 'product', 'branch_id' => $info['branch']->id,
+        ]);
+        $this->refreshInvoiceTotal($info['invoice']);
+
+        // ── Cenário 8: Pendente (misto) ──
+        $info = $this->makeInvoice('pending', null, null, $tutors, $pets, $vets, $branches, 7);
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => $services[4]->name,
+            'quantity' => 1, 'unit_price' => $services[4]->price, 'total' => $services[4]->price,
+            'service_id' => $services[4]->id, 'item_type' => 'service', 'branch_id' => $info['branch']->id,
+        ]);
+        $p8 = $products[5];
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => $p8->name,
+            'quantity' => 1, 'unit_price' => $p8->sale_price, 'total' => $p8->sale_price,
+            'product_id' => $p8->id, 'item_type' => 'product', 'branch_id' => $info['branch']->id,
+        ]);
+        $this->refreshInvoiceTotal($info['invoice']);
+
+        // ── Cenário 9: Vencida (só serviço) ──
+        $info = $this->makeInvoice('overdue', null, null, $tutors, $pets, $vets, $branches, 8, now()->subDays(40));
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => $services[5]->name,
+            'quantity' => 1, 'unit_price' => $services[5]->price, 'total' => $services[5]->price,
+            'service_id' => $services[5]->id, 'item_type' => 'service', 'branch_id' => $info['branch']->id,
+        ]);
+        $this->refreshInvoiceTotal($info['invoice']);
+
+        // ── Cenário 10: Cancelada ──
+        $info = $this->makeInvoice('cancelled', null, null, $tutors, $pets, $vets, $branches, 9);
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => $services[0]->name,
+            'quantity' => 1, 'unit_price' => $services[0]->price, 'total' => $services[0]->price,
+            'service_id' => $services[0]->id, 'item_type' => 'service', 'branch_id' => $info['branch']->id,
+        ]);
+        $this->refreshInvoiceTotal($info['invoice']);
+
+        // ── Cenário 11: Paga com múltiplos produtos ──
+        $info = $this->makeInvoice('paid', now()->subDays(1), 'pix', $tutors, $pets, $vets, $branches, 0);
+        foreach ([$products[6], $products[7]] as $p) {
+            InvoiceItem::create([
+                'invoice_id' => $info['invoice']->id,
+                'description' => $p->name,
+                'quantity' => 1, 'unit_price' => $p->sale_price, 'total' => $p->sale_price,
+                'product_id' => $p->id, 'item_type' => 'product', 'branch_id' => $info['branch']->id,
+            ]);
+        }
+        $this->refreshInvoiceTotal($info['invoice']);
+
+        // ── Cenário 12: Misto com avulso ──
+        $info = $this->makeInvoice('paid', now()->subDays(4), 'credit_card', $tutors, $pets, $vets, $branches, 1);
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => $services[2]->name,
+            'quantity' => 1, 'unit_price' => $services[2]->price, 'total' => $services[2]->price,
+            'service_id' => $services[2]->id, 'item_type' => 'service', 'branch_id' => $info['branch']->id,
+        ]);
+        InvoiceItem::create([
+            'invoice_id' => $info['invoice']->id,
+            'description' => 'Taxa de visita emergencial',
+            'quantity' => 1, 'unit_price' => 80.00, 'total' => 80.00,
+            'item_type' => 'avulso', 'branch_id' => $info['branch']->id,
+        ]);
+        $this->refreshInvoiceTotal($info['invoice']);
+
+        $this->line('  [ invoices ]    12 faturas (6 pagas, 3 pendentes, 1 vencida, 1 cancelada, 1 com NF-e+NFSe+Avulso)');
+    }
+
+    /**
+     * Limpa dados financeiros existentes para regenerar cenários de venda.
+     */
+    private function cleanExistingData(): void
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        CommunicationQueue::truncate();
+        CommissionLog::truncate();
+        StockMovement::truncate();
+        DB::table('appointment_invoice')->truncate();
+        InvoiceItem::truncate();
+        Invoice::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        Setting::set('demo_data_seeded', 'false');
+
+        $this->line('Dados financeiros anteriores removidos.');
+    }
+
+    /**
+     * Recalcula subtotal e total da fatura somando os itens no banco.
+     */
+    private function refreshInvoiceTotal(Invoice $invoice): void
+    {
+        $sum = InvoiceItem::where('invoice_id', $invoice->id)->sum('total');
+        $invoice->update([
+            'subtotal' => $sum,
+            'total' => $sum,
+        ]);
+    }
+
+    /**
+     * Helper: cria uma fatura com dados aleatórios mas consistentes.
+     * Retorna ['invoice' => Invoice, 'branch' => Branch] para o caller adicionar itens.
+     */
+    private function makeInvoice(string $status, $paidAt, $paymentMethod, $tutors, $pets, $vets, $branches, int $indexSeed, ?Carbon $overdueDate = null): array
+    {
+        $tutor = $tutors[$indexSeed % $tutors->count()];
+        $pet = $pets[$indexSeed % $pets->count()];
+        $vet = $vets[array_rand($vets)];
+        $branch = $branches[array_rand($branches)];
+
+        $dueDate = match ($status) {
+            'overdue' => $overdueDate ?? now()->subDays(random_int(15, 45)),
+            'paid' => $paidAt ? Carbon::parse($paidAt)->subDays(random_int(1, 10)) : now()->subDays(random_int(1, 15)),
+            default => now()->addDays(random_int(5, 30)),
+        };
+
+        $invoice = Invoice::firstOrCreate(
+            ['invoice_number' => Invoice::generateNumber()],
+            [
+                'tutor_id' => $tutor->id,
+                'pet_id' => $pet->id,
+                'user_id' => $vet->id,
+                'subtotal' => 0,
+                'discount' => 0,
+                'total' => 0,
+                'status' => $status,
+                'due_date' => $dueDate,
+                'paid_at' => $paidAt,
+                'payment_method' => $paymentMethod,
+                'branch_id' => $branch->id,
+            ]
+        );
+
+        return ['invoice' => $invoice, 'branch' => $branch];
     }
 
     private function createCommissions(): void
