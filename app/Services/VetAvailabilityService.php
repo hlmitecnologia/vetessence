@@ -45,15 +45,15 @@ class VetAvailabilityService
 
         $slots = [];
         foreach ($shifts as $shift) {
-            $start = Carbon::parse($shift->work_date . ' ' . $shift->start_time);
-            $end = Carbon::parse($shift->work_date . ' ' . $shift->end_time);
+            $start = Carbon::parse($shift->work_date->format('Y-m-d') . ' ' . $shift->start_time);
+            $end = Carbon::parse($shift->work_date->format('Y-m-d') . ' ' . $shift->end_time);
 
             while ($start->copy()->addMinutes($defaultDuration)->lte($end)) {
                 $slotEnd = $start->copy()->addMinutes($defaultDuration);
                 $timeStr = $start->format('H:i');
 
                 $hasConflict = $appointments->contains(function ($apt) use ($start, $slotEnd) {
-                    $aptStart = Carbon::parse($apt->date . ' ' . $apt->time);
+                    $aptStart = Carbon::parse($apt->date->format('Y-m-d') . ' ' . $apt->time->format('H:i'));
                     $aptDuration = $apt->duration ?? 30;
                     $aptEnd = $aptStart->copy()->addMinutes($aptDuration);
                     return $start->lt($aptEnd) && $slotEnd->gt($aptStart);

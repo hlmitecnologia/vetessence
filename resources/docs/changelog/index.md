@@ -1,5 +1,42 @@
 # Changelog
 
+## [Não versionado] — 2026-06-08
+
+### Adicionado
+
+#### NF-e (Nota Fiscal Eletrônica de Produtos)
+- Suporte completo a NF-e com 3 provedores (FocusNFe, NFE.io, Webmania)
+- `NfeConfig` — configuração de provedor de NF-e (sistêmico, sem branch_id)
+- `NfeInvoice` — modelo para notas fiscais de produto emitidas
+- `NfeService` + `NfeResult` — orquestrador e DTO no padrão dos providers de NFSe
+- 3 implementações de `NfeProvider`: FocusNFe, NFE.io, Webmania
+- Controller de NF-e com listagem, detalhes, download XML/PDF/DANFE, emissão e cancelamento
+- Campos fiscais em produtos: NCM, CFOP, CST, CSOSN, alíquotas ICMS/IPI/PIS/COFINS
+- Campos fiscais em serviços: código de serviço LC 116, CNAE, alíquota ISS
+- Campos fiscais em filiais: IE, IE ST, CRT
+- `item_type` em `InvoiceItem`: `service`, `product`, `avulso` com validação no controller
+- Roteamento inteligente ao pagar: itens de serviço → NFSe, itens de produto → NF-e + dedução de estoque
+- Auto-edição de NF-e via listener `EmitirNfeOnPaid`
+- Dedução automática de estoque via listener `DeductStockOnPaid`
+- Comando `nfe:emit-pending` para reprocessar notas pendentes
+- `GenerateInvoiceFromAppointment` agora cria itens de produto para vacinas vinculadas
+- Permissões: `nfe.view`, `nfe.emit`, `nfe.cancel`, `nfe-config.edit`
+- 4 views de NF-e (index, show, config, export)
+- Integração NF-e nas views de fatura (index e show)
+
+#### Vet Shift Scheduling
+- Coluna `is_vet_shift` em `staff_schedules` (booleano, default false)
+- `VetAvailabilityService` — serviço de disponibilidade em tempo real para o Portal do Tutor
+- `StaffScheduleObserver` — cancela automaticamente consultas quando a escala do veterinário muda
+- `VetAvailabilityController` no Portal (API): `availableVets`, `vetSlots`, `vetDates`
+- Tela "Plantões de Veterinários" na sidebar (filtro apenas turnos com `is_vet_shift = true`)
+- Demo seed: 30 dias de turnos de vet para 3 veterinários em 3 filiais
+
+### Corrigido
+- `StaffSchedule.php` — adicionado `is_vet_shift` ao `$casts` como booleano
+- `VetAvailabilityService.php` — `Carbon::parse()` com Carbon instances (double time spec)
+- `StaffScheduleFactory.php` — `dateTimeThisWeek` substituído por `dateTimeBetween`
+
 ## [Não versionado] — 2026-05-28
 
 ### Adicionado

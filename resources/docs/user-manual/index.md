@@ -14,8 +14,8 @@ Guia prático para utilização do VetEssence no dia a dia da clínica.
 | 06 | [Internações](06-internacoes) | Evolução clínica, prescrição diária, resumo de alta |
 | 07 | [Farmácia](07-farmacia) | Produtos, lotes, fornecedores, calculadora de dosagem, alerta vencimento |
 | 08 | [Estoque](08-estoque) | Movimentações, pedidos de compra, substâncias controladas, scanner, transferências |
-| 09 | [Financeiro](09-financeiro) | Faturas, NFSe, comissões, conciliação bancária, auto-faturamento, fluxo de caixa, DRE |
-| 10 | [Agendamento](10-agendamento) | Calendário visual (FullCalendar), agendamento online, recorrente, lembretes |
+| 09 | [Financeiro](09-financeiro) | Faturas, NFSe, NF-e, comissões, conciliação bancária, auto-faturamento, fluxo de caixa, DRE |
+| 10 | [Agendamento](10-agendamento) | Calendário visual (FullCalendar), agendamento online, escala de veterinários e plantões, lembretes, cancelamento automático |
 | 11 | [Tutores e Pets](11-tutores-pets) | Cadastro, microchip/RG, timeline, óbito/cremação, múltiplos tutores, portal |
 | 12 | [Convênios](12-convenios) | Planos, tabela procedimentos, guias, claims, CVI, glosas |
 | 13 | [Usuários e Permissões](13-usuarios-e-permissoes) | 11 funções, 170+ permissões, controle de acesso |

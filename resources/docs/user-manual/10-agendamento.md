@@ -89,11 +89,42 @@
 - Tela de TV mostrando fila de atendimento
 - Integração com som ambiente
 
+## Escala de Veterinários
+
+### Turno de Veterinário (`is_vet_shift`)
+
+Ao criar ou editar uma escala na tela **Agenda > Escalas de Trabalho**, o campo **Turno de Veterinário** indica que aquele turno é elegível para atendimento clínico (consultas, exames, etc.). Apenas turnos marcados como veterinário aparecem no Portal do Tutor para agendamento online.
+
+- **Ativado**: O profissional está disponível para consultas agendadas pelo portal
+- **Desativado**: O turno é exclusivo para outras atividades (administrativo, recepção, etc.)
+
+### Tela de Plantões de Veterinários
+
+Acesse **Agenda > Plantões** (sidebar) para visualizar **apenas** os turnos marcados como veterinário. A tela exibe:
+
+- Nome do veterinário e CRMV
+- Data, horário de início e término
+- Unidade (filial)
+- Tipo de turno (Regular, Manhã, Tarde, Noturno)
+- Indicador de plantão (badge vermelho)
+
+A partir dessa tela é possível criar nova escala ou editar/excluir plantões existentes.
+
+## Cancelamento Automático de Consultas
+
+Quando um turno de veterinário é **alterado** (data, horário) ou **excluído**, o sistema verifica automaticamente se as consultas já agendadas para aquele veterinário naquela data ainda são viáveis.
+
+- **Slot ainda disponível**: a consulta permanece agendada (se o horário ainda estiver dentro de outro turno do mesmo veterinário)
+- **Slot não disponível**: a consulta é cancelada automaticamente com o motivo: *"Cancelado automaticamente: alteração na escala do veterinário."*
+
+Esse comportamento garante que o tutor não tenha uma consulta agendada para um horário em que o veterinário não estará mais disponível.
+
 ## Regras de Negócio
 - Cancelamento com menos de 2h de antecedência pode gerar taxa
 - Profissionais podem definir horários de bloqueio (folga, feriado)
 - O agendamento não sobrepõe horários de profissionais
 - Tutor pode reagendar via portal com até 24h de antecedência
+- Alteração ou exclusão de turno de veterinário pode cancelar consultas agendadas automaticamente
 
 ---
 

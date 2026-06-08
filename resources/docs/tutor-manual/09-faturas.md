@@ -21,10 +21,12 @@ Ao abrir uma fatura, você confere:
 - **Número** da fatura
 - **Data de emissão**
 - **Data de vencimento**
-- **Descrição** dos serviços/produtos
+- **Descrição** dos itens (serviços e/ou produtos)
 - **Valor total**
 - **Forma de pagamento**
 - **Status**
+
+> **Importante**: A fatura pode conter **serviços** (consulta, exames, cirurgias) e **produtos** (medicamentos, rações, insumos) na mesma cobrança. Cada item é detalhado individualmente.**
 
 ## Pagamento
 

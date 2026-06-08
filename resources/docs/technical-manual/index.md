@@ -25,16 +25,17 @@ app/
 ├─ Events/               # Eventos do sistema
 ├─ Exceptions/           # Exceções customizadas
 ├─ Http/
-│  ├─ Controllers/      # Controladores (~50)
-│  │  └─ Portal/        # Portal do tutor (~8 controllers)
+│  ├─ Controllers/      # Controladores (~52)
+│  │  └─ Portal/        # Portal do tutor (~9 controllers, +VetAvailability)
 │  ├─ Livewire/         # Componentes Livewire (~35)
 │  └─ Middleware/       # Middlewares (SetBranchContext, etc.)
 ├─ Listeners/           # Listeners de eventos
-├─ Models/              # Eloquent Models (~61: +ServiceTypeMap)
+├─ Models/              # Eloquent Models (~63: +NfeConfig, NfeInvoice)
 ├─ Providers/           # Service Providers
 └─ Services/            # Classes de serviço
     ├─ Communication/   # WhatsAppProvider, SmsProvider
     ├─ Insurance/       # PortoSeguroProvider
+    ├─ Nfe/             # NfeProvider, NfeService, FocusNfeProvider, NfeIoProvider, WebmaniaProvider
     └─ Nfse/            # NfseProvider, NfseService, WebmaniaProvider
 resources/
 ├─ docs/                # Documentação em Markdown (source)

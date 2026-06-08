@@ -23,4 +23,10 @@ class StaffScheduleControllerTest extends ModuleTestCase
         $response = $this->get(route('staff-schedules.on-call-calendar'));
         $response->assertOk();
     }
+
+    public function test_vet_shifts()
+    {
+        $response = $this->get(route('staff-schedules.vet-shifts'));
+        $response->assertOk();
+    }
 }

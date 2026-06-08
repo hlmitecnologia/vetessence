@@ -15,7 +15,7 @@ Bem-vindo ao **Portal do Tutor** VetEssence! Este manual explica tudo que você 
 |-------|-----------|
 | **Dashboard** | Visão geral com seus pets, consultas e faturas |
 | **Meus Pets** | Dados, histórico completo, vacinas, exames |
-| **Agendamento** | Solicitar novas consultas |
+| **Agendamento** | Solicitar novas consultas, ver disponibilidade de veterinários em tempo real |
 | **Faturas** | Visualizar e pagar contas |
 | **Prontuários** | Acessar históricos dos seus pets |
 | **Exames** | Ver resultados de exames |

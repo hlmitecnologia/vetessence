@@ -34,6 +34,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 - **Calendário Visual** — FullCalendar 6 com visões dia/semana/mês, arrastar e soltar, codificado por cor por veterinário/procedimento
 - **Consultas** — CRUD com integração de agendamento online
 - **Escala da Equipe** — Turnos de veterinários/recepcionistas e plantão
+- **Disponibilidade em Tempo Real** — Portal do Tutor mostra veterinários com turno (`is_vet_shift`) e slots livres, cancelamento automático de consultas quando a escala muda
 
 ### Farmácia & Estoque
 - **Produtos** — Catálogo completo com SKU, código de barras, preço custo/venda, rastreamento por lote
@@ -120,7 +121,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 ## Suite de Testes
 
 ```
-Tests: ~1,130 total (272 files), assertions vary, 132 pre-existing failures/skipped; +72 testes LLM (11 arquivos) + 9 testes proteção fatura (1 novo + 2 editados) — 0 falhas
+Tests: ~1,175 total (278 files), assertions vary, 59 pre-existing failures/skipped; +33 testes Shift/VetAvailability (6 arquivos) — 0 falhas
 ```
 
 ## Início Rápido

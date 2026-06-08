@@ -3,20 +3,41 @@
 ## Solicitar Nova Consulta
 
 1. Acesse **Agendamento > Nova Consulta**
-2. Preencha:
-   - **Pet**: Selecione qual pet será atendido
-   - **Tipo de atendimento**: Consulta, Retorno, Vacina, Exame, Cirurgia
-   - **Data preferencial**: Escolha o dia
-   - **Horário preferencial**: Escolha o melhor horário
-   - **Observações**: Descreva o motivo da consulta (ex: "vomitar há 2 dias", "revisão pós-cirúrgica")
-3. Clique em **Solicitar**
+2. Selecione o **Pet** que será atendido
+3. Escolha o **Tipo de atendimento** (consulta, retorno, vacina, exame, cirurgia)
+4. Selecione uma **data** — o sistema mostra em tempo real quais veterinários estão disponíveis naquele dia
 
-## O que acontece depois?
+### Disponibilidade em Tempo Real
 
-1. Sua solicitação vai para a clínica
-2. A recepção analisa a disponibilidade
-3. Você recebe uma **confirmação** por WhatsApp/SMS/E-mail
-4. Se o horário não estiver disponível, a clínica sugere alternativas
+Ao escolher a data, o sistema exibe:
+
+- **Veterinários disponíveis** — apenas os que têm turno (`is_vet_shift = true`) e horários livres na data selecionada
+- **Slots livres** — para cada veterinário, são mostrados apenas os horários que não conflitam com consultas já agendadas nem com folgas aprovadas
+- **Datas com vaga** — no calendário, as datas que possuem ao menos um slot livre para o veterinário escolhido ficam destacadas
+
+5. Selecione o **veterinário** desejado
+6. Escolha o **horário** disponível
+7. Preencha as **observações** (ex: "vomitar há 2 dias", "revisão pós-cirúrgica")
+8. Clique em **Agendar**
+
+### Exemplo
+
+```
+Data: 15/06/2026
+Veterinários disponíveis:
+  🩺 Dr. Carlos (CRMV 12345) — Horários: 08:00, 08:30, 09:00, 10:30, 11:00
+  🩺 Dra. Ana (CRMV 67890)   — Horários: 13:00, 13:30, 14:00
+```
+
+> **Nota**: Se nenhum veterinário estiver disponível na data escolhida, o sistema informa e sugere selecionar outra data.
+
+## Confirmação
+
+Após agendar:
+
+1. A consulta aparece com status **Agendada**
+2. Você recebe uma **confirmação** por WhatsApp/SMS/E-mail (de acordo com suas preferências de notificação)
+3. Caso a clínica altere o turno do veterinário e seu horário não esteja mais disponível, a consulta é **cancelada automaticamente** com aviso
 
 ## Consultas Agendadas
 
@@ -28,16 +49,16 @@
 
 | Status | Significado |
 |--------|-------------|
-| **Pendente** | Aguardando confirmação da clínica |
-| **Confirmada** | Horário reservado! |
+| **Agendada** | Horário reservado! |
+| **Confirmada** | Clínica confirmou presença |
 | **Realizada** | Atendimento concluído |
-| **Cancelada** | Consulta cancelada |
+| **Cancelada** | Consulta cancelada (por você ou pela clínica) |
 
 ## Reagendar
 
 - Você pode reagendar com até **24h de antecedência**
 - Basta acessar a consulta e clicar em **Reagendar**
-- Escolha o novo horário disponível
+- O sistema mostra novamente a disponibilidade em tempo real
 
 ## Cancelar
 
@@ -51,3 +72,4 @@
 - Se atrasar mais de 15 minutos, a clínica pode remarcar
 - Em caso de emergência, ligue diretamente para a clínica
 - O agendamento online é apenas para consultas eletivas
+- Se a clínica alterar a escala do veterinário, a consulta pode ser cancelada automaticamente — você receberá uma notificação

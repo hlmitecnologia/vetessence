@@ -18,24 +18,21 @@ Brazilian Portuguese. Follow existing patterns: migration → model → controll
 ## Test Suite Status
 
 ```
-Tests:  ~960 total  (244 files), ~132 pre-existing failures/skipped
+Tests:  ~1,175 total (278 files), 59 pre-existing failures/skipped
 
-⚠️ 2 test files BROKEN (NFSe refactor — reference dropped columns)
-⚠️ 18 service/provider classes with ZERO tests (Notification + NFSe)
-⚠️ 22 controllers without dedicated feature tests
-⚠️ 6 models without unit tests
-
-+81 novos testes (72 LLM + 9 proteção fatura) — 0 falhas
++33 novos testes (15 VetAvailabilityService + 6 StaffScheduleObserver + 8 VetAvailabilityController + 3 StaffSchedule model + 1 StaffScheduleController) — 0 falhas
 ```
 
 | Suite | Count | Notes |
 |-------|-------|-------|
-| Unit/Models | ~290 | Most models covered (6 missing) |
-| Feature/Controllers | ~400 | Most controllers tested (22 missing) |
+| Unit/Models | ~300 | Most models covered (+3 StaffSchedule is_vet_shift) |
+| Feature/Controllers | ~410 | + vet-shifts route, + VetAvailabilityController Portal API |
 | Feature/Commands | ~25 | All commands |
 | Feature/Integrations | ~12 | Flow scenarios |
 | Feature/Api | ~18 | Endpoints |
-| Feature/Portal | ~20 | T5 portal controllers |
+| Feature/Portal | ~28 | +8 VetAvailabilityController |
+| Unit/Services | ~50 | +15 VetAvailabilityService |
+| Unit/Observers | ~6 | +6 StaffScheduleObserver |
 
 ---
 
@@ -2800,4 +2797,53 @@ resources/views/llm/config.blade.php           → Form com JS toggle de campos 
 | `GenerateInvoiceFromAppointmentTest` | Feature | 2 (novo arquivo) | Listener skip quando appointment tem fatura paga; gera quando não tem |
 
 **Proteção: 9/9 passando, 0 falhas.**
+
+---
+
+## Phase W — Vet Shift Scheduling & Availability (Portal)
+
+**Contexto:** Adicionar suporte a turnos de veterinário (`is_vet_shift`) com serviço de disponibilidade para o Portal do Tutor, observer que cancela appointments automaticamente quando a escala muda.
+
+### W1 — Migration & Model
+
+| Item | Arquivo |
+|------|---------|
+| Migration | `database/migrations/2026_06_08_100000_add_is_vet_shift_to_staff_schedules.php` |
+| Model | `app/Models/StaffSchedule.php` — cast booleano adicionado |
+
+### W2 — Services
+
+| Service | Arquivo | Métodos |
+|---------|---------|---------|
+| `VetAvailabilityService` | `app/Services/VetAvailabilityService.php` | `getAvailableVets()`, `getSlotsForVet()`, `hasShiftOnDate()`, `hasAvailableSlots()`, `isSlotAvailable()`, `getVetShiftsForPeriod()` |
+
+### W3 — Observer
+
+| Observer | Eventos | Ação |
+|----------|---------|------|
+| `StaffScheduleObserver` | `deleted()`, `updated()` | Cancela appointments futuros do vet se `is_vet_shift=true` e o slot não estiver mais disponível |
+
+### W4 — Portal Controller (API)
+
+| Controller | Rotas |
+|------------|-------|
+| `VetAvailabilityController` | `GET /portal/vet-availability/available-vets`, `GET /portal/vet-availability/vet-slots`, `GET /portal/vet-availability/vet-dates` |
+
+### W5 — Bugs Encontrados e Corrigidos
+
+| Bug | Arquivo | Correção |
+|-----|---------|----------|
+| `is_vet_shift` sem cast booleano | `StaffSchedule.php` | Adicionado `'is_vet_shift' => 'boolean'` ao `$casts` |
+| Double time spec no `Carbon::parse` | `VetAvailabilityService.php` | `$apt->date` + `$shift->work_date` são Carbon, concatenar gera string inválida — usar `->format('Y-m-d')` |
+| `$this->faker->dateTimeThisWeek()` não reconhecido | `StaffScheduleFactory.php` | Substituído por `$this->faker->dateTimeBetween(...)` |
+
+### W6 — Testes (33 testes, 53 assertions)
+
+| Classe | Tipo | Testes | O que cobre |
+|--------|------|--------|-------------|
+| `VetAvailabilityServiceTest` | Unit/Service | 15 | `hasShiftOnDate`, `getAvailableVets`, `getSlotsForVet` (disponibilidade, conflitos, time off), `hasAvailableSlots`, `isSlotAvailable`, `getVetShiftsForPeriod`, role ausente |
+| `StaffScheduleObserverTest` | Unit/Observer | 6 | Delete/update vet shift cancela appointments; delete/update não-vet-shift não cancela; update de campo não-temporal não cancela |
+| `VetAvailabilityControllerTest` | Feature/Portal | 8 | `availableVets`, `vetSlots`, `vetDates` (successo, validação, usuário não-vet, autenticação) |
+| `StaffScheduleTest` (Unit) | Unit/Model | +3 | `is_vet_shift` default false, pode ser true, fillable |
+| `StaffScheduleControllerTest` | Feature | +1 | Rota `vet-shifts` |
 ```

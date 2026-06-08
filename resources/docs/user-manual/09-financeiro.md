@@ -115,6 +115,22 @@ Quando uma consulta é marcada como **concluída**, o sistema gera automaticamen
 - Da mesma forma, o botão **Gerar Fatura** no prontuário é bloqueado quando já existe fatura paga
 - Essa proteção evita que um mesmo atendimento seja faturado mais de uma vez
 
+### Itens da Fatura: Serviço, Produto ou Avulso
+
+Cada item da fatura possui um **tipo** que define o comportamento fiscal e de estoque:
+
+| Tipo | Descrição | Impacto Fiscal | Estoque |
+|------|-----------|----------------|---------|
+| **Serviço** | Consultas, cirurgias, exames, vacinas | Emite NFSe | Não deduz |
+| **Produto** | Medicamentos, rações, insumos | Emite NF-e | Deduz automaticamente ao pagar |
+| **Avulso** | Taxas, multas, genérico | Nenhum | Não deduz |
+
+- Uma fatura pode conter **itens mistos** (serviço + produto + avulso na mesma fatura)
+- Ao **pagar** a fatura, o sistema roteia automaticamente:
+  - Itens do tipo **serviço** → emite **NFSe** (nota de serviço)
+  - Itens do tipo **produto** → deduz do estoque + emite **NF-e** (nota fiscal de produto)
+  - Itens do tipo **avulso** → sem documento fiscal
+
 ### Agrupamento de Atendimentos na Mesma Fatura
 
 É possível agrupar **múltiplos atendimentos** em uma única fatura para facilitar o pagamento do tutor:
@@ -123,7 +139,8 @@ Quando uma consulta é marcada como **concluída**, o sistema gera automaticamen
 - **Cenário típico:** Pet vem para consulta, durante o atendimento o vet decide fazer cirurgia + vacinas no mesmo dia. Cada procedimento é um atendimento separado, mas o sistema os agrupa em uma única fatura automaticamente
 - **Visualização:** Na tela de detalhes da fatura, todos os atendimentos vinculados são listados com links para cada um
 - **Comissões:** Quando a fatura é paga, as comissões são calculadas para **cada veterinário** envolvido nos atendimentos agrupados
-- **NFSe:** A NFSe é emitida com o valor total da fatura, independentemente da quantidade de atendimentos agrupados
+- **NFSe:** A NFSe é emitida com o valor total da fatura (apenas itens de serviço)
+- **NF-e:** A NF-e é emitida com o valor total dos itens de produto
 
 ## Nota Fiscal de Serviços (NFSe)
 
@@ -195,6 +212,114 @@ O sistema suporta **5 provedores** de NFSe, selecionáveis na configuração:
 - XML deve ser armazenado por no mínimo 5 anos (CTN art. 195)
 - Apenas admin, branch-admin e financeiro podem emitir notas
 - NFSe emitida em ambiente de produção não pode ser reemitida (apenas cancelada)
+
+## Nota Fiscal Eletrônica de Produtos (NF-e)
+
+### Provedores Suportados
+O sistema suporta **3 provedores** de NF-e, que utilizam as mesmas credenciais do NFSe quando o provedor atende ambos:
+
+| Provedor | Credenciais |
+|----------|-------------|
+| **FocusNFe** | Token de API (mesmo do NFSe) |
+| **NFE.io** | API Key (mesmo do NFSe) |
+| **Webmania®** | App ID, App Secret, Consumer Key, Consumer Secret (mesmo do NFSe) |
+
+### Configuração do Provedor
+
+1. Acesse **Financeiro > NF-e > Configurações**
+2. Selecione o **provedor** desejado
+3. Preencha as **credenciais** (separadas das de NFSe)
+4. Ative a configuração
+
+> **Dados fiscais para NF-e**: NCM, CFOP, CST/CSOSN, alíquotas de ICMS/IPI/PIS/COFINS e peso são configurados no **cadastro do produto** (Estoque > Produtos). Inscrição Estadual (IE) e CRT são configurados no **cadastro da filial**.
+
+### Produtos com Tributação
+
+Ao cadastrar um produto, os campos fiscais obrigatórios para emissão de NF-e são:
+
+| Campo | Descrição | Obrigatório |
+|-------|-----------|:-----------:|
+| **NCM** | Código NCM (8 dígitos) | Sim |
+| **CFOP** | Código CFOP (4 dígitos) | Sim |
+| **CST / CSOSN** | Tributação ICMS | Sim |
+| **Alíquota ICMS** | % ICMS | Sim |
+| **Alíquota PIS** | % PIS | Sim |
+| **Alíquota COFINS** | % COFINS | Sim |
+| **Peso (kg)** | Peso do produto | Não |
+| **CEST** | Código CEST (7 dígitos) | Não |
+| **IPI** | Alíquota IPI (se aplicável) | Não |
+| **IBPT** | % Imposto IBPT | Não |
+
+### Dados Fiscais por Filial
+
+Cada filial precisa dos seguintes dados para emitir NF-e:
+
+| Campo | Descrição |
+|-------|-----------|
+| **Inscrição Estadual (IE)** | Inscrição estadual da filial |
+| **IE ST** | IE Substituição Tributária (se houver) |
+| **CRT** | Código de Regime Tributário (1=Simples Nacional, 2=SN excesso, 3=Regime Normal) |
+
+### Emitir NF-e
+
+**Manual:**
+1. Acesse **Financeiro > NF-e**
+2. Clique em **Emitir NF-e** na fatura desejada (disponível apenas para faturas com itens do tipo `produto`)
+3. O sistema monta a NF-e automaticamente com dados dos produtos + dados fiscais da filial
+4. Confirme a emissão
+5. Links para **XML**, **PDF** e **DANFE** da nota são gerados
+
+**Automático:**
+- Quando uma fatura com itens de **produto** é **marcada como paga**, a NF-e é emitida automaticamente
+- Ao mesmo tempo, o estoque dos produtos é **deduzido automaticamente**
+- Comando `nfe:emit-pending` emite notas pendentes a cada 10 min
+
+### Roteamento Inteligente: NFSe vs NF-e
+
+Uma mesma fatura pode conter **serviços e produtos**. Ao pagar:
+
+```
+Fatura paga
+   ├── Itens do tipo "serviço"  →  NFSe (prefeitura)
+   ├── Itens do tipo "produto"  →  NF-e (SEFAZ) + dedução de estoque
+   └── Itens do tipo "avulso"   →  sem documento fiscal
+```
+
+Isso permite, por exemplo, faturar uma consulta (serviço) + medicamento (produto) em uma única cobrança, gerando os documentos fiscais corretos para cada tipo.
+
+### Visualizar NF-e
+
+1. Acesse **Financeiro > NF-e**
+2. Listagem com filtros por **período**, **status**, **filial**
+3. Colunas: número NF-e, chave de acesso (44 dígitos), fatura vinculada, data, status
+4. Ações: visualizar XML, baixar PDF, baixar DANFE, cancelar
+
+### Cancelar NF-e
+
+1. Acesse a NF-e emitida
+2. Clique em **Cancelar** (prazo legal: até 24h da emissão)
+3. Informe o **motivo do cancelamento**
+4. O sistema comunica o cancelamento à SEFAZ
+
+### Exportação Contábil
+
+1. Acesse **Financeiro > NF-e > Exportar**
+2. Selecione **período** e **filial**
+3. Baixe **ZIP** com todos os XMLs do período
+
+### Permissões NF-e
+
+- `nfe.view` — Visualizar notas emitidas
+- `nfe.emit` — Emitir novas NF-e
+- `nfe.cancel` — Cancelar NF-e
+- `nfe-config.edit` — Configurar provedor de NF-e
+
+### Regras NF-e
+- Prazo de cancelamento: até 24h após emissão
+- XML deve ser armazenado por no mínimo 5 anos
+- A NF-e só pode ser emitida se a filial tiver IE e CRT configurados
+- Produtos precisam de NCM e CFOP para emitir NF-e
+- NF-e emitida em produção não pode ser reemitida (apenas cancelada)
 
 ## Comissões de Veterinários
 
@@ -288,6 +413,10 @@ O sistema suporta **5 provedores** de NFSe, selecionáveis na configuração:
 - NFSe só pode ser emitida se filial tiver configuração fiscal ativa
 - Comissões são calculadas apenas na primeira liquidação da fatura
 - Conciliação bancária sugere correspondências, mas requer confirmação manual
+- NF-e só pode ser emitida se a filial tiver IE e CRT configurados
+- Produtos precisam de NCM e CFOP preenchidos para emitir NF-e
+- Ao pagar fatura com itens de produto, o estoque é deduzido automaticamente
+- Faturas com itens mistos (serviço + produto) emitem NFSe e NF-e simultaneamente
 
 ---
 

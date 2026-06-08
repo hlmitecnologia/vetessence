@@ -35,6 +35,51 @@
 - Comando `products:alert-expiry` notifica sobre lotes próximos ao vencimento
 - Lotes vencidos são bloqueados para movimentação de saída
 
+## Campos Fiscais para Venda de Produtos
+
+Para emitir **NF-e** (Nota Fiscal Eletrônica de Produtos), cada produto precisa de dados fiscais obrigatórios:
+
+| Campo | Descrição | Obrigatório |
+|-------|-----------|:-----------:|
+| **NCM** | Código NCM de 8 dígitos (ex: `3004.90.99`) | Sim |
+| **CFOP** | Código CFOP de 4 dígitos (ex: `5.102` — venda) | Sim |
+| **CST** | Tributação ICMS (ex: `000` — tributada integralmente) | Sim |
+| **CSOSN** | Tributação ICMS para Simples Nacional (ex: `400` — não tributada) | Se CRT=1 |
+| **Alíquota ICMS** | Percentual de ICMS (%) | Sim |
+| **CST IPI** | Código IPI (ex: `50` — saída tributada) | Se aplicável |
+| **Alíquota IPI** | Percentual de IPI (%) | Se aplicável |
+| **CST PIS** | Código PIS (ex: `01` — operação tributável) | Sim |
+| **CST COFINS** | Código COFINS (ex: `01` — operação tributável) | Sim |
+| **Alíquota PIS** | Percentual de PIS (%) | Sim |
+| **Alíquota COFINS** | Percentual de COFINS (%) | Sim |
+| **CEST** | Código CEST de 7 dígitos (se aplicável) | Não |
+| **IBPT (%)** | Percentual IBPT | Não |
+| **Peso (kg)** | Peso do produto para frete | Não |
+
+> **Nota**: Se o produto for usado em uma fatura sem NCM/CFOP preenchidos, a NF-e não poderá ser emitida.
+
+### Como Preencher
+
+1. Acesse **Estoque > Produtos**
+2. Abra o produto desejado
+3. Na aba **Fiscal**, preencha os campos conforme a classificação tributária do produto
+4. Consulte o contador da clínica para valores corretos de CST, CFOP e alíquotas
+
+### Venda de Produtos na Fatura
+
+Ao criar ou editar uma fatura, é possível adicionar itens do tipo **produto**:
+
+1. Acesse **Financeiro > Contas a Receber > Nova Fatura**
+2. Na seção de itens, selecione a aba **Produto**
+3. Busque o produto pelo nome ou código de barras
+4. Informe **quantidade** e o sistema preenche o **preço de venda** automaticamente
+5. O item aparece na fatura com tipo `produto`
+
+**Ao pagar a fatura:**
+- O estoque do produto é **deduzido automaticamente** (cria movimentação de saída)
+- Uma **NF-e** é emitida automaticamente (se o provedor estiver configurado)
+- O item aparece no relatório de comissões (se houver taxa configurada para produtos)
+
 ## Alerta de Estoque Baixo
 - Produtos com quantidade abaixo do mínimo configurado são destacados
 - Notificação no dashboard

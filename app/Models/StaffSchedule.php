@@ -19,6 +19,7 @@ class StaffSchedule extends Model
     protected $casts = [
         'work_date' => 'date',
         'is_on_call' => 'boolean',
+        'is_vet_shift' => 'boolean',
     ];
 
     public function user(): BelongsTo
