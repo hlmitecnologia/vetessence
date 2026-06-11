@@ -1,115 +1,145 @@
-<div>
-    <div class="row">
+<div wire:poll.5s>
+    <div class="row mb-3">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Pacientes Aguardando</h3>
-                    <div class="card-tools">
-                        <span class="badge badge-info">{{ $waiting->count() }} aguardando</span>
+            <h3 class="mb-0">Painel de Triagem em Tempo Real</h3>
+        </div>
+        <div class="col-md-4 text-right">
+            <a href="{{ route('triage.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Novo Paciente
+            </a>
+        </div>
+    </div>
+
+    <div x-data="{
+        newRedAlert: {{ ($newRed ?? false) ? 'true' : 'false' }},
+        dismissed: false,
+        init() {
+            if (this.newRedAlert) {
+                this.playSound();
+                setTimeout(() => { this.dismissed = true; }, 8000);
+            }
+        },
+        playSound() {
+            try {
+                new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm').play();
+            } catch(e) {}
+        }
+    }">
+        <div x-show="newRedAlert && !dismissed" x-transition.duration.500ms
+             class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Alerta!</strong> Novo(s) paciente(s) crítico(s) (Vermelho) chegou(aram) na triagem!
+            <button type="button" class="close" @click="dismissed = true">&times;</button>
+        </div>
+    </div>
+
+    <div class="row" style="min-height: 70vh;">
+        @php
+            $columns = [
+                'waiting' => ['title' => 'Aguardando', 'color' => 'secondary'],
+                'in_consultation' => ['title' => 'Em Atendimento', 'color' => 'primary'],
+                'seen' => ['title' => 'Concluído', 'color' => 'success'],
+            ];
+            $severityLabels = ['red' => 'Crítico', 'orange' => 'Urgente', 'yellow' => 'Prioritário', 'green' => 'Não Urgente'];
+            $severityBadge = ['red' => 'danger', 'orange' => 'warning', 'yellow' => 'info', 'green' => 'success'];
+            $severityOrder = ['red' => 0, 'orange' => 1, 'yellow' => 2, 'green' => 3];
+        @endphp
+
+        @foreach($columns as $statusKey => $col)
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-header bg-{{ $col['color'] }} text-white">
+                        <strong>{{ $col['title'] }}</strong>
+                        <span class="badge badge-light float-right">
+                            {{ isset($triageCases[$statusKey]) ? $triageCases[$statusKey]->sum(function($c) { return 1; }) : 0 }}
+                        </span>
+                    </div>
+                    <div class="card-body p-2"
+                         x-on:dragover.prevent
+                         x-on:drop.prevent="
+                             const id = $event.dataTransfer.getData('text/plain');
+                             if (id) $wire.updateStatus(id, '{{ $statusKey }}');
+                         "
+                         style="background: #f8f9fa; min-height: 300px;">
+                        @php
+                            $cases = isset($triageCases[$statusKey]) ? $triageCases[$statusKey]->groupBy('severity') : collect();
+                            $sorted = collect($severityOrder)->mapWithKeys(function($order, $sev) use ($cases) {
+                                return [$sev => $cases->get($sev, collect())];
+                            })->filter(function($c) { return $c->count() > 0; });
+                        @endphp
+
+                        @forelse($sorted as $severity => $group)
+                            <div class="mb-2">
+                                <small class="text-muted font-weight-bold">
+                                    <span class="badge badge-{{ $severityBadge[$severity] ?? 'secondary' }}">
+                                        {{ $severityLabels[$severity] ?? strtoupper($severity) }}
+                                    </span>
+                                    ({{ $group->count() }})
+                                </small>
+                                @foreach($group as $t)
+                                    <div class="card card-outline card-{{ $severityBadge[$severity] ?? 'secondary' }} mb-1"
+                                         draggable="true"
+                                         x-on:dragstart="
+                                             $event.dataTransfer.setData('text/plain', {{ $t->id }});
+                                             $event.dataTransfer.effectAllowed = 'move';
+                                         "
+                                         x-on:dragend="
+                                             $event.target.closest('.card-outline').classList.remove('dragging');
+                                         "
+                                         style="cursor: grab;">
+                                        <div class="card-body p-2">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <strong class="text-sm">{{ $t->pet->name ?? '—' }}</strong>
+                                                <small class="text-muted">
+                                                    {{ optional($t->check_in_at)->diffForHumans() }}
+                                                </small>
+                                            </div>
+                                            <small class="d-block text-muted">
+                                                Tutor: {{ $t->pet->tutors->first()->name ?? '—' }}
+                                            </small>
+                                            <small class="d-block text-muted">
+                                                {{ Str::limit($t->chief_complaint, 60) }}
+                                            </small>
+                                            @if($t->assignedVet)
+                                                <small class="d-block text-muted">
+                                                    Vet: {{ $t->assignedVet->name }}
+                                                </small>
+                                            @endif
+                                            <div class="mt-1">
+                                                <a href="{{ route('triage.show', $t) }}" class="btn btn-xs btn-info" title="Ver detalhes">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ route('triage.edit', $t) }}" class="btn btn-xs btn-warning" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @empty
+                            <div class="text-center text-muted py-4">
+                                <small>Nenhum caso</small>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
-                <div class="card-body p-0">
-                    <table class="table table-hover" style="border: 1px solid #dee2e6;">
-                        <thead>
-                            <tr>
-                                <th>Severidade</th>
-                                <th>Pet</th>
-                                <th>Chegada</th>
-                                <th>Queixa</th>
-                                <th>Veterinário</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($waiting as $t)
-                            <tr class="{{ $t->severity === 'red' ? 'table-danger' : ($t->severity === 'orange' ? 'table-warning' : ($t->severity === 'yellow' ? 'table-info' : '')) }}">
-                                <td>
-                                    <span class="badge badge-{{ $t->severity === 'red' ? 'danger' : ($t->severity === 'orange' ? 'warning' : ($t->severity === 'yellow' ? 'info' : 'success')) }}">
-                                        {{ strtoupper($t->severity) }}
-                                    </span>
-                                </td>
-                                <td>{{ $t->pet->name ?? '-' }}</td>
-                                <td>{{ optional($t->check_in_at)->format('H:i') }}</td>
-                                <td>{{ Str::limit($t->chief_complaint, 50) }}</td>
-                                <td>{{ $t->assignedVet->name ?? '-' }}</td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <a href="{{ route('triage.show', $t) }}" class="btn btn-info" title="Ver detalhes">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        @if($t->status === 'waiting')
-                                        <button wire:click="markAsInConsultation({{ $t->id }})" class="btn btn-primary" title="Iniciar consulta">
-                                            <i class="fas fa-user-md"></i>
-                                        </button>
-                                        @endif
-                                        @if($t->status === 'in_consultation')
-                                        <button wire:click="markAsSeen({{ $t->id }})" class="btn btn-success" title="Finalizar consulta">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                        @endif
-                                        <a href="{{ route('triage.edit', $t) }}" class="btn btn-warning" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="6" class="text-center text-muted py-3">
-                                    Nenhum paciente aguardando.
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
             </div>
-        </div>
-        <div class="col-md-4">
+        @endforeach
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{ route('triage.create') }}" class="btn btn-primary btn-block">
-                        <i class="fas fa-plus"></i> Novo Paciente
-                    </a>
+                    <h3 class="card-title">Legenda</h3>
                 </div>
-                <div class="card-body">
-                    <h5>Legenda</h5>
-                    <p><span class="badge badge-danger">VERMELHO</span> Emergência</p>
-                    <p><span class="badge badge-warning">LARANJA</span> Urgência</p>
-                    <p><span class="badge badge-info">AMARELO</span> Prioritário</p>
-                    <p><span class="badge badge-success">VERDE</span> Não urgente</p>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Histórico</h3>
-                </div>
-                <div class="card-body p-0">
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Pet</th>
-                                <th>Severidade</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($history as $h)
-                            <tr>
-                                <td>{{ $h->pet->name ?? '-' }}</td>
-                                <td>
-                                    <span class="badge badge-{{ $h->severity === 'red' ? 'danger' : ($h->severity === 'orange' ? 'warning' : ($h->severity === 'yellow' ? 'info' : 'success')) }}">
-                                        {{ strtoupper($h->severity) }}
-                                    </span>
-                                </td>
-                                <td>{{ $h->status }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-footer">
-                    {{ $history->links() }}
+                <div class="card-body py-2">
+                    <span class="badge badge-danger">Vermelho</span> Crítico &nbsp;
+                    <span class="badge badge-warning">Laranja</span> Urgente &nbsp;
+                    <span class="badge badge-info">Amarelo</span> Prioritário &nbsp;
+                    <span class="badge badge-success">Verde</span> Não urgente &nbsp;
+                    <small class="text-muted ml-3">Arraste os cartões entre as colunas para alterar o status.</small>
                 </div>
             </div>
         </div>
@@ -119,8 +149,9 @@
         document.addEventListener('new-red-triage', function (e) {
             var ids = e.detail.ids;
             if (ids && ids.length > 0) {
-                var sound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm');
-                if (sound) sound.play().catch(function(){});
+                try {
+                    new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm').play();
+                } catch(e) {}
             }
         });
     </script>

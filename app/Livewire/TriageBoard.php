@@ -4,13 +4,9 @@ namespace App\Livewire;
 
 use App\Models\TriageRecord;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class TriageBoard extends Component
 {
-    use WithPagination;
-
-    public $newRedIds = [];
     public $previousRedIds = [];
 
     public function mount()
@@ -26,29 +22,25 @@ class TriageBoard extends Component
             ->toArray();
     }
 
-    public function markAsInConsultation($id)
+    public function updateStatus($caseId, $newStatus)
     {
-        $record = TriageRecord::findOrFail($id);
-        $record->update(['status' => 'in_consultation']);
-    }
+        $validStatuses = ['waiting', 'in_consultation', 'seen', 'discharged'];
+        if (!in_array($newStatus, $validStatuses)) {
+            return;
+        }
 
-    public function markAsSeen($id)
-    {
-        $record = TriageRecord::findOrFail($id);
-        $record->update([
-            'status' => 'seen',
-            'seen_at' => now(),
-            'triage_vet_id' => auth()->id(),
-        ]);
-    }
+        $record = TriageRecord::findOrFail($caseId);
+        $update = ['status' => $newStatus];
 
-    public function markAsDischarged($id)
-    {
-        $record = TriageRecord::findOrFail($id);
-        $record->update([
-            'status' => 'discharged',
-            'discharged_at' => now(),
-        ]);
+        if ($newStatus === 'seen' && !$record->seen_at) {
+            $update['seen_at'] = now();
+            $update['triage_vet_id'] = auth()->id();
+        }
+        if ($newStatus === 'discharged') {
+            $update['discharged_at'] = now();
+        }
+
+        $record->update($update);
     }
 
     public function render()
@@ -60,17 +52,14 @@ class TriageBoard extends Component
         }
         $this->previousRedIds = $currentRedIds;
 
-        $waiting = TriageRecord::with(['pet', 'assignedVet'])
-            ->whereIn('status', ['waiting', 'in_consultation'])
-            ->orderByRaw("CASE severity WHEN 'red' THEN 4 WHEN 'orange' THEN 3 WHEN 'yellow' THEN 2 ELSE 1 END DESC")
+        $orderRaw = "CASE severity WHEN 'red' THEN 4 WHEN 'orange' THEN 3 WHEN 'yellow' THEN 2 ELSE 1 END DESC";
+
+        $triageCases = TriageRecord::with(['pet.tutors', 'assignedVet'])
+            ->orderByRaw($orderRaw)
             ->orderBy('check_in_at')
-            ->get();
+            ->get()
+            ->groupBy('status');
 
-        $history = TriageRecord::with(['pet'])
-            ->whereIn('status', ['seen', 'discharged'])
-            ->latest('updated_at')
-            ->paginate(10);
-
-        return view('livewire.triage-board', compact('waiting', 'history'));
+        return view('livewire.triage-board', compact('triageCases', 'newRed'));
     }
 }

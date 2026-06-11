@@ -49,4 +49,9 @@ class Prescription extends Model
     {
         return $this->controlledSubstanceLogs()->exists();
     }
+
+    public function getVerifyUrlAttribute(): string
+    {
+        return url("/r/{$this->verification_hash}");
+    }
 }

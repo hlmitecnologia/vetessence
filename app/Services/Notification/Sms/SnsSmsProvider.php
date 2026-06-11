@@ -13,8 +13,9 @@ class SnsSmsProvider implements SmsProvider
 
     public function __construct(
         protected array $config,
+        ?SnsClient $client = null,
     ) {
-        $this->client = new SnsClient([
+        $this->client = $client ?? new SnsClient([
             'version' => 'latest',
             'region' => $this->config['region'] ?? 'us-east-1',
             'credentials' => [

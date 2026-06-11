@@ -5,6 +5,8 @@ namespace Tests\Feature\Services\Notification;
 use App\Services\Notification\Sms\SnsSmsProvider;
 use App\Services\Notification\Sms\TwilioSmsProvider;
 use App\Services\Notification\Sms\ZenvioSmsProvider;
+use Aws\Result;
+use Aws\Sns\SnsClient;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -84,33 +86,40 @@ class SmsProviderTest extends TestCase
 
     public function test_sns_send_success()
     {
-        Http::fake([
-            'sns.us-east-1.amazonaws.com*' => Http::response(['MessageId' => 'SNS-001'], 200),
-        ]);
+        $client = $this->getMockBuilder(SnsClient::class)
+            ->disableOriginalConstructor()
+            ->addMethods(['publish'])
+            ->getMock();
+        $client->method('publish')
+            ->willReturn(new Result(['MessageId' => 'SNS-001']));
 
         $provider = new SnsSmsProvider([
             'key' => 'AKID',
             'secret' => 'secret',
             'region' => 'us-east-1',
-        ]);
+        ], $client);
 
         $result = $provider->send('Clinic', '+5511888888888', 'Your appointment is confirmed');
 
         $this->assertTrue($result->success);
         $this->assertEquals('Amazon SNS', $result->provider);
+        $this->assertEquals('SNS-001', $result->messageId);
     }
 
     public function test_sns_send_failure()
     {
-        Http::fake([
-            'sns.us-east-1.amazonaws.com*' => Http::response(null, 500),
-        ]);
+        $client = $this->getMockBuilder(SnsClient::class)
+            ->disableOriginalConstructor()
+            ->addMethods(['publish'])
+            ->getMock();
+        $client->method('publish')
+            ->willThrowException(new \RuntimeException('SNS error'));
 
         $provider = new SnsSmsProvider([
             'key' => 'AKID',
             'secret' => 'secret',
             'region' => 'us-east-1',
-        ]);
+        ], $client);
 
         $result = $provider->send('Clinic', '+5511888888888', 'Message');
 

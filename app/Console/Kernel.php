@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('staff:remind')->dailyAt('18:00');
         $schedule->command('nfse:emit-pending')->everyTenMinutes();
         $schedule->command('nfe:emit-pending')->everyTenMinutes();
+        $schedule->command('claims:auto-file')->everyThirtyMinutes();
     }
 
     /**

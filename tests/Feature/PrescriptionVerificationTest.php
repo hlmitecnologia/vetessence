@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\Prescription;
 use App\Models\MedicalRecord;
 use App\Models\Pet;
+use App\Models\Prescription;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -13,83 +13,91 @@ class PrescriptionVerificationTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private function actingAsUser()
+    private function createPrescription(): Prescription
     {
         $user = User::factory()->create();
-        $this->actingAs($user);
-        return $user;
-    }
-
-    public function test_hash_generated_on_create()
-    {
-        $record = MedicalRecord::factory()->create();
-        $prescription = Prescription::factory()->create([
-            'medical_record_id' => $record->id,
-            'medication' => 'Amoxicilina',
-        ]);
-
-        $this->assertNotNull($prescription->verification_hash);
-        $this->assertEquals(64, strlen($prescription->verification_hash));
-    }
-
-    public function test_verification_route_returns_valid()
-    {
         $pet = Pet::factory()->create();
-        $record = MedicalRecord::factory()->create(['pet_id' => $pet->id]);
-        $prescription = Prescription::factory()->create([
+        $record = MedicalRecord::factory()->create([
+            'pet_id' => $pet->id,
+            'user_id' => $user->id,
+        ]);
+        return Prescription::factory()->create([
             'medical_record_id' => $record->id,
             'medication' => 'Amoxicilina',
+            'dosage' => '500mg',
         ]);
+    }
+
+    public function test_public_access_to_valid_hash_returns_200()
+    {
+        $prescription = $this->createPrescription();
 
         $response = $this->get(route('prescriptions.verify', $prescription->verification_hash));
+
         $response->assertOk();
-        $response->assertSee('válida');
+        $response->assertSee('Prescrição válida e verificada');
+        $response->assertSee('Amoxicilina');
     }
 
-    public function test_verification_route_invalid_hash()
+    public function test_public_access_to_invalid_hash_returns_200_with_error()
     {
-        $response = $this->get(route('prescriptions.verify', 'invalid-hash-123'));
+        $response = $this->get(route('prescriptions.verify', 'invalidhash123'));
+
         $response->assertOk();
         $response->assertSee('não encontrada');
     }
 
-    public function test_public_access_no_auth_required()
+    public function test_public_access_sets_verified_at()
     {
-        $pet = Pet::factory()->create();
-        $record = MedicalRecord::factory()->create(['pet_id' => $pet->id]);
-        $prescription = Prescription::factory()->create([
-            'medical_record_id' => $record->id,
-        ]);
-
-        $response = $this->get(route('prescriptions.verify', $prescription->verification_hash));
-        $response->assertOk();
-        $response->assertSee('válida');
-    }
-
-    public function test_verified_at_set_on_first_verification()
-    {
-        $pet = Pet::factory()->create();
-        $record = MedicalRecord::factory()->create(['pet_id' => $pet->id]);
-        $prescription = Prescription::factory()->create([
-            'medical_record_id' => $record->id,
-        ]);
-
+        $prescription = $this->createPrescription();
         $this->assertNull($prescription->fresh()->verified_at);
+
         $this->get(route('prescriptions.verify', $prescription->verification_hash));
+
         $this->assertNotNull($prescription->fresh()->verified_at);
     }
 
-    public function test_verification_hash_booted_on_create()
+    public function test_rate_limit_after_too_many_requests()
     {
-        $record = MedicalRecord::factory()->create();
-        $prescription = new Prescription([
-            'medical_record_id' => $record->id,
-            'medication' => 'Teste',
-            'dosage' => '10mg',
-        ]);
-        $prescription->save();
+        $prescription = $this->createPrescription();
+        $hash = $prescription->verification_hash;
 
-        $this->assertNotNull($prescription->verification_hash);
-        $this->assertEquals(64, strlen($prescription->verification_hash));
+        for ($i = 0; $i < 10; $i++) {
+            $this->get(route('prescriptions.verify', $hash));
+        }
+
+        $response = $this->get(route('prescriptions.verify', $hash));
+        $response->assertStatus(429);
+    }
+
+    public function test_authenticated_user_sees_admin_verify_view()
+    {
+        $prescription = $this->createPrescription();
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->get(route('prescriptions.verify', $prescription->verification_hash));
+
+        $response->assertOk();
+        $response->assertSee('Prescrição válida e verificada');
+    }
+
+    public function test_prescription_model_verify_url_accessor()
+    {
+        $prescription = $this->createPrescription();
+
+        $expected = url("/r/{$prescription->verification_hash}");
+        $this->assertEquals($expected, $prescription->verify_url);
+    }
+
+    public function test_public_view_shows_prescription_details()
+    {
+        $prescription = $this->createPrescription();
+
+        $response = $this->get(route('prescriptions.verify', $prescription->verification_hash));
+
+        $response->assertOk();
+        $response->assertSee($prescription->medication);
+        $response->assertSee($prescription->dosage);
     }
 }

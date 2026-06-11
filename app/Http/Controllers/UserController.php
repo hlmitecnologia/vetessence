@@ -32,9 +32,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $roles = Role::orderBy('name')->get();
-        $branches = Branch::orderBy('name')->get();
-        return view('users.create', compact('roles', 'branches'));
+        return redirect()->route('users.index');
     }
 
     public function store(Request $request)
@@ -76,9 +74,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $roles = Role::orderBy('name')->get();
-        $branches = Branch::orderBy('name')->get();
-        return view('users.edit', compact('user', 'roles', 'branches'));
+        return redirect()->route('users.index');
     }
 
     public function update(Request $request, User $user)

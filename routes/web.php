@@ -911,7 +911,8 @@ Route::get('verify/{model}/{id}', 'App\Http\Controllers\SignatureVerifyControlle
     ->middleware('throttle:30,1');
 
 // Insurance claim webhook (external callback, no auth)
-Route::post('api/insurance/webhook', 'App\Http\Controllers\InsuranceWebhookController')
+Route::post('api/insurance/webhook/{provider}', [\App\Http\Controllers\InsuranceWebhookController::class, 'handle'])
     ->name('insurance.webhook')
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
     ->middleware('throttle:60,1');
 

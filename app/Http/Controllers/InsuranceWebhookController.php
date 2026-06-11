@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class InsuranceWebhookController extends Controller
 {
-    public function __invoke(Request $request)
+    public function handle(string $provider, Request $request)
     {
         $payload = $request->validate([
             'external_id' => 'required|string',
@@ -20,7 +20,10 @@ class InsuranceWebhookController extends Controller
         $claim = ConvenioClaim::where('external_id', $payload['external_id'])->first();
 
         if (!$claim) {
-            Log::warning('Insurance webhook: claim not found', ['external_id' => $payload['external_id']]);
+            Log::warning('Insurance webhook: claim not found', [
+                'provider' => $provider,
+                'external_id' => $payload['external_id'],
+            ]);
             return response()->json(['error' => 'Claim not found'], 404);
         }
 
@@ -32,6 +35,7 @@ class InsuranceWebhookController extends Controller
         ]);
 
         Log::info('Insurance webhook processed', [
+            'provider' => $provider,
             'claim_id' => $claim->id,
             'external_id' => $payload['external_id'],
             'status' => $payload['status'],

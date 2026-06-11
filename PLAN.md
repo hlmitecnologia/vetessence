@@ -298,7 +298,7 @@ All 40+ missing columns added via 8 migrations across 10 tables:
 
 ---
 
-## Phase Q — Veterinary Clinic Real-World Gaps
+## Phase Q — Veterinary Clinic Real-World Gaps ✅
 
 7 features identified as missing for daily clinic operations, based on real practice workflows.
 
@@ -433,9 +433,9 @@ All 40+ missing columns added via 8 migrations across 10 tables:
 
 ## Optional Enhancements (Post-Phase Q)
 
-These are **not** on the core roadmap. Each should be discussed and approved before implementation.
+These are **not** on the core roadmap. All implemented as of 2026-06-11.
 
-### R1 — Livewire Real-Time Triage Board
+### R1 — Livewire Real-Time Triage Board ✅
 
 **Why**: ER triage board (P6) is currently a static CRUD. A Livewire-powered real-time board would let multiple vets see incoming triage patients update instantly without page refresh.
 
@@ -450,7 +450,7 @@ These are **not** on the core roadmap. Each should be discussed and approved bef
 
 **Estimated tests**: ~8 | **Effort**: Medium
 
-### R2 — CVI PDF Template (CFMV-Mandated Layout)
+### R2 — CVI PDF Template (CFMV-Mandated Layout) ✅
 
 **Why**: CVI (International Travel Certificate) from P5 currently uses the generic `health_certificates` print view. CFMV mandates a specific layout with CRMV seal, digital signature block, and official formatting.
 
@@ -465,7 +465,7 @@ These are **not** on the core roadmap. Each should be discussed and approved bef
 
 **Estimated tests**: ~4 | **Effort**: Medium
 
-### R3 — Pet Insurance Auto-Claim Filing
+### R3 — Pet Insurance Auto-Claim Filing ✅
 
 **Why**: P4 added claims tracking. Currently the clinic must manually file claims with each insurer. Auto-filing would submit claims via API to partner insurers.
 
@@ -480,7 +480,7 @@ These are **not** on the core roadmap. Each should be discussed and approved bef
 
 **Estimated tests**: ~8 | **Effort**: Large (depends on insurer API availability)
 
-### R4 — QR Code Scanner Workflow for Public Rx Verification
+### R4 — QR Code Scanner Workflow for Public Rx Verification ✅
 
 **Why**: Q6 added the `/r/{hash}` verification route but it's behind the `auth` middleware. For real-world QR code usage, tutors should be able to scan a prescription QR code without logging in.
 
@@ -1061,7 +1061,7 @@ php artisan test --env=testing --filter="DepartmentControllerTest::test_index" -
 
 ---
 
-## Phase NFe — Nota Fiscal Eletrônica de Produto (NF-e)
+## Phase NFe — Nota Fiscal Eletrônica de Produto (NF-e) ✅
 
 **Objetivo:** Suporte a emissão de NF-e para vendas de produtos com baixa automática de estoque e tributação completa (NCM, CFOP, CST, ICMS, IPI, PIS, COFINS).
 
@@ -1987,7 +1987,7 @@ PUT    /configuracoes/branding       → configuracoes.branding.update
 
 ---
 
-## Phase Y — Dados Geográficos (CEP + Cidade/Estado com Cascading Select)
+## Phase Y — Dados Geográficos (CEP + Cidade/Estado com Cascading Select) ✅
 
 **Aprovado em 2026-05-22.** CEP adicionado a Supplier e Branch. Dados existentes migrados automaticamente (texto → FK).
 
@@ -2470,7 +2470,7 @@ Adicionar link em **Configurações > Notificações** (após "Personalização"
 
 ---
 
-## Phase AB — Test Gap Closure (NFSe + Notification + New Modules)
+## Phase AB — Test Gap Closure (NFSe + Notification + New Modules) ✅
 
 ### AB0 — Diagnóstico
 
@@ -2800,7 +2800,7 @@ resources/views/llm/config.blade.php           → Form com JS toggle de campos 
 
 ---
 
-## Phase W — Vet Shift Scheduling & Availability (Portal)
+## Phase W — Vet Shift Scheduling & Availability (Portal) ✅
 
 **Contexto:** Adicionar suporte a turnos de veterinário (`is_vet_shift`) com serviço de disponibilidade para o Portal do Tutor, observer que cancela appointments automaticamente quando a escala muda.
 

@@ -6,7 +6,7 @@ use App\Models\ConvenioClaim;
 
 interface InsuranceProvider
 {
-    public function submit(ConvenioClaim $claim): bool;
-    public function checkStatus(string $externalId): string;
+    public function submitClaim(ConvenioClaim $claim): InsuranceClaimResult;
+    public function checkStatus(string $claimId): InsuranceClaimResult;
     public function getName(): string;
 }

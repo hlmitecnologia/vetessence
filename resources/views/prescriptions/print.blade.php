@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Prescrição - {{ $prescription->medicalRecord->pet->name ?? 'Pet' }}</title>
+    @php use SimpleSoftwareIO\QrCode\Facades\QrCode; @endphp
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -190,25 +191,14 @@
         @endif
     </div>
 
-    @php
-        use Endroid\QrCode\QrCode;
-        use Endroid\QrCode\Writer\PngWriter;
-        if ($prescription->verification_hash) {
-            $qrCode = new QrCode(route('prescriptions.verify', $prescription->verification_hash));
-            $writer = new PngWriter();
-            $qrResult = $writer->write($qrCode);
-            $qrBase64 = base64_encode($qrResult->getString());
-        }
-    @endphp
-
-    @if(isset($qrBase64))
+    @if($prescription->verification_hash)
     <div class="section" style="text-align: center; margin-top: 2rem;">
         <div class="section-title">Verificação Digital</div>
-        <img src="data:image/png;base64,{{ $qrBase64 }}" alt="QR Code" style="width: 150px; height: 150px;">
+        <div style="display: inline-block;">{!! QrCode::size(200)->generate($prescription->verify_url) !!}</div>
         <p style="font-size: 9pt; margin-top: 0.5rem;">
             Escaneie para verificar a autenticidade<br>
             <span style="font-size: 8pt; color: #666;">
-                {{ route('prescriptions.verify', $prescription->verification_hash) }}
+                {{ $prescription->verify_url }}
             </span>
         </p>
     </div>

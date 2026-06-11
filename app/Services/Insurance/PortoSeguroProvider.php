@@ -3,101 +3,120 @@
 namespace App\Services\Insurance;
 
 use App\Models\ConvenioClaim;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class PortoSeguroProvider implements InsuranceProvider
 {
-    protected string $apiUrl;
-    protected string $apiKey;
-    protected int $timeout;
+    private string $apiKey;
+    private string $apiSecret;
+    private string $baseUrl;
 
     public function __construct()
     {
-        $this->apiUrl = config('insurance.porto_seguro.url', 'https://api.portoseguro.com.br/v1/claims');
-        $this->apiKey = config('insurance.porto_seguro.key', '');
-        $this->timeout = config('insurance.porto_seguro.timeout', 30);
+        $this->apiKey = Setting::get('porto_seguro_api_key', '');
+        $this->apiSecret = Setting::get('porto_seguro_api_secret', '');
+        $this->baseUrl = Setting::get('porto_seguro_base_url', 'https://api.portoseguro.com.br/v1');
     }
 
     public function getName(): string
     {
-        return 'Porto Seguro';
+        return 'porto-seguro';
     }
 
-    public function submit(ConvenioClaim $claim): bool
+    public function submitClaim(ConvenioClaim $claim): InsuranceClaimResult
     {
         try {
-            $response = Http::timeout($this->timeout)
-                ->withHeaders([
-                    'Authorization' => 'Bearer ' . $this->apiKey,
-                    'Content-Type' => 'application/json',
-                ])
-                ->post($this->apiUrl . '/claims', [
-                    'claim_number' => $claim->claim_number,
-                    'pet_name' => $claim->convenioPet->pet->name ?? '',
-                    'tutor_name' => $claim->convenioPet->pet->tutors->first()->name ?? '',
-                    'amount_requested' => $claim->amount_requested,
-                    'invoice_number' => $claim->invoice->invoice_number ?? '',
-                    'description' => $claim->notes ?? '',
-                ]);
+            $payload = $this->buildClaimPayload($claim);
+
+            $response = Http::withHeaders([
+                'X-API-Key' => $this->apiKey,
+                'X-API-Secret' => $this->apiSecret,
+                'Content-Type' => 'application/json',
+            ])->post("{$this->baseUrl}/claims", $payload);
 
             if ($response->successful()) {
-                $body = $response->json();
-                $externalId = $body['id'] ?? $body['external_id'] ?? null;
-                if ($externalId) {
-                    $claim->update(['external_id' => $externalId]);
+                $data = $response->json();
+                $externalId = $data['id'] ?? $data['claim_id'] ?? null;
+
+                if (!$externalId) {
+                    return InsuranceClaimResult::failed(
+                        $this->getName(),
+                        'External ID not returned by provider',
+                        $data,
+                    );
                 }
-                Log::info('Insurance claim submitted', [
-                    'provider' => $this->getName(),
-                    'claim_id' => $claim->id,
-                    'claim_number' => $claim->claim_number,
-                    'external_id' => $externalId,
-                ]);
-                return true;
+
+                return InsuranceClaimResult::success(
+                    $this->getName(),
+                    $externalId,
+                    $data,
+                );
             }
 
-            Log::warning('Insurance claim submission failed', [
-                'provider' => $this->getName(),
-                'claim_id' => $claim->id,
-                'status' => $response->status(),
-                'body' => $response->body(),
-            ]);
-            return false;
+            $errorMessage = $response->json('error') ?? $response->json('message') ?? $response->body();
+
+            return InsuranceClaimResult::failed(
+                $this->getName(),
+                "HTTP {$response->status()}: {$errorMessage}",
+                $response->json() ?? ['raw' => $response->body()],
+            );
         } catch (\Throwable $e) {
-            Log::error('Insurance claim submission error', [
-                'provider' => $this->getName(),
-                'claim_id' => $claim->id,
-                'error' => $e->getMessage(),
-            ]);
-            return false;
+            return InsuranceClaimResult::failed(
+                $this->getName(),
+                $e->getMessage(),
+            );
         }
     }
 
-    public function checkStatus(string $externalId): string
+    public function checkStatus(string $claimId): InsuranceClaimResult
     {
         try {
-            $response = Http::timeout($this->timeout)
-                ->withToken($this->apiKey)
-                ->get($this->apiUrl . '/claims/' . $externalId);
+            $response = Http::withHeaders([
+                'X-API-Key' => $this->apiKey,
+                'X-API-Secret' => $this->apiSecret,
+                'Content-Type' => 'application/json',
+            ])->get("{$this->baseUrl}/claims/{$claimId}");
 
             if ($response->successful()) {
-                $status = $response->json('status', 'unknown');
-                switch ($status) {
-                    case 'approved': return 'approved';
-                    case 'rejected': return 'rejected';
-                    case 'pending':
-                    case 'under_review':
-                    default: return 'filed';
-                }
-            }
-        } catch (\Throwable $e) {
-            Log::error('Insurance status check error', [
-                'provider' => $this->getName(),
-                'external_id' => $externalId,
-                'error' => $e->getMessage(),
-            ]);
-        }
+                $data = $response->json();
 
-        return 'filed';
+                return InsuranceClaimResult::success(
+                    $this->getName(),
+                    $claimId,
+                    $data,
+                );
+            }
+
+            return InsuranceClaimResult::failed(
+                $this->getName(),
+                "HTTP {$response->status()}: {$response->body()}",
+                $response->json() ?? ['raw' => $response->body()],
+            );
+        } catch (\Throwable $e) {
+            return InsuranceClaimResult::failed(
+                $this->getName(),
+                $e->getMessage(),
+            );
+        }
+    }
+
+    private function buildClaimPayload(ConvenioClaim $claim): array
+    {
+        $convenioPet = $claim->convenioPet;
+        $pet = $convenioPet?->pet;
+        $convenio = $convenioPet?->convenio;
+
+        return array_filter([
+            'claim_number' => $claim->claim_number,
+            'policy_number' => $convenioPet?->policy_number,
+            'amount_requested' => $claim->amount_requested,
+            'contract_number' => $convenio?->contract_number,
+            'pet_name' => $pet?->name,
+            'species' => $pet?->species,
+            'breed' => $pet?->breed,
+            'notes' => $claim->notes,
+            'filed_at' => $claim->filed_at?->toIso8601String(),
+        ], fn ($value) => $value !== null && $value !== '');
     }
 }
