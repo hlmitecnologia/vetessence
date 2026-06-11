@@ -98,7 +98,7 @@ class InvoiceController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('invoices.show', $invoice)->with('success', 'Fatura criada com sucesso!');
+            return redirect()->route('invoices.index')->with('success', 'Fatura criada com sucesso!');
         } catch (\Exception $e) {
             DB::rollBack();
             logger()->error('Erro ao criar fatura', [

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Scopes\BranchScope;
 use App\Traits\BranchScoped;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -75,7 +76,7 @@ class Invoice extends Model
     {
         $prefix = 'FAT';
         $year = date('Y');
-        $last = self::whereYear('created_at', $year)->max('invoice_number');
+        $last = self::withoutGlobalScope(BranchScope::class)->whereYear('created_at', $year)->max('invoice_number');
         $sequence = $last ? (int) substr($last, -6) + 1 : 1;
         return sprintf('%s-%s-%06d', $prefix, $year, $sequence);
     }
