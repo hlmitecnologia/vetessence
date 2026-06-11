@@ -44,8 +44,8 @@
                 @if($healthCertificate->embarkation_date)
                     &nbsp;|&nbsp; Embarque: {{ $healthCertificate->embarkation_date->format('d/m/Y') }}
                 @endif
-                @if($healthCertificate->valid_until)
-                    &nbsp;|&nbsp; Validade: {{ $healthCertificate->valid_until->format('d/m/Y') }}
+                @if($healthCertificate->expiration_date)
+                    &nbsp;|&nbsp; Validade: {{ $healthCertificate->expiration_date->format('d/m/Y') }}
                 @endif
             </p>
         </div>
@@ -78,7 +78,7 @@
                 <th>Porte</th>
                 <td>{{ $healthCertificate->pet->size ?? '-' }}</td>
                 <th>Microchip</th>
-                <td>{{ $healthCertificate->pet->microchip_number ?? ($healthCertificate->pet->microchip ?? '-') }}</td>
+                <td>{{ $healthCertificate->pet->microchip_number ?? '-' }}</td>
             </tr>
             @if($healthCertificate->pet->microchip_date)
             <tr>

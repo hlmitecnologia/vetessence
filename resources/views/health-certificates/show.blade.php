@@ -6,6 +6,7 @@
         <h3 class="card-title">Certificado {{ $healthCertificate->certificate_number }}</h3>
         <div class="card-tools">
             <a href="{{ route('health-certificates.pdf', $healthCertificate) }}" class="btn btn-success btn-sm"><i class="fas fa-file-pdf"></i> Download PDF</a>
+            <a href="{{ route('health-certificates.cvi-pdf', $healthCertificate) }}" class="btn btn-info btn-sm"><i class="fas fa-file-export"></i> Download CVI (PDF)</a>
             <a href="{{ route('health-certificates.edit', $healthCertificate) }}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Editar</a>
             <a href="{{ route('health-certificates.index') }}" class="btn btn-default btn-sm"><i class="fas fa-arrow-left"></i> Voltar</a>
         </div>

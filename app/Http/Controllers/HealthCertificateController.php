@@ -124,6 +124,21 @@ class HealthCertificateController extends Controller
         return $pdf->download($filename);
     }
 
+    public function downloadCviPdf(HealthCertificate $healthCertificate)
+    {
+        $healthCertificate->load(['pet.tutors', 'issuerVet']);
+
+        $healthCertificate->update([
+            'pdf_generated_at' => now(),
+            'status' => 'issued',
+        ]);
+
+        $filename = "cvi-" . str_replace('/', '-', $healthCertificate->cvi_number ?? $healthCertificate->certificate_number) . ".pdf";
+
+        $pdf = Pdf::loadView('health-certificates.cvi-pdf', compact('healthCertificate'));
+        return $pdf->download($filename);
+    }
+
     protected function getVeterinarians()
     {
         $vetRole = Role::where('slug', 'veterinario')->first();

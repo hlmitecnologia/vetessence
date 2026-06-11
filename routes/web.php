@@ -26,7 +26,7 @@ Route::middleware('guest')->group(function () {
 });
 
 // Public prescription verification (QR code scan) — no auth required, rate-limited
-Route::get('r/{hash}', 'App\Http\Controllers\PrescriptionVerificationController@verify')
+Route::get('r/{hash}', 'App\Http\Controllers\PublicPrescriptionController@verify')
     ->name('prescriptions.verify')
     ->middleware('throttle:10,1');
 
@@ -779,6 +779,7 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'health-certificates.destroy',
     ]);
     Route::get('health-certificates/{healthCertificate}/pdf', 'App\Http\Controllers\HealthCertificateController@pdf')->name('health-certificates.pdf');
+    Route::get('health-certificates/{healthCertificate}/cvi-pdf', 'App\Http\Controllers\HealthCertificateController@downloadCviPdf')->name('health-certificates.cvi-pdf');
 
     // Roles (Admin)
     Route::resource('roles', 'App\Http\Controllers\RoleController')->names([
