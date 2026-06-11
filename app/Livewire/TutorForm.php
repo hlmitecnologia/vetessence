@@ -140,14 +140,6 @@ class TutorForm extends Component
         $existing = $this->cpf ? Tutor::where('cpf', $this->cpf)->first() : null;
         $id = $this->tutorId ?: ($existing->id ?? null);
 
-        \Log::debug('TutorForm.save', [
-            'tutorId' => $this->tutorId,
-            'cpf_input' => $this->cpf,
-            'existing_id' => $existing?->id,
-            'resolved_id' => $id,
-            'cpf_rule' => $id ? "unique:tutors,cpf,{$id}" : 'unique:tutors,cpf',
-        ]);
-
         $rules = $this->rules;
         if ($id) {
             $rules['cpf'] = 'required|string|unique:tutors,cpf,' . $id;
