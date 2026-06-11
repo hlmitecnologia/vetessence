@@ -9,8 +9,8 @@ class NotificationLogController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:communication.view')->only(['index', 'show']);
-        $this->middleware('can:communication.delete')->only(['destroy']);
+        $this->middleware('can:notification-logs.view')->only(['index', 'show']);
+        $this->middleware('can:notification-logs.delete')->only(['destroy']);
     }
 
     public function index(Request $request)
