@@ -161,4 +161,59 @@ class TutorFormTest extends ModuleTestCase
             ->call('save')
             ->assertHasErrors('cpf');
     }
+
+    public function test_can_update_tutor_via_event()
+    {
+        $tutor = Tutor::factory()->create([
+            'name' => 'Event Tutor',
+            'cpf' => '98765432100',
+        ]);
+
+        Livewire::test('tutor-form')
+            ->dispatch('editTutor', id: $tutor->id)
+            ->assertSet('tutorId', $tutor->id)
+            ->assertSet('name', 'Event Tutor')
+            ->assertSet('cpf', '98765432100')
+            ->call('save')
+            ->assertDispatched('tutor-saved');
+
+        $this->assertDatabaseHas('tutors', ['id' => $tutor->id, 'name' => 'Event Tutor']);
+    }
+
+    public function test_can_update_tutor_via_event_without_changing_cpf()
+    {
+        $tutor = Tutor::factory()->create([
+            'name' => 'Same CPF Tutor',
+            'cpf' => '11122233344',
+        ]);
+
+        Livewire::test('tutor-form')
+            ->dispatch('editTutor', id: $tutor->id)
+            ->assertSet('tutorId', $tutor->id)
+            ->call('save')
+            ->assertDispatched('tutor-saved');
+
+        $this->assertDatabaseHas('tutors', ['id' => $tutor->id]);
+    }
+
+    public function test_can_update_tutor_with_same_cpf_as_create_then_edit()
+    {
+        $tutor = Tutor::factory()->create([
+            'name' => 'Create Then Edit',
+            'cpf' => '55544433322',
+        ]);
+
+        Livewire::test('tutor-form')
+            ->set('name', 'Temp')
+            ->set('cpf', '99988877766')
+            ->set('email', 'temp@teste.com')
+            ->set('phone', '11955555555')
+            ->dispatch('editTutor', id: $tutor->id)
+            ->assertSet('tutorId', $tutor->id)
+            ->set('name', 'Updated Name')
+            ->call('save')
+            ->assertDispatched('tutor-saved');
+
+        $this->assertDatabaseHas('tutors', ['id' => $tutor->id, 'name' => 'Updated Name']);
+    }
 }
