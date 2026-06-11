@@ -137,17 +137,22 @@ class TutorForm extends Component
         $this->state_id = $this->state_id ?: null;
         $this->city_id = $this->city_id ?: null;
 
-        if (!$this->tutorId && $this->cpf) {
-            $existing = Tutor::where('cpf', $this->cpf)->first();
-            if ($existing && $existing->name === $this->name) {
-                $this->tutorId = $existing->id;
+        $existing = $this->cpf ? Tutor::where('cpf', $this->cpf)->first() : null;
+        $id = $this->tutorId;
+
+        if (!$id && $existing) {
+            $sameName = $existing->name === $this->name;
+            $sameEmail = $existing->email === $this->email;
+            $samePhone = $existing->phone === $this->phone;
+            if ($sameName || $sameEmail || $samePhone) {
+                $id = $existing->id;
             }
         }
 
         $rules = $this->rules;
-        if ($this->tutorId) {
-            $rules['cpf'] = 'required|string|unique:tutors,cpf,' . $this->tutorId;
-            $rules['email'] = 'required|email|unique:tutors,email,' . $this->tutorId;
+        if ($id) {
+            $rules['cpf'] = 'required|string|unique:tutors,cpf,' . $id;
+            $rules['email'] = 'required|email|unique:tutors,email,' . $id;
         }
 
         $this->validate($rules);
@@ -174,8 +179,8 @@ class TutorForm extends Component
         ];
 
         try {
-            if ($this->tutorId) {
-                Tutor::findOrFail($this->tutorId)->update($data);
+            if ($id) {
+                Tutor::findOrFail($id)->update($data);
             } else {
                 Tutor::create($data);
             }
