@@ -101,7 +101,12 @@ class InvoiceController extends Controller
             return redirect()->route('invoices.show', $invoice)->with('success', 'Fatura criada com sucesso!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Erro ao criar fatura.')->withInput();
+            logger()->error('Erro ao criar fatura', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'input' => $request->except('_token'),
+            ]);
+            return back()->with('error', 'Erro ao criar fatura: ' . $e->getMessage())->withInput();
         }
     }
 
