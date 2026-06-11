@@ -65,6 +65,7 @@
                                     'ferrets' => 'Furões', 'fish' => 'Peixes',
                                     'asinine' => 'Asininos', 'mule' => 'Muares',
                                     'human' => 'Humanos', 'psittacidae' => 'Psitacídeos',
+                                    'birds' => 'Aves',
                                 ];
                             @endphp
                             @foreach($zoonoticDisease->species_affected as $species)
