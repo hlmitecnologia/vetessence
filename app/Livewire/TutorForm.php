@@ -137,19 +137,17 @@ class TutorForm extends Component
         $this->state_id = $this->state_id ?: null;
         $this->city_id = $this->city_id ?: null;
 
-        $id = $this->tutorId;
-
-        if (!$id && $this->cpf) {
+        if (!$this->tutorId && $this->cpf) {
             $existing = Tutor::where('cpf', $this->cpf)->first();
-            if ($existing && $existing->name === $this->name && $existing->email === $this->email) {
-                $id = $existing->id;
+            if ($existing && $existing->name === $this->name) {
+                $this->tutorId = $existing->id;
             }
         }
 
         $rules = $this->rules;
-        if ($id) {
-            $rules['cpf'] = 'required|string|unique:tutors,cpf,' . $id;
-            $rules['email'] = 'required|email|unique:tutors,email,' . $id;
+        if ($this->tutorId) {
+            $rules['cpf'] = 'required|string|unique:tutors,cpf,' . $this->tutorId;
+            $rules['email'] = 'required|email|unique:tutors,email,' . $this->tutorId;
         }
 
         $this->validate($rules);
@@ -176,9 +174,8 @@ class TutorForm extends Component
         ];
 
         try {
-            $saveId = $this->tutorId ?? $id;
-            if ($saveId) {
-                Tutor::findOrFail($saveId)->update($data);
+            if ($this->tutorId) {
+                Tutor::findOrFail($this->tutorId)->update($data);
             } else {
                 Tutor::create($data);
             }

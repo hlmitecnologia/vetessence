@@ -216,4 +216,42 @@ class TutorFormTest extends ModuleTestCase
 
         $this->assertDatabaseHas('tutors', ['id' => $tutor->id, 'name' => 'Updated Name']);
     }
+
+    public function test_can_update_tutor_filling_email_that_was_empty()
+    {
+        $tutor = Tutor::factory()->create([
+            'name' => 'Fill Email',
+            'cpf' => '66677788899',
+            'email' => null,
+        ]);
+
+        Livewire::test('tutor-form')
+            ->dispatch('editTutor', id: $tutor->id)
+            ->assertSet('tutorId', $tutor->id)
+            ->set('email', 'fill-email@teste.com')
+            ->call('save')
+            ->assertDispatched('tutor-saved');
+
+        $this->assertDatabaseHas('tutors', [
+            'id' => $tutor->id,
+            'email' => 'fill-email@teste.com',
+        ]);
+    }
+
+    public function test_prevents_duplicate_cpf_with_different_name()
+    {
+        Tutor::factory()->create([
+            'name' => 'Original',
+            'cpf' => '11122233344',
+            'email' => 'original@teste.com',
+        ]);
+
+        Livewire::test('tutor-form')
+            ->set('name', 'Different Name')
+            ->set('cpf', '11122233344')
+            ->set('email', 'different@teste.com')
+            ->set('phone', '11977777777')
+            ->call('save')
+            ->assertHasErrors('cpf');
+    }
 }
