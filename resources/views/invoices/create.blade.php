@@ -1,5 +1,16 @@
 @extends('layouts.adminlte', ['title' => 'Nova Fatura'])
 
+@push('styles')
+<style>
+.nav-tabs .nav-link.active {
+    color: #fff !important;
+}
+.nav-tabs .nav-link.active i {
+    color: #fff !important;
+}
+</style>
+@endpush
+
 @section('content')
 <div class="row justify-content-center">
     <div class="col-md-10">
