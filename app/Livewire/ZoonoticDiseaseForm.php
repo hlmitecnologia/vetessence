@@ -43,8 +43,21 @@ class ZoonoticDiseaseForm extends Component
 
     public function mount($id = null)
     {
-        $this->speciesOptions = array_keys(config('species'));
+        $this->speciesOptions = $this->getSpeciesOptions();
         if ($id) $this->load($id);
+    }
+
+    private function getSpeciesOptions(): array
+    {
+        return [
+            'canine', 'feline', 'bovine', 'equine', 'ovine', 'caprine',
+            'swine', 'avian', 'asinine', 'lagomorph', 'rodent', 'rodents',
+            'fish', 'camelid', 'cervid', 'amphibian', 'reptile',
+            'small_mammal', 'exotic', 'wild_mammals', 'wild_canids',
+            'wild_felids', 'non_human_primates', 'wild_birds',
+            'wild_ungulates', 'ferrets', 'mule', 'human', 'psittacidae',
+            'birds',
+        ];
     }
 
     #[On('editZoonoticDisease')]
@@ -113,10 +126,18 @@ class ZoonoticDiseaseForm extends Component
             'is_active' => $this->is_active,
         ];
 
-        if ($this->zoonoticDiseaseId) {
-            ZoonoticDisease::findOrFail($this->zoonoticDiseaseId)->update($data);
-        } else {
-            ZoonoticDisease::create($data);
+        try {
+            if ($this->zoonoticDiseaseId) {
+                ZoonoticDisease::findOrFail($this->zoonoticDiseaseId)->update($data);
+            } else {
+                ZoonoticDisease::create($data);
+            }
+        } catch (\Illuminate\Database\QueryException $e) {
+            if (str_contains($e->getMessage(), 'Duplicate entry')) {
+                $this->addError('name', 'Já existe uma doença com este nome.');
+                return;
+            }
+            throw $e;
         }
 
         $this->dispatch('zoonotic-disease-saved');
