@@ -22,10 +22,10 @@ class TutorControllerTest extends ModuleTestCase
         $response->assertOk();
     }
 
-    public function test_create()
+    public function test_create_redirects_to_index()
     {
         $response = $this->get(route('tutors.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('tutors.index'));
     }
 
     public function test_store_creates_record()
@@ -54,11 +54,11 @@ class TutorControllerTest extends ModuleTestCase
         $response->assertOk();
     }
 
-    public function test_edit()
+    public function test_edit_redirects_to_index()
     {
         $tutor = Tutor::factory()->create();
         $response = $this->get(route('tutors.edit', $tutor));
-        $response->assertOk();
+        $response->assertRedirect(route('tutors.index'));
     }
 
     public function test_update_modifies_record()

@@ -139,6 +139,10 @@ class TutorForm extends Component
             $rules['cpf'] = 'required|string|unique:tutors,cpf,' . $this->tutorId;
             $rules['email'] = 'required|email|unique:tutors,email,' . $this->tutorId;
         }
+
+        $this->state_id = $this->state_id ?: null;
+        $this->city_id = $this->city_id ?: null;
+
         $this->validate($rules);
 
         foreach (['address', 'number', 'neighborhood', 'complement', 'zipcode'] as $f) {
@@ -155,14 +159,22 @@ class TutorForm extends Component
             'neighborhood' => $this->neighborhood,
             'complement' => $this->complement,
             'zipcode' => $this->zipcode,
-            'state_id' => $this->state_id ?: null,
-            'city_id' => $this->city_id ?: null,
+            'state_id' => $this->state_id,
+            'city_id' => $this->city_id,
+            'notify_sms' => true,
+            'notify_whatsapp' => true,
+            'notify_email' => true,
         ];
 
-        if ($this->tutorId) {
-            Tutor::findOrFail($this->tutorId)->update($data);
-        } else {
-            Tutor::create($data);
+        try {
+            if ($this->tutorId) {
+                Tutor::findOrFail($this->tutorId)->update($data);
+            } else {
+                Tutor::create($data);
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'Erro ao salvar tutor: ' . $e->getMessage());
+            return;
         }
 
         $this->dispatch('tutor-saved');

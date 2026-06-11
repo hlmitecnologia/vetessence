@@ -25,7 +25,7 @@ class TutorController extends Controller
             });
         }
 
-        $tutors = $query->join('users', 'tutors.user_id', '=', 'users.id')
+        $tutors = $query->leftJoin('users', 'tutors.user_id', '=', 'users.id')
             ->select('tutors.*')
             ->orderBy('users.name')
             ->paginate(15)
@@ -36,7 +36,7 @@ class TutorController extends Controller
 
     public function create()
     {
-        return view('tutors.create');
+        return redirect()->route('tutors.index');
     }
 
     public function store(Request $request)
@@ -79,7 +79,7 @@ class TutorController extends Controller
 
     public function edit(Tutor $tutor)
     {
-        return view('tutors.edit', compact('tutor'));
+        return redirect()->route('tutors.index');
     }
 
     public function update(Request $request, Tutor $tutor)

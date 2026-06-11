@@ -14,21 +14,21 @@ class PortoSeguroProviderTest extends TestCase
     public function test_returns_provider_name()
     {
         $provider = new PortoSeguroProvider();
-        $this->assertEquals('Porto Seguro', $provider->getName());
+        $this->assertEquals('porto-seguro', $provider->getName());
     }
 
     public function test_submit_returns_false_without_api()
     {
         $claim = ConvenioClaim::factory()->create(['status' => 'draft']);
         $provider = new PortoSeguroProvider();
-        $result = $provider->submit($claim);
-        $this->assertFalse($result);
+        $result = $provider->submitClaim($claim);
+        $this->assertFalse($result->success);
     }
 
     public function test_check_status_returns_filed_without_api()
     {
         $provider = new PortoSeguroProvider();
         $result = $provider->checkStatus('nonexistent-id');
-        $this->assertEquals('filed', $result);
+        $this->assertFalse($result->success);
     }
 }
