@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Tutor;
+use App\Models\Service;
+use App\Models\Product;
 use App\Models\NfseConfig;
 use App\Models\NfeConfig;
 use App\Events\InvoicePaid;
@@ -40,11 +42,13 @@ class InvoiceController extends Controller
     public function create(Request $request)
     {
         $tutors = Tutor::orderBy('name')->get();
+        $services = Service::where('is_active', true)->orderBy('name')->get();
+        $products = Product::where('is_active', true)->where('stock', '>', 0)->orderBy('name')->get();
         
         $tutorId = $request->tutor_id;
         $tutor = $tutorId ? Tutor::with('primaryPets')->find($tutorId) : null;
 
-        return view('invoices.create', compact('tutors', 'tutor'));
+        return view('invoices.create', compact('tutors', 'services', 'products', 'tutor'));
     }
 
     public function store(Request $request)
@@ -57,9 +61,9 @@ class InvoiceController extends Controller
             'items.*.description' => 'required|string',
             'items.*.quantity' => 'required|numeric|min:1',
             'items.*.unit_price' => 'required|numeric|min:0',
-            'items.*.item_type' => 'nullable|string|in:service,product,avulso',
-            'items.*.product_id' => 'nullable|exists:products,id',
-            'items.*.service_id' => 'nullable|exists:services,id',
+            'items.*.item_type' => 'required|string|in:service,product,avulso',
+            'items.*.product_id' => 'required_if:items.*.item_type,product|exists:products,id',
+            'items.*.service_id' => 'required_if:items.*.item_type,service|exists:services,id',
         ]);
 
         DB::beginTransaction();
