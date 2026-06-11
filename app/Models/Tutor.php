@@ -41,7 +41,13 @@ class Tutor extends Authenticatable
 
     public function getNameAttribute()
     {
-        return $this->user ? $this->user->name : ($this->email ?? 'Tutor');
+        if ($this->user) {
+            return $this->user->name;
+        }
+        if ($this->attributes['name'] ?? null) {
+            return $this->attributes['name'];
+        }
+        return $this->email ?? 'Tutor';
     }
 
     public function user(): BelongsTo

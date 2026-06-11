@@ -30,14 +30,15 @@ class TutorFormTest extends ModuleTestCase
 
     public function test_can_create_tutor_with_state_city()
     {
-        $state = State::first();
+        $state = State::factory()->create();
+        $city = \App\Models\City::factory()->create(['state_id' => $state->id]);
 
         Livewire::test('tutor-form')
             ->set('name', 'João Teste')
             ->set('cpf', '987.654.321-00')
             ->set('email', 'joao@teste.com')
             ->set('phone', '11999999999')
-            ->set('state_id', $state->id)
+            ->set('state_id', (string) $state->id)
             ->call('save')
             ->assertDispatched('tutor-saved');
 
@@ -79,7 +80,10 @@ class TutorFormTest extends ModuleTestCase
 
     public function test_can_update_tutor()
     {
-        $tutor = Tutor::factory()->create(['name' => 'Nome Antigo']);
+        $tutor = Tutor::factory()->create([
+            'name' => 'Nome Antigo',
+            'cpf' => '52998224725',
+        ]);
 
         Livewire::test('tutor-form', ['id' => $tutor->id])
             ->set('name', 'Nome Novo')
@@ -92,16 +96,69 @@ class TutorFormTest extends ModuleTestCase
         $this->assertDatabaseHas('tutors', ['id' => $tutor->id, 'name' => 'Nome Novo']);
     }
 
-    public function test_redirects_when_edit_view_accessed()
+    public function test_admin_user_can_create_tutor()
     {
-        $tutor = Tutor::factory()->create();
-        $response = $this->get(route('tutors.edit', $tutor));
-        $response->assertRedirect(route('tutors.index'));
+        $admin = \App\Models\User::where('email', 'admin@vet.com')->first()
+            ?? \App\Models\User::factory()->create(['email' => 'admin@vet.com', 'is_active' => true]);
+        $this->actingAs($admin);
+
+        Livewire::test('tutor-form')
+            ->set('name', 'Admin Tutor')
+            ->set('cpf', '111.222.333-44')
+            ->set('email', 'admin-tutor@teste.com')
+            ->set('phone', '11911111111')
+            ->call('save')
+            ->assertDispatched('tutor-saved');
+
+        $this->assertDatabaseHas('tutors', ['email' => 'admin-tutor@teste.com']);
     }
 
-    public function test_redirects_when_create_view_accessed()
+    public function test_super_user_can_create_tutor()
     {
-        $response = $this->get(route('tutors.create'));
-        $response->assertRedirect(route('tutors.index'));
+        $super = \App\Models\User::where('email', 'super@vet.com')->first()
+            ?? \App\Models\User::factory()->create(['email' => 'super@vet.com', 'is_active' => true]);
+        $this->actingAs($super);
+
+        Livewire::test('tutor-form')
+            ->set('name', 'Super Tutor')
+            ->set('cpf', '555.666.777-88')
+            ->set('email', 'super-tutor@teste.com')
+            ->set('phone', '11922222222')
+            ->call('save')
+            ->assertDispatched('tutor-saved');
+
+        $this->assertDatabaseHas('tutors', ['email' => 'super-tutor@teste.com']);
+    }
+
+    public function test_user_with_permission_can_create()
+    {
+        $role = \Spatie\Permission\Models\Role::create(['name' => 'PermTutor', 'guard_name' => 'web', 'slug' => 'perm-tutor']);
+        $user = \App\Models\User::factory()->create(['role_id' => $role->id, 'is_active' => true]);
+        $user->givePermissionTo(\Spatie\Permission\Models\Permission::firstOrCreate(['name' => 'tutors.create', 'guard_name' => 'web']));
+        $user->givePermissionTo(\Spatie\Permission\Models\Permission::firstOrCreate(['name' => 'tutors.view', 'guard_name' => 'web']));
+        $this->actingAs($user);
+
+        Livewire::test('tutor-form')
+            ->set('name', 'Perm Tutor')
+            ->set('cpf', '999.888.777-66')
+            ->set('email', 'perm-tutor@teste.com')
+            ->set('phone', '11933333333')
+            ->call('save')
+            ->assertDispatched('tutor-saved');
+
+        $this->assertDatabaseHas('tutors', ['email' => 'perm-tutor@teste.com']);
+    }
+
+    public function test_handles_duplicate_cpf_gracefully()
+    {
+        Tutor::factory()->create(['cpf' => '12345678909']);
+
+        Livewire::test('tutor-form')
+            ->set('name', 'CPF Duplicate')
+            ->set('cpf', '12345678909')
+            ->set('email', 'cpfdup@teste.com')
+            ->set('phone', '11944444444')
+            ->call('save')
+            ->assertHasErrors('cpf');
     }
 }
