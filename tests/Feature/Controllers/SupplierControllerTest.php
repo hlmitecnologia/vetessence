@@ -23,7 +23,7 @@ class SupplierControllerTest extends ModuleTestCase
     public function test_create()
     {
         $response = $this->get(route('suppliers.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('suppliers.index'));
     }
 
     public function test_store_creates_record()
@@ -55,7 +55,7 @@ class SupplierControllerTest extends ModuleTestCase
     {
         $supplier = Supplier::factory()->create();
         $response = $this->get(route('suppliers.edit', $supplier));
-        $response->assertOk();
+        $response->assertRedirect(route('suppliers.index'));
     }
 
     public function test_update_modifies_record()

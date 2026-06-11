@@ -23,7 +23,7 @@ class SupplierController extends Controller
 
     public function create()
     {
-        return view('suppliers.create');
+        return redirect()->route('suppliers.index');
     }
 
     public function store(Request $request)
@@ -60,7 +60,7 @@ class SupplierController extends Controller
 
     public function edit(Supplier $supplier)
     {
-        return view('suppliers.edit', compact('supplier'));
+        return redirect()->route('suppliers.index');
     }
 
     public function update(Request $request, Supplier $supplier)
