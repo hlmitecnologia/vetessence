@@ -55,9 +55,11 @@
         .nav-pills .nav-link.active, .nav-pills .show > .nav-link,
         .page-item.active .page-link,
         .custom-control-input:checked ~ .custom-control-label::before,
-        .nav-tabs .nav-link.active {
+        .nav-tabs .nav-link.active,
+        .nav-tabs .nav-link.active i {
             background-color: var(--brand-primary, #455e36) !important;
             border-color: var(--brand-primary, #455e36) !important;
+            color: #fff !important;
         }
         .btn-outline-primary {
             color: var(--brand-primary, #455e36) !important;

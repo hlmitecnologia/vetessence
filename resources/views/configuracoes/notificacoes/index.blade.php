@@ -3,7 +3,6 @@
 @push('styles')
 <style>
 .nav-tabs .nav-link.active {
-    color: #fff !important;
     font-weight: 600;
 }
 </style>
