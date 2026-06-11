@@ -10,7 +10,7 @@
 - **Zoonotic‑disease creation silently fails**: added missing species keys to `getSpeciesOptions()`, try/catch for duplicate slug (`09933c3`)
 - **Tutor name accessor**: `getNameAttribute()` now checks `attributes['name']` before falling back to email (`61a1492`)
 - **TutorFormTest**: factory CPF, State seeding, permission tests (`61a1492`)
-- **CPF uniqueness on edit (v2)**: fallback now only checks name (not email) — ao editar tutor com email vazio e preenchê-lo, a validação não bloqueia mais; 2 novos testes (`905d030`)
+- **CPF uniqueness on edit (final)**: `save()` sempre busca ID do tutor pelo CPF no banco — se existe, usa o ID para exclusão da validação unique e atualiza o registro. Causa raiz era duplicidade real de CPF no banco, não `tutorId` perdido. 15 testes, todos passam; triagem OK. (`03e0aab`)
 - **PortoSeguroProviderTest**: 3 bugs fixed (`998867e`)
 
 ### In Progress
