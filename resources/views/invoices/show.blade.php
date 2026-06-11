@@ -137,7 +137,7 @@
             <div class="card-body text-center">
                 <i class="fas fa-check-circle text-success" style="font-size: 48px;"></i>
                 <h4 class="mt-2">Pagamento Confirmado</h4>
-                <p class="text-muted">{{ $invoice->paid_at->format('d/m/Y H:i') }}</p>
+                <p class="text-muted">{{ $invoice->paid_at?->format('d/m/Y H:i') }}</p>
                 <p class="text-muted">Método: {{ str_replace('_', ' ', ucfirst($invoice->payment_method ?? '-')) }}</p>
             </div>
         </div>

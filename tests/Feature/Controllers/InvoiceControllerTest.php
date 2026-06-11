@@ -4,6 +4,8 @@ namespace Tests\Feature\Controllers;
 
 use App\Models\Invoice;
 use App\Models\Pet;
+use App\Models\Product;
+use App\Models\Service;
 use App\Models\Tutor;
 use Tests\ModuleTestCase;
 
@@ -34,14 +36,16 @@ class InvoiceControllerTest extends ModuleTestCase
     {
         $tutor = Tutor::factory()->create();
         $pet = Pet::factory()->create();
+        $service = Service::factory()->create();
+        $product = Product::factory()->create();
 
         $response = $this->post(route('invoices.store'), [
             'tutor_id' => $tutor->id,
             'pet_id' => $pet->id,
             'due_date' => now()->addDays(30)->format('Y-m-d'),
             'items' => [
-                ['description' => 'Consulta', 'quantity' => 1, 'unit_price' => 150.00],
-                ['description' => 'Vacina', 'quantity' => 2, 'unit_price' => 80.00],
+                ['description' => 'Consulta', 'quantity' => 1, 'unit_price' => 150.00, 'item_type' => 'service', 'service_id' => $service->id],
+                ['description' => 'Vacina', 'quantity' => 2, 'unit_price' => 80.00, 'item_type' => 'product', 'product_id' => $product->id],
             ],
         ]);
 
