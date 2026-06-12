@@ -804,7 +804,23 @@
         window.n = function() { return true; };
 
         // Global SweetAlert2 confirmation using data-confirm attribute
-        // Colors: Cancelar=red, Sim=primary, Não=secondary
+        // Colors: Sim=#455e36, Não=#9aaa7e, Cancelar=#dc3545
+        function swalConfirm(message) {
+            return Swal.fire({
+                title: 'Confirmação',
+                text: message,
+                icon: 'question',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonColor: '#455e36',
+                denyButtonColor: '#9aaa7e',
+                cancelButtonColor: '#dc3545',
+                confirmButtonText: 'Sim',
+                denyButtonText: 'Não',
+                cancelButtonText: 'Cancelar'
+            });
+        }
+
         document.addEventListener('submit', function(e) {
             var form = e.target;
             var message = form.dataset.confirm;
@@ -812,16 +828,7 @@
             if (form.dataset.swalConfirmed) return;
 
             e.preventDefault();
-            Swal.fire({
-                title: 'Confirmação',
-                text: message,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#007bff',
-                cancelButtonColor: '#dc3545',
-                confirmButtonText: 'Sim',
-                cancelButtonText: 'Cancelar'
-            }).then(function(result) {
+            swalConfirm(message).then(function(result) {
                 if (result.isConfirmed) {
                     form.dataset.swalConfirmed = '1';
                     form.submit();
@@ -838,16 +845,7 @@
             if (btn.dataset.swalConfirmed) return;
 
             e.preventDefault();
-            Swal.fire({
-                title: 'Confirmação',
-                text: message,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#007bff',
-                cancelButtonColor: '#dc3545',
-                confirmButtonText: 'Sim',
-                cancelButtonText: 'Cancelar'
-            }).then(function(result) {
+            swalConfirm(message).then(function(result) {
                 if (result.isConfirmed) {
                     btn.dataset.swalConfirmed = '1';
                     btn.click();
