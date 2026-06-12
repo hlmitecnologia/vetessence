@@ -141,6 +141,10 @@ class InvoiceController extends Controller
             abort(403);
         }
 
+        if ($invoice->status !== 'paid') {
+            return back()->with('warning', 'A nota fiscal só pode ser emitida após o pagamento da fatura.');
+        }
+
         $results = [];
 
         if ($user->can('nfse.emit')) {

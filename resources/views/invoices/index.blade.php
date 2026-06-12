@@ -79,7 +79,7 @@
                         </form>
                         @endif
                         @if(auth()->user()->can('nfse.emit') || auth()->user()->can('nfe.emit'))
-                        @if(($inv->has_services > 0 || $inv->has_products > 0) && ($inv->nfse_status === 'none' || $inv->nfe_status === 'none'))
+                        @if($inv->status === 'paid' && ($inv->has_services > 0 || $inv->has_products > 0) && ($inv->nfse_status === 'none' || $inv->nfe_status === 'none'))
                         <form action="{{ route('invoices.emitir-nota-fiscal', $inv) }}" method="POST" class="d-inline" onsubmit="return confirm('Emitir nota(s) fiscal(is) para esta fatura?')">
                             @csrf
                             <button type="submit" class="btn btn-action btn-success" title="Emitir Nota Fiscal">

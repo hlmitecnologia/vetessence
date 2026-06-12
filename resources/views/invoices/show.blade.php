@@ -144,7 +144,7 @@
         @endif
 
         @can('nfse.emit')
-        @if($invoice->items->where('item_type', 'service')->isNotEmpty() || $invoice->items->where('item_type', 'product')->isNotEmpty())
+        @if($invoice->status === 'paid' && ($invoice->items->where('item_type', 'service')->isNotEmpty() || $invoice->items->where('item_type', 'product')->isNotEmpty()))
         <form action="{{ route('invoices.emitir-nota-fiscal', $invoice) }}" method="POST" class="mb-3" onsubmit="return confirm('Emitir nota(s) fiscal(is) para esta fatura?')">
             @csrf
             <button type="submit" class="btn btn-success btn-block">

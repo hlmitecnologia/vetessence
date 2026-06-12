@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\InvoicePaid;
+use App\Models\NotificationLog;
 use App\Services\Nfe\NfeService;
 use Illuminate\Support\Facades\Log;
 
@@ -32,6 +33,17 @@ class EmitirNfeOnPaid
 
         if (!$result->success) {
             Log::warning("Falha ao emitir NF-e automática para fatura #{$invoice->id}: {$result->errorMessage}");
+
+            NotificationLog::create([
+                'tutor_id' => $invoice->tutor_id,
+                'type' => 'nfe_emission_error',
+                'channel' => 'system',
+                'status' => 'failed',
+                'sent_at' => now(),
+                'message' => "Falha ao emitir NF-e automática para fatura {$invoice->invoice_number}",
+                'error_message' => $result->errorMessage,
+                'branch_id' => $invoice->branch_id,
+            ]);
         }
     }
 }
