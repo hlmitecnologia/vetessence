@@ -143,6 +143,17 @@
         </div>
         @endif
 
+        @can('nfse.emit')
+        @if($invoice->items->where('item_type', 'service')->isNotEmpty() || $invoice->items->where('item_type', 'product')->isNotEmpty())
+        <form action="{{ route('invoices.emitir-nota-fiscal', $invoice) }}" method="POST" class="mb-3" onsubmit="return confirm('Emitir nota(s) fiscal(is) para esta fatura?')">
+            @csrf
+            <button type="submit" class="btn btn-success btn-block">
+                <i class="fas fa-file-invoice"></i> Emitir Nota Fiscal
+            </button>
+        </form>
+        @endif
+        @endcan
+
         {{-- NFSe --}}
         <div class="card card-info">
             <div class="card-header">
@@ -179,18 +190,6 @@
                     @endif
                 </div>
                 @endif
-
-                @can('nfse.emit')
-                @if(($invoice->nfse_status ?? 'none') === 'none' && $hasNfseConfig)
-                <hr>
-                <form action="{{ route('nfse.emitir', $invoice) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-success btn-block">
-                        <i class="fas fa-file-invoice"></i> Emitir NFSe
-                    </button>
-                </form>
-                @endif
-                @endcan
 
                 @can('nfse.cancel')
                 @if($invoice->nfse_status === 'issued' && $invoice->nfseInvoice && $invoice->nfseInvoice->issuance_date && $invoice->nfseInvoice->issuance_date->diffInHours(now()) <= 24)
@@ -246,18 +245,6 @@
                     @endif
                 </div>
                 @endif
-
-                @can('nfe.emit')
-                @if(($invoice->nfe_status ?? 'none') === 'none' && $hasNfeConfig && $invoice->items->where('item_type', 'product')->isNotEmpty())
-                <hr>
-                <form action="{{ route('nfe.emitir', $invoice) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-success btn-block">
-                        <i class="fas fa-box"></i> Emitir NF-e
-                    </button>
-                </form>
-                @endif
-                @endcan
 
                 @can('nfe.cancel')
                 @if($invoice->nfe_status === 'issued' && $invoice->nfeInvoice && $invoice->nfeInvoice->issuance_date && $invoice->nfeInvoice->issuance_date->diffInHours(now()) <= 24)

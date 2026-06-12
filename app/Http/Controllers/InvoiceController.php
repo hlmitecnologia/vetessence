@@ -10,6 +10,8 @@ use App\Models\Product;
 use App\Models\NfseConfig;
 use App\Models\NfeConfig;
 use App\Events\InvoicePaid;
+use App\Services\Nfse\NfseService;
+use App\Services\Nfe\NfeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,7 +19,11 @@ class InvoiceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Invoice::with(['tutor', 'pet', 'nfseInvoice', 'nfeInvoice']);
+        $query = Invoice::with(['tutor', 'pet', 'nfseInvoice', 'nfeInvoice'])
+            ->withCount([
+                'items as has_services' => fn($q) => $q->where('item_type', 'service'),
+                'items as has_products' => fn($q) => $q->where('item_type', 'product'),
+            ]);
 
         if ($request->status) {
             $query->where('status', $request->status);
@@ -122,6 +128,52 @@ class InvoiceController extends Controller
         $hasNfeConfig = NfeConfig::where('is_active', true)->exists();
 
         return view('invoices.show', compact('invoice', 'hasNfseConfig', 'hasNfeConfig'));
+    }
+
+    public function emitirNotaFiscal(Invoice $invoice, NfseService $nfseService, NfeService $nfeService)
+    {
+        $invoice->load('items');
+        $user = auth()->user();
+        $hasServiceItems = $invoice->items->where('item_type', 'service')->isNotEmpty();
+        $hasProductItems = $invoice->items->where('item_type', 'product')->isNotEmpty();
+        $hasNfseConfig = NfseConfig::where('is_active', true)->exists();
+        $hasNfeConfig = NfeConfig::where('is_active', true)->exists();
+
+        if (!$user->can('nfse.emit') && !$user->can('nfe.emit')) {
+            abort(403);
+        }
+
+        $results = [];
+
+        if ($hasServiceItems && $invoice->nfse_status === 'none' && $hasNfseConfig && $user->can('nfse.emit')) {
+            $results['nfse'] = $nfseService->emitir($invoice);
+        } elseif ($hasServiceItems && $invoice->nfse_status !== 'none') {
+            $results['nfse'] = (object) ['success' => true, 'message' => 'NFSe já emitida anteriormente.'];
+        }
+
+        if ($hasProductItems && $invoice->nfe_status === 'none' && $hasNfeConfig && $user->can('nfe.emit')) {
+            $results['nfe'] = $nfeService->emitir($invoice);
+        } elseif ($hasProductItems && $invoice->nfe_status !== 'none') {
+            $results['nfe'] = (object) ['success' => true, 'message' => 'NF-e já emitida anteriormente.'];
+        }
+
+        if (empty($results)) {
+            return back()->with('info', 'Nenhuma nota fiscal necessária para esta fatura.');
+        }
+
+        $messages = [];
+        foreach ($results as $type => $result) {
+            if ($result->success) {
+                $messages[] = strtoupper($type) . ': emitida com sucesso.';
+            } else {
+                $messages[] = strtoupper($type) . ': ' . ($result->errorMessage ?? 'erro desconhecido');
+            }
+        }
+
+        $hasError = collect($results)->contains(fn($r) => !$r->success);
+        $flashType = $hasError ? 'warning' : 'success';
+
+        return back()->with($flashType, implode(' | ', $messages));
     }
 
     public function generatePix(Invoice $invoice)
