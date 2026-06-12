@@ -85,7 +85,7 @@
 
             <div class="form-group">
                 <label for="reason">Motivo/Justificativa *</label>
-                <textarea name="reason" id="reason" rows="3" class="form-control @error('reason') is-invalid @enderror" required>{{ old('reason') }}</textarea>
+                <textarea name="reason" id="reason" rows="3" class="wysiwyg form-control @error('reason') is-invalid @enderror" required>{{ old('reason') }}</textarea>
                 @error('reason')
                     <span class="invalid-feedback">{{ $message }}</span>
                 @enderror
@@ -93,7 +93,7 @@
 
             <div class="form-group">
                 <label for="notes">Observações</label>
-                <textarea name="notes" id="notes" rows="2" class="form-control">{{ old('notes') }}</textarea>
+                <textarea name="notes" id="notes" rows="2" class="wysiwyg form-control">{{ old('notes') }}</textarea>
             </div>
         </div>
         <div class="card-footer">

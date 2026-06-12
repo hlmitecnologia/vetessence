@@ -13,5 +13,5 @@
         <option value="approved" {{ old('status', $preAnestheticEvaluation->status ?? '') == 'approved' ? 'selected' : '' }}>Aprovado</option>
         <option value="rejected" {{ old('status', $preAnestheticEvaluation->status ?? '') == 'rejected' ? 'selected' : '' }}>Rejeitado</option>
     </select></div>
-<div class="form-group"><label>Observações</label><textarea name="observations" class="form-control">{{ old('observations', $preAnestheticEvaluation->observations ?? '') }}</textarea></div>
-<div class="form-group"><label>Recomendações</label><textarea name="recommendations" class="form-control">{{ old('recommendations', $preAnestheticEvaluation->recommendations ?? '') }}</textarea></div>
+<div class="wysiwyg form-group"><label>Observações</label><textarea name="observations" class="wysiwyg form-control">{{ old('observations', $preAnestheticEvaluation->observations ?? '') }}</textarea></div>
+<div class="wysiwyg form-group"><label>Recomendações</label><textarea name="recommendations" class="wysiwyg form-control">{{ old('recommendations', $preAnestheticEvaluation->recommendations ?? '') }}</textarea></div>

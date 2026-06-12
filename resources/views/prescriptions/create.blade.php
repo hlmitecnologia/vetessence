@@ -64,11 +64,11 @@
             </div>
             <div class="form-group">
                 <label for="instructions">Instruções</label>
-                <textarea name="instructions" id="instructions" class="form-control" rows="3">{{ old('instructions') }}</textarea>
+                <textarea name="instructions" id="instructions" class="wysiwyg form-control" rows="3">{{ old('instructions') }}</textarea>
             </div>
             <div class="form-group">
                 <label for="notes">Observações</label>
-                <textarea name="notes" id="notes" class="form-control" rows="2">{{ old('notes') }}</textarea>
+                <textarea name="notes" id="notes" class="wysiwyg form-control" rows="2">{{ old('notes') }}</textarea>
             </div>
         </div>
         <div class="card-footer">

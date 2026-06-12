@@ -27,21 +27,21 @@
                 @if($medicalRecord->chief_complaint)
                 <div class="mb-3">
                     <small class="text-muted text-uppercase">Queixa Principal</small>
-                    <p>{{ $medicalRecord->chief_complaint }}</p>
+                    <p>{!! $medicalRecord->chief_complaint !!}</p>
                 </div>
                 @endif
 
                 @if($medicalRecord->anamnesis)
                 <div class="mb-3">
                     <small class="text-muted text-uppercase">Anamnese</small>
-                    <p class="whitespace-pre-line">{{ $medicalRecord->anamnesis }}</p>
+                    <p class="whitespace-pre-line">{!! $medicalRecord->anamnesis !!}</p>
                 </div>
                 @endif
 
                 @if($medicalRecord->physical_exam)
                 <div class="mb-3">
                     <small class="text-muted text-uppercase">Exame Físico</small>
-                    <p class="whitespace-pre-line">{{ $medicalRecord->physical_exam }}</p>
+                    <p class="whitespace-pre-line">{!! $medicalRecord->physical_exam !!}</p>
                 </div>
                 @endif
 
@@ -49,13 +49,13 @@
                     @if($medicalRecord->diagnosis)
                     <div class="col-md-6 mb-3">
                         <small class="text-muted text-uppercase">Diagnóstico</small>
-                        <p>{{ $medicalRecord->diagnosis }}</p>
+                        <p>{!! $medicalRecord->diagnosis !!}</p>
                     </div>
                     @endif
                     @if($medicalRecord->prognosis)
                     <div class="col-md-6 mb-3">
                         <small class="text-muted text-uppercase">Prognóstico</small>
-                        <p class="text-capitalize">{{ $medicalRecord->prognosis }}</p>
+                        <p class="text-capitalize">{!! $medicalRecord->prognosis !!}</p>
                     </div>
                     @endif
                 </div>
@@ -63,13 +63,13 @@
                 @if($medicalRecord->treatment)
                 <div class="mb-3">
                     <small class="text-muted text-uppercase">Tratamento</small>
-                    <p class="whitespace-pre-line">{{ $medicalRecord->treatment }}</p>
+                    <p class="whitespace-pre-line">{!! $medicalRecord->treatment !!}</p>
                 </div>
                 @endif
 
                 @if($medicalRecord->notes)
                 <small class="text-muted text-uppercase">Observações</small>
-                <p class="bg-light p-3 rounded">{{ $medicalRecord->notes }}</p>
+                <p class="bg-light p-3 rounded">{!! $medicalRecord->notes !!}</p>
                 @endif
             </div>
         </div>

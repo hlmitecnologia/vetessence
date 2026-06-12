@@ -27,11 +27,11 @@
                 @if($exam->result)
                 <hr>
                 <small class="text-muted text-uppercase">Resultado</small>
-                <p class="bg-light p-3 rounded">{{ $exam->result }}</p>
+                <p class="bg-light p-3 rounded">{!! $exam->result !!}</p>
                 @endif
                 @if($exam->notes)
                 <small class="text-muted text-uppercase">Observações</small>
-                <p>{{ $exam->notes }}</p>
+                <p>{!! $exam->notes !!}</p>
                 @endif
             </div>
         </div>

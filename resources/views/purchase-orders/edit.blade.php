@@ -25,7 +25,7 @@
                 </div>
                 <div class="form-group">
                     <label>Observações</label>
-                    <textarea name="notes" class="form-control" rows="2">{{ $purchaseOrder->notes }}</textarea>
+                    <textarea name="notes" class="wysiwyg form-control" rows="2">{!! $purchaseOrder->notes !!}</textarea>
                 </div>
                 <h5>Itens</h5>
                 <table class="table table-bordered" id="items-table">

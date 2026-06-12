@@ -62,7 +62,7 @@
             <div class="col-md-12">
                 <strong>Mensagem:</strong>
                 <div class="p-3 bg-light rounded">
-                    {{ $communicationQueue->message_content }}
+                    {!! $communicationQueue->message_content !!}
                 </div>
             </div>
         </div>

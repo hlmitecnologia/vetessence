@@ -64,7 +64,7 @@
         <div class="row mt-3">
             <div class="col-md-12">
                 <strong>Observações:</strong>
-                <p>{{ $vaccineProtocol->notes }}</p>
+                <p>{!! $vaccineProtocol->notes !!}</p>
             </div>
         </div>
         @endif

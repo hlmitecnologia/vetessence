@@ -60,7 +60,7 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label>Motivo/Observações</label>
-                                <textarea name="reason" rows="3" class="form-control">{{ old('reason') }}</textarea>
+                                <textarea name="reason" rows="3" class="wysiwyg form-control">{{ old('reason') }}</textarea>
                             </div>
                         </div>
                         <div class="col-12">

@@ -71,28 +71,28 @@
                 @if($hospitalization->admission_reason)
                 <div class="mt-3">
                     <strong>Motivo da Internação:</strong>
-                    <p>{{ $hospitalization->admission_reason }}</p>
+                    <p>{!! $hospitalization->admission_reason !!}</p>
                 </div>
                 @endif
 
                 @if($hospitalization->initial_diagnosis)
                 <div class="mt-3">
                     <strong>Diagnóstico Inicial:</strong>
-                    <p>{{ $hospitalization->initial_diagnosis }}</p>
+                    <p>{!! $hospitalization->initial_diagnosis !!}</p>
                 </div>
                 @endif
 
                 @if($hospitalization->discharge_summary)
                 <div class="mt-3 p-3 bg-success-light rounded">
                     <strong>Resumo de Alta:</strong>
-                    <p>{{ $hospitalization->discharge_summary }}</p>
+                    <p>{!! $hospitalization->discharge_summary !!}</p>
                 </div>
                 @endif
 
                 @if($hospitalization->discharge_instructions)
                 <div class="mt-3 p-3 bg-info-light rounded">
                     <strong>Instruções de Alta:</strong>
-                    <p>{{ $hospitalization->discharge_instructions }}</p>
+                    <p>{!! $hospitalization->discharge_instructions !!}</p>
                 </div>
                 @endif
             </div>
@@ -268,25 +268,25 @@
                 @if($record->subjective)
                 <div class="mb-3">
                     <strong>Subjetivo:</strong>
-                    <p>{{ $record->subjective }}</p>
+                    <p>{!! $record->subjective !!}</p>
                 </div>
                 @endif
                 @if($record->objective)
                 <div class="mb-3">
                     <strong>Objetivo:</strong>
-                    <p>{{ $record->objective }}</p>
+                    <p>{!! $record->objective !!}</p>
                 </div>
                 @endif
                 @if($record->assessment)
                 <div class="mb-3">
                     <strong>Avaliação:</strong>
-                    <p>{{ $record->assessment }}</p>
+                    <p>{!! $record->assessment !!}</p>
                 </div>
                 @endif
                 @if($record->plan)
                 <div class="mb-3">
                     <strong>Plano:</strong>
-                    <p>{{ $record->plan }}</p>
+                    <p>{!! $record->plan !!}</p>
                 </div>
                 @endif
                 <div class="row">
@@ -317,13 +317,13 @@
                 @if($record->medications_given)
                 <div class="mt-3">
                     <strong>Medicações Administradas:</strong>
-                    <p>{{ $record->medications_given }}</p>
+                    <p>{!! $record->medications_given !!}</p>
                 </div>
                 @endif
                 @if($record->observations)
                 <div class="mt-3">
                     <strong>Observações:</strong>
-                    <p>{{ $record->observations }}</p>
+                    <p>{!! $record->observations !!}</p>
                 </div>
                 @endif
             </div>

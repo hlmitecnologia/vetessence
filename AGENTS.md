@@ -12,9 +12,7 @@
 - **TutorFormTest**: factory CPF, State seeding, permission tests (`61a1492`)
 - **CPF uniqueness on edit (final)**: `save()` sempre busca ID do tutor pelo CPF no banco — se existe, usa o ID para exclusão da validação unique e atualiza o registro. Causa raiz era duplicidade real de CPF no banco, não `tutorId` perdido. 15 testes, todos passam; triagem OK. (`03e0aab`)
 - **PortoSeguroProviderTest**: 3 bugs fixed (`998867e`)
-
-### In Progress
-- None
+- **TinyMCE WYSIWYG**: TinyMCE 7.6.1 CDN adicionado a 3 layouts (adminlte, app, portal). Classe `.wysiwyg` aplicada a textareas em 142 views (26 Livewire + ~115 tradicionais). `{!! !!}` aplicado em ~69 views de exibição para renderizar HTML salvo. (`pending`)
 
 ### Known Issues
 - `AutoInvoiceTest` pre‑existing order‑dependent failure (passes in isolation)

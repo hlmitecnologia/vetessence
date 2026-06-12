@@ -63,7 +63,7 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label>Motivo</label>
-                                <textarea name="reason" rows="3" class="form-control">{{ $appointment->reason }}</textarea>
+                                <textarea name="reason" rows="3" class="wysiwyg form-control">{!! $appointment->reason !!}</textarea>
                             </div>
                         </div>
                     </div>

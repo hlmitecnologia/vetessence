@@ -52,7 +52,7 @@
             </div>
             <div class="form-group">
                 <label>Observações</label>
-                <textarea name="notes" class="form-control" rows="3"></textarea>
+                <textarea name="notes" class="wysiwyg form-control" rows="3"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Salvar</button>
         </form>

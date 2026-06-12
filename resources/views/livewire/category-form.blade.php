@@ -29,7 +29,7 @@
 
         <div class="form-group">
             <label>Descrição</label>
-            <textarea wire:model="description" class="form-control" rows="2"></textarea>
+            <textarea wire:model="description" class="wysiwyg form-control" rows="2"></textarea>
         </div>
 
         <div class="form-group">

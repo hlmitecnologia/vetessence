@@ -14,7 +14,7 @@
                 <strong>{{ $t->pet->name ?? '-' }}</strong>
                 <span class="badge badge-{{ $t->severity === 'red' ? 'danger' : ($t->severity === 'orange' ? 'warning' : 'info') }}">{{ strtoupper($t->severity) }}</span>
             </div>
-            <small class="text-muted">{{ $t->chief_complaint }}</small>
+            <small class="text-muted">{!! $t->chief_complaint !!}</small>
             <small class="text-muted">{{ optional($t->check_in_at)->format('H:i') }} — {{ $t->status }}</small>
             <a href="{{ route('triage.show', $t) }}" class="btn btn-sm btn-outline-info mt-2">Detalhes</a>
         </div>

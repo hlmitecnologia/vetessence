@@ -57,7 +57,7 @@
                     <tbody>
                         @foreach($invoice->items as $item)
                         <tr>
-                            <td>{{ $item->description }}</td>
+                            <td>{!! $item->description !!}</td>
                             <td class="text-center">{{ $item->quantity }}</td>
                             <td class="text-right">R$ {{ number_format($item->unit_price, 2, ',', '.') }}</td>
                             <td class="text-right">R$ {{ number_format($item->total, 2, ',', '.') }}</td>

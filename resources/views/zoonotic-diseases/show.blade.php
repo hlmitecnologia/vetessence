@@ -129,7 +129,7 @@
         <div class="card mb-3">
             <div class="card-body">
                 <h5 class="card-title"><i class="fas fa-sticky-note mr-2"></i>Observações</h5>
-                <p>{{ $zoonoticDisease->notes }}</p>
+                <p>{!! $zoonoticDisease->notes !!}</p>
             </div>
         </div>
         @endif

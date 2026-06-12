@@ -63,7 +63,7 @@
         <div class="row mt-3">
             <div class="col-md-12">
                 <strong>Motivo:</strong>
-                <p>{{ $controlledSubstanceLog->reason }}</p>
+                <p>{!! $controlledSubstanceLog->reason !!}</p>
             </div>
         </div>
         @endif
@@ -71,7 +71,7 @@
         <div class="row mt-3">
             <div class="col-md-12">
                 <strong>Observações:</strong>
-                <p>{{ $controlledSubstanceLog->notes }}</p>
+                <p>{!! $controlledSubstanceLog->notes !!}</p>
             </div>
         </div>
         @endif

@@ -38,7 +38,7 @@
 
         <div class="form-group">
             <label>Cobertura</label>
-            <textarea wire:model="coverage" class="form-control" rows="2"></textarea>
+            <textarea wire:model="coverage" class="wysiwyg form-control" rows="2"></textarea>
         </div>
 
         <div class="row">

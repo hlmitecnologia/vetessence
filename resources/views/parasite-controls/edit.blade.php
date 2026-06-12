@@ -90,7 +90,7 @@
             </div>
             <div class="form-group">
                 <label for="notes">Observações</label>
-                <textarea name="notes" id="notes" rows="2" class="form-control">{{ old('notes', $parasiteControl->notes) }}</textarea>
+                <textarea name="notes" id="notes" rows="2" class="wysiwyg form-control">{{ old('notes', $parasiteControl->notes) }}</textarea>
             </div>
         </div>
         <div class="card-footer">

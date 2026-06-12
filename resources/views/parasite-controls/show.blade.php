@@ -26,7 +26,7 @@
             <div class="col-md-4"><strong>Veterinário:</strong><p>{{ $parasiteControl->vet->name ?? '-' }}</p></div>
         </div>
         @if($parasiteControl->notes)
-        <div class="row mt-3"><div class="col-md-12"><strong>Observações:</strong><p>{{ $parasiteControl->notes }}</p></div></div>
+        <div class="row mt-3"><div class="col-md-12"><strong>Observações:</strong><p>{!! $parasiteControl->notes !!}</p></div></div>
         @endif
     </div>
 </div>

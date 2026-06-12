@@ -16,7 +16,7 @@
             <div class="form-group"><label>Produto</label><input name="product_name" class="form-control"></div>
             <div class="form-group"><label>Quantidade Diária</label><input name="daily_amount" class="form-control" placeholder="Ex: 100g, 1 sachê"></div>
             <div class="form-group"><label>Duração (dias)</label><input name="duration_days" type="number" class="form-control"></div>
-            <div class="form-group"><label>Instruções</label><textarea name="instructions" class="form-control"></textarea></div>
+            <div class="wysiwyg form-group"><label>Instruções</label><textarea name="instructions" class="wysiwyg form-control"></textarea></div>
             <button type="submit" class="btn btn-primary">Salvar</button>
         </form>
     </div></div>

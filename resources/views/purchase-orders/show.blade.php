@@ -26,7 +26,7 @@
                         </span>
                     </p>
                     <p><strong>Total:</strong> R$ {{ number_format($purchaseOrder->total, 2, ',', '.') }}</p>
-                    @if($purchaseOrder->notes)<p><strong>Obs:</strong> {{ $purchaseOrder->notes }}</p>@endif
+                    @if($purchaseOrder->notes)<p><strong>Obs:</strong> {!! $purchaseOrder->notes !!}</p>@endif
                 </div>
             </div>
         </div>

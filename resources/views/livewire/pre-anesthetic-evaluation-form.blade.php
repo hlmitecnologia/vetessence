@@ -69,12 +69,12 @@
 
         <div class="form-group">
             <label>Observações</label>
-            <textarea wire:model="observations" class="form-control" rows="2"></textarea>
+            <textarea wire:model="observations" class="wysiwyg form-control" rows="2"></textarea>
         </div>
 
         <div class="form-group">
             <label>Recomendações</label>
-            <textarea wire:model="recommendations" class="form-control" rows="2"></textarea>
+            <textarea wire:model="recommendations" class="wysiwyg form-control" rows="2"></textarea>
         </div>
 
         <div class="text-right">

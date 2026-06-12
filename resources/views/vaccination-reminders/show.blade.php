@@ -62,7 +62,7 @@
         <div class="row">
             <div class="col-md-12">
                 <strong>Observações:</strong>
-                <p>{{ $vaccinationReminder->notes }}</p>
+                <p>{!! $vaccinationReminder->notes !!}</p>
             </div>
         </div>
         @endif

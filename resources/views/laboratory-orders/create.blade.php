@@ -120,7 +120,7 @@
 
             <div class="form-group">
                 <label for="notes">Observações do Pedido</label>
-                <textarea name="notes" id="notes" rows="2" class="form-control">{{ old('notes') }}</textarea>
+                <textarea name="notes" id="notes" rows="2" class="wysiwyg form-control">{{ old('notes') }}</textarea>
             </div>
         </div>
         <div class="card-footer">

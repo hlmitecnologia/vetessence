@@ -126,7 +126,7 @@
                 @if($chart->general_notes)
                 <div class="mt-4 p-3 bg-light rounded">
                     <strong>Observações Gerais:</strong>
-                    <p class="mt-1">{{ $chart->general_notes }}</p>
+                    <p class="mt-1">{!! $chart->general_notes !!}</p>
                 </div>
                 @endif
             </div>

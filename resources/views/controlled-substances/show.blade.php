@@ -67,7 +67,7 @@
                 @if($controlledSubstance->notes)
                 <div class="mt-3 p-3 bg-light rounded">
                     <strong>Observações:</strong>
-                    <p class="mt-1">{{ $controlledSubstance->notes }}</p>
+                    <p class="mt-1">{!! $controlledSubstance->notes !!}</p>
                 </div>
                 @endif
 

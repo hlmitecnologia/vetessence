@@ -37,25 +37,25 @@
         @if($hospitalizationDailyRecord->subjective)
         <div class="mt-3">
             <strong>Subjetivo:</strong>
-            <p>{{ $hospitalizationDailyRecord->subjective }}</p>
+            <p>{!! $hospitalizationDailyRecord->subjective !!}</p>
         </div>
         @endif
         @if($hospitalizationDailyRecord->objective)
         <div class="mt-3">
             <strong>Objetivo:</strong>
-            <p>{{ $hospitalizationDailyRecord->objective }}</p>
+            <p>{!! $hospitalizationDailyRecord->objective !!}</p>
         </div>
         @endif
         @if($hospitalizationDailyRecord->assessment)
         <div class="mt-3">
             <strong>Avaliação:</strong>
-            <p>{{ $hospitalizationDailyRecord->assessment }}</p>
+            <p>{!! $hospitalizationDailyRecord->assessment !!}</p>
         </div>
         @endif
         @if($hospitalizationDailyRecord->plan)
         <div class="mt-3">
             <strong>Plano:</strong>
-            <p>{{ $hospitalizationDailyRecord->plan }}</p>
+            <p>{!! $hospitalizationDailyRecord->plan !!}</p>
         </div>
         @endif
 
@@ -104,14 +104,14 @@
         @if($hospitalizationDailyRecord->medications_given)
         <div class="mt-3">
             <strong>Medicações Administradas:</strong>
-            <p>{{ $hospitalizationDailyRecord->medications_given }}</p>
+            <p>{!! $hospitalizationDailyRecord->medications_given !!}</p>
         </div>
         @endif
 
         @if($hospitalizationDailyRecord->observations)
         <div class="mt-3">
             <strong>Observações:</strong>
-            <p>{{ $hospitalizationDailyRecord->observations }}</p>
+            <p>{!! $hospitalizationDailyRecord->observations !!}</p>
         </div>
         @endif
 

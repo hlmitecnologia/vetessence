@@ -68,6 +68,39 @@
         @yield('content')
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@7.6.1/tinymce.min.js"></script>
+    <script>
+        function initTinyMCE(container) {
+            container = container || document;
+            if (typeof tinymce === 'undefined') return;
+            container.querySelectorAll('textarea.wysiwyg').forEach(function(ta) {
+                if (ta.id && tinymce.get(ta.id)) return;
+                if (!ta.id) ta.id = 'wysiwyg-' + ('xxxx' + Math.random().toString(36).substr(2, 9)).slice(-10);
+                tinymce.init({
+                    target: ta,
+                    height: 300,
+                    menubar: false,
+                    toolbar: 'undo redo | bold italic underline strikethrough | bullist numlist | removeformat',
+                    plugins: 'lists',
+                    setup: function(editor) {
+                        editor.on('change keyup', function() {
+                            tinymce.triggerSave();
+                            ta.dispatchEvent(new Event('input', { bubbles: true }));
+                        });
+                    }
+                });
+            });
+        }
+        function destroyTinyMCE(container) {
+            container = container || document;
+            if (typeof tinymce === 'undefined') return;
+            container.querySelectorAll('textarea.wysiwyg').forEach(function(ta) {
+                var editorId = ta.id;
+                if (editorId && tinymce.get(editorId)) tinymce.execCommand('mceRemoveEditor', true, editorId);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function() { initTinyMCE(); });
+    </script>
     @stack('scripts')
 </body>
 </html>

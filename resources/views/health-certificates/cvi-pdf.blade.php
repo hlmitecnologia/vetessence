@@ -158,7 +158,7 @@
             conforme disposto na Resolução CFMV nº 974/2006 e demais legislações vigentes.</p>
 
             @if($healthCertificate->clinical_notes)
-            <p style="margin-top: 10px;"><strong>Observações:</strong> {{ $healthCertificate->clinical_notes }}</p>
+            <p style="margin-top: 10px;"><strong>Observações:</strong> {!! $healthCertificate->clinical_notes !!}</p>
             @endif
         </div>
 

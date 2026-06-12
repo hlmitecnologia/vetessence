@@ -68,15 +68,15 @@
             </div>
             <div class="form-group">
                 <label for="findings">Achados</label>
-                <textarea name="findings" id="findings" rows="4" class="form-control">{{ old('findings', $exam->findings) }}</textarea>
+                <textarea name="findings" id="findings" rows="4" class="wysiwyg form-control">{{ old('findings', $exam->findings) }}</textarea>
             </div>
             <div class="form-group">
                 <label for="impression">Impressão</label>
-                <textarea name="impression" id="impression" rows="3" class="form-control">{{ old('impression', $exam->impression) }}</textarea>
+                <textarea name="impression" id="impression" rows="3" class="wysiwyg form-control">{{ old('impression', $exam->impression) }}</textarea>
             </div>
             <div class="form-group">
                 <label for="recommendations">Recomendações</label>
-                <textarea name="recommendations" id="recommendations" rows="3" class="form-control">{{ old('recommendations', $exam->recommendations) }}</textarea>
+                <textarea name="recommendations" id="recommendations" rows="3" class="wysiwyg form-control">{{ old('recommendations', $exam->recommendations) }}</textarea>
             </div>
         </div>
         <div class="card-footer">

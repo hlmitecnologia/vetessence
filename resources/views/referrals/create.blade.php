@@ -80,18 +80,18 @@
             </div>
             <div class="form-group">
                 <label for="reason">Motivo do Encaminhamento *</label>
-                <textarea name="reason" id="reason" rows="3" class="form-control @error('reason') is-invalid @enderror" required>{{ old('reason') }}</textarea>
+                <textarea name="reason" id="reason" rows="3" class="wysiwyg form-control @error('reason') is-invalid @enderror" required>{{ old('reason') }}</textarea>
                 @error('reason')
                     <span class="invalid-feedback">{{ $message }}</span>
                 @enderror
             </div>
             <div class="form-group">
                 <label for="clinical_history">Histórico Clínico</label>
-                <textarea name="clinical_history" id="clinical_history" rows="4" class="form-control">{{ old('clinical_history') }}</textarea>
+                <textarea name="clinical_history" id="clinical_history" rows="4" class="wysiwyg form-control">{{ old('clinical_history') }}</textarea>
             </div>
             <div class="form-group">
                 <label for="requested_procedures">Procedimentos Solicitados</label>
-                <textarea name="requested_procedures" id="requested_procedures" rows="3" class="form-control">{{ old('requested_procedures') }}</textarea>
+                <textarea name="requested_procedures" id="requested_procedures" rows="3" class="wysiwyg form-control">{{ old('requested_procedures') }}</textarea>
             </div>
         </div>
         <div class="card-footer">

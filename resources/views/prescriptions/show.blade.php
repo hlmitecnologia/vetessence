@@ -46,12 +46,12 @@
                     
                     @if($prescription->instructions)
                     <dt class="col-sm-4">Instruções:</dt>
-                    <dd class="col-sm-8">{{ $prescription->instructions }}</dd>
+                    <dd class="col-sm-8">{!! $prescription->instructions !!}</dd>
                     @endif
                     
                     @if($prescription->notes)
                     <dt class="col-sm-4">Observações:</dt>
-                    <dd class="col-sm-8">{{ $prescription->notes }}</dd>
+                    <dd class="col-sm-8">{!! $prescription->notes !!}</dd>
                     @endif
                 </dl>
             </div>

@@ -80,7 +80,7 @@
                     </div>
                     <div class="form-group">
                         <label>Observações</label>
-                        <textarea name="notes" rows="2" class="form-control">{{ $onlineBooking->notes }}</textarea>
+                        <textarea name="notes" rows="2" class="wysiwyg form-control">{!! $onlineBooking->notes !!}</textarea>
                     </div>
                     <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Confirmar e Criar Consulta</button>
                 </form>
@@ -90,7 +90,7 @@
                     @csrf
                     <div class="form-group">
                         <label>Motivo da rejeição</label>
-                        <textarea name="reason" rows="3" class="form-control" required></textarea>
+                        <textarea name="reason" rows="3" class="wysiwyg form-control" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i> Rejeitar Solicitação</button>
                 </form>

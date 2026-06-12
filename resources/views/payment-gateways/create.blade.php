@@ -130,11 +130,11 @@
                 <h6 class="text-muted mt-3"><i class="fas fa-plug mr-1"></i>Outro Provedor</h6>
                 <div class="form-group">
                     <label>Chave Pública</label>
-                    <textarea name="public_key" rows="2" class="form-control">{{ old('public_key') }}</textarea>
+                    <textarea name="public_key" rows="2" class="wysiwyg form-control">{{ old('public_key') }}</textarea>
                 </div>
                 <div class="form-group">
                     <label>Chave Secreta</label>
-                    <textarea name="secret_key" rows="2" class="form-control">{{ old('secret_key') }}</textarea>
+                    <textarea name="secret_key" rows="2" class="wysiwyg form-control">{{ old('secret_key') }}</textarea>
                 </div>
                 <div class="form-group">
                     <label>Segredo do Webhook</label>
@@ -146,7 +146,7 @@
                 </div>
                 <div class="form-group">
                     <label>Configuração Adicional (JSON)</label>
-                    <textarea name="config" rows="3" class="form-control" placeholder='{"key": "value"}'></textarea>
+                    <textarea name="config" rows="3" class="wysiwyg form-control" placeholder='{"key": "value"}'></textarea>
                 </div>
             </div>
 
@@ -162,7 +162,7 @@
             </div>
             <div class="form-group">
                 <label for="notes">Observações</label>
-                <textarea name="notes" rows="2" class="form-control">{{ old('notes') }}</textarea>
+                <textarea name="notes" rows="2" class="wysiwyg form-control">{{ old('notes') }}</textarea>
             </div>
         </div>
         <div class="card-footer">

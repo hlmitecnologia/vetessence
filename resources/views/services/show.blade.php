@@ -26,7 +26,7 @@
                 @if($service->description)
                 <hr>
                 <small class="text-muted text-uppercase">Descrição</small>
-                <p>{{ $service->description }}</p>
+                <p>{!! $service->description !!}</p>
                 @endif
             </div>
         </div>

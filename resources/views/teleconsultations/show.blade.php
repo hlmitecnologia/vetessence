@@ -54,7 +54,7 @@
         @endif
         @if($teleconsultation->notes)
         <div class="row mt-2">
-            <div class="col-md-12"><strong>Observações:</strong><p>{{ $teleconsultation->notes }}</p></div>
+            <div class="col-md-12"><strong>Observações:</strong><p>{!! $teleconsultation->notes !!}</p></div>
         </div>
         @endif
     </div>
@@ -70,7 +70,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Observações finais</label>
-                        <textarea name="notes" rows="3" class="form-control"></textarea>
+                        <textarea name="notes" rows="3" class="wysiwyg form-control"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">

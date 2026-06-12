@@ -57,13 +57,13 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="anesthetic_protocol">Protocolo</label>
-                        <textarea name="anesthetic_protocol" id="anesthetic_protocol" rows="2" class="form-control">{{ old('anesthetic_protocol', $monitoring->anesthetic_protocol) }}</textarea>
+                        <textarea name="anesthetic_protocol" id="anesthetic_protocol" rows="2" class="wysiwyg form-control">{{ old('anesthetic_protocol', $monitoring->anesthetic_protocol) }}</textarea>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="premedication">Pré-medicação</label>
-                        <textarea name="premedication" id="premedication" rows="2" class="form-control">{{ old('premedication', $monitoring->premedication) }}</textarea>
+                        <textarea name="premedication" id="premedication" rows="2" class="wysiwyg form-control">{{ old('premedication', $monitoring->premedication) }}</textarea>
                     </div>
                 </div>
             </div>
@@ -111,7 +111,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="observations">Observações</label>
-                        <textarea name="observations" id="observations" rows="2" class="form-control">{{ old('observations', $monitoring->observations) }}</textarea>
+                        <textarea name="observations" id="observations" rows="2" class="wysiwyg form-control">{{ old('observations', $monitoring->observations) }}</textarea>
                     </div>
                 </div>
             </div>

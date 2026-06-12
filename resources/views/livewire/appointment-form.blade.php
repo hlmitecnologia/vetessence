@@ -58,7 +58,7 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label>Motivo/Observações</label>
-                            <textarea wire:model="reason" rows="2" class="form-control"></textarea>
+                            <textarea wire:model="reason" rows="2" class="wysiwyg form-control"></textarea>
                         </div>
                     </div>
                 </div>

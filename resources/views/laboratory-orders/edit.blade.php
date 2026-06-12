@@ -84,7 +84,7 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>Resultado</label>
-                                <input type="text" name="tests[{{ $i }}][result]" class="form-control" value="{{ $test->result }}">
+                                <input type="text" name="tests[{{ $i }}][result]" class="form-control" value="{!! $test->result !!}">
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -109,7 +109,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Observações</label>
-                                <input type="text" name="tests[{{ $i }}][observations]" class="form-control" value="{{ $test->observations }}">
+                                <input type="text" name="tests[{{ $i }}][observations]" class="form-control" value="{!! $test->observations !!}">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -128,7 +128,7 @@
 
             <div class="form-group">
                 <label for="notes">Observações do Pedido</label>
-                <textarea name="notes" id="notes" rows="2" class="form-control">{{ old('notes', $order->notes) }}</textarea>
+                <textarea name="notes" id="notes" rows="2" class="wysiwyg form-control">{{ old('notes', $order->notes) }}</textarea>
             </div>
         </div>
         <div class="card-footer">

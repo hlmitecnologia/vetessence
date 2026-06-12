@@ -57,7 +57,7 @@
                     @if($referral->clinical_history)
                     <div class="mb-4">
                         <h6>Histórico Clínico</h6>
-                        <p>{{ $referral->clinical_history }}</p>
+                        <p>{!! $referral->clinical_history !!}</p>
                     </div>
                     @endif
 

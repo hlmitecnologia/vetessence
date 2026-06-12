@@ -30,7 +30,7 @@
         </div>
         @if($labEquipmentIntegration->notes)
         <div class="row mt-2">
-            <div class="col-md-12"><strong>Observações:</strong><p>{{ $labEquipmentIntegration->notes }}</p></div>
+            <div class="col-md-12"><strong>Observações:</strong><p>{!! $labEquipmentIntegration->notes !!}</p></div>
         </div>
         @endif
     </div>

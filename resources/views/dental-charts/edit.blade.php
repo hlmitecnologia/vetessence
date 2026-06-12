@@ -135,7 +135,7 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>Observações</label>
-                                <input type="text" name="conditions[{{ $i }}][notes]" class="form-control" value="{{ $condition->notes }}">
+                                <input type="text" name="conditions[{{ $i }}][notes]" class="form-control" value="{!! $condition->notes !!}">
                             </div>
                         </div>
                         <div class="col-md-1 d-flex align-items-end">
@@ -153,7 +153,7 @@
 
             <div class="form-group">
                 <label for="general_notes">Observações Gerais</label>
-                <textarea name="general_notes" id="general_notes" rows="3" class="form-control">{{ old('general_notes', $chart->general_notes) }}</textarea>
+                <textarea name="general_notes" id="general_notes" rows="3" class="wysiwyg form-control">{{ old('general_notes', $chart->general_notes) }}</textarea>
             </div>
         </div>
         <div class="card-footer">

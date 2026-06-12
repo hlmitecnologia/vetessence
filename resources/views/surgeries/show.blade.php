@@ -34,19 +34,19 @@
                 @if($surgery->pre_op_diagnosis)
                 <hr>
                 <small class="text-muted text-uppercase">Diagnóstico Pré-op</small>
-                <p>{{ $surgery->pre_op_diagnosis }}</p>
+                <p>{!! $surgery->pre_op_diagnosis !!}</p>
                 @endif
                 @if($surgery->protocol)
                 <small class="text-muted text-uppercase">Protocolo</small>
-                <p>{{ $surgery->protocol }}</p>
+                <p>{!! $surgery->protocol !!}</p>
                 @endif
                 @if($surgery->post_op_notes)
                 <small class="text-muted text-uppercase">Pós-operatório</small>
-                <p class="bg-light p-3 rounded">{{ $surgery->post_op_notes }}</p>
+                <p class="bg-light p-3 rounded">{!! $surgery->post_op_notes !!}</p>
                 @endif
                 @if($surgery->complications)
                 <small class="text-muted text-uppercase">Complicações</small>
-                <p class="bg-light text-danger p-3 rounded">{{ $surgery->complications }}</p>
+                <p class="bg-light text-danger p-3 rounded">{!! $surgery->complications !!}</p>
                 @endif
             </div>
         </div>

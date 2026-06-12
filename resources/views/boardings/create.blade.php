@@ -83,17 +83,17 @@
             </div>
             <div class="form-group">
                 <label for="feeding_instructions">Instruções de Alimentação</label>
-                <textarea name="feeding_instructions" id="feeding_instructions" rows="2" class="form-control @error('feeding_instructions') is-invalid @enderror">{{ old('feeding_instructions') }}</textarea>
+                <textarea name="feeding_instructions" id="feeding_instructions" rows="2" class="wysiwyg form-control @error('feeding_instructions') is-invalid @enderror">{{ old('feeding_instructions') }}</textarea>
                 @error('feeding_instructions')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="medication_instructions">Instruções de Medicação</label>
-                <textarea name="medication_instructions" id="medication_instructions" rows="2" class="form-control @error('medication_instructions') is-invalid @enderror">{{ old('medication_instructions') }}</textarea>
+                <textarea name="medication_instructions" id="medication_instructions" rows="2" class="wysiwyg form-control @error('medication_instructions') is-invalid @enderror">{{ old('medication_instructions') }}</textarea>
                 @error('medication_instructions')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="notes">Observações</label>
-                <textarea name="notes" id="notes" rows="2" class="form-control @error('notes') is-invalid @enderror">{{ old('notes') }}</textarea>
+                <textarea name="notes" id="notes" rows="2" class="wysiwyg form-control @error('notes') is-invalid @enderror">{{ old('notes') }}</textarea>
                 @error('notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
         </div>

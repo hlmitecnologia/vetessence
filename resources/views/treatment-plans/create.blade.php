@@ -69,7 +69,7 @@
             </div>
             <div class="form-group">
                 <label for="description">Descrição</label>
-                <textarea name="description" id="description" rows="2" class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
+                <textarea name="description" id="description" rows="2" class="wysiwyg form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
                 @error('description')
                     <span class="invalid-feedback">{{ $message }}</span>
                 @enderror
@@ -145,7 +145,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="vet_notes">Observações do Veterinário</label>
-                        <textarea name="vet_notes" id="vet_notes" rows="2" class="form-control">{{ old('vet_notes') }}</textarea>
+                        <textarea name="vet_notes" id="vet_notes" rows="2" class="wysiwyg form-control">{{ old('vet_notes') }}</textarea>
                     </div>
                 </div>
             </div>

@@ -31,7 +31,8 @@
         "chart.js": "^4.5.1",
         "flatpickr": "^4.6.13",
         "select2": "^4.1.0-rc.0",
-        "sweetalert2": "^11.26.24"
+        "sweetalert2": "^11.26.24",
+        "tinymce": "^8.6.0"
     },
     "name": "vetessence",
     "version": "1.0.0",

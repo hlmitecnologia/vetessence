@@ -30,20 +30,20 @@
 
         <div class="form-group">
             <label>Transmissão</label>
-            <textarea wire:model="transmission" class="form-control" rows="2"></textarea>
+            <textarea wire:model="transmission" class="wysiwyg form-control" rows="2"></textarea>
         </div>
 
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Sintomas em Animais</label>
-                    <textarea wire:model="animal_symptoms" class="form-control" rows="3"></textarea>
+                    <textarea wire:model="animal_symptoms" class="wysiwyg form-control" rows="3"></textarea>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Sintomas em Humanos</label>
-                    <textarea wire:model="human_symptoms" class="form-control" rows="3"></textarea>
+                    <textarea wire:model="human_symptoms" class="wysiwyg form-control" rows="3"></textarea>
                 </div>
             </div>
         </div>
@@ -57,13 +57,13 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Prevenção</label>
-                    <textarea wire:model="prevention" class="form-control" rows="2"></textarea>
+                    <textarea wire:model="prevention" class="wysiwyg form-control" rows="2"></textarea>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Tratamento</label>
-                    <textarea wire:model="treatment" class="form-control" rows="2"></textarea>
+                    <textarea wire:model="treatment" class="wysiwyg form-control" rows="2"></textarea>
                 </div>
             </div>
         </div>
@@ -99,7 +99,7 @@
 
         <div class="form-group mt-3">
             <label>Observações</label>
-            <textarea wire:model="notes" class="form-control" rows="2"></textarea>
+            <textarea wire:model="notes" class="wysiwyg form-control" rows="2"></textarea>
         </div>
 
         <div class="text-right">

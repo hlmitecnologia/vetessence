@@ -37,7 +37,7 @@
                 </div>
                 @if($vaccination->notes)
                 <hr>
-                <p>{{ $vaccination->notes }}</p>
+                <p>{!! $vaccination->notes !!}</p>
                 @endif
             </div>
         </div>

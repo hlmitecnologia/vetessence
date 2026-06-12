@@ -57,11 +57,11 @@
             </div>
             <div class="form-group">
                 <label>Anotações</label>
-                <textarea name="notes" class="form-control" rows="3">{{ $therapySession->notes }}</textarea>
+                <textarea name="notes" class="wysiwyg form-control" rows="3">{!! $therapySession->notes !!}</textarea>
             </div>
             <div class="form-group">
                 <label>Observações</label>
-                <textarea name="observations" class="form-control" rows="3">{{ $therapySession->observations }}</textarea>
+                <textarea name="observations" class="wysiwyg form-control" rows="3">{!! $therapySession->observations !!}</textarea>
             </div>
             <button type="submit" class="btn btn-primary">Atualizar</button>
         </form>

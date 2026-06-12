@@ -29,7 +29,7 @@
 
         <div class="form-group">
             <label>Descrição *</label>
-            <textarea wire:model="description" class="form-control @error('description') is-invalid @enderror" rows="3" required></textarea>
+            <textarea wire:model="description" class="wysiwyg form-control @error('description') is-invalid @enderror" rows="3" required></textarea>
             @error('description') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
@@ -40,7 +40,7 @@
 
         <div class="form-group">
             <label>Manejo</label>
-            <textarea wire:model="management" class="form-control" rows="2"></textarea>
+            <textarea wire:model="management" class="wysiwyg form-control" rows="2"></textarea>
         </div>
 
         <div class="row">

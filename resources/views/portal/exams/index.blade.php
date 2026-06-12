@@ -9,7 +9,7 @@
                 <small class="text-gray-500">{{ $e->date ? $e->date->format('d/m/Y') : '-' }}</small>
             </div>
             <p class="text-sm mt-1">{{ $e->type ?? $e->name ?? 'Exame' }}</p>
-            @if($e->result)<p class="text-sm text-gray-600">Resultado: {{ $e->result }}</p>@endif
+            @if($e->result)<p class="text-sm text-gray-600">Resultado: {!! $e->result !!}</p>@endif
         </div>
     @empty
         <p class="text-gray-500">Nenhum exame encontrado.</p>

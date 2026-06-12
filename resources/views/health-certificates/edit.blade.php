@@ -86,11 +86,11 @@
             </div>
             <div class="form-group">
                 <label for="clinical_notes">Observações Clínicas</label>
-                <textarea name="clinical_notes" id="clinical_notes" rows="3" class="form-control">{{ old('clinical_notes', $healthCertificate->clinical_notes) }}</textarea>
+                <textarea name="clinical_notes" id="clinical_notes" rows="3" class="wysiwyg form-control">{{ old('clinical_notes', $healthCertificate->clinical_notes) }}</textarea>
             </div>
             <div class="form-group">
                 <label for="notes">Informações Adicionais</label>
-                <textarea name="notes" id="notes" rows="2" class="form-control">{{ old('notes', $healthCertificate->notes) }}</textarea>
+                <textarea name="notes" id="notes" rows="2" class="wysiwyg form-control">{{ old('notes', $healthCertificate->notes) }}</textarea>
             </div>
         </div>
         <div class="card-footer">

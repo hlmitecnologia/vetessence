@@ -34,7 +34,7 @@
                 @if($convenio->coverage)
                 <hr>
                 <small class="text-muted text-uppercase">Coberturas</small>
-                <p>{{ $convenio->coverage }}</p>
+                <p>{!! $convenio->coverage !!}</p>
                 @endif
             </div>
         </div>

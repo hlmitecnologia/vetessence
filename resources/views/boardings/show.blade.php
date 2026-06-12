@@ -35,22 +35,22 @@
         </div>
         @if($boarding->reason)
         <div class="row mt-2">
-            <div class="col-md-12"><strong>Motivo:</strong><p>{{ $boarding->reason }}</p></div>
+            <div class="col-md-12"><strong>Motivo:</strong><p>{!! $boarding->reason !!}</p></div>
         </div>
         @endif
         @if($boarding->feeding_instructions)
         <div class="row mt-2">
-            <div class="col-md-6"><strong>Alimentação:</strong><p>{{ $boarding->feeding_instructions }}</p></div>
+            <div class="col-md-6"><strong>Alimentação:</strong><p>{!! $boarding->feeding_instructions !!}</p></div>
         </div>
         @endif
         @if($boarding->medication_instructions)
         <div class="row mt-2">
-            <div class="col-md-6"><strong>Medicação:</strong><p>{{ $boarding->medication_instructions }}</p></div>
+            <div class="col-md-6"><strong>Medicação:</strong><p>{!! $boarding->medication_instructions !!}</p></div>
         </div>
         @endif
         @if($boarding->notes)
         <div class="row mt-2">
-            <div class="col-md-12"><strong>Observações:</strong><p>{{ $boarding->notes }}</p></div>
+            <div class="col-md-12"><strong>Observações:</strong><p>{!! $boarding->notes !!}</p></div>
         </div>
         @endif
         @if($boarding->check_out_at)
@@ -181,7 +181,7 @@
                     </div>
                     <div class="form-group">
                         <label for="description">Descrição</label>
-                        <textarea name="description" rows="2" class="form-control"></textarea>
+                        <textarea name="description" rows="2" class="wysiwyg form-control"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">

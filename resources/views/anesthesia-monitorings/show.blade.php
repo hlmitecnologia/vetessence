@@ -89,7 +89,7 @@
                 @if($monitoring->observations)
                 <div class="mt-3 p-3 bg-light rounded">
                     <strong>Observações:</strong>
-                    <p class="mt-1">{{ $monitoring->observations }}</p>
+                    <p class="mt-1">{!! $monitoring->observations !!}</p>
                 </div>
                 @endif
             </div>

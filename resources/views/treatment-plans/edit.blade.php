@@ -68,7 +68,7 @@
             </div>
             <div class="form-group">
                 <label for="description">Descrição</label>
-                <textarea name="description" id="description" rows="2" class="form-control">{{ old('description', $plan->description) }}</textarea>
+                <textarea name="description" id="description" rows="2" class="wysiwyg form-control">{{ old('description', $plan->description) }}</textarea>
             </div>
 
             <hr>
@@ -80,7 +80,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Descrição *</label>
-                                <input type="text" name="items[{{ $i }}][description]" class="form-control" value="{{ $item->description }}" required>
+                                <input type="text" name="items[{{ $i }}][description]" class="form-control" value="{!! $item->description !!}" required>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -117,7 +117,7 @@
                         <div class="col-md-10">
                             <div class="form-group">
                                 <label>Observações</label>
-                                <input type="text" name="items[{{ $i }}][notes]" class="form-control" value="{{ $item->notes }}">
+                                <input type="text" name="items[{{ $i }}][notes]" class="form-control" value="{!! $item->notes !!}">
                             </div>
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
@@ -144,7 +144,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="vet_notes">Observações do Veterinário</label>
-                        <textarea name="vet_notes" id="vet_notes" rows="2" class="form-control">{{ old('vet_notes', $plan->vet_notes) }}</textarea>
+                        <textarea name="vet_notes" id="vet_notes" rows="2" class="wysiwyg form-control">{{ old('vet_notes', $plan->vet_notes) }}</textarea>
                     </div>
                 </div>
             </div>

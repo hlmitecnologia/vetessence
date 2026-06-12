@@ -47,7 +47,7 @@
                     <tr>
                         <td>{{ $tx->transaction_date->format('d/m/Y') }}</td>
                         <td>{{ $tx->bankAccount->bank ?? '-' }}</td>
-                        <td>{{ $tx->description }}</td>
+                        <td>{!! $tx->description !!}</td>
                         <td class="{{ $tx->type === 'credit' ? 'text-success' : 'text-danger' }}">
                             R$ {{ number_format($tx->amount, 2, ',', '.') }}
                         </td>

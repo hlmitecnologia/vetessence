@@ -37,15 +37,15 @@
                     </div>
                     <div class="form-group">
                         <label>Diagnóstico Pré-operatório</label>
-                        <textarea name="pre_op_diagnosis" rows="2" class="form-control">{{ old('pre_op_diagnosis') }}</textarea>
+                        <textarea name="pre_op_diagnosis" rows="2" class="wysiwyg form-control">{{ old('pre_op_diagnosis') }}</textarea>
                     </div>
                     <div class="form-group">
                         <label>Protocolo</label>
-                        <textarea name="protocol" rows="2" class="form-control">{{ old('protocol') }}</textarea>
+                        <textarea name="protocol" rows="2" class="wysiwyg form-control">{{ old('protocol') }}</textarea>
                     </div>
                     <div class="form-group">
                         <label>Observações</label>
-                        <textarea name="notes" rows="2" class="form-control">{{ old('notes') }}</textarea>
+                        <textarea name="notes" rows="2" class="wysiwyg form-control">{{ old('notes') }}</textarea>
                     </div>
                 </div>
                 <div class="card-footer text-right">

@@ -37,7 +37,7 @@
                                     @endforeach
                                 @endif
                                 @if($kennel->notes)
-                                    <small class="text-muted d-block mt-1">{{ $kennel->notes }}</small>
+                                    <small class="text-muted d-block mt-1">{!! $kennel->notes !!}</small>
                                 @endif
                             </div>
                         </div>

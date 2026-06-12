@@ -61,7 +61,7 @@
                 @if($plan->description)
                 <div class="mt-3">
                     <strong>Descrição:</strong>
-                    <p>{{ $plan->description }}</p>
+                    <p>{!! $plan->description !!}</p>
                 </div>
                 @endif
 
@@ -75,14 +75,14 @@
                 @if($plan->client_notes)
                 <div class="mt-3 p-3 bg-warning-light rounded">
                     <strong>Observações do Cliente:</strong>
-                    <p>{{ $plan->client_notes }}</p>
+                    <p>{!! $plan->client_notes !!}</p>
                 </div>
                 @endif
 
                 @if($plan->vet_notes)
                 <div class="mt-3 p-3 bg-info-light rounded">
                     <strong>Observações do Veterinário:</strong>
-                    <p>{{ $plan->vet_notes }}</p>
+                    <p>{!! $plan->vet_notes !!}</p>
                 </div>
                 @endif
 
@@ -106,7 +106,7 @@
                         <tbody>
                             @foreach($plan->items as $item)
                             <tr>
-                                <td>{{ $item->description }}</td>
+                                <td>{!! $item->description !!}</td>
                                 <td>{{ $item->category ?? '-' }}</td>
                                 <td>{{ $item->quantity }}</td>
                                 <td>R$ {{ number_format($item->unit_price, 2, ',', '.') }}</td>

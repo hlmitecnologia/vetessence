@@ -42,7 +42,7 @@
         <div class="row mt-3">
             <div class="col-md-12">
                 <strong>Observações:</strong>
-                <p>{{ $weightRecord->notes }}</p>
+                <p>{!! $weightRecord->notes !!}</p>
             </div>
         </div>
         @endif

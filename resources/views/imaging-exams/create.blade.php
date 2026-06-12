@@ -100,15 +100,15 @@
             </div>
             <div class="form-group">
                 <label for="findings">Achados</label>
-                <textarea name="findings" id="findings" rows="4" class="form-control">{{ old('findings') }}</textarea>
+                <textarea name="findings" id="findings" rows="4" class="wysiwyg form-control">{{ old('findings') }}</textarea>
             </div>
             <div class="form-group">
                 <label for="impression">Impressão</label>
-                <textarea name="impression" id="impression" rows="3" class="form-control">{{ old('impression') }}</textarea>
+                <textarea name="impression" id="impression" rows="3" class="wysiwyg form-control">{{ old('impression') }}</textarea>
             </div>
             <div class="form-group">
                 <label for="recommendations">Recomendações</label>
-                <textarea name="recommendations" id="recommendations" rows="3" class="form-control">{{ old('recommendations') }}</textarea>
+                <textarea name="recommendations" id="recommendations" rows="3" class="wysiwyg form-control">{{ old('recommendations') }}</textarea>
             </div>
         </div>
         <div class="card-footer">

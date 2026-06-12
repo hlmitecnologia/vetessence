@@ -26,7 +26,7 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Motivo da consulta</label>
-            <textarea name="reason" id="reason" rows="3" required
+            <textarea class="wysiwyg" name="reason" id="reason" rows="3" required
                 class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"></textarea>
         </div>
 

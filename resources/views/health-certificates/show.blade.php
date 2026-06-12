@@ -32,10 +32,10 @@
             <div class="col-md-4"><strong>PDF Gerado em:</strong><p>{{ $healthCertificate->pdf_generated_at ? $healthCertificate->pdf_generated_at->format('d/m/Y H:i') : 'Ainda não' }}</p></div>
         </div>
         @if($healthCertificate->clinical_notes)
-        <div class="row mt-3"><div class="col-md-12"><strong>Observações Clínicas:</strong><p>{{ $healthCertificate->clinical_notes }}</p></div></div>
+        <div class="row mt-3"><div class="col-md-12"><strong>Observações Clínicas:</strong><p>{!! $healthCertificate->clinical_notes !!}</p></div></div>
         @endif
         @if($healthCertificate->notes)
-        <div class="row mt-3"><div class="col-md-12"><strong>Informações Adicionais:</strong><p>{{ $healthCertificate->notes }}</p></div></div>
+        <div class="row mt-3"><div class="col-md-12"><strong>Informações Adicionais:</strong><p>{!! $healthCertificate->notes !!}</p></div></div>
         @endif
     </div>
 </div>

@@ -779,6 +779,7 @@
         </footer>
     </div>
     @stack('modals')
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@7.6.1/tinymce.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
@@ -929,6 +930,69 @@
         if (typeof jQuery !== 'undefined') {
             jQuery(document).on('shown.bs.modal', '.modal', function() {
                 initTomSelects(this);
+            });
+        }
+
+        function initTinyMCE(container) {
+            container = container || document;
+            if (typeof tinymce === 'undefined') return;
+
+            container.querySelectorAll('textarea.wysiwyg').forEach(function(ta) {
+                if (ta.id && tinymce.get(ta.id)) return; // already initialized
+                if (!ta.id) ta.id = 'wysiwyg-' + ('xxxx' + Math.random().toString(36).substr(2, 9)).slice(-10);
+
+                tinymce.init({
+                    target: ta,
+                    height: 300,
+                    menubar: false,
+                    toolbar: 'undo redo | bold italic underline strikethrough | bullist numlist | removeformat',
+                    plugins: 'lists',
+                    setup: function(editor) {
+                        editor.on('change keyup', function() {
+                            tinymce.triggerSave();
+                            ta.dispatchEvent(new Event('input', { bubbles: true }));
+                        });
+                    }
+                });
+            });
+        }
+
+        function destroyTinyMCE(container) {
+            container = container || document;
+            if (typeof tinymce === 'undefined') return;
+            container.querySelectorAll('textarea.wysiwyg').forEach(function(ta) {
+                var editorId = ta.id;
+                if (editorId && tinymce.get(editorId)) {
+                    tinymce.execCommand('mceRemoveEditor', true, editorId);
+                }
+            });
+        }
+
+        // Init on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initTinyMCE();
+        });
+
+        // Livewire integration: save editor content before commit
+        document.addEventListener('livewire:initialized', function() {
+            Livewire.hook('commit', function() {
+                if (typeof tinymce !== 'undefined') tinymce.triggerSave();
+            });
+            Livewire.hook('morph.added', function(params) {
+                setTimeout(function() { initTinyMCE(params.el); }, 0);
+            });
+            Livewire.hook('morph.updated', function(params) {
+                setTimeout(function() {
+                    destroyTinyMCE(params.el);
+                    initTinyMCE(params.el);
+                }, 0);
+            });
+        });
+
+        // Bootstrap modal integration
+        if (typeof jQuery !== 'undefined') {
+            jQuery(document).on('shown.bs.modal', '.modal', function() {
+                initTinyMCE(this);
             });
         }
 

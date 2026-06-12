@@ -48,7 +48,7 @@
         <div class="row mt-3">
             <div class="col-md-12">
                 <strong>Descrição:</strong>
-                <p>{{ $consentTemplate->description }}</p>
+                <p>{!! $consentTemplate->description !!}</p>
             </div>
         </div>
         @endif

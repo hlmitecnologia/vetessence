@@ -60,7 +60,7 @@
             <div class="col-md-12">
                 <strong>Descrição:</strong>
                 <div class="p-3 bg-light rounded border mt-1">
-                    {{ $drugInteraction->description }}
+                    {!! $drugInteraction->description !!}
                 </div>
             </div>
         </div>
@@ -77,7 +77,7 @@
             <div class="col-md-12">
                 <strong>Conduta / Manejo:</strong>
                 <div class="p-3 bg-light rounded border mt-1">
-                    {{ $drugInteraction->management }}
+                    {!! $drugInteraction->management !!}
                 </div>
             </div>
         </div>

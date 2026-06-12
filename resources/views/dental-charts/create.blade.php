@@ -163,7 +163,7 @@
 
             <div class="form-group">
                 <label for="general_notes">Observações Gerais</label>
-                <textarea name="general_notes" id="general_notes" rows="3" class="form-control">{{ old('general_notes') }}</textarea>
+                <textarea name="general_notes" id="general_notes" rows="3" class="wysiwyg form-control">{{ old('general_notes') }}</textarea>
             </div>
         </div>
         <div class="card-footer">

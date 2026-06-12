@@ -36,7 +36,7 @@
                     </div>
                     <div class="form-group">
                         <label>Queixa Principal *</label>
-                        <textarea name="chief_complaint" rows="3" class="form-control" required>{{ old('chief_complaint') }}</textarea>
+                        <textarea name="chief_complaint" rows="3" class="wysiwyg form-control" required>{{ old('chief_complaint') }}</textarea>
                     </div>
                     <div class="form-group">
                         <label>Veterinário Responsável</label>

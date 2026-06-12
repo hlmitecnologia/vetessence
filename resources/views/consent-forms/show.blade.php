@@ -90,7 +90,7 @@
                     <hr>
                     <div class="mt-3">
                         <strong>Observações:</strong>
-                        <p>{{ $consentForm->notes }}</p>
+                        <p>{!! $consentForm->notes !!}</p>
                     </div>
                     @endif
 

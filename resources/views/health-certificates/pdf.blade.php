@@ -74,7 +74,7 @@
     @if($healthCertificate->clinical_notes)
     <div class="notes">
         <strong>Observações Clínicas:</strong><br>
-        {{ $healthCertificate->clinical_notes }}
+        {!! $healthCertificate->clinical_notes !!}
     </div>
     @endif
 

@@ -98,7 +98,7 @@
             </div>
             <div class="form-group">
                 <label for="message_content">Mensagem *</label>
-                <textarea name="message_content" id="message_content" rows="4" class="form-control @error('message_content') is-invalid @enderror" required>{{ old('message_content') }}</textarea>
+                <textarea name="message_content" id="message_content" rows="4" class="wysiwyg form-control @error('message_content') is-invalid @enderror" required>{{ old('message_content') }}</textarea>
                 @error('message_content')
                     <span class="invalid-feedback">{{ $message }}</span>
                 @enderror

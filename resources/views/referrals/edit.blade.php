@@ -64,19 +64,19 @@
             </div>
             <div class="form-group">
                 <label for="reason">Motivo do Encaminhamento *</label>
-                <textarea name="reason" id="reason" rows="3" class="form-control" required>{{ old('reason', $referral->reason) }}</textarea>
+                <textarea name="reason" id="reason" rows="3" class="wysiwyg form-control" required>{{ old('reason', $referral->reason) }}</textarea>
             </div>
             <div class="form-group">
                 <label for="clinical_history">Histórico Clínico</label>
-                <textarea name="clinical_history" id="clinical_history" rows="4" class="form-control">{{ old('clinical_history', $referral->clinical_history) }}</textarea>
+                <textarea name="clinical_history" id="clinical_history" rows="4" class="wysiwyg form-control">{{ old('clinical_history', $referral->clinical_history) }}</textarea>
             </div>
             <div class="form-group">
                 <label for="requested_procedures">Procedimentos Solicitados</label>
-                <textarea name="requested_procedures" id="requested_procedures" rows="3" class="form-control">{{ old('requested_procedures', $referral->requested_procedures) }}</textarea>
+                <textarea name="requested_procedures" id="requested_procedures" rows="3" class="wysiwyg form-control">{{ old('requested_procedures', $referral->requested_procedures) }}</textarea>
             </div>
             <div class="form-group">
                 <label for="response_notes">Resposta do Destino</label>
-                <textarea name="response_notes" id="response_notes" rows="3" class="form-control">{{ old('response_notes', $referral->response_notes) }}</textarea>
+                <textarea name="response_notes" id="response_notes" rows="3" class="wysiwyg form-control">{{ old('response_notes', $referral->response_notes) }}</textarea>
             </div>
         </div>
         <div class="card-footer">

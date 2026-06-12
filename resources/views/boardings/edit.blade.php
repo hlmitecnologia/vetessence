@@ -79,15 +79,15 @@
             </div>
             <div class="form-group">
                 <label for="feeding_instructions">Instruções de Alimentação</label>
-                <textarea name="feeding_instructions" rows="2" class="form-control">{{ old('feeding_instructions', $boarding->feeding_instructions) }}</textarea>
+                <textarea name="feeding_instructions" rows="2" class="wysiwyg form-control">{{ old('feeding_instructions', $boarding->feeding_instructions) }}</textarea>
             </div>
             <div class="form-group">
                 <label for="medication_instructions">Instruções de Medicação</label>
-                <textarea name="medication_instructions" rows="2" class="form-control">{{ old('medication_instructions', $boarding->medication_instructions) }}</textarea>
+                <textarea name="medication_instructions" rows="2" class="wysiwyg form-control">{{ old('medication_instructions', $boarding->medication_instructions) }}</textarea>
             </div>
             <div class="form-group">
                 <label for="notes">Observações</label>
-                <textarea name="notes" rows="2" class="form-control">{{ old('notes', $boarding->notes) }}</textarea>
+                <textarea name="notes" rows="2" class="wysiwyg form-control">{{ old('notes', $boarding->notes) }}</textarea>
             </div>
         </div>
         <div class="card-footer">

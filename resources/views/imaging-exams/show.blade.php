@@ -60,7 +60,7 @@
                 <div class="mt-4">
                     <h5>Achados</h5>
                     <div class="p-3 bg-light rounded">
-                        <p class="mb-0">{{ $exam->findings }}</p>
+                        <p class="mb-0">{!! $exam->findings !!}</p>
                     </div>
                 </div>
                 @endif
@@ -69,7 +69,7 @@
                 <div class="mt-4">
                     <h5>Impressão</h5>
                     <div class="p-3 bg-info-light rounded">
-                        <p class="mb-0">{{ $exam->impression }}</p>
+                        <p class="mb-0">{!! $exam->impression !!}</p>
                     </div>
                 </div>
                 @endif
@@ -78,7 +78,7 @@
                 <div class="mt-4">
                     <h5>Recomendações</h5>
                     <div class="p-3 bg-warning-light rounded">
-                        <p class="mb-0">{{ $exam->recommendations }}</p>
+                        <p class="mb-0">{!! $exam->recommendations !!}</p>
                     </div>
                 </div>
                 @endif

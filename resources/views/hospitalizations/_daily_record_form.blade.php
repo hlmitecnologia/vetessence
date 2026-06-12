@@ -29,19 +29,19 @@
 <hr>
 <div class="form-group">
     <label for="subjective">S - Subjetivo</label>
-    <textarea name="subjective" id="subjective" rows="2" class="form-control">{{ old('subjective', $dailyRecord->subjective ?? '') }}</textarea>
+    <textarea name="subjective" id="subjective" rows="2" class="wysiwyg form-control">{{ old('subjective', $dailyRecord->subjective ?? '') }}</textarea>
 </div>
 <div class="form-group">
     <label for="objective">O - Objetivo</label>
-    <textarea name="objective" id="objective" rows="2" class="form-control">{{ old('objective', $dailyRecord->objective ?? '') }}</textarea>
+    <textarea name="objective" id="objective" rows="2" class="wysiwyg form-control">{{ old('objective', $dailyRecord->objective ?? '') }}</textarea>
 </div>
 <div class="form-group">
     <label for="assessment">A - Avaliação</label>
-    <textarea name="assessment" id="assessment" rows="2" class="form-control">{{ old('assessment', $dailyRecord->assessment ?? '') }}</textarea>
+    <textarea name="assessment" id="assessment" rows="2" class="wysiwyg form-control">{{ old('assessment', $dailyRecord->assessment ?? '') }}</textarea>
 </div>
 <div class="form-group">
     <label for="plan">P - Plano</label>
-    <textarea name="plan" id="plan" rows="2" class="form-control">{{ old('plan', $dailyRecord->plan ?? '') }}</textarea>
+    <textarea name="plan" id="plan" rows="2" class="wysiwyg form-control">{{ old('plan', $dailyRecord->plan ?? '') }}</textarea>
 </div>
 
 <h6 class="text-uppercase text-muted mt-4">Sinais Vitais</h6>
@@ -119,9 +119,9 @@
 </div>
 <div class="form-group">
     <label for="medications_given">Medicações Administradas</label>
-    <textarea name="medications_given" id="medications_given" rows="2" class="form-control">{{ old('medications_given', $dailyRecord->medications_given ?? '') }}</textarea>
+    <textarea name="medications_given" id="medications_given" rows="2" class="wysiwyg form-control">{{ old('medications_given', $dailyRecord->medications_given ?? '') }}</textarea>
 </div>
 <div class="form-group">
     <label for="observations">Observações</label>
-    <textarea name="observations" id="observations" rows="2" class="form-control">{{ old('observations', $dailyRecord->observations ?? '') }}</textarea>
+    <textarea name="observations" id="observations" rows="2" class="wysiwyg form-control">{{ old('observations', $dailyRecord->observations ?? '') }}</textarea>
 </div>

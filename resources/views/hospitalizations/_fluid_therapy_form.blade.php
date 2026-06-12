@@ -51,5 +51,5 @@
 </div>
 <div class="form-group">
     <label for="observations">Observações</label>
-    <textarea name="observations" id="observations" rows="2" class="form-control">{{ old('observations', $fluidTherapy->observations ?? '') }}</textarea>
+    <textarea name="observations" id="observations" rows="2" class="wysiwyg form-control">{{ old('observations', $fluidTherapy->observations ?? '') }}</textarea>
 </div>

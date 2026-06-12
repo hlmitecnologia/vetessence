@@ -40,7 +40,7 @@
             <div class="col-md-12">
                 <strong>Conteúdo:</strong>
                 <div class="p-3 bg-light rounded border mt-2" style="white-space: pre-wrap;">
-                    {{ $staffNote->content }}
+                    {!! $staffNote->content !!}
                 </div>
             </div>
         </div>

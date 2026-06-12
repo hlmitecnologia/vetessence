@@ -34,12 +34,12 @@
 
         <div class="form-group">
             <label>Descrição</label>
-            <textarea wire:model="description" class="form-control" rows="2"></textarea>
+            <textarea wire:model="description" class="wysiwyg form-control" rows="2"></textarea>
         </div>
 
         <div class="form-group">
             <label>Conteúdo *</label>
-            <textarea wire:model="content" class="form-control @error('content') is-invalid @enderror" rows="5" required></textarea>
+            <textarea wire:model="content" class="wysiwyg form-control @error('content') is-invalid @enderror" rows="5" required></textarea>
             @error('content') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 

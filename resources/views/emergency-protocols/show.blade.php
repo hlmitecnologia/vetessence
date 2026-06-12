@@ -22,7 +22,7 @@
         <div class="card-body">
             @if($emergencyProtocol->description)
             <h6>Descricao</h6>
-            <p>{{ $emergencyProtocol->description }}</p>
+            <p>{!! $emergencyProtocol->description !!}</p>
             <hr>
             @endif
             <h6>Procedimento</h6>

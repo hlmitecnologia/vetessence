@@ -42,7 +42,7 @@
                 @if($product->description)
                 <hr>
                 <small class="text-muted text-uppercase">Descrição</small>
-                <p>{{ $product->description }}</p>
+                <p>{!! $product->description !!}</p>
                 @endif
             </div>
         </div>

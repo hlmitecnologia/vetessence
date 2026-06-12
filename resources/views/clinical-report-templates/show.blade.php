@@ -52,7 +52,7 @@
         <div class="row mt-3">
             <div class="col-md-12">
                 <strong>Descrição:</strong>
-                <p>{{ $clinicalReportTemplate->description }}</p>
+                <p>{!! $clinicalReportTemplate->description !!}</p>
             </div>
         </div>
         @endif
@@ -61,7 +61,7 @@
             <div class="col-md-12">
                 <strong>Conteúdo do Modelo:</strong>
                 <div class="p-3 bg-light rounded border mt-2" style="white-space: pre-wrap; font-family: monospace;">
-                    {{ $clinicalReportTemplate->content }}
+                    {!! $clinicalReportTemplate->content !!}
                 </div>
             </div>
         </div>

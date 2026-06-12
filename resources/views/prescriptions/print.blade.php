@@ -168,14 +168,14 @@
     @if($prescription->instructions)
     <div class="section">
         <div class="section-title">Instruções</div>
-        <p>{{ $prescription->instructions }}</p>
+        <p>{!! $prescription->instructions !!}</p>
     </div>
     @endif
 
     @if($prescription->notes)
     <div class="section">
         <div class="section-title">Observações</div>
-        <p>{{ $prescription->notes }}</p>
+        <p>{!! $prescription->notes !!}</p>
     </div>
     @endif
 

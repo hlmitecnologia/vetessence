@@ -17,7 +17,7 @@
                     </div>
                     <div class="form-group">
                         <label>Descrição</label>
-                        <textarea name="description" rows="2" class="form-control">{{ $role->description }}</textarea>
+                        <textarea name="description" rows="2" class="wysiwyg form-control">{!! $role->description !!}</textarea>
                     </div>
                 </div>
                 <div class="card-footer text-right">

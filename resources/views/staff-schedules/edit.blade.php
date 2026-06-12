@@ -69,7 +69,7 @@
             </div>
             <div class="form-group">
                 <label for="notes">Observações</label>
-                <textarea name="notes" id="notes" class="form-control @error('notes') is-invalid @enderror" rows="3">{{ old('notes', $staffSchedule->notes) }}</textarea>
+                <textarea name="notes" id="notes" class="wysiwyg form-control @error('notes') is-invalid @enderror" rows="3">{{ old('notes', $staffSchedule->notes) }}</textarea>
                 @error('notes')
                     <span class="invalid-feedback">{{ $message }}</span>
                 @enderror

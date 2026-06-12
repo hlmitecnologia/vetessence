@@ -50,7 +50,7 @@
                 @if($order->notes)
                 <div class="mt-3 p-3 bg-light rounded">
                     <strong>Observações:</strong>
-                    <p class="mt-1">{{ $order->notes }}</p>
+                    <p class="mt-1">{!! $order->notes !!}</p>
                 </div>
                 @endif
 

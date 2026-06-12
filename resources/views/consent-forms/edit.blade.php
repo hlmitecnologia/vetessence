@@ -100,11 +100,11 @@
             </div>
             <div class="form-group">
                 <label for="signed_content">Conteúdo Personalizado</label>
-                <textarea name="signed_content" id="signed_content" rows="6" class="form-control">{{ old('signed_content', $consentForm->signed_content) }}</textarea>
+                <textarea name="signed_content" id="signed_content" rows="6" class="wysiwyg form-control">{{ old('signed_content', $consentForm->signed_content) }}</textarea>
             </div>
             <div class="form-group">
                 <label for="notes">Observações</label>
-                <textarea name="notes" id="notes" rows="2" class="form-control">{{ old('notes', $consentForm->notes) }}</textarea>
+                <textarea name="notes" id="notes" rows="2" class="wysiwyg form-control">{{ old('notes', $consentForm->notes) }}</textarea>
             </div>
         </div>
         <div class="card-footer">

@@ -36,7 +36,7 @@
                 </div>
                 <div class="form-group">
                     <label>Observações</label>
-                    <textarea name="notes" class="form-control" rows="2"></textarea>
+                    <textarea name="notes" class="wysiwyg form-control" rows="2"></textarea>
                 </div>
             </div>
             <div class="card-footer">

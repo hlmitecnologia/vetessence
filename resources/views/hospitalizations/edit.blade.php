@@ -127,14 +127,14 @@
             </div>
             <div class="form-group">
                 <label for="admission_reason">Motivo da Internação *</label>
-                <textarea name="admission_reason" id="admission_reason" rows="3" class="form-control @error('admission_reason') is-invalid @enderror" required>{{ old('admission_reason', $hospitalization->admission_reason) }}</textarea>
+                <textarea name="admission_reason" id="admission_reason" rows="3" class="wysiwyg form-control @error('admission_reason') is-invalid @enderror" required>{{ old('admission_reason', $hospitalization->admission_reason) }}</textarea>
                 @error('admission_reason')
                     <span class="invalid-feedback">{{ $message }}</span>
                 @enderror
             </div>
             <div class="form-group">
                 <label for="initial_diagnosis">Diagnóstico Inicial</label>
-                <textarea name="initial_diagnosis" id="initial_diagnosis" rows="2" class="form-control @error('initial_diagnosis') is-invalid @enderror">{{ old('initial_diagnosis', $hospitalization->initial_diagnosis) }}</textarea>
+                <textarea name="initial_diagnosis" id="initial_diagnosis" rows="2" class="wysiwyg form-control @error('initial_diagnosis') is-invalid @enderror">{{ old('initial_diagnosis', $hospitalization->initial_diagnosis) }}</textarea>
                 @error('initial_diagnosis')
                     <span class="invalid-feedback">{{ $message }}</span>
                 @enderror
@@ -152,11 +152,11 @@
             </div>
             <div class="form-group">
                 <label for="discharge_summary">Resumo de Alta</label>
-                <textarea name="discharge_summary" id="discharge_summary" rows="3" class="form-control">{{ old('discharge_summary', $hospitalization->discharge_summary) }}</textarea>
+                <textarea name="discharge_summary" id="discharge_summary" rows="3" class="wysiwyg form-control">{{ old('discharge_summary', $hospitalization->discharge_summary) }}</textarea>
             </div>
             <div class="form-group">
                 <label for="discharge_instructions">Instruções de Alta</label>
-                <textarea name="discharge_instructions" id="discharge_instructions" rows="3" class="form-control">{{ old('discharge_instructions', $hospitalization->discharge_instructions) }}</textarea>
+                <textarea name="discharge_instructions" id="discharge_instructions" rows="3" class="wysiwyg form-control">{{ old('discharge_instructions', $hospitalization->discharge_instructions) }}</textarea>
             </div>
             @endif
         </div>

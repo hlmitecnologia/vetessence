@@ -38,7 +38,7 @@
 
         <div class="form-group">
             <label>Conteúdo *</label>
-            <textarea wire:model="content" class="form-control @error('content') is-invalid @enderror" rows="5" required></textarea>
+            <textarea wire:model="content" class="wysiwyg form-control @error('content') is-invalid @enderror" rows="5" required></textarea>
             @error('content') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
