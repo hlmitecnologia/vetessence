@@ -1,8 +1,10 @@
 <div>
     <form wire:submit.prevent="save">
         <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Informações Básicas</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Informações Básicas</h5>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
@@ -57,8 +59,10 @@
         </div>
 
         <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Sinais Vitais</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Sinais Vitais</h5>
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
@@ -107,8 +111,10 @@
         </div>
 
         <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Anamnese e Exame Físico</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Anamnese e Exame Físico</h5>
                 <div class="form-group">
                     <label>Queixa Principal</label>
                     <textarea wire:model="chief_complaint" rows="2" class="wysiwyg form-control"></textarea>
@@ -125,8 +131,10 @@
         </div>
 
         <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Diagnóstico e Tratamento</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Diagnóstico e Tratamento</h5>
                 <div class="form-group">
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <label class="mb-0">Diagnóstico</label>
@@ -166,8 +174,10 @@
         </div>
 
         <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0"><i class="fas fa-biohazard text-danger mr-2"></i>Doenças Zoonóticas</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title"><i class="fas fa-biohazard text-danger mr-2"></i>Doenças Zoonóticas</h5>
                 <p class="text-muted small mb-3">Registre doenças zoonóticas associadas a este atendimento.</p>
                 @foreach($selectedDiseases as $index => $sd)
                 <div class="row align-items-end mb-2 p-3 bg-light rounded">
@@ -200,8 +210,10 @@
         </div>
 
         <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Prescrições</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Prescrições</h5>
                 @foreach($prescriptions as $index => $prescription)
                 <div class="prescription-item row align-items-end mb-2 p-3 bg-light rounded">
                     <div class="col-md-3">
