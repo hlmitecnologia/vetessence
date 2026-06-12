@@ -18,21 +18,22 @@ Brazilian Portuguese. Follow existing patterns: migration → model → controll
 ## Test Suite Status
 
 ```
-Tests:  ~1,175 total (278 files), 59 pre-existing failures/skipped
-
-+33 novos testes (15 VetAvailabilityService + 6 StaffScheduleObserver + 8 VetAvailabilityController + 3 StaffSchedule model + 1 StaffScheduleController) — 0 falhas
+Total:  ~1,969 test methods (389 test files)
+Coverage jump: Livewire 6%→100%, Controllers 37%→80%, Services 37%→78%
 ```
 
 | Suite | Count | Notes |
 |-------|-------|-------|
-| Unit/Models | ~300 | Most models covered (+3 StaffSchedule is_vet_shift) |
-| Feature/Controllers | ~410 | + vet-shifts route, + VetAvailabilityController Portal API |
-| Feature/Commands | ~25 | All commands |
+| Unit/Models | ~300 | Most models covered |
+| Feature/Controllers | ~660 | +48 new controller test files (NFe, Payment, Appointment, etc.) |
+| Feature/Commands | ~47 | +6 new command tests |
+| Feature/Livewire | ~127 | 24 new Livewire test files — 32/32 components covered (100%) |
 | Feature/Integrations | ~12 | Flow scenarios |
-| Feature/Api | ~18 | Endpoints |
-| Feature/Portal | ~28 | +8 VetAvailabilityController |
-| Unit/Services | ~50 | +15 VetAvailabilityService |
-| Unit/Observers | ~6 | +6 StaffScheduleObserver |
+| Feature/Api | ~70 | +8 API controller tests |
+| Feature/Portal | ~40 | +5 Portal controller tests |
+| Unit/Services | ~180 | +21 new service test files (NFe, CEP, Notification providers) |
+| Unit/Listeners | ~22 | +3 new listener test files (EmitirNfeOnPaid, DeductStock*) |
+| Unit/Observers | ~6 | StaffScheduleObserver |
 
 ---
 
@@ -253,7 +254,67 @@ All 40+ missing columns added via 8 migrations across 10 tables:
 
 ---
 
-## Phase P — Feature Gap Closure ✅
+## Phase Z — Massive Test Gap Closure Sweep ✅ (2026-06-12)
+
+**Objetivo:** Fechar os maiores gaps de cobertura: Livewire (94% sem testes), Controllers (48 sem testes), Services (28 sem testes), Listeners/Commands (15 sem testes).
+
+### Z1 — Livewire: 24 novos arquivos (6% → 100% — 32/32 componentes)
+
+| Lote | Arquivos | Tests | Status |
+|------|----------|-------|--------|
+| Batch 1 | MedicalRecordForm, InvoiceForm, PetForm, ZoonoticDiseaseForm, ProductForm, UserForm | 52 | ✅ |
+| Batch 2 | AppointmentForm, BreedDefaultForm, CategoryForm, DepartmentForm, DrugFormularyForm, DrugInteractionForm, EmergencyProtocolForm, ControlledSubstanceForm | 41 | ✅ |
+| Batch 3 | ClinicalReportTemplateForm, CommunicationTemplateForm, ConsentTemplateForm, ConvenioClaimForm, ConvenioForm, VaccineProtocolForm, ServiceForm, SupplierForm | 54 | ✅ |
+| Batch 4 | ChatBox, DosageCalculator, GroomingTemplateForm, PetDeathRecordForm, PreAnestheticEvaluationForm, VaccinationReminderForm, WeightRecordForm | 32 | ✅ |
+
+**Fix encontrado:** `invoice-form.blade.php`: `$subtotal` → `$this->subtotal` (Livewire 3)
+
+### Z2 — Controllers: 48 novos arquivos (37% → ~80%)
+
+| Lote | Foco | Tests |
+|------|------|-------|
+| Batch 1 | NFe, NfeConfig, PaymentGateway, Appointment, PurchaseOrder, DrugInteraction, StaffNote, Teleconsultation | 106 |
+| Batch 2 | ZoonoticDisease, OnlineBooking, ParasiteControl, PatientTimeline, Branding, ClinicalReportTemplate, Boarding, Dashboard | ~60 |
+| Batch 3 | Backup, BankReconciliation, BreedDefault, ConsentTemplate, CorporateDashboard, Doc, DrugFormulary, EmergencyProtocol | ~50 |
+| Batch 4 | GroomingTemplate, HealthCertificate, LabEquipmentIntegration, PetDeathRecord, PublicPrescription, TherapySession, SystemUpdate, AuditLog | ~60 |
+| Batch 5 | HospitalizationFluidTherapy, PrescriptionVerification, SignatureVerify, Api/* (5) | 94 |
+| Batch 6 | Api/* (4), Portal/* (4) | 53 |
+
+**Fixes encontrados:**
+- `CorporateDashboardController.php`: `groupBy('month')` → `groupBy(DB::raw('MONTH(created_at)'))` (SQL strict mode)
+- `corporate-dashboard/index.blade.php`: `loop->index` → `$loop->index`
+
+### Z3 — Services: 21 novos arquivos (37% → ~78%)
+
+| Grupo | Arquivos | Tests |
+|-------|----------|-------|
+| NFe | FocusNfeProvider, NfeIoProvider, WebmaniaProvider, NfeResult, NfeService | 31 |
+| CEP | CepService, CepResult | 15 |
+| Notification | NotificationChannel, NotificationResult, 4 Email, 3 SMS, 4 WhatsApp | 81 |
+| Insurance | InsuranceProviderFactory | 5 |
+
+### Z4 — Listeners + Commands: 9 novos arquivos
+
+| Tipo | Arquivos | Tests |
+|------|----------|-------|
+| Listeners | EmitirNfeOnPaid, DeductStockOnPaid, DeductStockListener | 10 |
+| Commands | NfeEmitPending, SyncSpatieRoles, AnonimizarDadosLGPD, DocsPublish, ExportarDadosLGPD, DbImportGeo | 12 |
+
+### Z5 — Criados durante os testes
+- `database/factories/VaccinationReminderFactory.php` (factory faltante)
+- `test-audit-report-full.json` (auditoria completa de 348 arquivos)
+
+### Totais
+
+| Categoria | Novos arquivos | Novos testes | Cobertura final |
+|-----------|:-------------:|:------------:|:---------------:|
+| Livewire | 24 | ~127 | **100%** (32/32) |
+| Controllers | 48 | ~253 | **~80%** |
+| Services | 21 | ~128 | **~78%** |
+| Listeners + Commands | 9 | ~22 | **~85%** |
+| **Total** | **102** | **~530** | |
+
+---
 
 6 missing veterinary workflow features built with full CRUD, tests, gates, and sidebar integration.
 

@@ -121,7 +121,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 ## Suite de Testes
 
 ```
-Tests: ~1,175 total (278 files), assertions vary, 59 pre-existing failures/skipped; +33 testes Shift/VetAvailability (6 arquivos) — 0 falhas
+Tests: ~1,969 total (389 files), Livewire 100% (32/32), Controllers ~80%, Services ~78%
 ```
 
 ## Início Rápido

@@ -6,14 +6,14 @@
 ## Summary
 
 ### Done
-- **Species display in /zoonotic-diseases**: completed `resources/lang/en/species.php` with all ~21 missing keys, added `birds` to show view hardcoded array (`840cfac`)
-- **Zoonotic‑disease creation silently fails**: added missing species keys to `getSpeciesOptions()`, try/catch for duplicate slug (`09933c3`)
-- **Tutor name accessor**: `getNameAttribute()` now checks `attributes['name']` before falling back to email (`61a1492`)
-- **TutorFormTest**: factory CPF, State seeding, permission tests (`61a1492`)
-- **CPF uniqueness on edit (final)**: `save()` sempre busca ID do tutor pelo CPF no banco — se existe, usa o ID para exclusão da validação unique e atualiza o registro. Causa raiz era duplicidade real de CPF no banco, não `tutorId` perdido. 15 testes, todos passam; triagem OK. (`03e0aab`)
-- **PortoSeguroProviderTest**: 3 bugs fixed (`998867e`)
-- **TinyMCE WYSIWYG**: TinyMCE 7.6.1 CDN adicionado a 3 layouts (adminlte, app, portal). Classe `.wysiwyg` aplicada a textareas em 142 views (26 Livewire + ~115 tradicionais). `{!! !!}` aplicado em ~69 views de exibição para renderizar HTML salvo. (`pending`)
+- **Test sweep (102 new files, ~530 tests)**: Livewire 6%→100% (32/32), Controllers 37%→80% (48 new), Services 37%→78% (21 new), Listeners/Commands ~85% (9 new)
+- **Card-title standardization**: moved all card-title inside card-header (`eb1e6c3`)
+- **Unified NFSe/NFe emission button** (`86e6414`): single "Emitir Nota Fiscal" that decides NFSe/NFe per item_type
+- **Payment gate**: emit button hidden until `status === 'paid'` (`1bc14a7`)
+- **Flash messages**: fixed adminlte layout missing `warning`/`info` flash blocks (`04ecb75`)
+- **NotificationLog on auto-emission failure**: EmitirNfseOnPaid + EmitirNfeOnPaid create notification logs (`1bc14a7`)
 
 ### Known Issues
 - `AutoInvoiceTest` pre‑existing order‑dependent failure (passes in isolation)
-- `ModuleTestCase::makeUser()` always assigns `super-admin` role
+- `NFSeGateTest` pre‑existing permission conflict (`nfse.view` already exists)
+- Data import commands (DbImport*) and DemoSeed intentionally not tested (one-shot scripts)

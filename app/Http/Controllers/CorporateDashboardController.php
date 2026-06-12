@@ -40,7 +40,7 @@ class CorporateDashboardController extends Controller
             $monthly = $invQuery
                 ->select(DB::raw('MONTH(created_at) as month'), DB::raw('SUM(total) as total'))
                 ->whereYear('created_at', now()->year)
-                ->groupBy('month')
+                ->groupBy(DB::raw('MONTH(created_at)'))
                 ->pluck('total', 'month');
 
             $patients = $appQuery

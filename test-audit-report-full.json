@@ -1,0 +1,2464 @@
+<stdin>:69: SyntaxWarning: invalid escape sequence '\$'
+<stdin>:69: SyntaxWarning: invalid escape sequence '\$'
+<stdin>:69: SyntaxWarning: invalid escape sequence '\$'
+TOTAL FILES: 348
+FULL: 172 (49.4%)
+PARTIAL: 34 (9.8%)
+MISSING: 142 (40.8%)
+
+COMMAND: 28 files - Full: 13, Partial: 2, Missing: 13 (46% covered)
+CONTROLLER: 115 files - Full: 42, Partial: 25, Missing: 48 (37% covered)
+EVENT: 3 files - Full: 0, Partial: 0, Missing: 3 (0% covered)
+EXCEPTION: 1 files - Full: 0, Partial: 0, Missing: 1 (0% covered)
+HELPER: 1 files - Full: 0, Partial: 0, Missing: 1 (0% covered)
+LISTENER: 6 files - Full: 2, Partial: 1, Missing: 3 (33% covered)
+LIVEWIRE: 32 files - Full: 2, Partial: 0, Missing: 30 (6% covered)
+MODEL: 93 files - Full: 89, Partial: 1, Missing: 3 (96% covered)
+OBSERVER: 2 files - Full: 1, Partial: 0, Missing: 1 (50% covered)
+PROVIDER: 6 files - Full: 0, Partial: 0, Missing: 6 (0% covered)
+RULE: 1 files - Full: 0, Partial: 0, Missing: 1 (0% covered)
+SCOPE: 1 files - Full: 0, Partial: 1, Missing: 0 (0% covered)
+SERVICE: 51 files - Full: 19, Partial: 4, Missing: 28 (37% covered)
+TRAIT: 6 files - Full: 4, Partial: 0, Missing: 2 (67% covered)
+VIEW-COMPONENT: 2 files - Full: 0, Partial: 0, Missing: 2 (0% covered)
+
+
+=== FULL JSON OUTPUT ===
+[
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/AnesthesiaMonitoring.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/AnesthesiaVitalSign.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Appointment.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "8 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/AppointmentService.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/AuditLog.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/BankAccount.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/BankTransaction.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "5 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Boarding.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "5 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/BoardingDailyTask.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/BoardingKennel.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Branch.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "6 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/BreedDefault.php",
+    "type": "model",
+    "test_exists": "partial",
+    "notes": "1 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Category.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ChatMessage.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "5 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/City.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ClinicalReportTemplate.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/CommissionLog.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/CommissionRate.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/CommunicationQueue.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/CommunicationTemplate.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ConsentForm.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ConsentLog.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ConsentTemplate.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ControlledSubstance.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ControlledSubstanceLog.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Convenio.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ConvenioClaim.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "5 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ConvenioPet.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/DentalChart.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/DentalCondition.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Department.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/DietPlan.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/DrugFormulary.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "7 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/DrugInteraction.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/EmergencyProtocol.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "5 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Exam.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/GroomingTemplate.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/HealthCertificate.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Hospitalization.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/HospitalizationDailyRecord.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/HospitalizationFluidTherapy.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/HospitalizationPrescription.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ImagingExam.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/InventoryReconciliation.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Invoice.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "7 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/InvoiceItem.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/LabEquipmentIntegration.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/LaboratoryOrder.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/LaboratoryTest.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/LlmConfig.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "8 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/MedicalRecord.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "9 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/NfeConfig.php",
+    "type": "model",
+    "test_exists": "missing",
+    "notes": "Simple model, minimal logic",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/NfeInvoice.php",
+    "type": "model",
+    "test_exists": "missing",
+    "notes": "Model with custom logic, no test",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/NfseConfig.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "7 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/NfseInvoice.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "6 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/NotificationLog.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/OnlineBooking.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ParasiteControl.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/PaymentGateway.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Pet.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "9 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/PetDeathRecord.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/PetTutor.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Position.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/PreAnestheticEvaluation.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Prescription.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Product.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "5 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/PurchaseOrder.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "6 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/PurchaseOrderItem.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Referral.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Role.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Service.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ServicePriceTier.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "6 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ServiceTypeMap.php",
+    "type": "model",
+    "test_exists": "missing",
+    "notes": "Model with custom logic, no test",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Setting.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/StaffNote.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "5 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/StaffSchedule.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "5 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/StaffTimeOff.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/State.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/StockMovement.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Supplier.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Surgery.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Teleconsultation.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "8 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/TherapySession.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/TreatmentPlan.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "13 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/TreatmentPlanItem.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/TriageRecord.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Tutor.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "5 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/User.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "5 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/Vaccination.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/VaccinationReminder.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/VaccineProtocol.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/WeightRecord.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Models/ZoonoticDisease.php",
+    "type": "model",
+    "test_exists": "full",
+    "notes": "6 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/AnesthesiaMonitoringController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (5 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/AppointmentController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "209 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/AuditLogController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "45 lines, no CRUD or edge-case tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/BackupController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "55 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/BankAccountController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "7 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/BankReconciliationController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "94 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/BoardingController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "224 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/BranchController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "9 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/BrandingController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "106 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/BreedDefaultController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "90 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/CategoryController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "10 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ClinicalReportTemplateController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "109 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/CommissionController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "6 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/CommunicationQueueController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (5 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/CommunicationTemplateController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "7 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ConsentFormController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (5 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ConsentTemplateController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "96 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ControlledSubstanceController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "9 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ControlledSubstanceLogController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (4 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ConvenioClaimController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "6 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ConvenioController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "8 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/CorporateDashboardController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "67 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/DashboardController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "141 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/DentalChartController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (5 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/DepartmentController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "9 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/DietPlanController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "6 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/DocController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "109 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/DrugFormularyController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "88 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/DrugInteractionController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "161 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/EmergencyProtocolController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "95 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/EmployeeController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (4 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ExamController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (5 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/GroomingTemplateController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "88 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/HealthCertificateController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "148 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/HospitalizationController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (5 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/HospitalizationDailyRecordController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (5 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/HospitalizationFluidTherapyController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "38 lines, no CRUD or edge-case tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/HospitalizationPrescriptionController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (3 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ImagingExamController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (5 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/InsuranceWebhookController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (3 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/InvoiceController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "11 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/LabEquipmentIntegrationController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "92 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/LaboratoryOrderController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (5 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/LlmConfigController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "7 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/MedicalRecordController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "10 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/NfeConfigController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "53 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/NfeController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "115 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/NfseConfigController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (3 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/NfseController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "9 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/NotificationConfigController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (4 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/NotificationLogController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (3 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/OnlineBookingController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "117 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ParasiteControlController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "114 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/PatientTimelineController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "108 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/PaymentGatewayController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "121 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/PetController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "8 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/PetDeathRecordController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "82 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/PositionController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "8 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/PreAnestheticEvaluationController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "6 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/PrescriptionController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (1 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/PrescriptionVerificationController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "32 lines, no CRUD or edge-case tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ProductController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "8 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/PublicPrescriptionController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "58 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/PurchaseOrderController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "181 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ReferralController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "8 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ReportController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (2 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/RoleController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "7 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ServiceController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "8 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/SignatureVerifyController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "38 lines, no CRUD or edge-case tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/StaffNoteController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "140 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/StaffScheduleController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (3 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/StockController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (1 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/SupplierController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "8 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/SurgeryController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "9 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/SystemUpdateController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "172 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/TeleconsultationController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "136 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/TherapySessionController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "91 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/TreatmentPlanController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "7 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/TriageRecordController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "7 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/TutorController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "9 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/UserController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "12 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/VaccinationController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "8 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/VaccinationReminderController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "7 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/VaccineProtocolController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "8 test(s), covers CRUD + validation/error paths",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/WeightRecordController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Minimal coverage (5 test(s))",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/ZoonoticDiseaseController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "120 lines, no CRUD or edge-case tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Portal/AppointmentController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Portal controller, 2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Portal/DashboardController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Portal controller, 1 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Portal/DocController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "80 lines, no test",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Portal/ExamController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "16 lines, no test",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Portal/InvoiceController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Portal controller, 2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Portal/MedicalRecordController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "23 lines, no test",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Portal/PetController.php",
+    "type": "controller",
+    "test_exists": "partial",
+    "notes": "Portal controller, 2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Portal/PrescriptionController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "16 lines, no test",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Portal/VetAvailabilityController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "Portal controller, 8 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Auth/AuthenticatedSessionController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "Auth controller, tested via AuthenticationTest",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Auth/ConfirmablePasswordController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "Auth controller, tested via PasswordConfirmationTest",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Auth/EmailVerificationNotificationController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "Auth controller, tested via EmailVerificationTest",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Auth/EmailVerificationPromptController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "Auth controller, tested via EmailVerificationTest",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Auth/NewPasswordController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "Auth controller, tested via PasswordResetTest",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Auth/PasswordResetLinkController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "Auth controller, tested via PasswordResetTest",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Auth/RegisteredUserController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "Auth controller, tested via RegistrationTest",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Auth/VerifyEmailController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "Auth controller, tested via EmailVerificationTest",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Api/AppointmentController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "API controller, 6 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Api/AuthController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "API controller, 6 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Api/InvoiceController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "51 lines, no API endpoint tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Api/LabEquipmentController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "58 lines, no API endpoint tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Api/MedicalRecordController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "44 lines, no API endpoint tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Api/ModuleApiController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "137 lines, no API endpoint tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Api/NfseWebhookController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "31 lines, no API endpoint tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Api/OnlineBookingController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "52 lines, no API endpoint tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Api/PetController.php",
+    "type": "controller",
+    "test_exists": "full",
+    "notes": "API controller, 6 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Api/TutorController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "111 lines, no API endpoint tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Api/VaccinationController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "60 lines, no API endpoint tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Http/Controllers/Api/ZoonoticDiseaseController.php",
+    "type": "controller",
+    "test_exists": "missing",
+    "notes": "52 lines, no API endpoint tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/BranchContext.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "5 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/DrugInteractionService.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "9 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/PaymentService.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "5 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/PixService.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "9 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/StockDeductionService.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "4 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/VetAvailabilityService.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "15 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfse/FocusNfeProvider.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "7 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfse/NfeIoProvider.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "6 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfse/NfseProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "Abstract/interface, covered via concrete implementations",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfse/NfseResult.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "4 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfse/NfseService.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "13 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfse/SpedyProvider.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "6 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfse/TecnospeedProvider.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "6 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfse/WebmaniaProvider.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "7 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Insurance/InsuranceClaimResult.php",
+    "type": "service",
+    "test_exists": "partial",
+    "notes": "3 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Insurance/InsuranceProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "Abstract/interface, covered via concrete implementations",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Insurance/InsuranceProviderFactory.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Insurance/PortoSeguroProvider.php",
+    "type": "service",
+    "test_exists": "partial",
+    "notes": "3 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/NotificationChannel.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/NotificationResult.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "DTO/Result object, minimal logic",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/NotificationService.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "17 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/WhatsApp/CloudApiProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/WhatsApp/TwilioWhatsAppProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/WhatsApp/WeniProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/WhatsApp/ZapiProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/Sms/SnsSmsProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/Sms/TwilioSmsProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/Sms/ZenvioSmsProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/Email/MailgunProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/Email/SendGridProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/Email/SesProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/Email/SmtpProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/Contracts/EmailProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "Abstract/interface, covered via concrete implementations",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/Contracts/SmsProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "Abstract/interface, covered via concrete implementations",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Notification/Contracts/WhatsAppProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "Abstract/interface, covered via concrete implementations",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfe/FocusNfeProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfe/NfeIoProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfe/NfeProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "Abstract/interface, covered via concrete implementations",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfe/NfeResult.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "DTO/Result object, minimal logic",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfe/NfeService.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Nfe/WebmaniaProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Cep/CepResult.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "DTO/Result object, minimal logic",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Cep/CepService.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "No tests, requires integration/unit tests",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Llm/AnthropicProvider.php",
+    "type": "service",
+    "test_exists": "partial",
+    "notes": "3 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Llm/GeminiProvider.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "4 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Llm/GrokProvider.php",
+    "type": "service",
+    "test_exists": "partial",
+    "notes": "3 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Llm/LlmProvider.php",
+    "type": "service",
+    "test_exists": "missing",
+    "notes": "Abstract/interface, covered via concrete implementations",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Llm/LlmResult.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "6 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Llm/LlmService.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "4 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Llm/OllamaProvider.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "4 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Services/Llm/OpenAiProvider.php",
+    "type": "service",
+    "test_exists": "full",
+    "notes": "4 test(s), tests provider contracts/implementations",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Listeners/CalculateCommissionOnPaid.php",
+    "type": "listener",
+    "test_exists": "partial",
+    "notes": "1 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Listeners/DeductStockListener.php",
+    "type": "listener",
+    "test_exists": "missing",
+    "notes": "Critical business logic listener, no tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Listeners/DeductStockOnPaid.php",
+    "type": "listener",
+    "test_exists": "missing",
+    "notes": "Critical business logic listener, no tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Listeners/EmitirNfeOnPaid.php",
+    "type": "listener",
+    "test_exists": "missing",
+    "notes": "Critical business logic listener, no tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Listeners/EmitirNfseOnPaid.php",
+    "type": "listener",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Listeners/GenerateInvoiceFromAppointment.php",
+    "type": "listener",
+    "test_exists": "full",
+    "notes": "2 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/AlertProductExpiry.php",
+    "type": "command",
+    "test_exists": "full",
+    "notes": "3 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/AlertaEstoque.php",
+    "type": "command",
+    "test_exists": "full",
+    "notes": "3 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/AnonimizarDadosLGPD.php",
+    "type": "command",
+    "test_exists": "missing",
+    "notes": "Command, no tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/AutoFileInsuranceClaims.php",
+    "type": "command",
+    "test_exists": "full",
+    "notes": "3 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/DatabaseBackup.php",
+    "type": "command",
+    "test_exists": "full",
+    "notes": "2 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/DatabaseBackupCleanup.php",
+    "type": "command",
+    "test_exists": "full",
+    "notes": "2 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/DbImportAuxBreeds.php",
+    "type": "command",
+    "test_exists": "missing",
+    "notes": "Data import command, seed-only, rarely executed",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/DbImportBreeds.php",
+    "type": "command",
+    "test_exists": "missing",
+    "notes": "Data import command, seed-only, rarely executed",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/DbImportFelineBreeds.php",
+    "type": "command",
+    "test_exists": "missing",
+    "notes": "Data import command, seed-only, rarely executed",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/DbImportGeo.php",
+    "type": "command",
+    "test_exists": "missing",
+    "notes": "Data import command, seed-only, rarely executed",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/DbImportVboBreeds.php",
+    "type": "command",
+    "test_exists": "missing",
+    "notes": "Data import command, seed-only, rarely executed",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/DemoSeed.php",
+    "type": "command",
+    "test_exists": "missing",
+    "notes": "Data import command, seed-only, rarely executed",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/DocsPublish.php",
+    "type": "command",
+    "test_exists": "missing",
+    "notes": "Command, no tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/ExportarDadosLGPD.php",
+    "type": "command",
+    "test_exists": "missing",
+    "notes": "Command, no tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/ExtractVboBreeds.php",
+    "type": "command",
+    "test_exists": "missing",
+    "notes": "Data import command, seed-only, rarely executed",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/GenerateRecurringAppointments.php",
+    "type": "command",
+    "test_exists": "full",
+    "notes": "2 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/ImportBankStatement.php",
+    "type": "command",
+    "test_exists": "full",
+    "notes": "2 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/NfeEmitPending.php",
+    "type": "command",
+    "test_exists": "missing",
+    "notes": "Command, no tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/NfseEmitPending.php",
+    "type": "command",
+    "test_exists": "full",
+    "notes": "3 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/NfseExport.php",
+    "type": "command",
+    "test_exists": "full",
+    "notes": "3 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/ProcessBirthdayCampaigns.php",
+    "type": "command",
+    "test_exists": "partial",
+    "notes": "1 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/ProcessCommunicationQueue.php",
+    "type": "command",
+    "test_exists": "full",
+    "notes": "2 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/ProcessRecallCampaigns.php",
+    "type": "command",
+    "test_exists": "partial",
+    "notes": "1 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/SendAppointmentReminders.php",
+    "type": "command",
+    "test_exists": "full",
+    "notes": "2 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/SendVaccineReminders.php",
+    "type": "command",
+    "test_exists": "full",
+    "notes": "2 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/StaffRemind.php",
+    "type": "command",
+    "test_exists": "full",
+    "notes": "2 test(s), artisan command tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Commands/SyncSpatieRoles.php",
+    "type": "command",
+    "test_exists": "missing",
+    "notes": "Command, no tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Console/Kernel.php",
+    "type": "command",
+    "test_exists": "missing",
+    "notes": "Console kernel, no tests",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/AppointmentForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "99 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/BreedDefaultForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "120 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/CategoryForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "106 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/ChatBox.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "78 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/ClinicalReportTemplateForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "101 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/CommunicationTemplateForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "88 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/ConsentTemplateForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "94 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/ControlledSubstanceForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "105 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/ConvenioClaimForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "91 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/ConvenioForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "105 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/DepartmentForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "69 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/DosageCalculator.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "48 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/DrugFormularyForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "95 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/DrugInteractionForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "133 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/EmergencyProtocolForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "100 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/GroomingTemplateForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "105 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/InvoiceForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "104 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/MedicalRecordForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "315 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/PetDeathRecordForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "96 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/PetForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "191 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/PositionForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "81 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/PreAnestheticEvaluationForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "117 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/ProductForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "123 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/ServiceForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "97 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/SupplierForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "193 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/TriageBoard.php",
+    "type": "livewire",
+    "test_exists": "full",
+    "notes": "8 test(s), Livewire component tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/TutorForm.php",
+    "type": "livewire",
+    "test_exists": "full",
+    "notes": "15 test(s), Livewire component tests",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/UserForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "146 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/VaccinationReminderForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "100 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/VaccineProtocolForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "112 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/WeightRecordForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "92 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Livewire/ZoonoticDiseaseForm.php",
+    "type": "livewire",
+    "test_exists": "missing",
+    "notes": "151 lines Livewire form with validation/save logic, untested",
+    "priority": "high"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Events/AppointmentCompleted.php",
+    "type": "event",
+    "test_exists": "missing",
+    "notes": "Event class, tested indirectly via listener tests",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Events/InvoicePaid.php",
+    "type": "event",
+    "test_exists": "missing",
+    "notes": "Event class, tested indirectly via listener tests",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Events/ProcedurePerformed.php",
+    "type": "event",
+    "test_exists": "missing",
+    "notes": "Event class, tested indirectly via listener tests",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Observers/AuditObserver.php",
+    "type": "observer",
+    "test_exists": "missing",
+    "notes": "Observer, no tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Observers/StaffScheduleObserver.php",
+    "type": "observer",
+    "test_exists": "full",
+    "notes": "5 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Traits/Auditable.php",
+    "type": "trait",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Traits/BranchScoped.php",
+    "type": "trait",
+    "test_exists": "full",
+    "notes": "4 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Traits/ConsentLoggable.php",
+    "type": "trait",
+    "test_exists": "missing",
+    "notes": "Trait, no tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Traits/DigitalSignable.php",
+    "type": "trait",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Traits/HasPhoto.php",
+    "type": "trait",
+    "test_exists": "full",
+    "notes": "3 test(s)",
+    "priority": "covered"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Traits/RetentionProtected.php",
+    "type": "trait",
+    "test_exists": "missing",
+    "notes": "Trait, no tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Rules/Cpf.php",
+    "type": "rule",
+    "test_exists": "missing",
+    "notes": "CPF validation rule, no tests",
+    "priority": "medium"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Scopes/BranchScope.php",
+    "type": "scope",
+    "test_exists": "partial",
+    "notes": "Tested indirectly via BranchScoped trait test",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Exceptions/Handler.php",
+    "type": "exception",
+    "test_exists": "missing",
+    "notes": "Exception handler, no tests",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Providers/AppServiceProvider.php",
+    "type": "provider",
+    "test_exists": "missing",
+    "notes": "Service provider, no specific tests",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Providers/AuthServiceProvider.php",
+    "type": "provider",
+    "test_exists": "missing",
+    "notes": "Service provider, no specific tests",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Providers/BroadcastServiceProvider.php",
+    "type": "provider",
+    "test_exists": "missing",
+    "notes": "Service provider, no specific tests",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Providers/EventServiceProvider.php",
+    "type": "provider",
+    "test_exists": "missing",
+    "notes": "Service provider, no specific tests",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Providers/ObserverServiceProvider.php",
+    "type": "provider",
+    "test_exists": "missing",
+    "notes": "Service provider, no specific tests",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/Providers/RouteServiceProvider.php",
+    "type": "provider",
+    "test_exists": "missing",
+    "notes": "Service provider, no specific tests",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/View/Components/AppLayout.php",
+    "type": "view-component",
+    "test_exists": "missing",
+    "notes": "Blade component, no tests",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/View/Components/GuestLayout.php",
+    "type": "view-component",
+    "test_exists": "missing",
+    "notes": "Blade component, no tests",
+    "priority": "low"
+  },
+  {
+    "file": "/home/hector/workspace/vetessence/app/helpers.php",
+    "type": "helper",
+    "test_exists": "missing",
+    "notes": "Global helpers file, no tests",
+    "priority": "low"
+  }
+]

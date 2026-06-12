@@ -80,11 +80,11 @@
                     <div style="width: 240px;">
                         <div class="d-flex justify-content-between py-1 border-top">
                             <span class="text-muted">Subtotal:</span>
-                            <span class="font-weight-bold">R$ {{ number_format($subtotal, 2, ',', '.') }}</span>
+                            <span class="font-weight-bold">R$ {{ number_format($this->subtotal, 2, ',', '.') }}</span>
                         </div>
                         <div class="d-flex justify-content-between py-1 border-top">
                             <span class="font-weight-bold h5 mb-0">Total:</span>
-                            <span class="font-weight-bold h5 mb-0 text-primary">R$ {{ number_format($subtotal, 2, ',', '.') }}</span>
+                            <span class="font-weight-bold h5 mb-0 text-primary">R$ {{ number_format($this->subtotal, 2, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>

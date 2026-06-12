@@ -73,7 +73,7 @@
         datasets.push({
             label: '{{ $bs->branch->name }}',
             data: [@for($m = 1; $m <= now()->month; $m++){{ $bs->monthly[$m] ?? 0 }},@endfor],
-            borderColor: 'hsl({{ loop->index * 60 }}, 70%, 50%)',
+            borderColor: 'hsl({{ $loop->index * 60 }}, 70%, 50%)',
             fill: false,
         });
         @endforeach
