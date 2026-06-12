@@ -11,7 +11,9 @@ use App\Models\NfseConfig;
 use App\Models\NfeConfig;
 use App\Events\InvoicePaid;
 use App\Services\Nfse\NfseService;
+use App\Services\Nfse\NfseResult;
 use App\Services\Nfe\NfeService;
+use App\Services\Nfe\NfeResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -134,10 +136,6 @@ class InvoiceController extends Controller
     {
         $invoice->load('items');
         $user = auth()->user();
-        $hasServiceItems = $invoice->items->where('item_type', 'service')->isNotEmpty();
-        $hasProductItems = $invoice->items->where('item_type', 'product')->isNotEmpty();
-        $hasNfseConfig = NfseConfig::where('is_active', true)->exists();
-        $hasNfeConfig = NfeConfig::where('is_active', true)->exists();
 
         if (!$user->can('nfse.emit') && !$user->can('nfe.emit')) {
             abort(403);
@@ -145,16 +143,12 @@ class InvoiceController extends Controller
 
         $results = [];
 
-        if ($hasServiceItems && $invoice->nfse_status === 'none' && $hasNfseConfig && $user->can('nfse.emit')) {
-            $results['nfse'] = $nfseService->emitir($invoice);
-        } elseif ($hasServiceItems && $invoice->nfse_status !== 'none') {
-            $results['nfse'] = (object) ['success' => true, 'message' => 'NFSe já emitida anteriormente.'];
+        if ($user->can('nfse.emit')) {
+            $results['nfse'] = $this->emitirNfseSePossivel($invoice, $nfseService);
         }
 
-        if ($hasProductItems && $invoice->nfe_status === 'none' && $hasNfeConfig && $user->can('nfe.emit')) {
-            $results['nfe'] = $nfeService->emitir($invoice);
-        } elseif ($hasProductItems && $invoice->nfe_status !== 'none') {
-            $results['nfe'] = (object) ['success' => true, 'message' => 'NF-e já emitida anteriormente.'];
+        if ($user->can('nfe.emit')) {
+            $results['nfe'] = $this->emitirNfeSePossivel($invoice, $nfeService);
         }
 
         if (empty($results)) {
@@ -174,6 +168,52 @@ class InvoiceController extends Controller
         $flashType = $hasError ? 'warning' : 'success';
 
         return back()->with($flashType, implode(' | ', $messages));
+    }
+
+    protected function emitirNfseSePossivel(Invoice $invoice, NfseService $nfseService): object
+    {
+        $hasServiceItems = $invoice->items->where('item_type', 'service')->isNotEmpty();
+
+        if (!$hasServiceItems) {
+            return (object) ['success' => true, 'message' => 'Nenhum serviço para emitir NFSe.'];
+        }
+
+        if ($invoice->nfse_status !== 'none') {
+            return (object) ['success' => true, 'message' => 'NFSe já emitida anteriormente.'];
+        }
+
+        if (!NfseConfig::where('is_active', true)->exists()) {
+            return NfseResult::error('NFSe não configurada. Configure o provedor de emissão em NFSe > Configurações.');
+        }
+
+        if (!$invoice->branch || !$invoice->branch->municipio_ibge) {
+            return NfseResult::error('Dados fiscais da unidade incompletos. Configure o código IBGE no cadastro da unidade.');
+        }
+
+        return $nfseService->emitir($invoice);
+    }
+
+    protected function emitirNfeSePossivel(Invoice $invoice, NfeService $nfeService): object
+    {
+        $hasProductItems = $invoice->items->where('item_type', 'product')->isNotEmpty();
+
+        if (!$hasProductItems) {
+            return (object) ['success' => true, 'message' => 'Nenhum produto para emitir NF-e.'];
+        }
+
+        if ($invoice->nfe_status !== 'none') {
+            return (object) ['success' => true, 'message' => 'NF-e já emitida anteriormente.'];
+        }
+
+        if (!NfeConfig::where('is_active', true)->exists()) {
+            return NfeResult::error('NF-e não configurada. Configure o provedor de emissão em NF-e > Configurações.');
+        }
+
+        if (!$invoice->branch || !$invoice->branch->cnpj) {
+            return NfeResult::error('Dados fiscais da unidade incompletos. Configure o CNPJ no cadastro da unidade.');
+        }
+
+        return $nfeService->emitir($invoice);
     }
 
     public function generatePix(Invoice $invoice)
