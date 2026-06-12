@@ -765,6 +765,18 @@
                         <i class="icon fas fa-ban"></i> {{ session('error') }}
                     </div>
                     @endif
+                    @if(session()->has('warning'))
+                    <div class="alert alert-warning alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <i class="icon fas fa-exclamation-triangle"></i> {{ session('warning') }}
+                    </div>
+                    @endif
+                    @if(session()->has('info'))
+                    <div class="alert alert-info alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <i class="icon fas fa-info-circle"></i> {{ session('info') }}
+                    </div>
+                    @endif
                     @yield('content')
                 </div>
             </section>
