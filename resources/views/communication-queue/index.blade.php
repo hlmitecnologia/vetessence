@@ -91,7 +91,7 @@
                             <form action="{{ route('communication-queue.destroy', $item) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" onclick="return confirm('Cancelar esta mensagem?')" class="btn btn-action btn-danger" title="Cancelar">
+                                <button type="submit" data-confirm="Cancelar esta mensagem?" class="btn btn-action btn-danger" title="Cancelar">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </form>

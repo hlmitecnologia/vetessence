@@ -65,7 +65,7 @@
                         <form action="{{ route('staff-schedules.destroy', $schedule) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" onclick="return confirm('Tem certeza?')" class="btn btn-action btn-danger" title="Excluir">
+                            <button type="submit" data-confirm="Tem certeza?" class="btn btn-action btn-danger" title="Excluir">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>

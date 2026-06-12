@@ -95,7 +95,7 @@
                             <td>
                                 <form action="{{ route('commissions.rates-destroy', $rate) }}" method="POST" class="d-inline">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Excluir taxa?')"><i class="fas fa-trash"></i></button>
+                                    <button type="submit" class="btn btn-sm btn-danger" data-confirm="Excluir taxa?"><i class="fas fa-trash"></i></button>
                                 </form>
                             </td>
                         </tr>

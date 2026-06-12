@@ -55,7 +55,7 @@
                     <button onclick="openEditModal({{ $p->id }})" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
                     @endcan
                     @can('emergency-protocols.delete')
-                    <form action="{{ route('emergency-protocols.destroy', $p) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
+                    <form action="{{ route('emergency-protocols.destroy', $p) }}" method="POST" class="d-inline" data-confirm="Excluir?">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
                     </form>

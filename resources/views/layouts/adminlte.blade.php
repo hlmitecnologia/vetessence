@@ -803,32 +803,54 @@
         // Legacy n() function for views that still call it
         window.n = function() { return true; };
 
-        // Global SweetAlert2 confirmation for all DELETE form submissions
+        // Global SweetAlert2 confirmation using data-confirm attribute
+        // Colors: Cancelar=red, Sim=primary, Não=secondary
         document.addEventListener('submit', function(e) {
             var form = e.target;
-            var methodInput = form.querySelector('input[name="_method"]');
-            if (!methodInput || methodInput.value !== 'DELETE') return;
+            var message = form.dataset.confirm;
+            if (!message) return;
             if (form.dataset.swalConfirmed) return;
 
             e.preventDefault();
-            var deleteBtn = form.querySelector('.btn-danger');
-            var message = deleteBtn && deleteBtn.dataset.confirm
-                ? deleteBtn.dataset.confirm
-                : 'Tem certeza que deseja excluir este registro?';
-
             Swal.fire({
                 title: 'Confirmação',
                 text: message,
-                icon: 'warning',
+                icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sim, excluir!',
+                confirmButtonColor: '#007bff',
+                cancelButtonColor: '#dc3545',
+                confirmButtonText: 'Sim',
                 cancelButtonText: 'Cancelar'
             }).then(function(result) {
                 if (result.isConfirmed) {
                     form.dataset.swalConfirmed = '1';
                     form.submit();
+                }
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            var btn = e.target.closest('[data-confirm]');
+            if (!btn) return;
+            if (btn.tagName === 'FORM') return; // handled by submit event
+
+            var message = btn.dataset.confirm;
+            if (btn.dataset.swalConfirmed) return;
+
+            e.preventDefault();
+            Swal.fire({
+                title: 'Confirmação',
+                text: message,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#007bff',
+                cancelButtonColor: '#dc3545',
+                confirmButtonText: 'Sim',
+                cancelButtonText: 'Cancelar'
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    btn.dataset.swalConfirmed = '1';
+                    btn.click();
                 }
             });
         });

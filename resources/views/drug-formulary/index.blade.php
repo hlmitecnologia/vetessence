@@ -22,7 +22,7 @@
                                 <td>{!! $f->is_active ? '<span class="badge badge-success">Sim</span>' : '<span class="badge badge-secondary">Nao</span>' !!}</td>
                                 <td>
                                     <button onclick="openEditModal({{ $f->id }})" class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i></button>
-                                    <form action="{{ route('drug-formulary.destroy', $f) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
+                                    <form action="{{ route('drug-formulary.destroy', $f) }}" method="POST" class="d-inline" data-confirm="Excluir?">
                                         @csrf @method('DELETE')
                                         <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
                                     </form>

@@ -81,7 +81,7 @@
         <form action="{{ route('prescriptions.destroy', $prescription) }}" method="POST" class="d-inline">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir?')">
+            <button type="submit" class="btn btn-danger btn-sm" data-confirm="Tem certeza que deseja excluir?">
                 <i class="fas fa-trash"></i> Excluir
             </button>
         </form>

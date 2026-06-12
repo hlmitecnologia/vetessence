@@ -6,7 +6,7 @@
         <div>
             @if($purchaseOrder->status === 'draft' && auth()->user()->can('purchase-orders.edit'))
                 <a href="{{ route('purchase-orders.edit', $purchaseOrder) }}" class="btn btn-warning"><i class="fas fa-edit"></i> Editar</a>
-                <form action="{{ route('purchase-orders.destroy', $purchaseOrder) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir pedido?')">
+                <form action="{{ route('purchase-orders.destroy', $purchaseOrder) }}" method="POST" class="d-inline" data-confirm="Excluir pedido?">
                     @csrf @method('DELETE')
                     <button class="btn btn-danger"><i class="fas fa-trash"></i> Excluir</button>
                 </form>
@@ -37,7 +37,7 @@
                     @if($purchaseOrder->status === 'draft' && auth()->user()->can('purchase-orders.approve'))
                         <form action="{{ route('purchase-orders.order', $purchaseOrder) }}" method="POST" class="d-inline">
                             @csrf
-                            <button class="btn btn-info" onclick="return confirm('Confirmar envio ao fornecedor?')">
+                            <button class="btn btn-info" data-confirm="Confirmar envio ao fornecedor?">
                                 <i class="fas fa-paper-plane"></i> Enviar Pedido
                             </button>
                         </form>

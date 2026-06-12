@@ -37,7 +37,7 @@
                         <button onclick="openEditModal({{ $t->id }})" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></button>
                         <form action="{{ route('grooming-templates.destroy', $t) }}" method="POST" class="d-inline">
                             @csrf @method('DELETE')
-                            <button class="btn btn-danger btn-sm" onclick="return confirm('Confirmar?')"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-danger btn-sm" data-confirm="Confirmar?"><i class="fas fa-trash"></i></button>
                         </form>
                     </td>
                 </tr>

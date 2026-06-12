@@ -35,7 +35,7 @@
                         <a href="{{ route('therapy-sessions.edit', $s) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                         <form action="{{ route('therapy-sessions.destroy', $s) }}" method="POST" class="d-inline">
                             @csrf @method('DELETE')
-                            <button class="btn btn-danger btn-sm" onclick="return confirm('Confirmar?')"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-danger btn-sm" data-confirm="Confirmar?"><i class="fas fa-trash"></i></button>
                         </form>
                     </td>
                 </tr>

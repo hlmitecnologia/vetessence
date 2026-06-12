@@ -78,14 +78,14 @@
                     <input type="text" name="notes" class="form-control form-control-sm" placeholder="Obs. do check-out">
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Realizar check-out?')">
+                    <button type="submit" class="btn btn-success btn-sm" data-confirm="Realizar check-out?">
                         <i class="fas fa-sign-out-alt"></i> Check-out
                     </button>
                 </div>
                 <div class="col-md-2">
                     <form action="{{ route('boardings.cancel', $boarding) }}" method="POST" class="d-inline">
                         @csrf
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Cancelar hospedagem?')">
+                        <button type="submit" class="btn btn-danger btn-sm" data-confirm="Cancelar hospedagem?">
                             <i class="fas fa-times"></i> Cancelar
                         </button>
                     </form>
@@ -141,7 +141,7 @@
                         @endif
                         <form action="{{ route('boardings.tasks.destroy', [$boarding, $task]) }}" method="POST" class="d-inline">
                             @csrf @method('DELETE')
-                            <button type="submit" class="btn btn-action btn-danger" title="Excluir" onclick="return confirm('Excluir tarefa?')"><i class="fas fa-trash"></i></button>
+                            <button type="submit" class="btn btn-action btn-danger" title="Excluir" data-confirm="Excluir tarefa?"><i class="fas fa-trash"></i></button>
                         </form>
                     </td>
                 </tr>

@@ -103,7 +103,7 @@
                             <a href="{{ route('staff-notes.edit', $note) }}" class="btn btn-action btn-primary" title="Editar"><i class="fas fa-edit"></i></a>
                             <form action="{{ route('staff-notes.destroy', $note) }}" method="POST" class="d-inline">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="btn btn-action btn-danger" title="Excluir" onclick="return confirm('Excluir nota?')"><i class="fas fa-trash"></i></button>
+                                <button type="submit" class="btn btn-action btn-danger" title="Excluir" data-confirm="Excluir nota?"><i class="fas fa-trash"></i></button>
                             </form>
                             @endif
                         </td>

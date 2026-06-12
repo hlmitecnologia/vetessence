@@ -78,7 +78,7 @@
                 <a href="{{ route('invoices.index') }}" class="btn btn-default"><i class="fas fa-arrow-left"></i> Voltar</a>
                 @if($invoice->status !== 'paid')
                 <a href="{{ route('invoices.edit', $invoice) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Editar</a>
-                <form action="{{ route('invoices.cancel', $invoice) }}" method="POST" class="d-inline" onsubmit="return confirm('Cancelar esta fatura?')">
+                <form action="{{ route('invoices.cancel', $invoice) }}" method="POST" class="d-inline" data-confirm="Cancelar esta fatura?">
                     @csrf
                     <button type="submit" class="btn btn-danger"><i class="fas fa-ban"></i> Cancelar</button>
                 </form>
@@ -145,7 +145,7 @@
 
         @can('nfse.emit')
         @if($invoice->status === 'paid' && ($invoice->items->where('item_type', 'service')->isNotEmpty() || $invoice->items->where('item_type', 'product')->isNotEmpty()))
-        <form action="{{ route('invoices.emitir-nota-fiscal', $invoice) }}" method="POST" class="mb-3" onsubmit="return confirm('Emitir nota(s) fiscal(is) para esta fatura?')">
+        <form action="{{ route('invoices.emitir-nota-fiscal', $invoice) }}" method="POST" class="mb-3" data-confirm="Emitir nota(s) fiscal(is) para esta fatura?">
             @csrf
             <button type="submit" class="btn btn-success btn-block">
                 <i class="fas fa-file-invoice"></i> Emitir Nota Fiscal
@@ -194,7 +194,7 @@
                 @can('nfse.cancel')
                 @if($invoice->nfse_status === 'issued' && $invoice->nfseInvoice && $invoice->nfseInvoice->issuance_date && $invoice->nfseInvoice->issuance_date->diffInHours(now()) <= 24)
                 <hr>
-                <form action="{{ route('nfse.cancelar', $invoice) }}" method="POST" onsubmit="return confirm('Confirmar cancelamento da NFSe?')">
+                <form action="{{ route('nfse.cancelar', $invoice) }}" method="POST" data-confirm="Confirmar cancelamento da NFSe?">
                     @csrf
                     <div class="form-group">
                         <input type="text" name="motivo" class="form-control form-control-sm" placeholder="Motivo do cancelamento" required>
@@ -249,7 +249,7 @@
                 @can('nfe.cancel')
                 @if($invoice->nfe_status === 'issued' && $invoice->nfeInvoice && $invoice->nfeInvoice->issuance_date && $invoice->nfeInvoice->issuance_date->diffInHours(now()) <= 24)
                 <hr>
-                <form action="{{ route('nfe.cancelar', $invoice) }}" method="POST" onsubmit="return confirm('Confirmar cancelamento da NF-e?')">
+                <form action="{{ route('nfe.cancelar', $invoice) }}" method="POST" data-confirm="Confirmar cancelamento da NF-e?">
                     @csrf
                     <div class="form-group">
                         <input type="text" name="motivo" class="form-control form-control-sm" placeholder="Motivo do cancelamento" required>

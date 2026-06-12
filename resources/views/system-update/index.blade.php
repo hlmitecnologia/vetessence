@@ -56,7 +56,7 @@
                     <div class="btn-group w-100">
                         <a href="{{ route('system-update.check') }}" class="btn btn-info"><i class="fas fa-search"></i> Verificar</a>
                         @if($behind > 0)
-                        <form action="{{ route('system-update.apply') }}" method="POST" class="d-inline" onsubmit="return confirm('Aplicar atualizacao? O sistema entrara em manutencao durante o processo.');">
+                        <form action="{{ route('system-update.apply') }}" method="POST" class="d-inline" data-confirm="Aplicar atualizacao? O sistema entrara em manutencao durante o processo.">
                             @csrf
                             <button class="btn btn-success"><i class="fas fa-play"></i> Aplicar</button>
                         </form>

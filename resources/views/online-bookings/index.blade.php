@@ -53,7 +53,7 @@
                         <a href="{{ route('online-bookings.show', $booking) }}" class="btn btn-action btn-info" title="Ver"><i class="fas fa-eye"></i></a>
                         <form action="{{ route('online-bookings.destroy', $booking) }}" method="POST" class="d-inline">
                             @csrf @method('DELETE')
-                            <button type="submit" class="btn btn-action btn-danger" title="Excluir" onclick="return confirm('Excluir?')"><i class="fas fa-trash"></i></button>
+                            <button type="submit" class="btn btn-action btn-danger" title="Excluir" data-confirm="Excluir?"><i class="fas fa-trash"></i></button>
                         </form>
                     </td>
                 </tr>
