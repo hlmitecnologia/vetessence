@@ -6,6 +6,7 @@ use App\Models\ConsentForm;
 use App\Models\ConsentTemplate;
 use App\Models\Pet;
 use App\Models\Tutor;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ConsentFormController extends Controller
@@ -37,8 +38,11 @@ class ConsentFormController extends Controller
 
     public function create()
     {
+        $pets = Pet::with('tutors')->where('is_active', true)->orderBy('name')->get();
+        $tutors = Tutor::orderBy('name')->get();
         $templates = ConsentTemplate::where('is_active', true)->get();
-        return view('consent-forms.create', compact('templates'));
+        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
+        return view('consent-forms.create', compact('pets', 'tutors', 'templates', 'veterinarians'));
     }
 
     public function store(Request $request)
@@ -75,8 +79,11 @@ class ConsentFormController extends Controller
 
     public function edit(ConsentForm $consentForm)
     {
+        $pets = Pet::with('tutors')->where('is_active', true)->orderBy('name')->get();
+        $tutors = Tutor::orderBy('name')->get();
         $templates = ConsentTemplate::where('is_active', true)->get();
-        return view('consent-forms.edit', compact('consentForm', 'templates'));
+        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
+        return view('consent-forms.edit', compact('consentForm', 'pets', 'tutors', 'templates', 'veterinarians'));
     }
 
     public function update(Request $request, ConsentForm $consentForm)

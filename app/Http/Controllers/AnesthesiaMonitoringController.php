@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AnesthesiaMonitoring;
 use App\Models\AnesthesiaVitalSign;
+use App\Models\Surgery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -28,7 +29,8 @@ class AnesthesiaMonitoringController extends Controller
 
     public function create()
     {
-        return view('anesthesia-monitorings.create');
+        $surgeries = Surgery::with('pet')->orderBy('scheduled_date', 'desc')->get();
+        return view('anesthesia-monitorings.create', compact('surgeries'));
     }
 
     public function store(Request $request)

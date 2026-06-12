@@ -42,7 +42,7 @@ class HospitalizationController extends Controller
     public function create()
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $tutors = Tutor::where('is_active', true)->orderBy('name')->get();
+        $tutors = Tutor::orderBy('name')->get();
         $veterinarians = User::where('is_active', true)->orderBy('name')->get();
         return view('hospitalizations.create', compact('pets', 'tutors', 'veterinarians'));
     }
@@ -81,7 +81,7 @@ class HospitalizationController extends Controller
     public function edit(Hospitalization $hospitalization)
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $tutors = Tutor::where('is_active', true)->orderBy('name')->get();
+        $tutors = Tutor::orderBy('name')->get();
         $veterinarians = User::where('is_active', true)->orderBy('name')->get();
         return view('hospitalizations.edit', compact('hospitalization', 'pets', 'tutors', 'veterinarians'));
     }

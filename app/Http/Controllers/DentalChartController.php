@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\DentalChart;
 use App\Models\DentalCondition;
+use App\Models\Pet;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -30,7 +32,9 @@ class DentalChartController extends Controller
 
     public function create()
     {
-        return view('dental-charts.create');
+        $pets = Pet::where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
+        return view('dental-charts.create', compact('pets', 'veterinarians'));
     }
 
     public function store(Request $request)
@@ -82,8 +86,11 @@ class DentalChartController extends Controller
 
     public function edit(DentalChart $dentalChart)
     {
-        $dentalChart->load('conditions');
-        return view('dental-charts.edit', compact('dentalChart'));
+        $chart = $dentalChart;
+        $chart->load('conditions');
+        $pets = Pet::where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
+        return view('dental-charts.edit', compact('chart', 'pets', 'veterinarians'));
     }
 
     public function update(Request $request, DentalChart $dentalChart)

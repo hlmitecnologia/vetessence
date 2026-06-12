@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\LaboratoryOrder;
 use App\Models\LaboratoryTest;
+use App\Models\Pet;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -32,7 +34,9 @@ class LaboratoryOrderController extends Controller
 
     public function create()
     {
-        return view('laboratory-orders.create');
+        $pets = Pet::where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
+        return view('laboratory-orders.create', compact('pets', 'veterinarians'));
     }
 
     public function store(Request $request)
@@ -84,8 +88,10 @@ class LaboratoryOrderController extends Controller
 
     public function edit(LaboratoryOrder $laboratoryOrder)
     {
-        $laboratoryOrder->load('tests');
-        return view('laboratory-orders.edit', compact('laboratoryOrder'));
+        $order = $laboratoryOrder;
+        $order->load('tests');
+        $pets = Pet::where('is_active', true)->orderBy('name')->get();
+        return view('laboratory-orders.edit', compact('order', 'pets'));
     }
 
     public function update(Request $request, LaboratoryOrder $laboratoryOrder)

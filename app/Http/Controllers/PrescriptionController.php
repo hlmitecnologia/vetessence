@@ -20,7 +20,7 @@ class PrescriptionController extends Controller
 
     public function create()
     {
-        $medicalRecords = MedicalRecord::with('pet', 'user')
+        $medicalRecords = MedicalRecord::with('pet', 'vet')
             ->orderBy('date', 'desc')
             ->get();
         return view('prescriptions.create', compact('medicalRecords'));
@@ -54,7 +54,7 @@ class PrescriptionController extends Controller
 
     public function edit(Prescription $prescription)
     {
-        $medicalRecords = MedicalRecord::with('pet', 'user')
+        $medicalRecords = MedicalRecord::with('pet', 'vet')
             ->orderBy('date', 'desc')
             ->get();
         return view('prescriptions.edit', compact('prescription', 'medicalRecords'));
