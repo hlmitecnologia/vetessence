@@ -1,8 +1,10 @@
 <div>
     <form wire:submit.prevent="save">
         <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Informações da Consulta</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Informações da Consulta</h5>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -66,8 +68,10 @@
         </div>
 
         <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Serviços</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Serviços</h5>
                 <div class="row">
                     @foreach($services as $service)
                     <div class="col-md-4 mb-2">

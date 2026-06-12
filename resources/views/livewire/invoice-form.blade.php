@@ -1,8 +1,10 @@
 <div>
     <form wire:submit.prevent="save">
         <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Dados da Fatura</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Dados da Fatura</h5>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -27,13 +29,15 @@
         </div>
 
         <div class="card mb-3">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title mb-0">Itens</h5>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Itens</h5>
+                <div class="card-tools">
                     <button type="button" wire:click="addItem" class="btn btn-sm btn-outline-primary">
                         <i class="fas fa-plus mr-1"></i> Adicionar Item
                     </button>
                 </div>
+            </div>
+            <div class="card-body">
 
                 @error('items') <span class="text-danger small d-block mb-2">{{ $message }}</span> @enderror
 

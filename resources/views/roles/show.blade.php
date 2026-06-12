@@ -4,8 +4,10 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0"><i class="fas fa-users mr-2"></i>Usuários com este perfil</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title"><i class="fas fa-users mr-2"></i>Usuários com este perfil</h5>
                 @if($role->users->count() > 0)
                 <ul class="list-unstyled mb-0">
                     @foreach($role->users as $user)

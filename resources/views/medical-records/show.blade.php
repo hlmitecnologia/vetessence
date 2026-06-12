@@ -76,8 +76,10 @@
 
         @if($medicalRecord->zoonoticDiseases->count() > 0)
         <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0"><i class="fas fa-biohazard text-danger mr-2"></i>Doenças Zoonóticas</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title"><i class="fas fa-biohazard text-danger mr-2"></i>Doenças Zoonóticas</h5>
                 @foreach($medicalRecord->zoonoticDiseases as $disease)
                 <a href="{{ route('zoonotic-diseases.show', $disease) }}"
                    class="badge {{ $disease->pivot->is_suspected ? 'badge-warning' : 'badge-danger' }} mr-1 mb-1 p-2">
@@ -92,8 +94,10 @@
 
         @if($medicalRecord->prescriptions->count() > 0)
         <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Prescrições</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Prescrições</h5>
                 <table class="table table-bordered table-striped mb-0">
                     <thead>
                         <tr>
