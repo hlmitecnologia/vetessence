@@ -804,19 +804,16 @@
         window.n = function() { return true; };
 
         // Global SweetAlert2 confirmation using data-confirm attribute
-        // Colors: Sim=#455e36, Não=#9aaa7e, Cancelar=#dc3545
+        // Colors: Sim=#455e36, Cancelar=#dc3545
         function swalConfirm(message) {
             return Swal.fire({
                 title: 'Confirmação',
                 text: message,
                 icon: 'question',
-                showDenyButton: true,
                 showCancelButton: true,
                 confirmButtonColor: '#455e36',
-                denyButtonColor: '#9aaa7e',
                 cancelButtonColor: '#dc3545',
                 confirmButtonText: 'Sim',
-                denyButtonText: 'Não',
                 cancelButtonText: 'Cancelar'
             });
         }
