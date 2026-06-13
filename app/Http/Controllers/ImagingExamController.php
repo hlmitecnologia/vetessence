@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ImagingExam;
+use App\Models\Pet;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ImagingExamController extends Controller
@@ -34,7 +36,9 @@ class ImagingExamController extends Controller
 
     public function create()
     {
-        return view('imaging-exams.create');
+        $pets = Pet::where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
+        return view('imaging-exams.create', compact('pets', 'veterinarians'));
     }
 
     public function store(Request $request)
@@ -70,7 +74,8 @@ class ImagingExamController extends Controller
 
     public function edit(ImagingExam $imagingExam)
     {
-        return view('imaging-exams.edit', compact('imagingExam'));
+        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
+        return view('imaging-exams.edit', compact('imagingExam', 'veterinarians'));
     }
 
     public function update(Request $request, ImagingExam $imagingExam)
