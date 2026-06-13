@@ -15,7 +15,8 @@
                         <td>{{ optional($c->convenioPet->pet)->name ?? '-' }}</td>
                         <td>R$ {{ number_format($c->amount_requested, 2, ',', '.') }}</td>
                         <td>R$ {{ number_format($c->amount_approved ?? 0, 2, ',', '.') }}</td>
-                        <td>{{ $c->status }}</td>
+                        @php $statusLabels = ['draft' => 'Rascunho', 'filed' => 'Protocolado', 'approved' => 'Aprovado', 'rejected' => 'Rejeitado']; @endphp
+                        <td>{{ $statusLabels[$c->status] ?? $c->status }}</td>
                         <td><a href="{{ route('convenio-claims.show', $c) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a></td>
                     </tr>
                 @endforeach

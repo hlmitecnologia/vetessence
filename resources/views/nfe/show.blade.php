@@ -10,8 +10,9 @@
                     @php
                         $statusColors = ['issued' => 'badge-success', 'issuing' => 'badge-warning', 'cancelled' => 'badge-secondary', 'error' => 'badge-danger'];
                     @endphp
+                    @php $statusLabels = ['issuing' => 'Emitindo', 'issued' => 'Emitida', 'cancelled' => 'Cancelada', 'error' => 'Erro']; @endphp
                     <span class="badge {{ $statusColors[$nfeInvoice->status] ?? 'badge-secondary' }}">
-                        {{ $nfeInvoice->status }}
+                        {{ $statusLabels[$nfeInvoice->status] ?? $nfeInvoice->status }}
                     </span>
                 </div>
             </div>

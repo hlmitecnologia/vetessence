@@ -46,7 +46,7 @@
                         @if($booking->status == 'pending') <span class="badge badge-warning">Pendente</span>
                         @elseif($booking->status == 'confirmed') <span class="badge badge-success">Confirmado</span>
                         @elseif($booking->status == 'rejected') <span class="badge badge-danger">Rejeitado</span>
-                        @else <span class="badge badge-secondary">{{ $booking->status }}</span> @endif
+                        @else @php $statusLabels = ['pending' => 'Pendente', 'confirmed' => 'Confirmado', 'rejected' => 'Rejeitado', 'cancelled' => 'Cancelado', 'converted' => 'Convertido']; @endphp <span class="badge badge-secondary">{{ $statusLabels[$booking->status] ?? $booking->status }}</span> @endif
                     </td>
                     <td>{{ $booking->created_at->format('d/m/Y H:i') }}</td>
                     <td>

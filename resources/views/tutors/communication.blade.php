@@ -57,10 +57,11 @@
                 <div class="timeline-item mb-3 pl-4 border-left border-primary">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <span class="badge badge-info">{{ $log->type }}</span>
+                            @php $typeLabels = ['vaccination_reminder' => 'Lembrete Vacina', 'appointment_reminder' => 'Lembrete Consulta', 'birthday' => 'Aniversário', 'recall' => 'Recall', 'custom' => 'Personalizado']; $statusLabels = ['pending' => 'Pendente', 'sent' => 'Enviado', 'failed' => 'Falhou']; @endphp
+                            <span class="badge badge-info">{{ $typeLabels[$log->type] ?? $log->type }}</span>
                             <span class="badge badge-secondary">{{ $log->channel }}</span>
                             <span class="badge {{ $log->status == 'sent' ? 'badge-success' : ($log->status == 'failed' ? 'badge-danger' : 'badge-warning') }}">
-                                {{ $log->status }}
+                                {{ $statusLabels[$log->status] ?? $log->status }}
                             </span>
                         </div>
                         <small class="text-muted">

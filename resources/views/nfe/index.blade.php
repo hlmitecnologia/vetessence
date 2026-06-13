@@ -41,7 +41,8 @@
                             $statusColors = ['issued' => 'badge-success', 'issuing' => 'badge-warning', 'cancelled' => 'badge-secondary', 'error' => 'badge-danger'];
                         @endphp
                         <span class="badge {{ $statusColors[$nfe->status] ?? 'badge-secondary' }}">
-                            {{ $nfe->status }}
+                            @php $statusLabels = ['issuing' => 'Emitindo', 'issued' => 'Emitida', 'cancelled' => 'Cancelada', 'error' => 'Erro']; @endphp
+                            {{ $statusLabels[$nfe->status] ?? $nfe->status }}
                         </span>
                     </td>
                     <td>{{ $nfe->issuance_date ? $nfe->issuance_date->format('d/m/Y H:i') : '-' }}</td>

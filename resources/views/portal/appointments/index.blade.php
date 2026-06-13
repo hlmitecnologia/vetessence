@@ -49,7 +49,8 @@
                 <p class="text-xs text-gray-400">{{ $appt->reason ?? 'Consulta' }}</p>
             </div>
         </div>
-        <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600">{{ $appt->status }}</span>
+        @php $statusLabels = ['scheduled' => 'Agendado', 'confirmed' => 'Confirmado', 'in_progress' => 'Em Andamento', 'completed' => 'Concluído', 'cancelled' => 'Cancelado', 'no_show' => 'Não Compareceu']; @endphp
+        <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600">{{ $statusLabels[$appt->status] ?? $appt->status }}</span>
     </div>
     @endforeach
 </div>

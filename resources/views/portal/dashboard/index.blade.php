@@ -76,14 +76,9 @@
                     <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($appt->start_time)->format('d/m/Y H:i') }}</p>
                 </div>
             </div>
+            @php $statusLabels = ['scheduled' => 'Agendado', 'confirmed' => 'Confirmado', 'in_progress' => 'Em Andamento', 'completed' => 'Concluído', 'cancelled' => 'Cancelado', 'no_show' => 'Não Compareceu']; @endphp
             <span class="text-xs px-2 py-1 rounded-full {{ $appt->status == 'scheduled' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
-                @switch($appt->status)
-                    @case('scheduled') Agendado @break
-                    @case('confirmed') Confirmado @break
-                    @case('completed') Realizada @break
-                    @case('cancelled') Cancelada @break
-                    @default {{ $appt->status }}
-                @endswitch
+                {{ $statusLabels[$appt->status] ?? $appt->status }}
             </span>
         </div>
         @endforeach

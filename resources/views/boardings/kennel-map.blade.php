@@ -63,7 +63,8 @@
                 <tr>
                     <td>{{ $b->pet->name ?? 'N/A' }}</td>
                     <td>{{ $b->check_in_at->format('d/m/Y') }}</td>
-                    <td>{{ $b->type }}</td>
+                    @php $typeLabels = ['boarding' => 'Hospedagem', 'grooming' => 'Banho/Tosa', 'both' => 'Ambos']; @endphp
+                    <td>{{ $typeLabels[$b->type] ?? $b->type }}</td>
                     <td>{{ $b->kennel->name ?? '-' }}</td>
                     <td><a href="{{ route('boardings.show', $b) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a></td>
                 </tr>

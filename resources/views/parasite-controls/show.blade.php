@@ -16,7 +16,7 @@
             <div class="col-md-4"><strong>Princípio Ativo:</strong><p>{{ $parasiteControl->active_ingredient ?? '-' }}</p></div>
         </div>
         <div class="row">
-            <div class="col-md-3"><strong>Tipo:</strong><p>{{ $parasiteControl->type }}</p></div>
+            <div class="col-md-3"><strong>Tipo:</strong><p>@php $typeLabels = ['flea' => 'Pulga', 'tick' => 'Carrapato', 'heartworm' => 'Vermes', 'intestinal' => 'Intestinal', 'combination' => 'Combinado']; @endphp{{ $typeLabels[$parasiteControl->type] ?? $parasiteControl->type }}</p></div>
             <div class="col-md-3"><strong>Data Aplicação:</strong><p>{{ $parasiteControl->application_date->format('d/m/Y') }}</p></div>
             <div class="col-md-3"><strong>Próxima Data:</strong><p>{{ $parasiteControl->next_due_date ? $parasiteControl->next_due_date->format('d/m/Y') : '-' }}</p></div>
             <div class="col-md-3"><strong>Dosagem:</strong><p>{{ $parasiteControl->dose ?? '-' }}</p></div>

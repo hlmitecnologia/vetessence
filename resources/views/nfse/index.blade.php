@@ -57,7 +57,7 @@
                                 @case('issued') <span class="badge badge-success">Emitida</span> @break
                                 @case('pending') <span class="badge badge-warning">Pendente</span> @break
                                 @case('cancelled') <span class="badge badge-danger">Cancelada</span> @break
-                                @default <span class="badge badge-secondary">{{ $nfse->status }}</span>
+                                @default @php $statusLabels = ['pending' => 'Pendente', 'issued' => 'Emitida', 'cancelled' => 'Cancelada', 'error' => 'Erro']; @endphp <span class="badge badge-secondary">{{ $statusLabels[$nfse->status] ?? $nfse->status }}</span>
                             @endswitch
                         </td>
                         <td>{{ $nfse->issuance_date ? $nfse->issuance_date->format('d/m/Y H:i') : '-' }}</td>

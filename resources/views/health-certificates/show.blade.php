@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-md-4"><strong>Nº Certificado:</strong><p class="h4">{{ $healthCertificate->certificate_number }}</p></div>
             <div class="col-md-4"><strong>Pet:</strong><p>{{ $healthCertificate->pet->name ?? '-' }}</p></div>
-            <div class="col-md-4"><strong>Tipo:</strong><p>{{ $healthCertificate->type }}</p></div>
+            <div class="col-md-4"><strong>Tipo:</strong><p>@php $typeLabels = ['international' => 'Internacional', 'domestic' => 'Doméstico', 'boarding' => 'Hospedagem', 'exhibition' => 'Exposição', 'other' => 'Outro']; @endphp{{ $typeLabels[$healthCertificate->type] ?? $healthCertificate->type }}</p></div>
         </div>
         <div class="row">
             <div class="col-md-3"><strong>Destino:</strong><p>{{ $healthCertificate->destination ?? '-' }}</p></div>
@@ -24,7 +24,7 @@
             <div class="col-md-3"><strong>Veterinário:</strong><p>{{ $healthCertificate->issuerVet->name ?? '-' }}</p></div>
         </div>
         <div class="row">
-            <div class="col-md-4"><strong>Status:</strong><p><span class="badge badge-{{ $healthCertificate->status == 'issued' ? 'success' : ($healthCertificate->status == 'expired' ? 'danger' : 'secondary') }}">{{ $healthCertificate->status }}</span></p></div>
+            <div class="col-md-4"><strong>Status:</strong><p>@php $statusLabels = ['draft' => 'Rascunho', 'issued' => 'Emitido', 'expired' => 'Vencido', 'cancelled' => 'Cancelado']; @endphp<span class="badge badge-{{ $healthCertificate->status == 'issued' ? 'success' : ($healthCertificate->status == 'expired' ? 'danger' : 'secondary') }}">{{ $statusLabels[$healthCertificate->status] ?? $healthCertificate->status }}</span></p></div>
             <div class="col-md-4"><strong>Exportação:</strong><p>{{ $healthCertificate->is_export ? 'Sim' : 'Não' }}</p></div>
             @if($healthCertificate->is_cvi)
             <div class="col-md-4"><strong>CVI:</strong><p><span class="badge badge-info">Certificado Veterinário Internacional</span> {{ $healthCertificate->cvi_number ? "nº {$healthCertificate->cvi_number}" : '' }}</p></div>

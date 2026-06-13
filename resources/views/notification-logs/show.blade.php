@@ -22,7 +22,8 @@
             </div>
             <div class="col-md-4">
                 <strong>Tipo:</strong>
-                <p>{{ $notificationLog->type }}</p>
+                @php $typeLabels = ['nfse_emission_error' => 'Erro NFSe', 'nfe_emission_error' => 'Erro NFe', 'appointment_reminder' => 'Lembrete Consulta', 'vaccination_reminder' => 'Lembrete Vacina', 'birthday' => 'Aniversário', 'payment_received' => 'Pagamento Recebido', 'invoice_overdue' => 'Fatura Vencida']; @endphp
+                <p>{{ $typeLabels[$notificationLog->type] ?? $notificationLog->type }}</p>
             </div>
         </div>
         <div class="row">

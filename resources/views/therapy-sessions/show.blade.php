@@ -16,7 +16,8 @@
             <dt class="col-sm-3">Duração</dt>
             <dd class="col-sm-9">{{ $therapySession->duration_minutes ? $therapySession->duration_minutes . ' min' : '-' }}</dd>
             <dt class="col-sm-3">Status</dt>
-            <dd class="col-sm-9">{{ $therapySession->status }}</dd>
+            @php $statusLabels = ['scheduled' => 'Agendada', 'in_progress' => 'Em Andamento', 'completed' => 'Concluída', 'cancelled' => 'Cancelada']; @endphp
+            <dd class="col-sm-9">{{ $statusLabels[$therapySession->status] ?? $therapySession->status }}</dd>
             <dt class="col-sm-3">Anotações</dt>
             <dd class="col-sm-9">{{ $therapySession->notes ?? '-' }}</dd>
             <dt class="col-sm-3">Observações</dt>

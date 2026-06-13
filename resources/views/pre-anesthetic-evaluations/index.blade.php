@@ -12,7 +12,8 @@
                     <tr>
                         <td>{{ $e->pet->name ?? '-' }}</td>
                         <td>{{ $e->asa_score }}</td>
-                        <td>{{ $e->status }}</td>
+                        @php $statusLabels = ['pending' => 'Pendente', 'approved' => 'Aprovado', 'rejected' => 'Rejeitado']; @endphp
+                        <td>{{ $statusLabels[$e->status] ?? $e->status }}</td>
                         <td>
                             <a href="{{ route('pre-anesthetic-evaluations.show', $e) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
                             <button onclick="openEditModal({{ $e->id }})" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></button>

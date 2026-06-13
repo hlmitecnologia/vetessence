@@ -3,7 +3,8 @@
     <div class="card"><div class="card-body">
         <p><strong>Pet:</strong> {{ $preAnestheticEvaluation->pet->name ?? '-' }}</p>
         <p><strong>ASA:</strong> {{ $preAnestheticEvaluation->asa_score }}</p>
-        <p><strong>Status:</strong> {{ $preAnestheticEvaluation->status }}</p>
+        @php $statusLabels = ['pending' => 'Pendente', 'approved' => 'Aprovado', 'rejected' => 'Rejeitado']; @endphp
+        <p><strong>Status:</strong> {{ $statusLabels[$preAnestheticEvaluation->status] ?? $preAnestheticEvaluation->status }}</p>
         <p><strong>Jejum:</strong> {{ $preAnestheticEvaluation->fasted ? 'Sim' : 'Não' }}</p>
         <p><strong>Hidratado:</strong> {{ $preAnestheticEvaluation->hydrated ? 'Sim' : 'Não' }}</p>
         <p><strong>Observações:</strong> {!! $preAnestheticEvaluation->observations !!}</p>

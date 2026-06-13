@@ -29,7 +29,8 @@
                     <td>{{ $s->session_date->format('d/m/Y H:i') }}</td>
                     <td>{{ $s->therapist->name ?? '-' }}</td>
                     <td>{{ $s->duration_minutes ? $s->duration_minutes . ' min' : '-' }}</td>
-                    <td>{!! $s->status == 'completed' ? '<span class="badge badge-success">Concluída</span>' : ($s->status == 'scheduled' ? '<span class="badge badge-primary">Agendada</span>' : '<span class="badge badge-secondary">'.$s->status.'</span>') !!}</td>
+                    @php $statusLabels = ['scheduled' => 'Agendada', 'in_progress' => 'Em Andamento', 'completed' => 'Concluída', 'cancelled' => 'Cancelada']; @endphp
+                    <td>{!! $s->status == 'completed' ? '<span class="badge badge-success">Concluída</span>' : ($s->status == 'scheduled' ? '<span class="badge badge-primary">Agendada</span>' : '<span class="badge badge-secondary">'.$statusLabels[$s->status].'</span>') !!}</td>
                     <td>
                         <a href="{{ route('therapy-sessions.show', $s) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
                         <a href="{{ route('therapy-sessions.edit', $s) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
