@@ -131,11 +131,13 @@ document.addEventListener('DOMContentLoaded', function() {
         Livewire.on('weight-record-saved', function() { location.reload(); });
     });
     function openCreateModal() {
+        if (typeof Livewire === 'undefined') return setTimeout(openCreateModal, 100);
         Livewire.dispatch('resetForm');
         document.getElementById('weightRecordModalTitle').textContent = 'Novo Registro de Peso';
         $('#weightRecordModal').modal('show');
     }
     function openEditModal(id) {
+        if (typeof Livewire === 'undefined') return setTimeout(function() { openEditModal(id); }, 100);
         Livewire.dispatch('editWeightRecord', { id: id });
         document.getElementById('weightRecordModalTitle').textContent = 'Editar Registro de Peso';
         $('#weightRecordModal').modal('show');
