@@ -25,7 +25,7 @@ class ProcessCommunicationQueue extends Command
             ->get();
 
         if ($items->isEmpty()) {
-            $this->info('No pending queue items.');
+            $this->info('Nenhum item pendente na fila.');
             return Command::SUCCESS;
         }
 
@@ -33,7 +33,7 @@ class ProcessCommunicationQueue extends Command
             $channel = NotificationChannel::tryFrom($item->channel);
 
             if (!$channel) {
-                $item->update(['status' => 'failed', 'error_message' => 'Unsupported channel']);
+                $item->update(['status' => 'failed', 'error_message' => 'Canal não suportado']);
                 $failed++;
                 continue;
             }
@@ -55,12 +55,12 @@ class ProcessCommunicationQueue extends Command
                 $item->update(['sent_at' => now(), 'status' => 'sent']);
                 $sent++;
             } else {
-                $item->update(['status' => 'failed', 'error_message' => $result->error ?? 'Provider rejected']);
+                $item->update(['status' => 'failed', 'error_message' => $result->error ?? 'Provedor rejeitou']);
                 $failed++;
             }
         }
 
-        $this->info("Queue processed: {$sent} sent, {$failed} failed.");
+        $this->info("Fila processada: {$sent} enviados, {$failed} falhas.");
         return Command::SUCCESS;
     }
 }

@@ -24,7 +24,7 @@ class InsuranceWebhookController extends Controller
                 'provider' => $provider,
                 'external_id' => $payload['external_id'],
             ]);
-            return response()->json(['error' => 'Claim not found'], 404);
+            return response()->json(['error' => 'Sinistro não encontrado'], 404);
         }
 
         $claim->update([
@@ -41,6 +41,6 @@ class InsuranceWebhookController extends Controller
             'status' => $payload['status'],
         ]);
 
-        return response()->json(['message' => 'Webhook processed']);
+        return response()->json(['message' => 'Webhook processado']);
     }
 }

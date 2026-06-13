@@ -15,7 +15,7 @@ class InsuranceProviderFactory
         $class = self::$providers[$provider] ?? null;
 
         if (!$class) {
-            throw new InvalidArgumentException("Unknown insurance provider: {$provider}");
+            throw new InvalidArgumentException("Operadora de convênio desconhecida: {$provider}");
         }
 
         return app($class);

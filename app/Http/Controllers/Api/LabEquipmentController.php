@@ -14,7 +14,7 @@ class LabEquipmentController extends Controller
         $integration = LabEquipmentIntegration::findOrFail($integrationId);
 
         if (!$integration->is_active) {
-            return response()->json(['error' => 'Integration inactive'], 403);
+            return response()->json(['error' => 'Integração inativa'], 403);
         }
 
         $validated = $request->validate([
@@ -41,7 +41,7 @@ class LabEquipmentController extends Controller
         return response()->json([
             'success' => true,
             'result_id' => $result->id,
-            'message' => 'Result received successfully',
+            'message' => 'Resultado recebido com sucesso',
         ], 201);
     }
 

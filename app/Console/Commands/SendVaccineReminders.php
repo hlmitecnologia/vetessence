@@ -24,7 +24,7 @@ class SendVaccineReminders extends Command
             ->where('reminder_sent', false)
             ->get();
 
-        $this->info("Found {$vaccinations->count()} vaccinations to remind.");
+        $this->info("Encontrada(s) {$vaccinations->count()} vacinação(ões) para lembrete.");
         $sent = 0;
 
         foreach ($vaccinations as $vaccination) {
@@ -58,10 +58,10 @@ class SendVaccineReminders extends Command
             }
 
             $vaccination->update(['reminder_sent' => true]);
-            $this->line("Queued reminder for {$vaccination->pet->name} - {$vaccination->vaccine}");
+            $this->line("Lembrete enfileirado para {$vaccination->pet->name} - {$vaccination->vaccine}");
         }
 
-        $this->info("Queued {$sent} vaccine reminders.");
+        $this->info("Enfileirados {$sent} lembretes de vacina.");
         return Command::SUCCESS;
     }
 }

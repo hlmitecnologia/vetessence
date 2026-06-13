@@ -45,9 +45,9 @@ class DatabaseBackup extends Command
         }
 
         if ($process->isSuccessful()) {
-            $this->info("Backup created: {$filename}");
+            $this->info("Backup criado: {$filename}");
         } else {
-            $this->error('Backup failed: ' . $process->getErrorOutput());
+            $this->error('Falha no backup: ' . $process->getErrorOutput());
 
             if (! $this->option('compress')) {
                 @unlink($path);

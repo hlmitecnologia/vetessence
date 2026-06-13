@@ -24,7 +24,7 @@ class SyncSpatieRoles extends Command
 
             $spatieRole = SpatieRole::where('name', $appRole->name)->first();
             if (!$spatieRole) {
-                $this->warn("Spatie role not found for: {$appRole->name}");
+                $this->warn("Função Spatie não encontrada para: {$appRole->name}");
                 continue;
             }
 
@@ -41,12 +41,12 @@ class SyncSpatieRoles extends Command
                     'model_id' => $user->id,
                     'guard_name' => 'web',
                 ]);
-                $this->info("Assigned '{$spatieRole->name}' to {$user->name}");
+                $this->info("Atribuída '{$spatieRole->name}' para {$user->name}");
                 $count++;
             }
         }
 
-        $this->info("Done. {$count} users synced.");
+        $this->info("Concluído. {$count} usuários sincronizados.");
         return 0;
     }
 }

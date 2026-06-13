@@ -23,7 +23,7 @@ class SendAppointmentReminders extends Command
             ->where('status', 'scheduled')
             ->get();
 
-        $this->info("Found {$appointments->count()} appointments to remind.");
+        $this->info("Encontrada(s) {$appointments->count()} consulta(s) para lembrete.");
 
         $template = CommunicationTemplate::where('type', 'appointment_reminder')->first();
 
@@ -50,7 +50,7 @@ class SendAppointmentReminders extends Command
                     'branch_id' => $appointment->branch_id,
                 ]);
 
-                $this->line("Queued reminder for {$tutor->name} / {$appointment->pet->name}");
+                $this->line("Lembrete enfileirado para {$tutor->name} / {$appointment->pet->name}");
             }
         }
 

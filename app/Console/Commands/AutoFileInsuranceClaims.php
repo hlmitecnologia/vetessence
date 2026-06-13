@@ -22,11 +22,11 @@ class AutoFileInsuranceClaims extends Command
             ->get();
 
         if ($claims->isEmpty()) {
-            $this->info('No pending claims to submit.');
+            $this->info('Nenhum sinistro pendente para enviar.');
             return self::SUCCESS;
         }
 
-        $this->info("Found {$claims->count()} pending claim(s).");
+        $this->info("Encontrado(s) {$claims->count()} sinistro(s) pendente(s).");
 
         $submitted = 0;
         $failed = 0;
@@ -35,7 +35,7 @@ class AutoFileInsuranceClaims extends Command
             $providerName = $this->resolveProviderName($claim);
 
             if (!$providerName) {
-                $this->warn("Claim #{$claim->id}: unable to resolve insurance provider.");
+                $this->warn("Sinistro #{$claim->id}: não foi possível identificar a operadora.");
                 $claim->update(['status' => 'failed', 'notes' => ($claim->notes ? $claim->notes . "\n" : '') . 'Provider not resolved']);
                 $failed++;
                 continue;
@@ -44,18 +44,18 @@ class AutoFileInsuranceClaims extends Command
             try {
                 $provider = InsuranceProviderFactory::make($providerName);
             } catch (\Throwable $e) {
-                $this->warn("Claim #{$claim->id}: unknown provider '{$providerName}'.");
+                $this->warn("Sinistro #{$claim->id}: operadora desconhecida '{$providerName}'.");
                 $claim->update(['status' => 'failed', 'notes' => ($claim->notes ? $claim->notes . "\n" : '') . "Unknown provider: {$providerName}"]);
                 $failed++;
                 continue;
             }
 
             if ($this->option('dry-run')) {
-                $this->line("  [DRY-RUN] Would submit claim #{$claim->id} ({$claim->claim_number}) to {$providerName}");
+                $this->line("  [DRY-RUN] Enviaria sinistro #{$claim->id} ({$claim->claim_number}) para {$providerName}");
                 continue;
             }
 
-            $this->line("  Submitting claim #{$claim->id} ({$claim->claim_number}) to {$providerName}...");
+            $this->line("  Enviando sinistro #{$claim->id} ({$claim->claim_number}) para {$providerName}...");
 
             $result = $provider->submitClaim($claim);
 
@@ -73,7 +73,7 @@ class AutoFileInsuranceClaims extends Command
                     'external_id' => $result->externalId,
                 ]);
 
-                $this->info("  -> Submitted (external ID: {$result->externalId})");
+                $this->info("  -> Enviado (ID externo: {$result->externalId})");
                 $submitted++;
             } else {
                 $claim->update([
@@ -88,7 +88,7 @@ class AutoFileInsuranceClaims extends Command
                     'error' => $result->message,
                 ]);
 
-                $this->error("  -> Failed: {$result->message}");
+                $this->error("  -> Falhou: {$result->message}");
                 $failed++;
             }
         }

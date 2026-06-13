@@ -74,6 +74,6 @@ class GenerateRecurringAppointments extends Command
             }
         }
 
-        $this->info("Generated {$generated} recurring appointments.");
+        $this->info("Geradas {$generated} consultas recorrentes.");
     }
 }

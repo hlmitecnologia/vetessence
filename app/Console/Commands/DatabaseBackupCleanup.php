@@ -26,6 +26,6 @@ class DatabaseBackupCleanup extends Command
             }
         }
 
-        $this->info("Deleted {$deleted} old backup files.");
+        $this->info("Excluídos {$deleted} arquivos de backup antigos.");
     }
 }

@@ -69,6 +69,6 @@ class ProcessRecallCampaigns extends Command
             }
         }
 
-        $this->info("Processed {$processed} recall notifications.");
+        $this->info("Processadas {$processed} notificações de recall.");
     }
 }

@@ -63,6 +63,6 @@ class ProcessBirthdayCampaigns extends Command
             }
         }
 
-        $this->info("Sent {$sent} birthday greetings.");
+        $this->info("Enviados {$sent} cumprimentos de aniversário.");
     }
 }
