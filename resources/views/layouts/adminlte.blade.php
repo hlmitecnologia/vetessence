@@ -972,6 +972,7 @@
 
                 tinymce.init({
                     target: ta,
+                    license_key: 'gpl',
                     height: 300,
                     menubar: false,
                     toolbar: 'undo redo | bold italic underline strikethrough | bullist numlist | removeformat',

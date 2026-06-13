@@ -84,12 +84,9 @@
 </div>
 @endsection
 
-@push('styles')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-@endpush
-
 @push('scripts')
 @if(isset($pet) && $weightRecords->count() > 1)
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var ctx = document.getElementById('weightChart').getContext('2d');
@@ -128,9 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endif
-@endpush
-
-@push('scripts')
+<script>
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#weightRecordModal').modal('hide'); });
         Livewire.on('weight-record-saved', function() { location.reload(); });
@@ -145,4 +140,5 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('weightRecordModalTitle').textContent = 'Editar Registro de Peso';
         $('#weightRecordModal').modal('show');
     }
+</script>
 @endpush

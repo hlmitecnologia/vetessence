@@ -77,6 +77,7 @@
                 if (ta.id && tinymce.get(ta.id)) return;
                 if (!ta.id) ta.id = 'wysiwyg-' + ('xxxx' + Math.random().toString(36).substr(2, 9)).slice(-10);
                 tinymce.init({
+                    license_key: 'gpl',
                     target: ta,
                     height: 300,
                     menubar: false,
