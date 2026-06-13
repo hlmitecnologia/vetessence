@@ -42,7 +42,8 @@ class ConsentFormController extends Controller
         $tutors = Tutor::orderBy('name')->get();
         $templates = ConsentTemplate::where('is_active', true)->get();
         $veterinarians = User::where('is_active', true)->orderBy('name')->get();
-        return view('consent-forms.create', compact('pets', 'tutors', 'templates', 'veterinarians'));
+        $users = User::where('is_active', true)->orderBy('name')->get();
+        return view('consent-forms.create', compact('pets', 'tutors', 'templates', 'veterinarians', 'users'));
     }
 
     public function store(Request $request)
@@ -83,7 +84,8 @@ class ConsentFormController extends Controller
         $tutors = Tutor::orderBy('name')->get();
         $templates = ConsentTemplate::where('is_active', true)->get();
         $veterinarians = User::where('is_active', true)->orderBy('name')->get();
-        return view('consent-forms.edit', compact('consentForm', 'pets', 'tutors', 'templates', 'veterinarians'));
+        $users = User::where('is_active', true)->orderBy('name')->get();
+        return view('consent-forms.edit', compact('consentForm', 'pets', 'tutors', 'templates', 'veterinarians', 'users'));
     }
 
     public function update(Request $request, ConsentForm $consentForm)
