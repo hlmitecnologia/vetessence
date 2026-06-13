@@ -28,7 +28,7 @@ class WeightRecordForm extends Component
 
     public function mount($id = null)
     {
-        $this->pets = Pet::orderBy('name')->get();
+        $this->pets = Pet::with('tutors')->orderBy('name')->get();
         if ($id) $this->load($id);
     }
 
@@ -42,7 +42,7 @@ class WeightRecordForm extends Component
         $this->bcs = (string) ($record->bcs ?? '');
         $this->measurement_date = $record->measurement_date->format('Y-m-d');
         $this->notes = $record->notes ?? '';
-        $this->pets = Pet::orderBy('name')->get();
+        $this->pets = Pet::with('tutors')->orderBy('name')->get();
     }
 
     #[On('resetForm')]
@@ -54,7 +54,7 @@ class WeightRecordForm extends Component
         $this->bcs = '';
         $this->measurement_date = '';
         $this->notes = '';
-        $this->pets = Pet::orderBy('name')->get();
+        $this->pets = Pet::with('tutors')->orderBy('name')->get();
         $this->resetValidation();
     }
 
