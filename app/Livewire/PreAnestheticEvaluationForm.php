@@ -43,7 +43,7 @@ class PreAnestheticEvaluationForm extends Component
 
     public function mount($id = null)
     {
-        $this->pets = Pet::orderBy('name')->get();
+        $this->pets = Pet::with('tutors')->orderBy('name')->get();
         if ($id) $this->load($id);
     }
 
@@ -60,7 +60,7 @@ class PreAnestheticEvaluationForm extends Component
         $this->observations = $eval->observations ?? '';
         $this->recommendations = $eval->recommendations ?? '';
         $this->status = $eval->status;
-        $this->pets = Pet::orderBy('name')->get();
+        $this->pets = Pet::with('tutors')->orderBy('name')->get();
     }
 
     #[On('resetForm')]
@@ -75,7 +75,7 @@ class PreAnestheticEvaluationForm extends Component
         $this->observations = '';
         $this->recommendations = '';
         $this->status = 'pending';
-        $this->pets = Pet::orderBy('name')->get();
+        $this->pets = Pet::with('tutors')->orderBy('name')->get();
         $this->resetValidation();
     }
 
