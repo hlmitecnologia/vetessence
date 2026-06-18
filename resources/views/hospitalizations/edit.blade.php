@@ -84,12 +84,12 @@
             </div>
             <div class="form-group">
                 <label>Motivo da Internação</label>
-                <p class="form-control-plaintext">{!! nl2br(e($hospitalization->admission_reason)) !!}</p>
+                <p class="form-control-plaintext">{!! $hospitalization->admission_reason !!}</p>
             </div>
             @if($hospitalization->initial_diagnosis)
             <div class="form-group">
                 <label>Diagnóstico Inicial</label>
-                <p class="form-control-plaintext">{!! nl2br(e($hospitalization->initial_diagnosis)) !!}</p>
+                <p class="form-control-plaintext">{!! $hospitalization->initial_diagnosis !!}</p>
             </div>
             @endif
             @if($hospitalization->status === 'discharged')
