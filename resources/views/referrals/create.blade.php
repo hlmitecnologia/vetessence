@@ -87,11 +87,13 @@
             </div>
             <div class="form-group">
                 <label for="clinical_history">Histórico Clínico</label>
-                <textarea name="clinical_history" id="clinical_history" rows="4" class="wysiwyg form-control">{{ old('clinical_history') }}</textarea>
+                <textarea name="clinical_history" id="clinical_history" rows="4" class="wysiwyg form-control @error('clinical_history') is-invalid @enderror">{{ old('clinical_history') }}</textarea>
+                @error('clinical_history')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="requested_procedures">Procedimentos Solicitados</label>
-                <textarea name="requested_procedures" id="requested_procedures" rows="3" class="wysiwyg form-control">{{ old('requested_procedures') }}</textarea>
+                <textarea name="requested_procedures" id="requested_procedures" rows="3" class="wysiwyg form-control @error('requested_procedures') is-invalid @enderror">{{ old('requested_procedures') }}</textarea>
+                @error('requested_procedures')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
         </div>
         <div class="card-footer">

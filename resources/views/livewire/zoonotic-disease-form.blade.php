@@ -30,20 +30,23 @@
 
         <div class="form-group">
             <label>Transmissão</label>
-            <textarea wire:model="transmission" class="wysiwyg form-control" rows="2"></textarea>
+            <textarea wire:model="transmission" class="wysiwyg form-control @error('transmission') is-invalid @enderror" rows="2"></textarea>
+            @error('transmission') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Sintomas em Animais</label>
-                    <textarea wire:model="animal_symptoms" class="wysiwyg form-control" rows="3"></textarea>
+                    <textarea wire:model="animal_symptoms" class="wysiwyg form-control @error('animal_symptoms') is-invalid @enderror" rows="3"></textarea>
+                    @error('animal_symptoms') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Sintomas em Humanos</label>
-                    <textarea wire:model="human_symptoms" class="wysiwyg form-control" rows="3"></textarea>
+                    <textarea wire:model="human_symptoms" class="wysiwyg form-control @error('human_symptoms') is-invalid @enderror" rows="3"></textarea>
+                    @error('human_symptoms') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
             </div>
         </div>
@@ -57,13 +60,15 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Prevenção</label>
-                    <textarea wire:model="prevention" class="wysiwyg form-control" rows="2"></textarea>
+                    <textarea wire:model="prevention" class="wysiwyg form-control @error('prevention') is-invalid @enderror" rows="2"></textarea>
+                    @error('prevention') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Tratamento</label>
-                    <textarea wire:model="treatment" class="wysiwyg form-control" rows="2"></textarea>
+                    <textarea wire:model="treatment" class="wysiwyg form-control @error('treatment') is-invalid @enderror" rows="2"></textarea>
+                    @error('treatment') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
             </div>
         </div>
@@ -99,7 +104,8 @@
 
         <div class="form-group mt-3">
             <label>Observações</label>
-            <textarea wire:model="notes" class="wysiwyg form-control" rows="2"></textarea>
+            <textarea wire:model="notes" class="wysiwyg form-control @error('notes') is-invalid @enderror" rows="2"></textarea>
+            @error('notes') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
         <div class="text-right">

@@ -64,19 +64,23 @@
             </div>
             <div class="form-group">
                 <label for="reason">Motivo do Encaminhamento *</label>
-                <textarea name="reason" id="reason" rows="3" class="wysiwyg form-control" required>{{ old('reason', $referral->reason) }}</textarea>
+                <textarea name="reason" id="reason" rows="3" class="wysiwyg form-control @error('reason') is-invalid @enderror" required>{{ old('reason', $referral->reason) }}</textarea>
+                @error('reason')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="clinical_history">Histórico Clínico</label>
-                <textarea name="clinical_history" id="clinical_history" rows="4" class="wysiwyg form-control">{{ old('clinical_history', $referral->clinical_history) }}</textarea>
+                <textarea name="clinical_history" id="clinical_history" rows="4" class="wysiwyg form-control @error('clinical_history') is-invalid @enderror">{{ old('clinical_history', $referral->clinical_history) }}</textarea>
+                @error('clinical_history')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="requested_procedures">Procedimentos Solicitados</label>
-                <textarea name="requested_procedures" id="requested_procedures" rows="3" class="wysiwyg form-control">{{ old('requested_procedures', $referral->requested_procedures) }}</textarea>
+                <textarea name="requested_procedures" id="requested_procedures" rows="3" class="wysiwyg form-control @error('requested_procedures') is-invalid @enderror">{{ old('requested_procedures', $referral->requested_procedures) }}</textarea>
+                @error('requested_procedures')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="response_notes">Resposta do Destino</label>
-                <textarea name="response_notes" id="response_notes" rows="3" class="wysiwyg form-control">{{ old('response_notes', $referral->response_notes) }}</textarea>
+                <textarea name="response_notes" id="response_notes" rows="3" class="wysiwyg form-control @error('response_notes') is-invalid @enderror">{{ old('response_notes', $referral->response_notes) }}</textarea>
+                @error('response_notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
         </div>
         <div class="card-footer">

@@ -36,7 +36,8 @@
                     </div>
                     <div class="form-group">
                         <label>Queixa Principal *</label>
-                        <textarea name="chief_complaint" rows="3" class="wysiwyg form-control" required>{{ old('chief_complaint') }}</textarea>
+                        <textarea name="chief_complaint" rows="3" class="wysiwyg form-control @error('chief_complaint') is-invalid @enderror" required>{{ old('chief_complaint') }}</textarea>
+                        @error('chief_complaint')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                     <div class="form-group">
                         <label>Veterinário Responsável</label>

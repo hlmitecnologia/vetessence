@@ -25,7 +25,8 @@
                 </div>
                 <div class="form-group">
                     <label>Observações</label>
-                    <textarea name="notes" class="wysiwyg form-control" rows="2">{!! $purchaseOrder->notes !!}</textarea>
+                    <textarea name="notes" class="wysiwyg form-control @error('notes') is-invalid @enderror" rows="2">{!! $purchaseOrder->notes !!}</textarea>
+                    @error('notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
                 </div>
                 <h5>Itens</h5>
                 <table class="table table-bordered" id="items-table">

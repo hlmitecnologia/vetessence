@@ -26,8 +26,9 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Motivo da consulta</label>
-            <textarea class="wysiwyg" name="reason" id="reason" rows="3" required
-                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"></textarea>
+            <textarea name="reason" id="reason" rows="3" required
+                class="wysiwyg w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm @error('reason') is-invalid @enderror"></textarea>
+            @error('reason')<span class="invalid-feedback">{{ $message }}</span>@enderror
         </div>
 
         <div class="border-t border-gray-200 pt-4 mt-4">

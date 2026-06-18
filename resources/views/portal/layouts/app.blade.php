@@ -88,6 +88,18 @@
                             tinymce.triggerSave();
                             ta.dispatchEvent(new Event('input', { bubbles: true }));
                         });
+                        editor.on('init', function() {
+                            if (!ta || !ta.id) return;
+                            var e = tinymce.get(ta.id);
+                            if (!e || !e.editorContainer) return;
+                            if (ta.classList.contains('is-invalid')) {
+                                e.editorContainer.style.border = '2px solid #dc3545';
+                                e.editorContainer.style.borderRadius = '0.25rem';
+                            } else {
+                                e.editorContainer.style.border = '';
+                                e.editorContainer.style.borderRadius = '';
+                            }
+                        });
                     }
                 });
             });

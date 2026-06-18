@@ -51,5 +51,6 @@
 </div>
 <div class="form-group">
     <label for="observations">Observações</label>
-    <textarea name="observations" id="observations" rows="2" class="wysiwyg form-control">{{ old('observations', $fluidTherapy->observations ?? '') }}</textarea>
+    <textarea name="observations" id="observations" rows="2" class="wysiwyg form-control @error('observations') is-invalid @enderror">{{ old('observations', $fluidTherapy->observations ?? '') }}</textarea>
+    @error('observations')<span class="invalid-feedback">{{ $message }}</span>@enderror
 </div>

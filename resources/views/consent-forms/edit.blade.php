@@ -85,11 +85,13 @@
             </div>
             <div class="form-group">
                 <label for="signed_content">Conteúdo Personalizado</label>
-                <textarea name="signed_content" id="signed_content" rows="6" class="wysiwyg form-control">{{ old('signed_content', $consentForm->signed_content) }}</textarea>
+                <textarea name="signed_content" id="signed_content" rows="6" class="wysiwyg form-control @error('signed_content') is-invalid @enderror">{{ old('signed_content', $consentForm->signed_content) }}</textarea>
+                @error('signed_content')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="notes">Observações</label>
-                <textarea name="notes" id="notes" rows="2" class="wysiwyg form-control">{{ old('notes', $consentForm->notes) }}</textarea>
+                <textarea name="notes" id="notes" rows="2" class="wysiwyg form-control @error('notes') is-invalid @enderror">{{ old('notes', $consentForm->notes) }}</textarea>
+                @error('notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
         </div>
         <div class="card-footer">

@@ -52,7 +52,8 @@
             </div>
             <div class="form-group">
                 <label>Observações</label>
-                <textarea name="notes" class="wysiwyg form-control" rows="3"></textarea>
+                <textarea name="notes" class="wysiwyg form-control @error('notes') is-invalid @enderror" rows="3"></textarea>
+                @error('notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <button type="submit" class="btn btn-primary">Salvar</button>
         </form>

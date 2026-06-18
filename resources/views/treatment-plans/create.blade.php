@@ -145,7 +145,8 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="vet_notes">Observações do Veterinário</label>
-                        <textarea name="vet_notes" id="vet_notes" rows="2" class="wysiwyg form-control">{{ old('vet_notes') }}</textarea>
+                        <textarea name="vet_notes" id="vet_notes" rows="2" class="wysiwyg form-control @error('vet_notes') is-invalid @enderror">{{ old('vet_notes') }}</textarea>
+                        @error('vet_notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>
             </div>

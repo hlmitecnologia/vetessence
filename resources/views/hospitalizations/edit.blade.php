@@ -105,11 +105,13 @@
             </div>
             <div class="form-group">
                 <label for="discharge_summary">Resumo de Alta</label>
-                <textarea name="discharge_summary" id="discharge_summary" rows="3" class="wysiwyg form-control">{{ old('discharge_summary', $hospitalization->discharge_summary) }}</textarea>
+                <textarea name="discharge_summary" id="discharge_summary" rows="3" class="wysiwyg form-control @error('discharge_summary') is-invalid @enderror">{{ old('discharge_summary', $hospitalization->discharge_summary) }}</textarea>
+                            @error('discharge_summary')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="discharge_instructions">Instruções de Alta</label>
-                <textarea name="discharge_instructions" id="discharge_instructions" rows="3" class="wysiwyg form-control">{{ old('discharge_instructions', $hospitalization->discharge_instructions) }}</textarea>
+                <textarea name="discharge_instructions" id="discharge_instructions" rows="3" class="wysiwyg form-control @error('discharge_instructions') is-invalid @enderror">{{ old('discharge_instructions', $hospitalization->discharge_instructions) }}</textarea>
+                            @error('discharge_instructions')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             @endif
         </div>

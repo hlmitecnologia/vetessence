@@ -69,12 +69,14 @@
 
         <div class="form-group">
             <label>Observações</label>
-            <textarea wire:model="observations" class="wysiwyg form-control" rows="2"></textarea>
+            <textarea wire:model="observations" class="wysiwyg form-control @error('observations') is-invalid @enderror" rows="2"></textarea>
+            @error('observations') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
         <div class="form-group">
             <label>Recomendações</label>
-            <textarea wire:model="recommendations" class="wysiwyg form-control" rows="2"></textarea>
+            <textarea wire:model="recommendations" class="wysiwyg form-control @error('recommendations') is-invalid @enderror" rows="2"></textarea>
+            @error('recommendations') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
         <div class="text-right">

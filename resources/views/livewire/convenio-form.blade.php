@@ -38,7 +38,8 @@
 
         <div class="form-group">
             <label>Cobertura</label>
-            <textarea wire:model="coverage" class="wysiwyg form-control" rows="2"></textarea>
+            <textarea wire:model="coverage" class="wysiwyg form-control @error('coverage') is-invalid @enderror" rows="2"></textarea>
+            @error('coverage') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
         <div class="row">

@@ -37,15 +37,18 @@
                     </div>
                     <div class="form-group">
                         <label>Diagnóstico Pré-operatório</label>
-                        <textarea name="pre_op_diagnosis" rows="2" class="wysiwyg form-control">{{ old('pre_op_diagnosis') }}</textarea>
+                        <textarea name="pre_op_diagnosis" rows="2" class="wysiwyg form-control @error('pre_op_diagnosis') is-invalid @enderror">{{ old('pre_op_diagnosis') }}</textarea>
+                        @error('pre_op_diagnosis')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                     <div class="form-group">
                         <label>Protocolo</label>
-                        <textarea name="protocol" rows="2" class="wysiwyg form-control">{{ old('protocol') }}</textarea>
+                        <textarea name="protocol" rows="2" class="wysiwyg form-control @error('protocol') is-invalid @enderror">{{ old('protocol') }}</textarea>
+                        @error('protocol')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                     <div class="form-group">
                         <label>Observações</label>
-                        <textarea name="notes" rows="2" class="wysiwyg form-control">{{ old('notes') }}</textarea>
+                        <textarea name="notes" rows="2" class="wysiwyg form-control @error('notes') is-invalid @enderror">{{ old('notes') }}</textarea>
+                        @error('notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>
                 <div class="card-footer text-right">

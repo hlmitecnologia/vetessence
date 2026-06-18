@@ -63,7 +63,8 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label>Motivo</label>
-                                <textarea name="reason" rows="3" class="wysiwyg form-control">{!! $appointment->reason !!}</textarea>
+                                <textarea name="reason" rows="3" class="wysiwyg form-control @error('reason') is-invalid @enderror">{!! $appointment->reason !!}</textarea>
+                                @error('reason')<span class="invalid-feedback">{{ $message }}</span>@enderror
                             </div>
                         </div>
                     </div>

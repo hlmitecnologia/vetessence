@@ -60,7 +60,8 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label>Motivo/Observações</label>
-                            <textarea wire:model="reason" rows="2" class="wysiwyg form-control"></textarea>
+                            <textarea wire:model="reason" rows="2" class="wysiwyg form-control @error('reason') is-invalid @enderror"></textarea>
+                            @error('reason') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
                     </div>
                 </div>

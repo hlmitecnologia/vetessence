@@ -64,11 +64,13 @@
             </div>
             <div class="form-group">
                 <label for="instructions">Instruções</label>
-                <textarea name="instructions" id="instructions" class="wysiwyg form-control" rows="3">{{ old('instructions') }}</textarea>
+                <textarea name="instructions" id="instructions" class="wysiwyg form-control @error('instructions') is-invalid @enderror" rows="3">{{ old('instructions') }}</textarea>
+                @error('instructions')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="notes">Observações</label>
-                <textarea name="notes" id="notes" class="wysiwyg form-control" rows="2">{{ old('notes') }}</textarea>
+                <textarea name="notes" id="notes" class="wysiwyg form-control @error('notes') is-invalid @enderror" rows="2">{{ old('notes') }}</textarea>
+                @error('notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
         </div>
         <div class="card-footer">

@@ -68,15 +68,18 @@
             </div>
             <div class="form-group">
                 <label for="findings">Achados</label>
-                <textarea name="findings" id="findings" rows="4" class="wysiwyg form-control">{{ old('findings', $exam->findings) }}</textarea>
+                <textarea name="findings" id="findings" rows="4" class="wysiwyg form-control @error('findings') is-invalid @enderror">{{ old('findings', $exam->findings) }}</textarea>
+                            @error('findings')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="impression">Impressão</label>
-                <textarea name="impression" id="impression" rows="3" class="wysiwyg form-control">{{ old('impression', $exam->impression) }}</textarea>
+                <textarea name="impression" id="impression" rows="3" class="wysiwyg form-control @error('impression') is-invalid @enderror">{{ old('impression', $exam->impression) }}</textarea>
+                            @error('impression')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="recommendations">Recomendações</label>
-                <textarea name="recommendations" id="recommendations" rows="3" class="wysiwyg form-control">{{ old('recommendations', $exam->recommendations) }}</textarea>
+                <textarea name="recommendations" id="recommendations" rows="3" class="wysiwyg form-control @error('recommendations') is-invalid @enderror">{{ old('recommendations', $exam->recommendations) }}</textarea>
+                            @error('recommendations')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
         </div>
         <div class="card-footer">

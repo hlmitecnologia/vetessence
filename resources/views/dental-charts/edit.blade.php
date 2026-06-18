@@ -153,7 +153,8 @@
 
             <div class="form-group">
                 <label for="general_notes">Observações Gerais</label>
-                <textarea name="general_notes" id="general_notes" rows="3" class="wysiwyg form-control">{{ old('general_notes', $chart->general_notes) }}</textarea>
+                <textarea name="general_notes" id="general_notes" rows="3" class="wysiwyg form-control @error('general_notes') is-invalid @enderror">{{ old('general_notes', $chart->general_notes) }}</textarea>
+                            @error('general_notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
         </div>
         <div class="card-footer">

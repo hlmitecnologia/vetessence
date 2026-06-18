@@ -17,7 +17,8 @@
                     </div>
                     <div class="form-group">
                         <label>Descrição</label>
-                        <textarea name="description" rows="2" class="wysiwyg form-control">{{ old('description') }}</textarea>
+                        <textarea name="description" rows="2" class="wysiwyg form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
+                        @error('description')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>
                 <div class="card-footer text-right">

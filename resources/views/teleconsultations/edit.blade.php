@@ -70,7 +70,8 @@
             </div>
             <div class="form-group">
                 <label for="notes">Observações</label>
-                <textarea name="notes" rows="2" class="wysiwyg form-control">{{ old('notes', $teleconsultation->notes) }}</textarea>
+                <textarea name="notes" rows="2" class="wysiwyg form-control @error('notes') is-invalid @enderror">{{ old('notes', $teleconsultation->notes) }}</textarea>
+                @error('notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
         </div>
         <div class="card-footer">

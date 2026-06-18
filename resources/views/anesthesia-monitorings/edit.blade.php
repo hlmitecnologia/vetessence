@@ -57,13 +57,15 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="anesthetic_protocol">Protocolo</label>
-                        <textarea name="anesthetic_protocol" id="anesthetic_protocol" rows="2" class="wysiwyg form-control">{{ old('anesthetic_protocol', $anesthesiaMonitoring->anesthetic_protocol) }}</textarea>
+                        <textarea name="anesthetic_protocol" id="anesthetic_protocol" rows="2" class="wysiwyg form-control @error('anesthetic_protocol') is-invalid @enderror">{{ old('anesthetic_protocol', $anesthesiaMonitoring->anesthetic_protocol) }}</textarea>
+                        @error('anesthetic_protocol')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="premedication">Pré-medicação</label>
-                        <textarea name="premedication" id="premedication" rows="2" class="wysiwyg form-control">{{ old('premedication', $anesthesiaMonitoring->premedication) }}</textarea>
+                        <textarea name="premedication" id="premedication" rows="2" class="wysiwyg form-control @error('premedication') is-invalid @enderror">{{ old('premedication', $anesthesiaMonitoring->premedication) }}</textarea>
+                        @error('premedication')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>
             </div>
@@ -111,7 +113,8 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="observations">Observações</label>
-                        <textarea name="observations" id="observations" rows="2" class="wysiwyg form-control">{{ old('observations', $anesthesiaMonitoring->observations) }}</textarea>
+                        <textarea name="observations" id="observations" rows="2" class="wysiwyg form-control @error('observations') is-invalid @enderror">{{ old('observations', $anesthesiaMonitoring->observations) }}</textarea>
+                            @error('observations')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>
             </div>

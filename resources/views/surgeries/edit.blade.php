@@ -39,7 +39,8 @@
                     </div>
                     <div class="form-group">
                         <label>Notas Pós-op</label>
-                        <textarea name="post_op_notes" rows="2" class="wysiwyg form-control">{!! $surgery->post_op_notes !!}</textarea>
+                        <textarea name="post_op_notes" rows="2" class="wysiwyg form-control @error('post_op_notes') is-invalid @enderror">{!! $surgery->post_op_notes !!}</textarea>
+                        @error('post_op_notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>
                 <div class="card-footer text-right">

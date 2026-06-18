@@ -40,7 +40,8 @@
 
         <div class="form-group">
             <label>Manejo</label>
-            <textarea wire:model="management" class="wysiwyg form-control" rows="2"></textarea>
+            <textarea wire:model="management" class="wysiwyg form-control @error('management') is-invalid @enderror" rows="2"></textarea>
+            @error('management') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
         <div class="row">

@@ -85,11 +85,13 @@
             </div>
             <div class="form-group">
                 <label for="clinical_notes">Observações Clínicas</label>
-                <textarea name="clinical_notes" id="clinical_notes" rows="3" class="wysiwyg form-control" placeholder="Vacinas, exames, condições clínicas relevantes...">{{ old('clinical_notes') }}</textarea>
+                <textarea name="clinical_notes" id="clinical_notes" rows="3" class="wysiwyg form-control @error('clinical_notes') is-invalid @enderror" placeholder="Vacinas, exames, condições clínicas relevantes...">{{ old('clinical_notes') }}</textarea>
+                            @error('clinical_notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="notes">Informações Adicionais</label>
-                <textarea name="notes" id="notes" rows="2" class="wysiwyg form-control">{{ old('notes') }}</textarea>
+                <textarea name="notes" id="notes" rows="2" class="wysiwyg form-control @error('notes') is-invalid @enderror">{{ old('notes') }}</textarea>
+                            @error('notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
         </div>
         <div class="card-footer">

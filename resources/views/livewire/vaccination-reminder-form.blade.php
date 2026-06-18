@@ -53,7 +53,8 @@
 
         <div class="form-group">
             <label>Observações</label>
-            <textarea wire:model="notes" class="wysiwyg form-control" rows="2" maxlength="500"></textarea>
+            <textarea wire:model="notes" class="wysiwyg form-control @error('notes') is-invalid @enderror" rows="2" maxlength="500"></textarea>
+            @error('notes') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
         <div class="text-right">

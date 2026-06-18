@@ -117,15 +117,18 @@
             <div class="card-body">
                 <div class="form-group">
                     <label>Queixa Principal</label>
-                    <textarea wire:model="chief_complaint" rows="2" class="wysiwyg form-control"></textarea>
+                    <textarea wire:model="chief_complaint" rows="2" class="wysiwyg form-control @error('chief_complaint') is-invalid @enderror"></textarea>
+                    @error('chief_complaint') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
                 <div class="form-group">
                     <label>Anamnese</label>
-                    <textarea wire:model="anamnesis" rows="3" class="wysiwyg form-control"></textarea>
+                    <textarea wire:model="anamnesis" rows="3" class="wysiwyg form-control @error('anamnesis') is-invalid @enderror"></textarea>
+                    @error('anamnesis') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
                 <div class="form-group">
                     <label>Exame Físico</label>
-                    <textarea wire:model="physical_exam" rows="3" class="wysiwyg form-control"></textarea>
+                    <textarea wire:model="physical_exam" rows="3" class="wysiwyg form-control @error('physical_exam') is-invalid @enderror"></textarea>
+                    @error('physical_exam') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
             </div>
         </div>
@@ -143,14 +146,16 @@
                             <span wire:loading wire:target="suggestDiagnosis"><i class="fas fa-spinner fa-spin"></i> Analisando...</span>
                         </button>
                     </div>
-                    <textarea wire:model="diagnosis" rows="2" class="wysiwyg form-control" style="resize:vertical;"></textarea>
+                    <textarea wire:model="diagnosis" rows="2" class="wysiwyg form-control @error('diagnosis') is-invalid @enderror" style="resize:vertical;"></textarea>
+                    @error('diagnosis') <span class="invalid-feedback">{{ $message }}</span> @enderror
                     @if($suggestionError)
                         <small class="text-danger">{{ $suggestionError }}</small>
                     @endif
                 </div>
                 <div class="form-group">
                     <label>Tratamento</label>
-                    <textarea wire:model="treatment" rows="3" class="wysiwyg form-control"></textarea>
+                    <textarea wire:model="treatment" rows="3" class="wysiwyg form-control @error('treatment') is-invalid @enderror"></textarea>
+                    @error('treatment') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
                 <div class="row">
                     <div class="col-md-6">
@@ -168,7 +173,8 @@
                 </div>
                 <div class="form-group">
                     <label>Observações</label>
-                    <textarea wire:model="notes" rows="2" class="wysiwyg form-control"></textarea>
+                    <textarea wire:model="notes" rows="2" class="wysiwyg form-control @error('notes') is-invalid @enderror"></textarea>
+                    @error('notes') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
             </div>
         </div>

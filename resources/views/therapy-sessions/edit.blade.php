@@ -57,11 +57,13 @@
             </div>
             <div class="form-group">
                 <label>Anotações</label>
-                <textarea name="notes" class="wysiwyg form-control" rows="3">{!! $therapySession->notes !!}</textarea>
+                <textarea name="notes" class="wysiwyg form-control @error('notes') is-invalid @enderror" rows="3">{!! $therapySession->notes !!}</textarea>
+                @error('notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label>Observações</label>
-                <textarea name="observations" class="wysiwyg form-control" rows="3">{!! $therapySession->observations !!}</textarea>
+                <textarea name="observations" class="wysiwyg form-control @error('observations') is-invalid @enderror" rows="3">{!! $therapySession->observations !!}</textarea>
+                @error('observations')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <button type="submit" class="btn btn-primary">Atualizar</button>
         </form>

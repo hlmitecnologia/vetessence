@@ -982,6 +982,9 @@
                             tinymce.triggerSave();
                             ta.dispatchEvent(new Event('input', { bubbles: true }));
                         });
+                        editor.on('init', function() {
+                            editorSyncValidationBorder(ta);
+                        });
                     }
                 });
             });
@@ -996,6 +999,24 @@
                     tinymce.execCommand('mceRemoveEditor', true, editorId);
                 }
             });
+        }
+
+        function editorSyncValidationBorder(ta) {
+            if (!ta || !ta.id) return;
+            var editor = tinymce.get(ta.id);
+            if (!editor || !editor.editorContainer) return;
+            if (ta.classList.contains('is-invalid')) {
+                editor.editorContainer.style.border = '2px solid #dc3545';
+                editor.editorContainer.style.borderRadius = '0.25rem';
+            } else {
+                editor.editorContainer.style.border = '';
+                editor.editorContainer.style.borderRadius = '';
+            }
+        }
+
+        function syncTinyMCEValidation() {
+            if (typeof tinymce === 'undefined') return;
+            document.querySelectorAll('textarea.wysiwyg').forEach(editorSyncValidationBorder);
         }
 
         // Init on page load
@@ -1015,7 +1036,7 @@
                 setTimeout(function() {
                     destroyTinyMCE(params.el);
                     initTinyMCE(params.el);
-                }, 0);
+                }, 50);
             });
         });
 
