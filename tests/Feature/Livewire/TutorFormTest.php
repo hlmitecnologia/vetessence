@@ -52,9 +52,9 @@ class TutorFormTest extends ModuleTestCase
             ->assertHasErrors(['name', 'cpf', 'email', 'phone']);
     }
 
-    public function test_updates_existing_tutor_when_cpf_matches()
+    public function test_rejects_duplicate_cpf_on_create()
     {
-        $existing = Tutor::factory()->create(['cpf' => '52998224725']);
+        Tutor::factory()->create(['cpf' => '52998224725']);
 
         Livewire::test('tutor-form')
             ->set('name', 'Duplicado')
@@ -62,13 +62,7 @@ class TutorFormTest extends ModuleTestCase
             ->set('email', 'dup@teste.com')
             ->set('phone', '11977777777')
             ->call('save')
-            ->assertDispatched('tutor-saved');
-
-        $this->assertDatabaseHas('tutors', [
-            'id' => $existing->id,
-            'name' => 'Duplicado',
-            'email' => 'dup@teste.com',
-        ]);
+            ->assertHasErrors(['cpf']);
     }
 
     public function test_validates_unique_email()
@@ -155,9 +149,9 @@ class TutorFormTest extends ModuleTestCase
         $this->assertDatabaseHas('tutors', ['email' => 'perm-tutor@teste.com']);
     }
 
-    public function test_handles_duplicate_cpf_gracefully()
+    public function test_rejects_duplicate_cpf_with_graceful_error()
     {
-        $existing = Tutor::factory()->create(['cpf' => '12345678909']);
+        Tutor::factory()->create(['cpf' => '12345678909']);
 
         Livewire::test('tutor-form')
             ->set('name', 'CPF Duplicate')
@@ -165,13 +159,7 @@ class TutorFormTest extends ModuleTestCase
             ->set('email', 'cpfdup@teste.com')
             ->set('phone', '11944444444')
             ->call('save')
-            ->assertDispatched('tutor-saved');
-
-        $this->assertDatabaseHas('tutors', [
-            'id' => $existing->id,
-            'name' => 'CPF Duplicate',
-            'email' => 'cpfdup@teste.com',
-        ]);
+            ->assertHasErrors(['cpf']);
     }
 
     public function test_can_update_tutor_via_event()
@@ -250,9 +238,9 @@ class TutorFormTest extends ModuleTestCase
         ]);
     }
 
-    public function test_updates_existing_tutor_when_cpf_matches_different_name()
+    public function test_rejects_duplicate_cpf_when_name_differs()
     {
-        $existing = Tutor::factory()->create([
+        Tutor::factory()->create([
             'name' => 'Original',
             'cpf' => '11122233344',
             'email' => 'original@teste.com',
@@ -264,12 +252,6 @@ class TutorFormTest extends ModuleTestCase
             ->set('email', 'different@teste.com')
             ->set('phone', '11977777777')
             ->call('save')
-            ->assertDispatched('tutor-saved');
-
-        $this->assertDatabaseHas('tutors', [
-            'id' => $existing->id,
-            'name' => 'Different Name',
-            'email' => 'different@teste.com',
-        ]);
+            ->assertHasErrors(['cpf']);
     }
 }

@@ -137,8 +137,7 @@ class TutorForm extends Component
         $this->state_id = $this->state_id ?: null;
         $this->city_id = $this->city_id ?: null;
 
-        $existing = $this->cpf ? Tutor::where('cpf', $this->cpf)->first() : null;
-        $id = $this->tutorId ?: ($existing->id ?? null);
+        $id = $this->tutorId;
 
         $rules = $this->rules;
         if ($id) {
