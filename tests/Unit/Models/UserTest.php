@@ -20,6 +20,25 @@ class UserTest extends TestCase
         $this->assertDatabaseHas('users', ['email' => 'joao@vet.com', 'is_active' => true]);
     }
 
+    public function test_is_veterinarian_cast()
+    {
+        $user = User::factory()->create(['is_veterinarian' => true]);
+        $this->assertTrue($user->is_veterinarian);
+        $this->assertIsBool($user->is_veterinarian);
+    }
+
+    public function test_is_veterinarian_defaults_to_false()
+    {
+        $user = User::factory()->create();
+        $this->assertFalse($user->is_veterinarian);
+    }
+
+    public function test_is_veterinarian_in_fillable()
+    {
+        $user = User::factory()->create(['is_veterinarian' => true]);
+        $this->assertDatabaseHas('users', ['id' => $user->id, 'is_veterinarian' => 1]);
+    }
+
     public function test_role_relationship()
     {
         $role = Role::create(['name' => 'Veterinário', 'slug' => 'veterinarian', 'guard_name' => 'web']);

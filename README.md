@@ -121,7 +121,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 ## Suite de Testes
 
 ```
-Tests: ~1,969 total (389 files), Livewire 100% (32/32), Controllers ~80%, Services ~78%
+Tests: 1,974 total (389 files), Livewire 211 (32 files), Controllers 772 (108 files), Services 203 (32 files), Models 358 (91 files)
 ```
 
 ## Início Rápido

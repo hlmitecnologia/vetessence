@@ -6,12 +6,12 @@
 ## Summary
 
 ### Done
-- **Test sweep (102 new files, ~530 tests)**: Livewire 6%→100% (32/32), Controllers 37%→80% (48 new), Services 37%→78% (21 new), Listeners/Commands ~85% (9 new)
-- **Card-title standardization**: moved all card-title inside card-header (`eb1e6c3`)
-- **Unified NFSe/NFe emission button** (`86e6414`): single "Emitir Nota Fiscal" that decides NFSe/NFe per item_type
-- **Payment gate**: emit button hidden until `status === 'paid'` (`1bc14a7`)
-- **Flash messages**: fixed adminlte layout missing `warning`/`info` flash blocks (`04ecb75`)
-- **NotificationLog on auto-emission failure**: EmitirNfseOnPaid + EmitirNfeOnPaid create notification logs (`1bc14a7`)
+- **Permission audit + middleware**: added `can:` middleware to 40 controllers; mapped all 46 sidebar menu items to permission gates
+- **AuthorizationException handler**: redirects to `route('dashboard')` with flash error instead of 403
+- **WYSIWYG rendering**: fixed `{{ }}` → `{!! !!}` in 6 show views
+- **`is_veterinarian` field**: migration, model fillable/casts, UserForm checkbox, UserFactory, 21+ query updates to include `orWhere('is_veterinarian', true)` in vet listings
+- **Pet edit form**: tutor field read-only in edit mode
+- **Fixed pre-existing failures**: PetController views created, LabOrder test includes `result_date`, HospitalizationCycleTest aligns with controller defaults, PatientTimelineController fixes (`procedure`→`surgery_type`, `reason`→`admission_reason`, `name`→`type`)
 
 ### Known Issues
 - `AutoInvoiceTest` pre‑existing order‑dependent failure (passes in isolation)

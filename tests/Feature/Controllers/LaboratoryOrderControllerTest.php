@@ -59,6 +59,7 @@ class LaboratoryOrderControllerTest extends ModuleTestCase
             'vet_id' => $order->vet_id,
             'order_date' => now()->format('Y-m-d'),
             'status' => 'completed',
+            'result_date' => now()->format('Y-m-d'),
         ]);
 
         $response->assertRedirect();

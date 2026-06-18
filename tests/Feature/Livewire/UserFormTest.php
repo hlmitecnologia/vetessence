@@ -147,6 +147,43 @@ class UserFormTest extends ModuleTestCase
         $this->assertEquals($role->id, $user->role_id);
     }
 
+    public function test_can_create_veterinarian_user()
+    {
+        Livewire::test('user-form')
+            ->set('name', 'Dr. Veterinário')
+            ->set('email', 'vet@clinica.com')
+            ->set('password', 'password')
+            ->set('password_confirmation', 'password')
+            ->set('is_veterinarian', true)
+            ->call('save')
+            ->assertDispatched('user-saved');
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'vet@clinica.com',
+            'is_veterinarian' => 1,
+        ]);
+    }
+
+    public function test_can_edit_is_veterinarian_flag()
+    {
+        $user = User::factory()->create([
+            'name' => 'Dr. Sem CRM',
+            'email' => 'semcrm@teste.com',
+            'is_veterinarian' => false,
+        ]);
+
+        Livewire::test('user-form', ['id' => $user->id])
+            ->assertSet('is_veterinarian', false)
+            ->set('is_veterinarian', true)
+            ->call('save')
+            ->assertDispatched('user-saved');
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'is_veterinarian' => 1,
+        ]);
+    }
+
     public function test_can_assign_branch()
     {
         $branch = Branch::factory()->create();
@@ -187,6 +224,7 @@ class UserFormTest extends ModuleTestCase
             ->assertSet('name', '')
             ->assertSet('email', '')
             ->assertSet('password', '')
-            ->assertSet('is_active', true);
+            ->assertSet('is_active', true)
+            ->assertSet('is_veterinarian', false);
     }
 }

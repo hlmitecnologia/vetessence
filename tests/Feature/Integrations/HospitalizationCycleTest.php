@@ -33,7 +33,6 @@ class HospitalizationCycleTest extends ModuleTestCase
 
         $admitResponse = $this->post(route('hospitalizations.store'), [
             'pet_id' => $pet->id,
-            'tutor_id' => $tutor->id,
             'vet_id' => $this->vet->id,
             'admission_date' => now()->format('Y-m-d'),
             'admission_reason' => 'Pós-operatório de fratura',
@@ -41,15 +40,13 @@ class HospitalizationCycleTest extends ModuleTestCase
             'department' => 'Ortopedia',
             'bed' => 'A-101',
             'is_emergency' => false,
-            'status' => 'admitted',
-            'branch_id' => $this->branch->id,
         ]);
         $admitResponse->assertSessionDoesntHaveErrors();
         $admitResponse->assertRedirect();
 
         $this->assertDatabaseHas('hospitalizations', [
             'pet_id' => $pet->id,
-            'status' => 'admitted',
+            'status' => 'active',
             'department' => 'Ortopedia',
         ]);
         $hospitalization = Hospitalization::where('pet_id', $pet->id)->first();
@@ -130,19 +127,11 @@ class HospitalizationCycleTest extends ModuleTestCase
         ]);
 
         $dischargeResponse = $this->put(route('hospitalizations.update', $hospitalization), [
-            'pet_id' => $pet->id,
-            'tutor_id' => $tutor->id,
-            'vet_id' => $this->vet->id,
-            'admission_date' => now()->format('Y-m-d'),
-            'admission_reason' => 'Pós-operatório de fratura',
-            'initial_diagnosis' => 'Fratura de fêmur',
-            'department' => 'Ortopedia',
             'bed' => 'A-101',
             'status' => 'discharged',
             'discharged_at' => now()->format('Y-m-d'),
             'discharge_summary' => 'Paciente recuperado, alta concedida',
             'discharge_instructions' => 'Repouso por 7 dias',
-            'branch_id' => $this->branch->id,
         ]);
         $dischargeResponse->assertSessionDoesntHaveErrors();
 

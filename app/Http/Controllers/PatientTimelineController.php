@@ -62,7 +62,7 @@ class PatientTimelineController extends Controller
                 'type' => 'Exame',
                 'icon' => 'fa-flask',
                 'color' => 'warning',
-                'summary' => $e->type ?? $e->name ?? 'Exame',
+                'summary' => $e->type ?? 'Exame',
                 'url' => route('exams.show', $e),
             ]);
         }
@@ -73,7 +73,7 @@ class PatientTimelineController extends Controller
                 'type' => 'Cirurgia',
                 'icon' => 'fa-user-md',
                 'color' => 'danger',
-                'summary' => $s->procedure ?? $s->name ?? 'Procedimento cirúrgico',
+                'summary' => $s->surgery_type ?? 'Procedimento cirúrgico',
                 'url' => route('surgeries.show', $s),
             ]);
         }
@@ -85,7 +85,7 @@ class PatientTimelineController extends Controller
                 'type' => 'Internação',
                 'icon' => 'fa-procedures',
                 'color' => 'secondary',
-                'summary' => 'Admitido: ' . ($h->reason ?? '') . ($h->discharge_date ? ' | Alta: ' . $h->discharge_date->format('d/m/Y') : ''),
+                'summary' => 'Admitido: ' . ($h->admission_reason ?? '') . ($h->discharged_at ? ' | Alta: ' . $h->discharged_at->format('d/m/Y') : ''),
                 'url' => route('hospitalizations.show', $h),
             ]);
         }

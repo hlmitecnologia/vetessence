@@ -70,7 +70,7 @@ class PatientTimelineControllerTest extends ModuleTestCase
         $pet = Pet::factory()->create();
         Exam::factory()->create([
             'pet_id' => $pet->id,
-            'name' => 'Hemograma',
+            'type' => 'Hemograma',
         ]);
         $response = $this->get(route('pets.timeline', $pet));
         $response->assertOk();
@@ -82,7 +82,7 @@ class PatientTimelineControllerTest extends ModuleTestCase
         $pet = Pet::factory()->create();
         Surgery::factory()->create([
             'pet_id' => $pet->id,
-            'procedure' => 'Castração',
+            'surgery_type' => 'Castração',
         ]);
         $response = $this->get(route('pets.timeline', $pet));
         $response->assertOk();
@@ -94,7 +94,7 @@ class PatientTimelineControllerTest extends ModuleTestCase
         $pet = Pet::factory()->create();
         Hospitalization::factory()->create([
             'pet_id' => $pet->id,
-            'reason' => 'Observação',
+            'admission_reason' => 'Observação',
         ]);
         $response = $this->get(route('pets.timeline', $pet));
         $response->assertOk();
