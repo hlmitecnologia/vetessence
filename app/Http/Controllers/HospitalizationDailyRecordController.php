@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class HospitalizationDailyRecordController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:hospitalizacao');
+    }
+
     public function index(Request $request)
     {
         $query = HospitalizationDailyRecord::with(['hospitalization.pet', 'user']);

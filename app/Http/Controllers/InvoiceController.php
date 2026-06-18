@@ -19,6 +19,11 @@ use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:financeiro');
+    }
+
     public function index(Request $request)
     {
         $query = Invoice::with(['tutor', 'pet', 'nfseInvoice', 'nfeInvoice'])

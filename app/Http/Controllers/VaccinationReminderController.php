@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class VaccinationReminderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:lembrete-vacinas');
+    }
+
     public function index(Request $request)
     {
         $query = VaccinationReminder::with(['vaccination', 'pet']);

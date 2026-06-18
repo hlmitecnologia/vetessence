@@ -14,7 +14,9 @@ class NfseController extends Controller
 {
     public function __construct(
         protected NfseService $nfseService,
-    ) {}
+    ) {
+        $this->middleware('can:nfse.view');
+    }
 
     public function index(Request $request)
     {

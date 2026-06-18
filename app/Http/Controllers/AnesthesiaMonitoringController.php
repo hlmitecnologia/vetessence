@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\DB;
 
 class AnesthesiaMonitoringController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:cirurgias');
+    }
+
     public function index(Request $request)
     {
         $query = AnesthesiaMonitoring::with(['surgery', 'pet', 'vet', 'vitalSigns']);

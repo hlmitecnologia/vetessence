@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class ControlledSubstanceController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:estoque');
+    }
+
     public function index(Request $request)
     {
         $query = ControlledSubstance::query();

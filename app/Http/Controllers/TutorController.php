@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\DB;
 
 class TutorController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:tutores');
+    }
+
     public function index(Request $request)
     {
         $query = Tutor::with('user');

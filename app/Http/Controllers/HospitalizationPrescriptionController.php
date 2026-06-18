@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class HospitalizationPrescriptionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:hospitalizacao');
+    }
+
     public function store(Request $request, Hospitalization $hospitalization)
     {
         $validated = $request->validate([

@@ -11,7 +11,9 @@ class NfeController extends Controller
 {
     public function __construct(
         protected NfeService $nfeService,
-    ) {}
+    ) {
+        $this->middleware('can:nfe.view');
+    }
 
     public function index(Request $request)
     {

@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\DB;
 
 class LaboratoryOrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:laboratorio');
+    }
+
     public function index(Request $request)
     {
         $query = LaboratoryOrder::with(['pet', 'vet', 'tests']);

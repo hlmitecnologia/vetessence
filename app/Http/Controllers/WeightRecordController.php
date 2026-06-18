@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class WeightRecordController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:prontuarios');
+    }
+
     public function index(Request $request)
     {
         $query = WeightRecord::with(['pet', 'measuredBy']);

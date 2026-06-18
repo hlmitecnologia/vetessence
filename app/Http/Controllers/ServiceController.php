@@ -12,6 +12,11 @@ use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:admin');
+    }
+
     public function index(Request $request)
     {
         $query = Service::with('category', 'priceTiers');

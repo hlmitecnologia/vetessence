@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:atendimentos');
+    }
+
     public function index(Request $request)
     {
         $query = Appointment::with(['pet', 'vet']);

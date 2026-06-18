@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:admin');
+    }
+
     public function index()
     {
         $roles = Role::withCount('users')->orderBy('name')->get();

@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class HospitalizationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:hospitalizacao');
+    }
+
     public function index(Request $request)
     {
         $query = Hospitalization::with(['pet', 'tutor', 'vet', 'dailyRecords', 'fluidTherapies', 'prescriptions']);

@@ -14,6 +14,11 @@ use Carbon\Carbon;
 
 class VaccinationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:vacinas');
+    }
+
     public function index(Request $request)
     {
         $query = Vaccination::with(['pet', 'vet']);

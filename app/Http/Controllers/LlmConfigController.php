@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class LlmConfigController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:configuracoes.llm');
+    }
+
     public function edit()
     {
         $config = LlmConfig::firstOrNew();

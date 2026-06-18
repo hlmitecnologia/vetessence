@@ -2,9 +2,11 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\ViewException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -38,6 +40,11 @@ class Handler extends ExceptionHandler
                     return redirect()->route($baseRoute);
                 }
             }
+        }
+
+        if ($e instanceof AuthorizationException || $e instanceof AccessDeniedHttpException) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Acesso negado. Você não tem permissão para acessar esta funcionalidade.');
         }
 
         return parent::render($request, $e);

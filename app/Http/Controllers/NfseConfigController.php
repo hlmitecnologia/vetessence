@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class NfseConfigController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:nfse-config.edit');
+    }
+
     public function edit()
     {
         $config = NfseConfig::firstOrNew();

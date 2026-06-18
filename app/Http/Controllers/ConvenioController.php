@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class ConvenioController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:convenios');
+    }
+
     public function index(Request $request)
     {
         $query = Convenio::query();

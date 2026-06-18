@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class ImagingExamController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:imagem');
+    }
+
     public function index(Request $request)
     {
         $query = ImagingExam::with(['pet', 'vet', 'radiologist']);

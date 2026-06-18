@@ -11,6 +11,11 @@ use Illuminate\Http\Request;
 
 class ConsentFormController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:prontuarios');
+    }
+
     public function index(Request $request)
     {
         $query = ConsentForm::with(['pet', 'tutor', 'template', 'veterinarian', 'witness']);

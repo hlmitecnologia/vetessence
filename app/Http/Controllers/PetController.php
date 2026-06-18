@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class PetController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:pets');
+    }
+
     public function index(Request $request)
     {
         $query = Pet::with('tutors', 'breedRelation');

@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class ReferralController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:referral');
+    }
+
     public function index(Request $request)
     {
         $query = Referral::with(['pet', 'referringVet', 'receivingVet']);

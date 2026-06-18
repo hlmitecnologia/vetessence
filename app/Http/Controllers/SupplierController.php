@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:estoque');
+    }
+
     public function index(Request $request)
     {
         $query = Supplier::query();

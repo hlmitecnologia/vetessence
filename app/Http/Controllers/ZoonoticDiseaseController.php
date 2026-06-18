@@ -8,6 +8,11 @@ use Illuminate\Support\Str;
 
 class ZoonoticDiseaseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:prontuarios');
+    }
+
     public function index(Request $request)
     {
         $query = ZoonoticDisease::query();

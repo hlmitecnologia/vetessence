@@ -15,6 +15,11 @@ use Illuminate\Support\Facades\DB;
 
 class MedicalRecordController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:prontuarios');
+    }
+
     public function index(Request $request)
     {
         $query = MedicalRecord::with(['pet', 'vet']);

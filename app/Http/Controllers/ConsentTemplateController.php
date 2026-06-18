@@ -8,6 +8,11 @@ use Illuminate\Support\Str;
 
 class ConsentTemplateController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:admin');
+    }
+
     public function index(Request $request)
     {
         $query = ConsentTemplate::query();

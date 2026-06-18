@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class PrescriptionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:prescricoes');
+    }
+
     public function index(Request $request)
     {
         $query = Prescription::with('medicalRecord.pet');

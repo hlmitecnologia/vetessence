@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class SurgeryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:cirurgias');
+    }
+
     public function index(Request $request)
     {
         $query = Surgery::with(['pet', 'vet']);

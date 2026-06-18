@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class ExamController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:exames');
+    }
+
     public function index(Request $request)
     {
         $query = Exam::with(['pet', 'vet']);

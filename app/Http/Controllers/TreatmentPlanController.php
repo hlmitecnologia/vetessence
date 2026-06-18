@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class TreatmentPlanController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:prontuarios');
+    }
+
     public function index(Request $request)
     {
         $query = TreatmentPlan::with(['pet', 'tutor', 'vet', 'items']);
