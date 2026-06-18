@@ -78,32 +78,19 @@ class HospitalizationController extends Controller
 
     public function edit(Hospitalization $hospitalization)
     {
-        $pets = Pet::with('tutors')->where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->where('is_active', true)->orderBy('name')->get();
-        return view('hospitalizations.edit', compact('hospitalization', 'pets', 'veterinarians'));
+        $hospitalization->load(['pet', 'tutor', 'vet']);
+        return view('hospitalizations.edit', compact('hospitalization'));
     }
 
     public function update(Request $request, Hospitalization $hospitalization)
     {
         $validated = $request->validate([
-            'pet_id' => 'sometimes|required|exists:pets,id',
-            'vet_id' => 'sometimes|required|exists:users,id',
-            'appointment_id' => 'nullable|exists:appointments,id',
-            'admission_date' => 'sometimes|required|date',
-            'admission_time' => 'nullable',
-            'admission_reason' => 'sometimes|required|string',
-            'initial_diagnosis' => 'nullable|string',
-            'department' => 'nullable|string|max:100',
             'bed' => 'nullable|string|max:50',
-            'is_emergency' => 'boolean',
             'status' => 'sometimes|required|string|max:50',
             'discharged_at' => 'nullable|date',
             'discharge_summary' => 'nullable|string',
             'discharge_instructions' => 'nullable|string',
         ]);
-
-        $validated['is_emergency'] = $request->boolean('is_emergency');
-        $validated['tutor_id'] = Pet::findOrFail($validated['pet_id'] ?? $hospitalization->pet_id)->tutors()->first()?->id;
 
         $hospitalization->update($validated);
 
