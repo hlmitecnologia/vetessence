@@ -13,13 +13,8 @@ class VetAvailabilityService
 {
     public function getAvailableVets(string $date)
     {
-        $vetRole = Role::where('slug', 'veterinario')->first();
-        if (!$vetRole) {
-            return collect();
-        }
-
-        $vets = User::where('role_id', $vetRole->id)
-            ->where('is_active', true)
+        $vets = User::where('is_active', true)
+            ->where(fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->orWhere('is_veterinarian', true))
             ->orderBy('name')
             ->get();
 

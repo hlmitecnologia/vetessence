@@ -141,8 +141,9 @@ class HealthCertificateController extends Controller
 
     protected function getVeterinarians()
     {
-        $vetRole = Role::where('slug', 'veterinario')->first();
-        if (!$vetRole) return collect();
-        return User::where('role_id', $vetRole->id)->where('is_active', true)->orderBy('name')->get();
+        return User::where('is_active', true)
+            ->where(fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->orWhere('is_veterinarian', true))
+            ->orderBy('name')
+            ->get();
     }
 }

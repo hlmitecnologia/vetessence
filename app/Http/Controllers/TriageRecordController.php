@@ -35,8 +35,7 @@ class TriageRecordController extends Controller
     public function create()
     {
         $pets = Pet::with('tutors')->orderBy('name')->get();
-        $vetRole = Role::where('slug', 'veterinario')->first();
-        $veterinarians = $vetRole ? User::where('role_id', $vetRole->id)->where('is_active', true)->orderBy('name')->get() : collect();
+        $veterinarians = User::where('is_active', true)->where(fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->orWhere('is_veterinarian', true))->orderBy('name')->get();
         return view('triage.create', compact('pets', 'veterinarians'));
     }
 
@@ -83,8 +82,7 @@ class TriageRecordController extends Controller
     public function edit(TriageRecord $triage)
     {
         $pets = Pet::with('tutors')->orderBy('name')->get();
-        $vetRole = Role::where('slug', 'veterinario')->first();
-        $veterinarians = $vetRole ? User::where('role_id', $vetRole->id)->where('is_active', true)->orderBy('name')->get() : collect();
+        $veterinarians = User::where('is_active', true)->where(fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->orWhere('is_veterinarian', true))->orderBy('name')->get();
         return view('triage.edit', compact('triage', 'pets', 'veterinarians'));
     }
 

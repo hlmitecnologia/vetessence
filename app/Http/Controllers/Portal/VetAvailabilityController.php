@@ -48,9 +48,8 @@ class VetAvailabilityController extends Controller
     {
         $request->validate(['vet_id' => 'required|exists:users,id']);
 
-        $vetRole = Role::where('slug', 'veterinario')->first();
         $vet = User::find($request->vet_id);
-        if (!$vet || !$vetRole || $vet->role_id !== $vetRole->id) {
+        if (!$vet || !$vet->where('is_active', true)->where(fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->orWhere('is_veterinarian', true))->exists()) {
             return response()->json(['dates' => []]);
         }
 

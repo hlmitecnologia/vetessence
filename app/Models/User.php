@@ -17,6 +17,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name', 'email', 'password', 'role_id', 'avatar', 'phone', 'is_active',
         'branch_id', 'department_id', 'position_id', 'hire_date', 'contract_type',
+        'is_veterinarian',
         'crmv', 'emergency_contact', 'emergency_phone',
     ];
 
@@ -27,6 +28,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_active' => 'boolean',
+        'is_veterinarian' => 'boolean',
         'hire_date' => 'date',
     ];
 

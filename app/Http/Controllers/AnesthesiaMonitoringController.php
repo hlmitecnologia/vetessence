@@ -36,7 +36,7 @@ class AnesthesiaMonitoringController extends Controller
     public function create()
     {
         $surgeries = Surgery::with('pet')->orderBy('scheduled_date', 'desc')->get();
-        $veterinarians = User::whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::where('is_active', true)->where(fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->orWhere('is_veterinarian', true))->orderBy('name')->get();
         return view('anesthesia-monitorings.create', compact('surgeries', 'veterinarians'));
     }
 

@@ -72,6 +72,14 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="custom-control custom-switch mt-4">
+                        <input type="checkbox" wire:model="is_veterinarian" class="custom-control-input" id="userIsVeterinarian">
+                        <label class="custom-control-label" for="userIsVeterinarian">Veterinário</label>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="text-right">

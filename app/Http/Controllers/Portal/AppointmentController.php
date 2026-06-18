@@ -39,14 +39,10 @@ class AppointmentController extends Controller
         $tutor = Auth::guard('tutor')->user();
         $pets = $tutor->pets;
 
-        $vetRole = Role::where('slug', 'veterinario')->first();
-        $vets = collect();
-        if ($vetRole) {
-            $vets = User::where('role_id', $vetRole->id)
-                ->where('is_active', true)
-                ->orderBy('name')
-                ->get();
-        }
+        $vets = User::where('is_active', true)
+            ->where(fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->orWhere('is_veterinarian', true))
+            ->orderBy('name')
+            ->get();
 
         return view('portal.appointments.create', compact('pets', 'vets'));
     }

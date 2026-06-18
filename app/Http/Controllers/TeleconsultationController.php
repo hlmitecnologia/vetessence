@@ -30,7 +30,7 @@ class TeleconsultationController extends Controller
     public function create()
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $vets = User::role('veterinario')->where('is_active', true)->orderBy('name')->get();
+        $vets = User::where('is_active', true)->where(fn($q) => $q->role('veterinario')->orWhere('is_veterinarian', true))->orderBy('name')->get();
         return view('teleconsultations.create', compact('pets', 'vets'));
     }
 
@@ -69,7 +69,7 @@ class TeleconsultationController extends Controller
     public function edit(Teleconsultation $teleconsultation)
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $vets = User::role('veterinario')->where('is_active', true)->orderBy('name')->get();
+        $vets = User::where('is_active', true)->where(fn($q) => $q->role('veterinario')->orWhere('is_veterinarian', true))->orderBy('name')->get();
         return view('teleconsultations.edit', compact('teleconsultation', 'pets', 'vets'));
     }
 

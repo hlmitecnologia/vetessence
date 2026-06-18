@@ -51,6 +51,7 @@ class UserSeeder extends Seeder
                     'role_id' => $user['role']->id,
                     'branch_id' => $defaultBranchId,
                     'is_active' => true,
+                    'is_veterinarian' => $user['role']?->slug === 'super-admin',
                 ]
             );
 

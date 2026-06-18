@@ -20,6 +20,7 @@ class UserForm extends Component
     public $role_id = '';
     public $branch_id = '';
     public $is_active = true;
+    public $is_veterinarian = false;
 
     public $roles = [];
     public $branches = [];
@@ -32,6 +33,7 @@ class UserForm extends Component
         'role_id' => 'nullable|exists:roles,id',
         'branch_id' => 'nullable|exists:branches,id',
         'is_active' => 'boolean',
+        'is_veterinarian' => 'boolean',
     ];
 
     public function mount($id = null)
@@ -52,6 +54,7 @@ class UserForm extends Component
         $this->role_id = (string) ($user->role_id ?? '');
         $this->branch_id = (string) ($user->branch_id ?? '');
         $this->is_active = $user->is_active;
+        $this->is_veterinarian = $user->is_veterinarian;
         $this->password = '';
         $this->password_confirmation = '';
         $this->roles = Role::orderBy('name')->get();
@@ -70,6 +73,7 @@ class UserForm extends Component
         $this->role_id = '';
         $this->branch_id = '';
         $this->is_active = true;
+        $this->is_veterinarian = false;
         $this->roles = Role::orderBy('name')->get();
         $this->branches = Branch::orderBy('name')->get();
         $this->resetValidation();
@@ -84,6 +88,7 @@ class UserForm extends Component
             'role_id' => 'nullable|exists:roles,id',
             'branch_id' => 'nullable|exists:branches,id',
             'is_active' => 'boolean',
+            'is_veterinarian' => 'boolean',
         ];
 
         if ($this->userId) {
@@ -98,6 +103,7 @@ class UserForm extends Component
 
         $this->phone = $this->phone ?: null;
         $this->is_active = (bool) $this->is_active;
+        $this->is_veterinarian = (bool) $this->is_veterinarian;
 
         $data = [
             'name' => $this->name,
@@ -105,6 +111,7 @@ class UserForm extends Component
             'phone' => $this->phone,
             'branch_id' => $this->branch_id ?: null,
             'is_active' => $this->is_active,
+            'is_veterinarian' => $this->is_veterinarian,
         ];
 
         if ($this->password) {

@@ -46,7 +46,7 @@ class HospitalizationController extends Controller
     public function create()
     {
         $pets = Pet::with('tutors')->where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::where('is_active', true)->where(fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->orWhere('is_veterinarian', true))->orderBy('name')->get();
         return view('hospitalizations.create', compact('pets', 'veterinarians'));
     }
 

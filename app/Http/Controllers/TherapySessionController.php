@@ -23,9 +23,7 @@ class TherapySessionController extends Controller
     public function create()
     {
         $pets = Pet::orderBy('name')->get();
-        $therapists = User::whereHas('roles', fn($q) => $q->where('name', 'veterinario'))
-            ->orWhereHas('roles', fn($q) => $q->where('name', 'fisioterapeuta'))
-            ->orderBy('name')->get();
+        $therapists = User::where(fn($q) => $q->whereHas('roles', fn($q) => $q->where('name', 'veterinario'))->orWhere('is_veterinarian', true))->orWhereHas('roles', fn($q) => $q->where('name', 'fisioterapeuta'))->orderBy('name')->get();
         return view('therapy-sessions.create', compact('pets', 'therapists'));
     }
 
@@ -57,9 +55,7 @@ class TherapySessionController extends Controller
     public function edit(TherapySession $therapySession)
     {
         $pets = Pet::orderBy('name')->get();
-        $therapists = User::whereHas('roles', fn($q) => $q->where('name', 'veterinario'))
-            ->orWhereHas('roles', fn($q) => $q->where('name', 'fisioterapeuta'))
-            ->orderBy('name')->get();
+        $therapists = User::where(fn($q) => $q->whereHas('roles', fn($q) => $q->where('name', 'veterinario'))->orWhere('is_veterinarian', true))->orWhereHas('roles', fn($q) => $q->where('name', 'fisioterapeuta'))->orderBy('name')->get();
         return view('therapy-sessions.edit', compact('therapySession', 'pets', 'therapists'));
     }
 
