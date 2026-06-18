@@ -74,7 +74,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group">
                         <label for="client_name">Nome do Tutor (para assinatura)</label>
                         <input type="text" name="client_name" id="client_name" class="form-control @error('client_name') is-invalid @enderror" value="{{ old('client_name') }}">
@@ -83,7 +83,7 @@
                         @enderror
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group">
                         <label for="client_document">CPF/RG do Tutor</label>
                         <input type="text" name="client_document" id="client_document" class="form-control @error('client_document') is-invalid @enderror" value="{{ old('client_document') }}">
@@ -92,6 +92,8 @@
                         @enderror
                     </div>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="witness_id">Testemunha</label>

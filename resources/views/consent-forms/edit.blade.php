@@ -20,7 +20,7 @@
                         <label for="pet_id">Pet *</label>
                         <x-tom-select name="pet_id" id="pet_id" :value="old('pet_id', $consentForm->pet_id)" required>
                             @foreach($pets as $pet)
-                                <option value="{{ $pet->id }}" {{ old('pet_id', $consentForm->pet_id) == $pet->id ? 'selected' : '' }}>{{ $pet->name }}</option>
+                                <option value="{{ $pet->id }}" {{ old('pet_id', $consentForm->pet_id) == $pet->id ? 'selected' : '' }}>{{ $pet->name }} - {{ $pet->tutors->first()->name ?? '' }}</option>
                             @endforeach
                         </x-tom-select>
                         @error('pet_id')
@@ -29,21 +29,6 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="tutor_id">Tutor *</label>
-                        <x-tom-select name="tutor_id" id="tutor_id" :value="old('tutor_id', $consentForm->tutor_id)" required>
-                            @foreach($tutors as $tutor)
-                                <option value="{{ $tutor->id }}" {{ old('tutor_id', $consentForm->tutor_id) == $tutor->id ? 'selected' : '' }}>{{ $tutor->name }}</option>
-                            @endforeach
-                        </x-tom-select>
-                        @error('tutor_id')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
                     <div class="form-group">
                         <label for="consent_template_id">Modelo</label>
                         <x-tom-select name="consent_template_id" id="consent_template_id" :value="old('consent_template_id', $consentForm->consent_template_id)">
