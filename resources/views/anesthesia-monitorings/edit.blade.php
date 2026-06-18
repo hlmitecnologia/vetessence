@@ -10,7 +10,7 @@
             </a>
         </div>
     </div>
-    <form action="{{ route('anesthesia-monitorings.update', $monitoring) }}" method="POST">
+    <form action="{{ route('anesthesia-monitorings.update', $anesthesiaMonitoring) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="card-body">
@@ -18,19 +18,19 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Pet</label>
-                        <input type="text" class="form-control" value="{{ $monitoring->pet->name ?? '-' }}" readonly>
+                        <input type="text" class="form-control" value="{{ $anesthesiaMonitoring->pet->name ?? '-' }}" readonly>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Cirurgia</label>
-                        <input type="text" class="form-control" value="{{ $monitoring->surgery->surgery_type ?? '-' }}" readonly>
+                        <input type="text" class="form-control" value="{{ $anesthesiaMonitoring->surgery->surgery_type ?? '-' }}" readonly>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="anesthetist">Anestesista</label>
-                        <input type="text" name="anesthetist" id="anesthetist" class="form-control" value="{{ old('anesthetist', $monitoring->anesthetist) }}">
+                        <input type="text" name="anesthetist" id="anesthetist" class="form-control" value="{{ old('anesthetist', $anesthesiaMonitoring->anesthetist) }}">
                     </div>
                 </div>
             </div>
@@ -39,14 +39,14 @@
                     <div class="form-group">
                         <label for="monitoring_start">Início</label>
                         <input type="datetime-local" name="monitoring_start" id="monitoring_start" class="form-control"
-                               value="{{ old('monitoring_start', $monitoring->monitoring_start ? $monitoring->monitoring_start->format('Y-m-d\TH:i') : '') }}">
+                               value="{{ old('monitoring_start', $anesthesiaMonitoring->monitoring_start ? $anesthesiaMonitoring->monitoring_start->format('Y-m-d\TH:i') : '') }}">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="monitoring_end">Término</label>
                         <input type="datetime-local" name="monitoring_end" id="monitoring_end" class="form-control"
-                               value="{{ old('monitoring_end', $monitoring->monitoring_end ? $monitoring->monitoring_end->format('Y-m-d\TH:i') : '') }}">
+                               value="{{ old('monitoring_end', $anesthesiaMonitoring->monitoring_end ? $anesthesiaMonitoring->monitoring_end->format('Y-m-d\TH:i') : '') }}">
                     </div>
                 </div>
             </div>
@@ -57,13 +57,13 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="anesthetic_protocol">Protocolo</label>
-                        <textarea name="anesthetic_protocol" id="anesthetic_protocol" rows="2" class="wysiwyg form-control">{{ old('anesthetic_protocol', $monitoring->anesthetic_protocol) }}</textarea>
+                        <textarea name="anesthetic_protocol" id="anesthetic_protocol" rows="2" class="wysiwyg form-control">{{ old('anesthetic_protocol', $anesthesiaMonitoring->anesthetic_protocol) }}</textarea>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="premedication">Pré-medicação</label>
-                        <textarea name="premedication" id="premedication" rows="2" class="wysiwyg form-control">{{ old('premedication', $monitoring->premedication) }}</textarea>
+                        <textarea name="premedication" id="premedication" rows="2" class="wysiwyg form-control">{{ old('premedication', $anesthesiaMonitoring->premedication) }}</textarea>
                     </div>
                 </div>
             </div>
@@ -71,13 +71,13 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="induction_agent">Agente Indutor</label>
-                        <input type="text" name="induction_agent" id="induction_agent" class="form-control" value="{{ old('induction_agent', $monitoring->induction_agent) }}">
+                        <input type="text" name="induction_agent" id="induction_agent" class="form-control" value="{{ old('induction_agent', $anesthesiaMonitoring->induction_agent) }}">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="maintenance_agent">Agente de Manutenção</label>
-                        <input type="text" name="maintenance_agent" id="maintenance_agent" class="form-control" value="{{ old('maintenance_agent', $monitoring->maintenance_agent) }}">
+                        <input type="text" name="maintenance_agent" id="maintenance_agent" class="form-control" value="{{ old('maintenance_agent', $anesthesiaMonitoring->maintenance_agent) }}">
                     </div>
                 </div>
             </div>
@@ -85,19 +85,19 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="iv_access">Acesso IV</label>
-                        <input type="text" name="iv_access" id="iv_access" class="form-control" value="{{ old('iv_access', $monitoring->iv_access) }}">
+                        <input type="text" name="iv_access" id="iv_access" class="form-control" value="{{ old('iv_access', $anesthesiaMonitoring->iv_access) }}">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="intubation_type">Intubação</label>
-                        <input type="text" name="intubation_type" id="intubation_type" class="form-control" value="{{ old('intubation_type', $monitoring->intubation_type) }}">
+                        <input type="text" name="intubation_type" id="intubation_type" class="form-control" value="{{ old('intubation_type', $anesthesiaMonitoring->intubation_type) }}">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="fluid_type">Tipo de Fluido</label>
-                        <input type="text" name="fluid_type" id="fluid_type" class="form-control" value="{{ old('fluid_type', $monitoring->fluid_type) }}">
+                        <input type="text" name="fluid_type" id="fluid_type" class="form-control" value="{{ old('fluid_type', $anesthesiaMonitoring->fluid_type) }}">
                     </div>
                 </div>
             </div>
@@ -105,13 +105,13 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="fluid_rate">Taxa de Fluido (ml/kg/h)</label>
-                        <input type="number" step="0.1" name="fluid_rate" id="fluid_rate" class="form-control" value="{{ old('fluid_rate', $monitoring->fluid_rate) }}">
+                        <input type="number" step="0.1" name="fluid_rate" id="fluid_rate" class="form-control" value="{{ old('fluid_rate', $anesthesiaMonitoring->fluid_rate) }}">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="observations">Observações</label>
-                        <textarea name="observations" id="observations" rows="2" class="wysiwyg form-control">{{ old('observations', $monitoring->observations) }}</textarea>
+                        <textarea name="observations" id="observations" rows="2" class="wysiwyg form-control">{{ old('observations', $anesthesiaMonitoring->observations) }}</textarea>
                     </div>
                 </div>
             </div>
