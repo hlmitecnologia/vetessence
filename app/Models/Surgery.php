@@ -13,7 +13,7 @@ class Surgery extends Model
 
     protected $fillable = [
         'pet_id', 'vet_id', 'medical_record_id', 'scheduled_date',
-        'surgery_type', 'status', 'anesthesia_type', 'diagnosis',
+        'surgery_type', 'status', 'anesthesia_type', 'protocol', 'diagnosis',
         'post_op_notes', 'surgery_duration', 'surgery_notes', 'branch_id'
     ];
 

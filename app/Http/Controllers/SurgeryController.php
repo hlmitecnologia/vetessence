@@ -52,7 +52,7 @@ class SurgeryController extends Controller
 
         $validated['diagnosis'] = $validated['pre_op_diagnosis'];
         $validated['surgery_notes'] = $validated['notes'];
-        unset($validated['pre_op_diagnosis'], $validated['protocol'], $validated['notes']);
+        unset($validated['pre_op_diagnosis'], $validated['notes']);
 
         Surgery::create($validated);
 
@@ -84,13 +84,12 @@ class SurgeryController extends Controller
             'pre_op_diagnosis' => 'nullable|string',
             'post_op_notes' => 'nullable|string',
             'surgery_duration' => 'nullable|integer',
-            'complications' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
 
         $validated['diagnosis'] = $validated['pre_op_diagnosis'];
         $validated['surgery_notes'] = $validated['notes'];
-        unset($validated['pre_op_diagnosis'], $validated['protocol'], $validated['complications'], $validated['notes']);
+        unset($validated['pre_op_diagnosis'], $validated['notes']);
 
         $surgery->update($validated);
 

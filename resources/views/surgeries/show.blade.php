@@ -36,6 +36,11 @@
                 <small class="text-muted text-uppercase">Diagnóstico Pré-op</small>
                 <p>{!! $surgery->diagnosis !!}</p>
                 @endif
+                @if($surgery->protocol)
+                <hr>
+                <small class="text-muted text-uppercase">Protocolo</small>
+                <p>{!! $surgery->protocol !!}</p>
+                @endif
                 @if($surgery->post_op_notes)
                 <small class="text-muted text-uppercase">Pós-operatório</small>
                 <p class="bg-light p-3 rounded">{!! $surgery->post_op_notes !!}</p>
