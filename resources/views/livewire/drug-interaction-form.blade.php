@@ -4,14 +4,14 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Medicamento A *</label>
-                    <input type="text" wire:model="drug_a" class="form-control @error('drug_a') is-invalid @enderror" required>
+                    <input type="text" wire:model="drug_a" class="form-control @error('drug_a') is-invalid @enderror">
                     @error('drug_a') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Medicamento B *</label>
-                    <input type="text" wire:model="drug_b" class="form-control @error('drug_b') is-invalid @enderror" required>
+                    <input type="text" wire:model="drug_b" class="form-control @error('drug_b') is-invalid @enderror">
                     @error('drug_b') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
             </div>
@@ -19,7 +19,7 @@
 
         <div class="form-group">
             <label>Severidade *</label>
-            <select wire:model="severity" class="form-control @error('severity') is-invalid @enderror" required>
+            <select wire:model="severity" class="form-control @error('severity') is-invalid @enderror">
                 <option value="contraindicated">Contraindicada</option>
                 <option value="caution">Precaução</option>
                 <option value="minor">Menor</option>
@@ -29,7 +29,7 @@
 
         <div class="form-group">
             <label>Descrição *</label>
-            <textarea wire:model="description" class="wysiwyg form-control @error('description') is-invalid @enderror" rows="3" required></textarea>
+            <textarea wire:model="description" class="wysiwyg form-control @error('description') is-invalid @enderror" rows="3"></textarea>
             @error('description') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 

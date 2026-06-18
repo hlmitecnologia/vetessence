@@ -90,7 +90,8 @@
                     @csrf
                     <div class="form-group">
                         <label>Motivo da rejeição</label>
-                        <textarea name="reason" rows="3" class="wysiwyg form-control" required></textarea>
+                        <textarea name="reason" rows="3" class="wysiwyg form-control @error('reason') is-invalid @enderror"></textarea>
+                        @error('reason')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                     <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i> Rejeitar Solicitação</button>
                 </form>

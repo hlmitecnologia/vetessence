@@ -102,7 +102,7 @@
             </div>
             <div class="form-group">
                 <label for="admission_reason">Motivo da Internação *</label>
-                <textarea name="admission_reason" id="admission_reason" rows="3" class="wysiwyg form-control @error('admission_reason') is-invalid @enderror" required>{{ old('admission_reason') }}</textarea>
+                <textarea name="admission_reason" id="admission_reason" rows="3" class="wysiwyg form-control @error('admission_reason') is-invalid @enderror">{{ old('admission_reason') }}</textarea>
                 @error('admission_reason')
                     <span class="invalid-feedback">{{ $message }}</span>
                 @enderror

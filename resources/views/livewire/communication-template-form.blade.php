@@ -2,13 +2,13 @@
     <form wire:submit.prevent="save">
         <div class="form-group">
             <label>Nome *</label>
-            <input type="text" wire:model="name" class="form-control @error('name') is-invalid @enderror" required>
+            <input type="text" wire:model="name" class="form-control @error('name') is-invalid @enderror">
             @error('name') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
         <div class="form-group">
             <label>Tipo *</label>
-            <select wire:model="type" class="form-control @error('type') is-invalid @enderror" required>
+            <select wire:model="type" class="form-control @error('type') is-invalid @enderror">
                 <option value="">Selecione</option>
                 <option value="reminder">Lembrete</option>
                 <option value="recall">Rechamada</option>
@@ -21,7 +21,7 @@
 
         <div class="form-group">
             <label>Canal *</label>
-            <select wire:model="channel" class="form-control @error('channel') is-invalid @enderror" required>
+            <select wire:model="channel" class="form-control @error('channel') is-invalid @enderror">
                 <option value="">Selecione</option>
                 <option value="whatsapp">WhatsApp</option>
                 <option value="email">E-mail</option>
@@ -38,7 +38,7 @@
 
         <div class="form-group">
             <label>Conteúdo *</label>
-            <textarea wire:model="content" class="wysiwyg form-control @error('content') is-invalid @enderror" rows="5" required></textarea>
+            <textarea wire:model="content" class="wysiwyg form-control @error('content') is-invalid @enderror" rows="5"></textarea>
             @error('content') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 

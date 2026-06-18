@@ -2,7 +2,7 @@
     <form wire:submit.prevent="save">
         <div class="form-group">
             <label>Título *</label>
-            <input type="text" wire:model="title" class="form-control @error('title') is-invalid @enderror" required>
+            <input type="text" wire:model="title" class="form-control @error('title') is-invalid @enderror">
             @error('title') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
@@ -16,7 +16,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Gravidade *</label>
-                    <select wire:model="severity" class="form-control @error('severity') is-invalid @enderror" required>
+                    <select wire:model="severity" class="form-control @error('severity') is-invalid @enderror">
                         <option value="stable">Estável</option>
                         <option value="urgent">Urgente</option>
                         <option value="critical">Crítico</option>
@@ -39,7 +39,7 @@
 
         <div class="form-group">
             <label>Passos do Procedimento *</label>
-            <textarea wire:model="procedure_steps" class="wysiwyg form-control @error('procedure_steps') is-invalid @enderror" rows="4" required></textarea>
+            <textarea wire:model="procedure_steps" class="wysiwyg form-control @error('procedure_steps') is-invalid @enderror" rows="4"></textarea>
             @error('procedure_steps') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
