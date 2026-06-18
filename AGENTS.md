@@ -11,7 +11,10 @@
 - **WYSIWYG rendering**: fixed `{{ }}` → `{!! !!}` in 6 show views
 - **`is_veterinarian` field**: migration, model fillable/casts, UserForm checkbox, UserFactory, 21+ query updates to include `orWhere('is_veterinarian', true)` in vet listings
 - **Pet edit form**: tutor field read-only in edit mode
-- **Fixed pre-existing failures**: PetController views created, LabOrder test includes `result_date`, HospitalizationCycleTest aligns with controller defaults, PatientTimelineController fixes (`procedure`→`surgery_type`, `reason`→`admission_reason`, `name`→`type`)
+- **Fixed pre-existing failures**: PetController/PetDeathRecord views created, LabOrder/HospitalizationCycle/PatientTimeline fixes
+- **WYSIWYG validation feedback**: JS sync of is-invalid → TinyMCE red border; @error spans on all 78 wysiwyg fields
+- **Removed `required` from wysiwyg textareas** (fixes browser HTML5 validation error on hidden fields)
+- **Timezone**: config/app.php changed from UTC → America/Sao_Paulo so `date('H:i')`, `Carbon::now()` reflect Brazil time
 
 ### Known Issues
 - `AutoInvoiceTest` pre‑existing order‑dependent failure (passes in isolation)
