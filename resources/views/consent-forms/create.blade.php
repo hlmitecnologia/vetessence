@@ -29,19 +29,6 @@
                         @enderror
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="tutor_id">Tutor *</label>
-                        <x-tom-select name="tutor_id" id="tutor_id" :value="old('tutor_id')" required>
-                            @foreach($tutors as $tutor)
-                                <option value="{{ $tutor->id }}" {{ old('tutor_id') == $tutor->id ? 'selected' : '' }}>{{ $tutor->name }}</option>
-                            @endforeach
-                        </x-tom-select>
-                        @error('tutor_id')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
