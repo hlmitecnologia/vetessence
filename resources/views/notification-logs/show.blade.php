@@ -56,7 +56,7 @@
             <div class="col-md-12">
                 <strong>Mensagem:</strong>
                 <div class="p-3 bg-light rounded">
-                    {{ $notificationLog->message }}
+                    {!! $notificationLog->message !!}
                 </div>
             </div>
         </div>

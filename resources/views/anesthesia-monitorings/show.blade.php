@@ -44,7 +44,7 @@
                 <div class="row mt-3">
                     <div class="col-md-4">
                         <strong>Protocolo Anestésico:</strong>
-                        <p>{{ $monitoring->anesthetic_protocol ?? '-' }}</p>
+                        <p>{!! $monitoring->anesthetic_protocol ?? '-' !!}</p>
                     </div>
                     <div class="col-md-4">
                         <strong>Pré-medicação:</strong>

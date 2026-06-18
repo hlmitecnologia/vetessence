@@ -10,7 +10,7 @@
                 <p><strong>Conta:</strong> {{ $bankAccount->account }}</p>
                 <p><strong>Tipo:</strong> {{ $bankAccount->account_type === 'checking' ? 'Corrente' : 'Poupança' }}</p>
                 <p><strong>Unidade:</strong> {{ $bankAccount->branch->name ?? '-' }}</p>
-                <p><strong>Descrição:</strong> {{ $bankAccount->description ?? '-' }}</p>
+                <p><strong>Descrição:</strong> {!! $bankAccount->description ?? '-' !!}</p>
                 <a href="{{ route('bank-accounts.edit', $bankAccount) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Editar</a>
                 <a href="{{ route('bank-reconciliation.suggest', $bankAccount) }}" class="btn btn-success"><i class="fas fa-handshake"></i> Conciliar</a>
             </div>

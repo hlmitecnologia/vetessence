@@ -92,7 +92,7 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title"><i class="fas fa-dog mr-2"></i>Sintomas em Animais</h5>
-                        <p>{{ $zoonoticDisease->animal_symptoms ?? 'Informação não disponível.' }}</p>
+                        <p>{!! $zoonoticDisease->animal_symptoms ?? 'Informação não disponível.' !!}</p>
                     </div>
                 </div>
             </div>
@@ -100,7 +100,7 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title"><i class="fas fa-user mr-2"></i>Sintomas em Humanos</h5>
-                        <p>{{ $zoonoticDisease->human_symptoms ?? 'Informação não disponível.' }}</p>
+                        <p>{!! $zoonoticDisease->human_symptoms ?? 'Informação não disponível.' !!}</p>
                     </div>
                 </div>
             </div>
@@ -111,7 +111,7 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title"><i class="fas fa-shield-alt mr-2"></i>Prevenção</h5>
-                        <p>{{ $zoonoticDisease->prevention ?? 'Informação não disponível.' }}</p>
+                        <p>{!! $zoonoticDisease->prevention ?? 'Informação não disponível.' !!}</p>
                     </div>
                 </div>
             </div>
@@ -119,7 +119,7 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title"><i class="fas fa-ambulance mr-2"></i>Tratamento</h5>
-                        <p>{{ $zoonoticDisease->treatment ?? 'Informação não disponível.' }}</p>
+                        <p>{!! $zoonoticDisease->treatment ?? 'Informação não disponível.' !!}</p>
                     </div>
                 </div>
             </div>

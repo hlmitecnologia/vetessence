@@ -51,7 +51,7 @@
 
                     <div class="mb-4">
                         <h6>Motivo do Encaminhamento</h6>
-                        <p>{{ $referral->reason ?? 'Não informado' }}</p>
+                        <p>{!! $referral->reason ?? 'Não informado' !!}</p>
                     </div>
 
                     @if($referral->clinical_history)
@@ -64,7 +64,7 @@
                     @if($referral->requested_procedures)
                     <div class="mb-4">
                         <h6>Procedimentos Solicitados</h6>
-                        <p>{{ $referral->requested_procedures }}</p>
+                        <p>{!! $referral->requested_procedures !!}</p>
                     </div>
                     @endif
 
@@ -90,7 +90,7 @@
                     <hr>
                     <div class="mt-3 p-3 bg-success-light rounded">
                         <h6>Resposta do Destino</h6>
-                        <p>{{ $referral->response_notes }}</p>
+                        <p>{!! $referral->response_notes !!}</p>
                     </div>
                     @endif
 
