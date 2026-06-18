@@ -136,6 +136,7 @@ class TutorForm extends Component
     {
         $this->state_id = $this->state_id ?: null;
         $this->city_id = $this->city_id ?: null;
+        $this->cpf = preg_replace('/[^0-9]/', '', $this->cpf ?? '');
 
         $id = $this->tutorId;
 
