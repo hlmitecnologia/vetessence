@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LaboratoryOrder;
 use App\Models\LaboratoryTest;
 use App\Models\Pet;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +36,7 @@ class LaboratoryOrderController extends Controller
     public function create()
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::role('veterinario')->where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->where('is_active', true)->orderBy('name')->get();
         return view('laboratory-orders.create', compact('pets', 'veterinarians'));
     }
 
