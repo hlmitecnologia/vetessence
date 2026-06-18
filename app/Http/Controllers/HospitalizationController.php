@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Hospitalization;
 use App\Models\Pet;
-use App\Models\Tutor;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -41,17 +40,15 @@ class HospitalizationController extends Controller
 
     public function create()
     {
-        $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $tutors = Tutor::orderBy('name')->get();
-        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
-        return view('hospitalizations.create', compact('pets', 'tutors', 'veterinarians'));
+        $pets = Pet::with('tutors')->where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->where('is_active', true)->orderBy('name')->get();
+        return view('hospitalizations.create', compact('pets', 'veterinarians'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'pet_id' => 'required|exists:pets,id',
-            'tutor_id' => 'required|exists:tutors,id',
             'vet_id' => 'required|exists:users,id',
             'appointment_id' => 'nullable|exists:appointments,id',
             'admission_date' => 'required|date',
@@ -61,10 +58,11 @@ class HospitalizationController extends Controller
             'department' => 'nullable|string|max:100',
             'bed' => 'nullable|string|max:50',
             'is_emergency' => 'boolean',
-            'status' => 'required|string|max:50',
         ]);
 
         $validated['is_emergency'] = $request->boolean('is_emergency');
+        $validated['status'] = 'active';
+        $validated['tutor_id'] = Pet::findOrFail($validated['pet_id'])->tutors()->first()?->id;
 
         Hospitalization::create($validated);
 
@@ -80,17 +78,15 @@ class HospitalizationController extends Controller
 
     public function edit(Hospitalization $hospitalization)
     {
-        $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $tutors = Tutor::orderBy('name')->get();
-        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
-        return view('hospitalizations.edit', compact('hospitalization', 'pets', 'tutors', 'veterinarians'));
+        $pets = Pet::with('tutors')->where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->where('is_active', true)->orderBy('name')->get();
+        return view('hospitalizations.edit', compact('hospitalization', 'pets', 'veterinarians'));
     }
 
     public function update(Request $request, Hospitalization $hospitalization)
     {
         $validated = $request->validate([
             'pet_id' => 'sometimes|required|exists:pets,id',
-            'tutor_id' => 'sometimes|required|exists:tutors,id',
             'vet_id' => 'sometimes|required|exists:users,id',
             'appointment_id' => 'nullable|exists:appointments,id',
             'admission_date' => 'sometimes|required|date',
@@ -107,6 +103,7 @@ class HospitalizationController extends Controller
         ]);
 
         $validated['is_emergency'] = $request->boolean('is_emergency');
+        $validated['tutor_id'] = Pet::findOrFail($validated['pet_id'] ?? $hospitalization->pet_id)->tutors()->first()?->id;
 
         $hospitalization->update($validated);
 

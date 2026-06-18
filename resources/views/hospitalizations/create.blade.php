@@ -31,23 +31,6 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="tutor_id">Tutor *</label>
-                        <x-tom-select name="tutor_id" id="tutor_id" :value="old('tutor_id')" required>
-                            @foreach($tutors as $tutor)
-                                <option value="{{ $tutor->id }}" {{ old('tutor_id') == $tutor->id ? 'selected' : '' }}>
-                                    {{ $tutor->name }}
-                                </option>
-                            @endforeach
-                        </x-tom-select>
-                        @error('tutor_id')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
                         <label for="vet_id">Veterinário Responsável *</label>
                         <x-tom-select name="vet_id" id="vet_id" :value="old('vet_id')" required>
                             @foreach($veterinarians as $vet)
@@ -59,7 +42,9 @@
                         @enderror
                     </div>
                 </div>
-                <div class="col-md-4">
+            </div>
+            <div class="row">
+                <div class="col-md-6">
                     <div class="form-group">
                         <label for="admission_date">Data de Admissão *</label>
                         <input type="date" name="admission_date" id="admission_date" class="form-control @error('admission_date') is-invalid @enderror" value="{{ old('admission_date', date('Y-m-d')) }}" required>
@@ -68,7 +53,7 @@
                         @enderror
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group">
                         <label for="admission_time">Horário</label>
                         <input type="time" name="admission_time" id="admission_time" class="form-control @error('admission_time') is-invalid @enderror" value="{{ old('admission_time', date('H:i')) }}">
