@@ -35,7 +35,7 @@ class LaboratoryOrderController extends Controller
     public function create()
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::role('veterinario')->where('is_active', true)->orderBy('name')->get();
         return view('laboratory-orders.create', compact('pets', 'veterinarians'));
     }
 
