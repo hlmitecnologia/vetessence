@@ -62,7 +62,7 @@
                         <label for="status">Status</label>
                         <select name="status" id="status" class="form-control">
                             @foreach(['requested' => 'Solicitado', 'collected' => 'Coletado', 'in_analysis' => 'Em Análise'] as $val => $label)
-                                <option value="{{ $val }}" {{ old('status') == $val ? 'selected' : '' }}>{{ $label }}</option>
+                                <option value="{{ $val }}" {{ old('status', 'requested') == $val ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
                         </select>
                     </div>
