@@ -17,6 +17,7 @@ class PetForm extends Component
     public $petId;
     public $name = '';
     public $tutor_id = '';
+    public $tutorName = '';
     public $species = '';
     public $breed = '';
     public $breed_default_id = '';
@@ -61,6 +62,7 @@ class PetForm extends Component
         $pet = Pet::with('tutors', 'breedRelation')->findOrFail($id);
         $this->name = $pet->name;
         $this->tutor_id = (string) ($pet->tutors->first()->id ?? '');
+        $this->tutorName = $pet->tutors->first()->name ?? '';
         $this->species = $pet->species;
         $this->breed = $pet->breed ?? '';
         $this->breed_default_id = (string) ($pet->breed_default_id ?? '');
@@ -91,6 +93,7 @@ class PetForm extends Component
         $this->petId = null;
         $this->name = '';
         $this->tutor_id = '';
+        $this->tutorName = '';
         $this->species = '';
         $this->breed = '';
         $this->breed_default_id = '';

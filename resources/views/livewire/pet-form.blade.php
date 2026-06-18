@@ -25,6 +25,10 @@
 
         <div class="form-group">
             <label>Tutor Responsável *</label>
+            @if($petId)
+                <input type="text" class="form-control-plaintext" value="{{ $tutorName }}" readonly>
+                <input type="hidden" wire:model="tutor_id">
+            @else
             <div class="input-group">
                 <x-tom-select wire="tutor_id" :value="$tutor_id" required>
                     @foreach($tutors as $tutor)
@@ -37,6 +41,7 @@
                     </button>
                 </div>
             </div>
+            @endif
             @error('tutor_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
 
