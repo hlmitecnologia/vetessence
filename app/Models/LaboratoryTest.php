@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LaboratoryTest extends Model
 {
-    use HasFactory, BranchScoped;
+    use HasFactory;
 
     protected $fillable = [
         'laboratory_order_id', 'test_name', 'test_code',
