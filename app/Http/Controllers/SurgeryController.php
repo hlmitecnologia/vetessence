@@ -87,8 +87,8 @@ class SurgeryController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        $validated['diagnosis'] = $validated['pre_op_diagnosis'];
-        $validated['surgery_notes'] = $validated['notes'];
+        $validated['diagnosis'] = $validated['pre_op_diagnosis'] ?? $surgery->diagnosis;
+        $validated['surgery_notes'] = $validated['notes'] ?? $surgery->surgery_notes;
         unset($validated['pre_op_diagnosis'], $validated['notes']);
 
         $surgery->update($validated);
