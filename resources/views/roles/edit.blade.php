@@ -13,7 +13,7 @@
                     </div>
                     <div class="form-group">
                         <label>Slug</label>
-                        <input type="text" value="{{ $role->slug }}" disabled class="form-control bg-light">
+                        <input type="text" name="slug" value="{{ $role->slug }}" readonly class="form-control bg-light">
                     </div>
                     <div class="form-group">
                         <label>Descrição</label>
