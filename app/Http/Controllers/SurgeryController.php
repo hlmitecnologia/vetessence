@@ -31,7 +31,7 @@ class SurgeryController extends Controller
 
     public function create(Request $request)
     {
-        $pets = Pet::where('is_active', true)->orderBy('name')->get();
+        $pets = Pet::with('tutors')->where('is_active', true)->orderBy('name')->get();
         $veterinarians = $this->getVeterinarians();
 
         return view('surgeries.create', compact('pets', 'veterinarians'));
@@ -67,7 +67,7 @@ class SurgeryController extends Controller
 
     public function edit(Surgery $surgery)
     {
-        $pets = Pet::where('is_active', true)->orderBy('name')->get();
+        $pets = Pet::with('tutors')->where('is_active', true)->orderBy('name')->get();
         $veterinarians = $this->getVeterinarians();
 
         return view('surgeries.edit', compact('surgery', 'pets', 'veterinarians'));
