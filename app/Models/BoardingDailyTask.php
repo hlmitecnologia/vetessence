@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BoardingDailyTask extends Model
 {
-    use HasFactory, BranchScoped;
+    use HasFactory;
 
     protected $fillable = [
         'boarding_id', 'task_date', 'task_name', 'description',
-        'is_completed', 'completed_at', 'completed_by', 'observations', 'branch_id',
+        'is_completed', 'completed_at', 'completed_by', 'observations',
     ];
 
     protected $casts = [

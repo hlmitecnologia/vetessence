@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AnesthesiaVitalSign extends Model
 {
-    use HasFactory, BranchScoped;
+    use HasFactory;
 
     protected $fillable = [
         'anesthesia_monitoring_id', 'recorded_at',
         'heart_rate', 'respiratory_rate', 'spo2', 'etco2',
         'blood_pressure_systolic', 'blood_pressure_diastolic', 'blood_pressure_mean',
-        'temperature', 'anesthetic_depth', 'vaporizer_setting', 'observations', 'branch_id',
+        'temperature', 'anesthetic_depth', 'vaporizer_setting', 'observations',
     ];
 
     protected $casts = ['recorded_at' => 'datetime'];

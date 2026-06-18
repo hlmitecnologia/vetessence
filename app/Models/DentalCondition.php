@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DentalCondition extends Model
 {
-    use HasFactory, BranchScoped;
+    use HasFactory;
 
-    protected $fillable = ['dental_chart_id', 'tooth_number', 'quadrant', 'condition', 'severity', 'notes', 'branch_id'];
+    protected $fillable = ['dental_chart_id', 'tooth_number', 'quadrant', 'condition', 'severity', 'notes'];
 
     public function dentalChart(): BelongsTo { return $this->belongsTo(DentalChart::class); }
 }
