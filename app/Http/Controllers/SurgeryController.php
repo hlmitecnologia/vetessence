@@ -50,6 +50,10 @@ class SurgeryController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        $validated['diagnosis'] = $validated['pre_op_diagnosis'];
+        $validated['surgery_notes'] = $validated['notes'];
+        unset($validated['pre_op_diagnosis'], $validated['protocol'], $validated['notes']);
+
         Surgery::create($validated);
 
         return redirect()->route('surgeries.index')->with('success', 'Cirurgia agendada!');
@@ -83,6 +87,10 @@ class SurgeryController extends Controller
             'complications' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
+
+        $validated['diagnosis'] = $validated['pre_op_diagnosis'];
+        $validated['surgery_notes'] = $validated['notes'];
+        unset($validated['pre_op_diagnosis'], $validated['protocol'], $validated['complications'], $validated['notes']);
 
         $surgery->update($validated);
 

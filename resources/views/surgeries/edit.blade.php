@@ -41,10 +41,6 @@
                         <label>Notas Pós-op</label>
                         <textarea name="post_op_notes" rows="2" class="wysiwyg form-control">{!! $surgery->post_op_notes !!}</textarea>
                     </div>
-                    <div class="form-group">
-                        <label>Complicações</label>
-                        <textarea name="complications" rows="2" class="wysiwyg form-control">{!! $surgery->complications !!}</textarea>
-                    </div>
                 </div>
                 <div class="card-footer text-right">
                     <a href="{{ route('surgeries.index') }}" class="btn btn-secondary">Cancelar</a>
