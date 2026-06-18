@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DentalChart;
 use App\Models\DentalCondition;
 use App\Models\Pet;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +34,7 @@ class DentalChartController extends Controller
     public function create()
     {
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->where('is_active', true)->orderBy('name')->get();
         return view('dental-charts.create', compact('pets', 'veterinarians'));
     }
 
@@ -89,7 +90,7 @@ class DentalChartController extends Controller
         $chart = $dentalChart;
         $chart->load('conditions');
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
-        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->where('is_active', true)->orderBy('name')->get();
         return view('dental-charts.edit', compact('chart', 'pets', 'veterinarians'));
     }
 
