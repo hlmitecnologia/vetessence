@@ -37,7 +37,7 @@
                     <div class="consent-content mb-4">
                         @if($consentForm->template)
                             <div class="p-3 bg-light rounded">
-                                {!! nl2br(e($consentForm->template->content)) !!}
+                                {!! $consentForm->template->content !!}
                             </div>
                         @endif
 
@@ -45,7 +45,7 @@
                             <div class="mt-3">
                                 <strong>Conteúdo Personalizado:</strong>
                                 <div class="p-3 bg-light rounded mt-1">
-                                    {!! nl2br(e($consentForm->signed_content)) !!}
+                                    {!! $consentForm->signed_content !!}
                                 </div>
                             </div>
                         @endif
