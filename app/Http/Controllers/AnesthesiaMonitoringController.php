@@ -31,7 +31,7 @@ class AnesthesiaMonitoringController extends Controller
     public function create()
     {
         $surgeries = Surgery::with('pet')->orderBy('scheduled_date', 'desc')->get();
-        $veterinarians = User::where('is_active', true)->orderBy('name')->get();
+        $veterinarians = User::whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->where('is_active', true)->orderBy('name')->get();
         return view('anesthesia-monitorings.create', compact('surgeries', 'veterinarians'));
     }
 
@@ -39,7 +39,6 @@ class AnesthesiaMonitoringController extends Controller
     {
         $validated = $request->validate([
             'surgery_id' => 'required|exists:surgeries,id',
-            'pet_id' => 'required|exists:pets,id',
             'vet_id' => 'required|exists:users,id',
             'anesthetist' => 'nullable|string|max:255',
             'anesthetic_protocol' => 'nullable|string',
@@ -49,36 +48,16 @@ class AnesthesiaMonitoringController extends Controller
             'iv_access' => 'nullable|string|max:100',
             'intubation_type' => 'nullable|string|max:100',
             'monitoring_start' => 'nullable|date',
-            'monitoring_end' => 'nullable|date|after:monitoring_start',
             'fluid_type' => 'nullable|string|max:100',
             'fluid_rate' => 'nullable|string|max:100',
             'observations' => 'nullable|string',
-            'vital_signs' => 'nullable|array',
-            'vital_signs.*.recorded_at' => 'required_with:vital_signs',
-            'vital_signs.*.heart_rate' => 'nullable|integer',
-            'vital_signs.*.respiratory_rate' => 'nullable|integer',
-            'vital_signs.*.spo2' => 'nullable|numeric|min:0|max:100',
-            'vital_signs.*.etco2' => 'nullable|numeric|min:0',
-            'vital_signs.*.blood_pressure_systolic' => 'nullable|integer',
-            'vital_signs.*.blood_pressure_diastolic' => 'nullable|integer',
-            'vital_signs.*.blood_pressure_mean' => 'nullable|integer',
-            'vital_signs.*.temperature' => 'nullable|numeric',
-            'vital_signs.*.anesthetic_depth' => 'nullable|string|max:50',
-            'vital_signs.*.vaporizer_setting' => 'nullable|string|max:50',
-            'vital_signs.*.observations' => 'nullable|string',
         ]);
+
+        $validated['pet_id'] = Surgery::findOrFail($validated['surgery_id'])->pet_id;
 
         DB::beginTransaction();
         try {
-            $vitalSigns = $validated['vital_signs'] ?? [];
-            unset($validated['vital_signs']);
-
             $monitoring = AnesthesiaMonitoring::create($validated);
-
-            foreach ($vitalSigns as $signData) {
-                $signData['anesthesia_monitoring_id'] = $monitoring->id;
-                AnesthesiaVitalSign::create($signData);
-            }
 
             DB::commit();
             return redirect()->route('anesthesia-monitorings.index')
