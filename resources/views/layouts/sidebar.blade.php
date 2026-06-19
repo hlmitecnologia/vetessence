@@ -44,7 +44,7 @@
             <span>Dashboard</span>
         </a>
 
-        @role('admin|recepcionista')
+        @role('admin|recepcionista|tecnico')
         <!-- Agenda -->
         <div x-data="{ open: false }">
             <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-gray-200 hover:bg-gray-800 rounded-lg transition">
@@ -73,7 +73,7 @@
         </div>
         @endrole
 
-        @role('admin|veterinario|recepcionista')
+        @role('admin|veterinario|recepcionista|tecnico')
         <!-- Cadastros -->
         <div x-data="{ open: false }">
             <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-gray-200 hover:bg-gray-800 rounded-lg transition">
@@ -84,7 +84,7 @@
                 <i class="fas fa-chevron-down text-xs transition-transform" :class="open ? 'rotate-180' : ''"></i>
             </button>
             <div x-show="open" class="pl-4 mt-1 space-y-1">
-                @role('admin|recepcionista')
+                @role('admin|recepcionista|tecnico')
                 <a href="{{ route('tutors.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-user-tie w-5 mr-2"></i> Tutores
                 </a>
@@ -104,7 +104,7 @@
         </div>
         @endrole
 
-        @role('admin|veterinario')
+        @role('admin|veterinario|tecnico')
         <!-- Clínico -->
         <div x-data="{ open: false }">
             <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-gray-200 hover:bg-gray-800 rounded-lg transition">
@@ -233,7 +233,7 @@
         </div>
         @endrole
 
-        @role('admin|veterinario|recepcionista')
+        @role('admin|veterinario|recepcionista|tecnico')
         <!-- Notas Internas -->
         <div x-data="{ open: false }">
             <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-gray-200 hover:bg-gray-800 rounded-lg transition">
