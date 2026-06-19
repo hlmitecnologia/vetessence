@@ -18,8 +18,8 @@ class Role extends Model
         return $this->hasMany(User::class, 'role_id');
     }
 
-    public function permissions(): BelongsToMany
+    public function spatiePermissions(): BelongsToMany
     {
-        return $this->belongsToMany(\App\Models\Permission::class, 'role_has_permissions');
+        return $this->belongsToMany(\Spatie\Permission\Models\Permission::class, 'role_has_permissions');
     }
 }
