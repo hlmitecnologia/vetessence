@@ -11,7 +11,7 @@ class TreatmentPlanController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:prontuarios');
+        $this->middleware('can:plano-tratamento');
     }
 
     public function index(Request $request)

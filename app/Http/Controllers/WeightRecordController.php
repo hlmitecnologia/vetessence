@@ -10,7 +10,7 @@ class WeightRecordController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:prontuarios');
+        $this->middleware('can:controle-peso');
     }
 
     public function index(Request $request)

@@ -14,7 +14,7 @@ class DentalChartController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:prontuarios');
+        $this->middleware('can:odontologia');
     }
 
     public function index(Request $request)

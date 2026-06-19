@@ -13,7 +13,7 @@ class ConsentFormController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:prontuarios');
+        $this->middleware('can:termo-consentimento');
     }
 
     public function index(Request $request)

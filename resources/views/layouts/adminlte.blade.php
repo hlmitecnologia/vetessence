@@ -187,7 +187,7 @@
                         @endif
 
                         <!-- ATENDIMENTO -->
-                        @if(Gate::allows('atendimentos') || Gate::allows('prontuarios') || Gate::allows('vacinas') || Gate::allows('exames') || Gate::allows('cirurgias') || Gate::allows('prescricoes') || Gate::allows('hospitalizacao') || Gate::allows('laboratorio') || Gate::allows('imagem') || Gate::allows('referral') || Gate::allows('lembrete-vacinas') || Gate::allows('protocolo-vacinas') || Gate::allows('parasitario') || Gate::allows('certificado-sanitario') || Gate::allows('modelo-laudo') || Gate::allows('interacao-medicamentosa') || Gate::allows('hospedagem') || Gate::allows('agendamento-online') || Gate::allows('teleconsulta') || Gate::allows('triage') || Gate::allows('pre-anesthetic') || Gate::allows('diet-plans') || Gate::allows('convenio-claims'))
+                        @if(Gate::allows('atendimentos') || Gate::allows('prontuarios') || Gate::allows('vacinas') || Gate::allows('exames') || Gate::allows('cirurgias') || Gate::allows('prescricoes') || Gate::allows('hospitalizacao') || Gate::allows('laboratorio') || Gate::allows('imagem') || Gate::allows('referral') || Gate::allows('lembrete-vacinas') || Gate::allows('protocolo-vacinas') || Gate::allows('parasitario') || Gate::allows('certificado-sanitario') || Gate::allows('modelo-laudo') || Gate::allows('interacao-medicamentosa') || Gate::allows('hospedagem') || Gate::allows('agendamento-online') || Gate::allows('teleconsulta') || Gate::allows('triage') || Gate::allows('pre-anesthetic') || Gate::allows('diet-plans') || Gate::allows('convenio-claims') || Gate::allows('plano-tratamento') || Gate::allows('odontologia') || Gate::allows('termo-consentimento') || Gate::allows('controle-peso'))
                         <li class="nav-item has-treeview {{ request()->routeIs('appointments.*') || request()->routeIs('medical-records.*') || request()->routeIs('vaccinations.*') || request()->routeIs('vaccination-reminders.*') || request()->routeIs('vaccine-protocols.*') || request()->routeIs('parasite-controls.*') || request()->routeIs('health-certificates.*') || request()->routeIs('clinical-report-templates.*') || request()->routeIs('drug-interactions.*') || request()->routeIs('boardings.*') || request()->routeIs('online-bookings.*') || request()->routeIs('teleconsultations.*') || request()->routeIs('exams.*') || request()->routeIs('surgeries.*') || request()->routeIs('prescriptions.*') || request()->routeIs('hospitalizations.*') || request()->routeIs('hospitalization-daily-records.*') || request()->routeIs('anesthesia-monitorings.*') || request()->routeIs('dental-charts.*') || request()->routeIs('weight-records.*') || request()->routeIs('treatment-plans.*') || request()->routeIs('consent-forms.*') || request()->routeIs('laboratory-orders.*') || request()->routeIs('imaging-exams.*') || request()->routeIs('referrals.*') || request()->routeIs('triage.*') || request()->routeIs('pre-anesthetic-evaluations.*') || request()->routeIs('diet-plans.*') || request()->routeIs('convenio-claims.*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-stethoscope"></i>
@@ -226,7 +226,7 @@
                                     </a>
                                 </li>
                                 @endcan
-                        @can('prontuarios')
+                        @can('plano-tratamento')
                         <li class="nav-item">
                             <a href="{{ route('treatment-plans.index') }}" class="nav-link {{ request()->routeIs('treatment-plans.*') ? 'active' : '' }}">
                                 <i class="fas fa-clipboard-list nav-icon"></i>
@@ -360,25 +360,30 @@
                             </a>
                         </li>
                         @endcan
-                                @can('prontuarios')
+                                @can('odontologia')
                                 <li class="nav-item">
                                     <a href="{{ route('dental-charts.index') }}" class="nav-link {{ request()->routeIs('dental-charts.*') ? 'active' : '' }}">
                                         <i class="fas fa-tooth nav-icon"></i>
                                         <p>Odontologia</p>
                                     </a>
                                 </li>
+                                @endcan
+                                @can('termo-consentimento')
                                 <li class="nav-item">
                                     <a href="{{ route('consent-forms.index') }}" class="nav-link {{ request()->routeIs('consent-forms.*') ? 'active' : '' }}">
                                         <i class="fas fa-file-signature nav-icon"></i>
                                         <p>Termos de Consentimento</p>
                                     </a>
                                 </li>
+                                @endcan
+                                @can('controle-peso')
                                 <li class="nav-item">
                                     <a href="{{ route('weight-records.index') }}" class="nav-link {{ request()->routeIs('weight-records.*') ? 'active' : '' }}">
                                         <i class="fas fa-weight nav-icon"></i>
                                         <p>Controle de Peso</p>
                                     </a>
                                 </li>
+                                @endcan
                                 @can('diet-plans')
                                 <li class="nav-item">
                                     <a href="{{ route('diet-plans.index') }}" class="nav-link {{ request()->routeIs('diet-plans.*') ? 'active' : '' }}">
@@ -386,7 +391,6 @@
                                         <p>Planos Alimentares</p>
                                     </a>
                                 </li>
-                                @endcan
                                 @endcan
                         @can('referral')
                         <li class="nav-item">

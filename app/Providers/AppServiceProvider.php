@@ -69,6 +69,10 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('terapias', fn($user) => $user->hasPermissionTo('therapy-sessions.view'));
         Gate::define('hospedagem', fn($user) => $user->hasPermissionTo('boardings.view'));
         Gate::define('zoonoses', fn($user) => $user->hasPermissionTo('zoonotic-diseases.view'));
+        Gate::define('plano-tratamento', fn($user) => $user->hasPermissionTo('treatment-plans.view'));
+        Gate::define('odontologia', fn($user) => $user->hasPermissionTo('dental-charts.view'));
+        Gate::define('termo-consentimento', fn($user) => $user->hasPermissionTo('consent-forms.view'));
+        Gate::define('controle-peso', fn($user) => $user->hasPermissionTo('weight-records.view'));
 
         // Financeiro
         Gate::define('financeiro', fn($user) => $user->hasPermissionTo('invoices.view'));

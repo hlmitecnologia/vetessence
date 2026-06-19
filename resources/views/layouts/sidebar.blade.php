@@ -197,9 +197,6 @@
                         <i class="fas fa-pills w-5 mr-2"></i> Formulário de Fármacos
                     </a>
                     @endcan
-                <a href="{{ route('zoonotic-diseases.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
-                    <i class="fas fa-biohazard w-5 mr-2"></i> Zoonoses
-                </a>
                 @can('emergency-protocols.view')
                 <a href="{{ route('emergency-protocols.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-ambulance w-5 mr-2"></i> Protocolos de Emergência
@@ -209,7 +206,7 @@
         </div>
         @endrole
 
-        @role('admin|financeiro')
+        @role('admin|financeiro|super-financial')
         <!-- Financeiro -->
         <div x-data="{ open: false }">
             <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-gray-200 hover:bg-gray-800 rounded-lg transition">
@@ -270,9 +267,11 @@
                 <a href="{{ route('products.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-pills w-5 mr-2"></i> Produtos
                 </a>
+                @can('admin')
                 <a href="{{ route('services.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-hand-holding-medical w-5 mr-2"></i> Serviços
                 </a>
+                @endcan
                     <a href="{{ route('stock.movements') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                         <i class="fas fa-exchange-alt w-5 mr-2"></i> Movimentações
                     </a>
