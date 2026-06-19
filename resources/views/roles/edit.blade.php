@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-10">
         <form action="{{ route('roles.update', $role) }}" method="POST">
             @csrf @method('PUT')
             <div class="card">
@@ -21,44 +21,52 @@
                         <textarea name="description" rows="2" class="wysiwyg form-control @error('description') is-invalid @enderror">{{ old('description', $role->description) }}</textarea>
                         @error('description')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
+                </div>
+            </div>
 
-                    <hr>
-                    <h5><i class="fas fa-shield-alt mr-1"></i> Permissões</h5>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-shield-alt mr-1"></i> Permissões</h5>
+                </div>
+                <div class="card-body">
                     <p class="text-muted small">Marque as permissões que este perfil terá acesso.</p>
 
                     @php $rolePermIds = $role->spatiePermissions->pluck('id')->toArray(); @endphp
 
-                    @foreach($groupedPermissions as $group => $perms)
-                    <div class="mb-3">
-                        <div class="d-flex align-items-center mb-1">
-                            <strong class="text-uppercase small text-secondary">{{ $group }}</strong>
+                    @foreach($groupedPermissions as $group => $data)
+                    <div class="card card-outline card-secondary mb-3">
+                        <div class="card-header py-2 d-flex align-items-center">
+                            <h6 class="card-title mb-0">{{ $data['label'] }}</h6>
                             <label class="ml-3 mb-0 small">
                                 <input type="checkbox" class="check-all-group" data-group="{{ $group }}"> Marcar todos
                             </label>
                         </div>
-                        <div class="row">
-                            @foreach($perms as $perm)
-                            <div class="col-md-3 col-sm-4 col-6">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" name="permissions[]" value="{{ $perm->id }}"
-                                        class="custom-control-input perm-{{ $group }}"
-                                        id="perm-{{ $perm->id }}"
-                                        @checked(in_array($perm->id, old('permissions', $rolePermIds)))>
-                                    <label class="custom-control-label small" for="perm-{{ $perm->id }}">
-                                        {{ $perm->name }}
-                                    </label>
+                        <div class="card-body py-2">
+                            <div class="row">
+                                @foreach($data['perms'] as $perm)
+                                <div class="col-md-3 col-sm-4 col-6">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="permissions[]" value="{{ $perm->id }}"
+                                            class="custom-control-input perm-{{ $group }}"
+                                            id="perm-{{ $perm->id }}"
+                                            @checked(in_array($perm->id, old('permissions', $rolePermIds)))>
+                                        <label class="custom-control-label small" for="perm-{{ $perm->id }}">
+                                            {{ $perm->name }}
+                                        </label>
+                                    </div>
                                 </div>
+                                @endforeach
                             </div>
-                            @endforeach
                         </div>
                     </div>
                     @endforeach
                     @error('permissions')<span class="text-danger small">{{ $message }}</span>@enderror
                 </div>
-                <div class="card-footer text-right">
-                    <a href="{{ route('roles.index') }}" class="btn btn-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Salvar</button>
-                </div>
+            </div>
+
+            <div class="text-right">
+                <a href="{{ route('roles.index') }}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Salvar</button>
             </div>
         </form>
     </div>
