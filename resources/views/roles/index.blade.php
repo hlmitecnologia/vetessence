@@ -25,7 +25,7 @@
                 @foreach($roles as $role)
                 <tr>
                     <td><strong>{{ $role->name }}</strong></td>
-                    <td>{{ $role->description ?? 'Sem descrição' }}</td>
+                    <td>{{ strip_tags($role->description) ?: 'Sem descrição' }}</td>
                     <td><span class="badge badge-primary">{{ $role->users_count ?? 0 }}</span></td>
                     <td>
                         <a href="{{ route('roles.edit', $role) }}" class="btn btn-action btn-primary" title="Editar">
