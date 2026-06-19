@@ -95,11 +95,6 @@
                 <a href="{{ route('convenios.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-heartbeat w-5 mr-2"></i> Convênios
                 </a>
-                @role('admin|veterinario')
-                <a href="{{ route('zoonotic-diseases.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
-                    <i class="fas fa-biohazard w-5 mr-2"></i> Zoonoses
-                </a>
-                @endrole
             </div>
         </div>
         @endrole
@@ -185,9 +180,6 @@
                 </a>
                 <a href="{{ route('teleconsultations.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-video w-5 mr-2"></i> Teleconsultas
-                </a>
-                <a href="{{ route('zoonotic-diseases.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
-                    <i class="fas fa-biohazard w-5 mr-2"></i> Zoonoses
                 </a>
                 <a href="{{ route('drug-interactions.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-exclamation-triangle w-5 mr-2"></i> Interações Medicamentosas
@@ -360,7 +352,11 @@
                     <i class="fas fa-paw w-5 mr-2"></i> Raças
                 </a>
                 @endcan
-
+                @can('zoonotic-diseases')
+                <a href="{{ route('zoonotic-diseases.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-biohazard w-5 mr-2"></i> Zoonoses
+                </a>
+                @endcan
             </div>
         </div>
         @endcan

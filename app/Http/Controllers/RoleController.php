@@ -99,7 +99,7 @@ class RoleController extends Controller
         ];
 
         $sections = [
-            'Cadastros' => ['tutors', 'pets', 'convenios', 'zoonotic-diseases'],
+            'Cadastros' => ['tutors', 'pets', 'convenios'],
             'Atendimento' => ['appointments', 'triage', 'online-bookings', 'medical-records',
                 'treatment-plans', 'clinical-report-templates', 'vaccinations', 'boardings',
                 'vaccine-protocols', 'parasite-controls', 'health-certificates',
@@ -120,7 +120,7 @@ class RoleController extends Controller
             'Configurações' => ['users', 'roles', 'employees', 'departments', 'positions',
                 'services', 'consent-templates', 'branches',
                 'system-update', 'configuracoes', 'breed-defaults', 'audit-logs',
-                'backups', 'nfe-config', 'nfse-config'],
+                'backups', 'nfe-config', 'nfse-config', 'zoonotic-diseases'],
         ];
 
         $permissions = Permission::orderBy('name')->get();

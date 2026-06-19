@@ -174,14 +174,6 @@
                                     </a>
                                 </li>
                                 @endcan
-                                @can('prontuarios')
-                                <li class="nav-item">
-                                    <a href="{{ route('zoonotic-diseases.index') }}" class="nav-link {{ request()->routeIs('zoonotic-diseases.*') ? 'active' : '' }}">
-                                        <i class="fas fa-biohazard nav-icon"></i>
-                                        <p>Zoonoses</p>
-                                    </a>
-                                </li>
-                                @endcan
                             </ul>
                         </li>
                         @endif
@@ -416,14 +408,6 @@
                             </a>
                         </li>
                         @endcan
-                                @can('prontuarios')
-                                <li class="nav-item">
-                                    <a href="{{ route('zoonotic-diseases.index') }}" class="nav-link {{ request()->routeIs('zoonotic-diseases.*') ? 'active' : '' }}">
-                                        <i class="fas fa-biohazard nav-icon"></i>
-                                        <p>Zoonoses</p>
-                                    </a>
-                                </li>
-                                @endcan
                                 @can('bank-reconciliation.view')
                                 <li class="nav-item">
                                     <a href="{{ route('bank-reconciliation.index') }}" class="nav-link {{ request()->routeIs('bank-reconciliation.*') || request()->routeIs('bank-accounts.*') ? 'active' : '' }}">
@@ -618,7 +602,7 @@
                         <!-- ADMINISTRAÇÃO -->
                         @can('admin')
                         <li class="nav-header"><i class="fas fa-cog"></i> ADMINISTRAÇÃO</li>
-                        <li class="nav-item has-treeview {{ request()->routeIs('users.*') || request()->routeIs('roles.*') || request()->routeIs('services.*') || request()->routeIs('categories.*') || request()->routeIs('consent-templates.*') || request()->routeIs('communication-templates.*') || request()->routeIs('communication-queues.*') || request()->routeIs('branches.*') || request()->routeIs('departments.*') || request()->routeIs('positions.*') || request()->routeIs('employees.*') || request()->routeIs('configuracoes.branding.*') || request()->routeIs('configuracoes.notificacoes.*') || request()->routeIs('breed-defaults.*') || request()->routeIs('llm.config') ? 'menu-open' : '' }}">
+                        <li class="nav-item has-treeview {{ request()->routeIs('users.*') || request()->routeIs('roles.*') || request()->routeIs('services.*') || request()->routeIs('categories.*') || request()->routeIs('consent-templates.*') || request()->routeIs('communication-templates.*') || request()->routeIs('communication-queues.*') || request()->routeIs('branches.*') || request()->routeIs('departments.*') || request()->routeIs('positions.*') || request()->routeIs('employees.*') || request()->routeIs('configuracoes.branding.*') || request()->routeIs('configuracoes.notificacoes.*') || request()->routeIs('breed-defaults.*') || request()->routeIs('zoonotic-diseases.*') || request()->routeIs('llm.config') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-shield-alt"></i>
                                 <p>Configurações <i class="right fas fa-angle-left"></i></p>
@@ -725,6 +709,14 @@
                                     <a href="{{ route('breed-defaults.index') }}" class="nav-link {{ request()->routeIs('breed-defaults.*') ? 'active' : '' }}">
                                         <i class="fas fa-paw nav-icon"></i>
                                         <p>Raças</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('zoonotic-diseases')
+                                <li class="nav-item">
+                                    <a href="{{ route('zoonotic-diseases.index') }}" class="nav-link {{ request()->routeIs('zoonotic-diseases.*') ? 'active' : '' }}">
+                                        <i class="fas fa-biohazard nav-icon"></i>
+                                        <p>Zoonoses</p>
                                     </a>
                                 </li>
                                 @endcan
