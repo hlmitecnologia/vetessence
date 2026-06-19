@@ -16,6 +16,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 - **Cirurgias** — Agendamento, checklist pré-operatório, monitoramento anestésico
 - **Avaliação Pré-Anestésica** — Classificação ASA, exames, jejum, checklist completo
 - **Internações** — Registros diários, evolução clínica, prescrição diária, resumo de alta
+- **Mapa de Execução** — Cronograma visual de tarefas (medicações, procedimentos, cuidados) por dia de internação, com geração automática a partir de prescrições, execução inline com registro de responsável, destaque para tarefas atrasadas e perfil Técnico exclusivo para execução sem prescrição
 - **Laboratório** — Pedidos de exame, rastreamento de amostras, lançamento de resultados, equipamentos integrados
 - **Imagem** — Pedidos de raio-X, ultrassom, tomografia, laudos com assinatura digital
 - **Odontologia** — Odontograma interativo, procedimentos, classificação periodontal
@@ -88,7 +89,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 - **Modo Mobile (/m)** — Navegação inferior (Início, Triagem, Receitas, Prontuários), visões simplificadas para veterinários em campo
 
 ### Administração
-- **Usuários** — Controle de acesso por papel (11 perfis), 160+ permissões CRUD
+- **Usuários** — Controle de acesso por papel (12 perfis), 160+ permissões CRUD
 - **Unidades (Multi-filiais)** — Suporte multi-unidade com dados escopados por filial, dashboard corporativo; endereço com estado/cidade via cascading select e CEP
 - **Categorias** — Classificação de serviços/produtos
 - **Modelos de Termos** — Termos de consentimento reutilizáveis
@@ -121,7 +122,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 ## Suite de Testes
 
 ```
-Tests: 1,974 total (389 files), Livewire 211 (32 files), Controllers 772 (108 files), Services 203 (32 files), Models 358 (91 files)
+Tests: 2,005 total (394 files), Livewire 222 (33 files), Controllers 772 (108 files), Services 203 (32 files), Models 378 (92 files)
 ```
 
 ## Início Rápido
@@ -160,6 +161,7 @@ Após rodar `php artisan migrate --seed`, os seguintes usuários estarão dispon
 | Super Financeiro | `superfin@vet.com` | `superfin123` |
 | Estoque | `estoque@vet.com` | `est123` |
 | Recursos Humanos | `rh@vet.com` | `rh123` |
+| Técnico | `tecnico@vet.com` | `tecnico123` |
 | Auditor | `auditor@vet.com` | `auditor123` |
 | Tutor (portal) | `tutor@vet.com` | `tutor123` |
 
