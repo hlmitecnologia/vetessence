@@ -4,6 +4,19 @@
 
 ### Adicionado
 
+#### Gestão de Permissões na Criação/Edição de Perfis
+- Formulário de criação/edição de perfis agora exibe todas as 284 permissões Spatie agrupadas em cards
+- Cada grupo possui **título em português** e checkbox **"Marcar todos"**
+- Permissões sincronizadas automaticamente com Spatie Permission ao salvar
+- Criação/edição/exclusão de perfil mantém sync entre `App\Models\Role` e `Spatie\Permission\Models\Role`
+- Validação com feedback visual (`is-invalid`) para nome, slug e permissões
+
+### Corrigido
+- Descrição de perfil exibia tags HTML na listagem — agora usa `strip_tags()`
+
+### Alterado
+- `Role::permissions()` renomeado para `spatiePermissions()` e aponta para `\Spatie\Permission\Models\Permission`
+
 #### Mapa de Execução de Procedimentos Veterinários
 - 3 novas tabelas: `execution_maps`, `execution_tasks`, `execution_logs`
 - 3 models: `ExecutionMap`, `ExecutionTask`, `ExecutionLog`
