@@ -32,4 +32,5 @@ class Hospitalization extends Model
     public function dailyRecords(): HasMany { return $this->hasMany(HospitalizationDailyRecord::class); }
     public function fluidTherapies(): HasMany { return $this->hasMany(HospitalizationFluidTherapy::class); }
     public function prescriptions(): HasMany { return $this->hasMany(HospitalizationPrescription::class); }
+    public function executionMaps(): HasMany { return $this->hasMany(ExecutionMap::class); }
 }

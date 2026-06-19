@@ -11,7 +11,7 @@ Guia prático para utilização do VetEssence no dia a dia da clínica.
 | 03 | [Vacinas](03-vacinas) | Aplicação, protocolos, certificado CFMV, lembretes, previsão vencimento, recall |
 | 04 | [Exames](04-exames) | Solicitação, coleta, resultado, laudo |
 | 05 | [Cirurgias](05-cirurgias) | Checklist, avaliação pré-anestésica, trans e pós-operatório |
-| 06 | [Internações](06-internacoes) | Evolução clínica, prescrição diária, resumo de alta |
+| 06 | [Internações](06-internacoes) | Evolução clínica, prescrição diária, resumo de alta, mapa de execução |
 | 07 | [Farmácia](07-farmacia) | Produtos, lotes, fornecedores, calculadora de dosagem, alerta vencimento |
 | 08 | [Estoque](08-estoque) | Movimentações, pedidos de compra, substâncias controladas, scanner, transferências |
 | 09 | [Financeiro](09-financeiro) | Faturas, NFSe, NF-e, comissões, conciliação bancária, auto-faturamento, fluxo de caixa, DRE |

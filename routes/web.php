@@ -354,6 +354,14 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('hospitalizations.prescriptions', 'App\Http\Controllers\HospitalizationPrescriptionController')
         ->except(['index', 'show'])->names(['store' => 'hospitalizations.prescriptions.store', 'update' => 'hospitalizations.prescriptions.update', 'destroy' => 'hospitalizations.prescriptions.destroy']);
 
+    // Execution Maps
+    Route::prefix('execution-maps')->name('execution-maps.')->group(function () {
+        Route::get('/', 'App\Http\Controllers\ExecutionMapController@index')
+            ->name('index');
+        Route::get('{hospitalization}/{date?}', 'App\Http\Controllers\ExecutionMapController@show')
+            ->name('show');
+    });
+
     // Vaccination Reminders
     Route::resource('vaccination-reminders', 'App\Http\Controllers\VaccinationReminderController')->names([
         'index' => 'vaccination-reminders.index',

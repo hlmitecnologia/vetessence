@@ -148,6 +148,11 @@
                 <a href="{{ route('hospitalizations.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-procedures w-5 mr-2"></i> Internações
                 </a>
+                @can('execution-maps')
+                <a href="{{ route('execution-maps.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-clipboard-list w-5 mr-2"></i> Mapa de Execução
+                </a>
+                @endcan
                 <a href="{{ route('surgeries.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-user-md w-5 mr-2"></i> Cirurgias
                 </a>

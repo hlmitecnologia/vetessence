@@ -159,6 +159,9 @@ class PermissionSeeder extends Seeder
 
             // LLM / IA Diagnóstica
             'configuracoes.llm',
+
+            // Execution Maps
+            'execution-maps.view', 'execution-maps.execute', 'execution-maps.manage',
         ];
 
         // Create all permissions
@@ -225,6 +228,17 @@ class PermissionSeeder extends Seeder
                 'chat.view', 'chat.create', 'chat.edit', 'chat.delete',
                 'drug-formulary.view', 'drug-formulary.create', 'drug-formulary.edit',
                 'emergency-protocols.view', 'emergency-protocols.create', 'emergency-protocols.edit', 'emergency-protocols.delete',
+                'execution-maps.view', 'execution-maps.execute', 'execution-maps.manage',
+            ],
+
+            'tecnico' => [
+                'execution-maps.view',
+                'execution-maps.execute',
+                'hospitalizations.view',
+                'tutors.view',
+                'pets.view',
+                'staff-notes.view',
+                'staff-notes.create',
             ],
 
             'recepcionista' => [

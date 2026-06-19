@@ -98,6 +98,11 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('configuracoes.branding', fn($user) => $user->hasPermissionTo('configuracoes.branding'));
         Gate::define('docs.view', fn($user) => $user->hasPermissionTo('docs.view'));
 
+        // Execution Maps
+        Gate::define('execution-maps', fn($user) => $user->hasPermissionTo('execution-maps.view'));
+        Gate::define('execution-maps.execute', fn($user) => $user->hasPermissionTo('execution-maps.execute'));
+        Gate::define('execution-maps.manage', fn($user) => $user->hasPermissionTo('execution-maps.manage'));
+
         // Equipamentos
         Gate::define('integracao-equipamentos', fn($user) => $user->hasPermissionTo('lab-equipment.view'));
 

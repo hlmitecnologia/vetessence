@@ -23,6 +23,7 @@ class RoleSeeder extends Seeder
             ['name' => 'Recursos Humanos', 'slug' => 'human-resources'],
             ['name' => 'Tutor', 'slug' => 'tutor'],
             ['name' => 'Auditor', 'slug' => 'auditor'],
+            ['name' => 'Técnico', 'slug' => 'tecnico', 'description' => 'Técnico Veterinário', 'guard_name' => 'web'],
         ];
 
         foreach ($roles as $role) {

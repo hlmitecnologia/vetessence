@@ -1,5 +1,21 @@
 # Changelog
 
+## [Não versionado] — 2026-06-19
+
+### Adicionado
+
+#### Mapa de Execução de Procedimentos Veterinários
+- 3 novas tabelas: `execution_maps`, `execution_tasks`, `execution_logs`
+- 3 models: `ExecutionMap`, `ExecutionTask`, `ExecutionLog`
+- `ExecutionBoard` — Livewire componente na aba "Execução" da internação, com geração de tarefas a partir de prescrições, execução inline e destaque para atrasadas
+- `ExecutionMapIndex` — Livewire listagem com filtros por status, busca, ordenação priorizando internações ativas
+- Parse de frequência textual (8/8h, BID, SID, etc.) para horários de administração
+- Data migration que popula mapas para internações com prescrições existentes
+- **Novo perfil Técnico** (`tecnico`) com permissões `execution-maps.view`, `execution-maps.execute`, `hospitalizations.view`, `tutors.view`, `pets.view`, `staff-notes.*`
+- 3 gates: `execution-maps`, `execution-maps.execute`, `execution-maps.manage`
+- Menu lateral "Mapa de Execução" na seção Clínico (gate `execution-maps`)
+- Atualizações de documentação nos manuais do usuário, técnico e changelog
+
 ## [Não versionado] — 2026-06-08
 
 ### Adicionado

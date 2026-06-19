@@ -183,10 +183,11 @@ O sistema utiliza **Spatie Laravel Permission v7** com **11 papéis**:
 
 | Papel | Slug | Descrição | Permissões |
 |-------|------|-----------|------------|
-| Super Admin | super-admin | Acesso total irrestrito | ~160 (todas) |
-| Admin | admin | Acesso total ao sistema | ~160 (todas) |
-| Branch Admin | branch-admin | Administração por filial | ~160 (escopo filial) |
-| Veterinarian | veterinarian | Acesso clínico completo | ~105 |
+| Super Admin | super-admin | Acesso total irrestrito | ~163 (todas) |
+| Admin | admin | Acesso total ao sistema | ~163 (todas) |
+| Branch Admin | branch-admin | Administração por filial | ~163 (escopo filial) |
+| Veterinarian | veterinarian | Acesso clínico completo | ~110 |
+| **Técnico** | **tecnico** | **Execução de tarefas clínicas sem prescrição** | **~7** |
 | Receptionist | receptionist | Agenda e cadastro | ~22 |
 | Financial | financial | Módulo financeiro | ~14 |
 | Super Financial | super-financial | Financeiro global | ~19 |
@@ -201,6 +202,7 @@ As permissões seguem o padrão `modulo.acao` (ex: `appointments.create`, `produ
 - **Admin:** admin.view, users.*, roles.*, branches.*
 - **Cadastro:** tutors.*, pets.*, convenios.*
 - **Clínico:** medical-records.*, prescriptions.*, vaccinations.*, exams.*, surgeries.*, triage.*
+- **Internação:** hospitalizations.*, execution-maps.*
 - **Farmácia:** products.*, stock.*, suppliers.*, categories.*, controlled-substances.*
 - **Financeiro:** invoices.*, payments.*, nfse.*, commissions.*, bank-reconciliation.*
 - **Estoque:** purchase-orders.*, stock.transfer

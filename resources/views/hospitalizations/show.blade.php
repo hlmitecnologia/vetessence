@@ -129,6 +129,11 @@
                             @endif
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="execution-tab" data-toggle="tab" href="#execution" role="tab">
+                            <i class="fas fa-clipboard-check"></i> Execução
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div class="card-body">
@@ -249,6 +254,9 @@
                         @else
                         <p class="text-center text-muted">Nenhuma prescrição registrada.</p>
                         @endif
+                    </div>
+                    <div class="tab-pane fade" id="execution" role="tabpanel">
+                        @livewire('execution-board', ['hospitalization' => $hospitalization])
                     </div>
                 </div>
             </div>

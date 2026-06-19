@@ -2861,6 +2861,408 @@ resources/views/llm/config.blade.php           → Form com JS toggle de campos 
 
 ---
 
+## Phase AE — Mapa de Execução de Procedimentos Veterinários
+
+**Contexto:** Funcionalidade solicitada pelo usuário. Criar um "Mapa de Execução" (cronograma visual de prescrições, medicações, cuidados, exames e procedimentos) vinculado a cada dia de internação, com registro de execução em tempo real, alertas de tarefas pendentes/atrasadas e rastreamento de responsável.
+
+### AE1 — Quem acessa (Perfis & Papéis)
+
+| Perfil | Slug | Acesso ao Mapa | Pode executar tarefas | Pode gerar/prescrever |
+|--------|------|----------------|----------------------|----------------------|
+| Super Admin | `super-admin` | ✅ | Sim | Sim |
+| Admin / Branch Admin | `admin` / `branch-admin` | ✅ | Sim | Sim |
+| Veterinário | `veterinario` | ✅ | Sim | Sim |
+| **Técnico (novo)** | **`tecnico`** | **✅** | **Sim** | **Não (só executa)** |
+| Recepcionista | `recepcionista` | ❌ | Não | Não |
+| Financeiro / Super Financeiro | `financeiro` / `super-financial` | ❌ | Não | Não |
+| Estoque | `estoque` | ❌ | Não | Não |
+| Recursos Humanos | `human-resources` | ❌ | Não | Não |
+| Tutor | `tutor` | ❌ | Não | Não |
+| Auditor | `auditor` | ✅ (view-only) | Não | Não |
+
+O novo perfil **Técnico** tem permissões focadas em execução clínica sem prescrição:
+
+| Permissão | Descrição |
+|-----------|-----------|
+| `execution-maps.view` | Acessar o menu lateral e a lista de mapas (gate `execution-maps`) |
+| `execution-maps.execute` | Marcar tarefas como completo/parcial/pulado |
+| `hospitalizations.view` | Visualizar detalhes da internação (onde o board está embarcado) |
+| `tutors.view` | Visualizar tutor do paciente |
+| `pets.view` | Visualizar dados do paciente |
+
+As permissões `*.create`/`*.edit`/`*.delete` de prescrições, prontuários, exames **não** são concedidas ao Técnico — ele apenas **executa** o que foi prescrito.
+
+### AE2 — Onde fica o acesso (Navegação)
+
+Dois pontos de entrada:
+
+**1. Menu lateral** — novo item **"Mapa de Execução"** dentro da seção **Clínico**, entre "Internações" e "Cirurgias". Visível para `tecnico`, `veterinario`, `admin`, `branch-admin`, `super-admin` (gate `execution-maps`).
+
+```
+Clínico
+├── Prontuários
+├── Tratamentos
+├── Vacinas
+├── Internações          ← existente
+├── Mapa de Execução     ← NOVO
+├── Cirurgias
+├── Anestesia
+...
+```
+
+**2. Aba na internação** — 4ª aba "Execução" na tela `/hospitalizations/{id}`, igual ao plano anterior. O link do menu lateral leva à lista e de lá cada item direciona para a aba da internação específica.
+
+### AE3 — Tela de Lista (Index)
+
+`/execution-maps` — Livewire `ExecutionMapIndex` com:
+
+| Funcionalidade | Descrição |
+|----------------|-----------|
+| **Filtro por status da internação** | Dropdown: Todos, Internado, Alta, Transferido |
+| **Ordenação** | Data decrescente, priorizando internações `admitted` no topo |
+| **Colunas** | Pet (foto + nome), Tutor, Data da internação, Status da internação (badge), Tarefas pendentes hoje (contador), Ações (botão "Abrir") |
+| **Busca** | Campo de texto filtrando por nome do pet ou tutor |
+| **Paginação** | Datatables (padrão do sistema) |
+| **Ações rápidas** | Clique leva para `/hospitalizations/{id}#execucao` (aba Execução) |
+
+A ordenação usa `ORDER BY FIELD(status, 'discharged', 'transferred', 'active', 'admitted') DESC, admission_date DESC` para que internações ativas (`admitted`) apareçam primeiro.
+
+### AE4 — Fluxo completo
+
+1. **Técnico** acessa o menu "Mapa de Execução" no sidebar → vê lista de internações com tarefas pendentes
+2. Clica em uma internação → vai para a aba **"Execução"** na tela de detalhes
+3. Na aba, seleciona a data e visualiza as tarefas do dia agrupadas por período
+4. **Veterinário** previamente lançou prescrições na aba "Prescrições" — o Técnico clica **"Gerar de Prescrições"** para popular o mapa
+5. Tarefas manuais podem ser adicionadas para procedimentos clínicos não medicamentosos
+6. **Técnico** (ou Veterinário) marca cada tarefa como executada: completo / parcial / pulado, com data/hora e observações
+7. Tarefas pendentes além do horário recebem destaque visual (badge vermelha "Atrasada")
+8. Timeline das tarefas agrupadas por período do dia (manhã 06–12, tarde 12–18, noite 18–06)
+
+### AE5 — Novas Tabelas (Migration única)
+
+```php
+Schema::create('execution_maps', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('hospitalization_id')->constrained()->cascadeOnDelete();
+    $table->date('date');
+    $table->text('notes')->nullable();
+    $table->foreignId('created_by')->constrained('users');
+    $table->timestamps();
+    $table->unique(['hospitalization_id', 'date']);
+});
+
+Schema::create('execution_tasks', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('execution_map_id')->constrained()->cascadeOnDelete();
+    $table->enum('category', ['medication', 'procedure', 'exam', 'care', 'other'])->default('medication');
+    $table->string('title', 255);
+    $table->text('description')->nullable();
+    $table->time('scheduled_time')->nullable();          // null = "o mais breve"
+    $table->string('frequency', 50)->nullable();          // once|every_6h|every_8h|every_12h|every_24h
+    $table->string('route', 50)->nullable();
+    $table->string('dosage', 100)->nullable();
+    $table->string('unit', 50)->nullable();
+    $table->string('source_type', 50)->nullable();        // hospitalization_prescription|manual
+    $table->unsignedBigInteger('source_id')->nullable();
+    $table->enum('status', ['pending', 'in_progress', 'completed', 'skipped', 'cancelled'])->default('pending');
+    $table->text('observations')->nullable();
+    $table->integer('sort_order')->default(0);
+    $table->foreignId('created_by')->constrained('users');
+    $table->timestamps();
+});
+
+Schema::create('execution_logs', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('execution_task_id')->constrained()->cascadeOnDelete();
+    $table->dateTime('performed_at');
+    $table->foreignId('performed_by')->constrained('users');
+    $table->enum('status', ['completed', 'skipped', 'partially']);
+    $table->text('notes')->nullable();
+    $table->timestamps();
+});
+```
+
+#### Data Migration — Popular mapas a partir de dados existentes
+
+Criar um segundo migration (`2026_06_19_000002_backfill_execution_maps.php`) que varre internações existentes e gera `ExecutionMap` + `ExecutionTask` para cada dia com prescrições ativas:
+
+```php
+public function up()
+{
+    $now = Carbon::now();
+    $prescriptions = DB::table('hospitalization_prescriptions')
+        ->whereNull('deleted_at')
+        ->whereDate('start_date', '<=', $now)
+        ->orderBy('hospitalization_id')
+        ->orderBy('start_date')
+        ->get();
+
+    foreach ($prescriptions->groupBy('hospitalization_id') as $hospId => $rxList) {
+        // Determina o período coberto: da menor start_date até hoje (ou end_date da internação)
+        $hospitalization = DB::table('hospitalizations')->find($hospId);
+        if (!$hospitalization) continue;
+
+        $start = Carbon::parse($rxList->min('start_date'));
+        $end   = $hospitalization->end_date
+            ? Carbon::parse($hospitalization->end_date)
+            : $now;
+
+        for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+            // Pula se já existe mapa para esta data
+            $exists = DB::table('execution_maps')
+                ->where('hospitalization_id', $hospId)
+                ->where('date', $date->toDateString())
+                ->exists();
+            if ($exists) continue;
+
+            $mapId = DB::table('execution_maps')->insertGetId([
+                'hospitalization_id' => $hospId,
+                'date'               => $date->toDateString(),
+                'created_by'         => 1, // super-admin
+                'created_at'         => $now,
+                'updated_at'         => $now,
+            ]);
+
+            // Gera tarefas para cada prescrição ativa nesta data
+            foreach ($rxList as $rx) {
+                if ($rx->end_date && $date->gt(Carbon::parse($rx->end_date))) continue;
+                if ($date->lt(Carbon::parse($rx->start_date))) continue;
+
+                $intervals = [
+                    'every_8h'  => [6, 14, 22],
+                    'every_12h' => [8, 20],
+                    'every_6h'  => [0, 6, 12, 18],
+                    'every_24h' => [8],
+                ];
+                $hours = $intervals[$rx->frequency] ?? [8];
+
+                foreach ($hours as $hour) {
+                    DB::table('execution_tasks')->insert([
+                        'execution_map_id' => $mapId,
+                        'category'         => 'medication',
+                        'title'            => $rx->medication,
+                        'description'      => $rx->notes ?? null,
+                        'scheduled_time'   => sprintf('%02d:00', $hour),
+                        'frequency'        => $rx->frequency,
+                        'route'            => $rx->route ?? null,
+                        'dosage'           => $rx->dosage ?? null,
+                        'unit'             => $rx->unit ?? null,
+                        'source_type'      => 'hospitalization_prescription',
+                        'source_id'        => $rx->id,
+                        'status'           => 'pending',
+                        'sort_order'       => 0,
+                        'created_by'       => 1,
+                        'created_at'       => $now,
+                        'updated_at'       => $now,
+                    ]);
+                }
+            }
+        }
+    }
+}
+
+public function down()
+{
+    DB::table('execution_maps')->truncate();
+    DB::table('execution_tasks')->truncate();
+    DB::table('execution_logs')->truncate();
+}
+```
+
+Observações:
+- Usa `DB::` (Queries Builder) em vez de Eloquent para evitar triggers/model events durante o backfill e para performance em lotes grandes
+- A lógica de parse de frequência é inline no migration (mesmo algoritmo que a `parseFrequency()` do model) — se a frequência não for reconhecida, gera um único horário em 08:00 como fallback
+- O `down()` faz truncate nas 3 tabelas (volta ao estado pós-schema)
+- O migration é **idempotente**: se rodar de novo, pula dias que já têm mapa (`WHERE EXISTS`)
+
+### AE6 — Novos Models
+
+| Model | Fillable | Casts | Relationships |
+|-------|----------|-------|---------------|
+| `ExecutionMap` | hospitalization_id, date, notes, created_by | date (date) | hospitalization (BelongsTo), tasks (HasMany), creator (BelongsTo) |
+| `ExecutionTask` | execution_map_id, category, title, description, scheduled_time, frequency, route, dosage, unit, source_type, source_id, status, observations, sort_order, created_by | scheduled_time (datetime:H:i), status | executionMap (BelongsTo), logs (HasMany), creator (BelongsTo) |
+| `ExecutionLog` | execution_task_id, performed_at, performed_by, status, notes | performed_at (datetime) | task (BelongsTo), performer (BelongsTo) |
+
+### AE7 — Scopes no Model ExecutionTask (sugestão)
+
+```php
+public function scopePending($q) { $q->where('status', 'pending'); }
+public function scopeForPeriod($q, $period) { /* morning=06-12, afternoon=12-18, night=18-06 */ }
+public function scopeOverdue($q) {
+    $q->whereIn('status', ['pending', 'in_progress'])
+      ->where('scheduled_time', '<', now()->format('H:i:s'));
+}
+```
+
+### AE8 — Livewire Components
+
+**1. `ExecutionBoard`** (embarcado na aba da internação)
+
+| Método | Descrição |
+|--------|-----------|
+| `mount(Hospitalization $hospitalization, $date = null)` | Carrega (ou cria se não existir) o ExecutionMap para a data |
+| `loadTasks()` | Recarrega tarefas ordenadas por scheduled_time |
+| `generateFromPrescriptions()` | Varre `HospitalizationPrescription` ativas e cria `ExecutionTask` para cada horário |
+| `execute($taskId)` | Abre formulário inline para registrar execução |
+| `confirmExecution($taskId, $status, $notes)` | Cria `ExecutionLog` + atualiza status da tarefa |
+| `addManualTask()` | Abre formulário para criar tarefa manual |
+| `saveManualTask($data)` | Cria `ExecutionTask` com source_type=manual |
+| `getOverdueTasksProperty()` | Getter para tarefas atrasadas |
+| `getGroupedTasksProperty()` | Getter que agrupa tarefas por período (manhã/tarde/noite) |
+
+**2. `ExecutionMapIndex`** (tela de lista - novo)
+
+| Método | Descrição |
+|--------|-----------|
+| `mount()` | Carrega listagem inicial |
+| `render()` | Retorna view com hospitalizações filtradas/ordenadas |
+| `filterByStatus($status)` | Filtra por status da hospitalização |
+| `search($term)` | Busca por nome do pet ou tutor |
+| `getHospitalizationsProperty()` | Query: `Hospitalization::with(['pet', 'tutor', 'executionMaps'])` com filtros, ordenado por `FIELD(status, 'admitted', 'active') ASC, start_date DESC` |
+| `getPendingTodayCount($hospitalizationId)` | Conta `ExecutionTask` pendentes para a data atual |
+| `openExecutionMap($hospitalizationId)` | Redireciona para `/hospitalizations/{id}#execucao` |
+
+### AE9 — Views
+
+| View | Descrição |
+|------|-----------|
+| `livewire/execution-board.blade.php` | Timeline visual com tarefas agrupadas por período, destaque para atrasadas, botões de execução |
+| `livewire/execution-map-index.blade.php` | **NOVA** — datatable com filtros, colunas (Pet, Tutor, Data, Status, Pendentes), link para internação |
+| `execution-maps.index` | **NOVA** — view que embarca `@livewire('execution-map-index')` |
+| `hospitalizations.show` **(modificado)** | Adicionar 4ª aba "Execução" que embarca `@livewire('execution-board', ['hospitalization' => $hospitalization])` |
+
+#### Aba "Execução" deve incluir:
+- Seletor de data (navegação entre dias da internação)
+- Botão "Gerar de Prescrições" (só para `veterinario` / `admin`)
+- Botão "Adicionar Procedimento" (tarefa manual)
+- Lista de tarefas do dia agrupadas por período (manhã 06–12, tarde 12–18, noite 18–06)
+- Cada tarefa: horário, título + dose/via, status (badge colorido), botão Executar
+- Modal de execução: confirmação, observações, status (completo/parcial/pulado)
+- Atualização otimista via Livewire
+
+### AE10 — Rotas
+
+```php
+// web.php — dentro do grupo auth + middleware('can:execution-maps')
+Route::prefix('execution-maps')->name('execution-maps.')->group(function () {
+    Route::get('/', 'App\Http\Controllers\ExecutionMapController@index')
+        ->name('index');                          // GET /execution-maps
+    Route::get('{hospitalization}/{date?}',
+        'App\Http\Controllers\ExecutionMapController@show')
+        ->name('show');                           // GET /execution-maps/{hospitalization}/{date?}
+});
+```
+
+- `/execution-maps` → `ExecutionMapIndex` Livewire (sidebar aponta pra cá)
+- `/execution-maps/{hospitalization}/{date?}` → redireciona para `/hospitalizations/{id}` com a aba "Execução" ativa
+
+### AE11 — Sidebar & Gate
+
+**Permissões novas (PermissionSeeder):**
+
+| Permissão | Slug | Quem recebe |
+|-----------|------|-------------|
+| `execution-maps.view` | `execution-maps.view` | `admin`, `branch-admin`, `veterinario`, `tecnico`, `auditor` |
+| `execution-maps.execute` | `execution-maps.execute` | `admin`, `branch-admin`, `veterinario`, `tecnico` |
+| `execution-maps.manage` | `execution-maps.manage` | `admin`, `branch-admin`, `veterinario` (pode gerar/prescrever) |
+
+**Gate (AppServiceProvider):**
+```php
+Gate::define('execution-maps', fn($user) => $user->hasPermissionTo('execution-maps.view'));
+```
+
+Usa-se `@can('execution-maps')` no sidebar e `$this->authorize('execution-maps')` nos controllers.
+Dentro do `ExecutionBoard`, o botão "Gerar de Prescrições" só aparece se `$user->can('execution-maps.manage')`.
+
+**Sidebar (sidebar.blade.php):** adicionar dentro da seção "Clínico", entre os itens de Internações e Cirurgias:
+
+```blade
+@can('execution-maps')
+    <li class="nav-item">
+        <a href="{{ route('execution-maps.index') }}"
+           class="nav-link {{ request()->routeIs('execution-maps.*') ? 'active' : '' }}">
+            <i class="fas fa-clipboard-list"></i>
+            <p>Mapa de Execução</p>
+        </a>
+    </li>
+@endcan
+```
+
+**Novo perfil Técnico (RoleSeeder + PermissionSeeder):**
+
+Em `RoleSeeder.php`:
+```php
+['name' => 'Técnico', 'slug' => 'tecnico', 'description' => 'Técnico Veterinário', 'guard_name' => 'web'],
+```
+
+Em `PermissionSeeder.php`, na definição do role `tecnico`:
+```php
+// Permissões do Técnico
+'tecnico' => [
+    'execution-maps.view',
+    'execution-maps.execute',
+    'hospitalizations.view',
+    'tutors.view',
+    'pets.view',
+    'staff-notes.view',
+    'staff-notes.create',
+],
+```
+
+### AE12 — Arquivos
+
+| Tipo | Arquivos | Qtd |
+|------|----------|-----|
+| **Criados (migration)** | `database/migrations/2026_06_19_000001_create_execution_map_tables.php`, `database/migrations/2026_06_19_000002_backfill_execution_maps.php` | 2 |
+| **Criados (model)** | `app/Models/ExecutionMap.php`, `app/Models/ExecutionTask.php`, `app/Models/ExecutionLog.php` | 3 |
+| **Criados (Livewire)** | `app/Livewire/ExecutionBoard.php`, `app/Livewire/ExecutionMapIndex.php` | 2 |
+| **Criados (view)** | `resources/views/livewire/execution-board.blade.php`, `resources/views/livewire/execution-map-index.blade.php`, `resources/views/execution-maps/index.blade.php` | 3 |
+| **Criados (factory)** | `database/factories/ExecutionMapFactory.php`, `database/factories/ExecutionTaskFactory.php`, `database/factories/ExecutionLogFactory.php` | 3 |
+| **Criados (test)** | `tests/Unit/Models/ExecutionMapTest.php`, `tests/Unit/Models/ExecutionTaskTest.php`, `tests/Unit/Models/ExecutionLogTest.php`, `tests/Feature/Livewire/ExecutionBoardTest.php`, `tests/Feature/Livewire/ExecutionMapIndexTest.php` | 5 |
+| **Modificados** | `resources/views/hospitalizations/show.blade.php`, `resources/views/layouts/sidebar.blade.php`, `app/Models/Hospitalization.php`, `routes/web.php`, `app/Providers/AppServiceProvider.php`, `database/seeders/RoleSeeder.php`, `database/seeders/PermissionSeeder.php`, `database/seeders/UserSeeder.php`, `PLAN.md` | 9 |
+
+### AE13 — Frequência de Medicação (parse)
+
+Para gerar tarefas a partir de prescrições, o sistema precisa interpretar a frequência textual da `HospitalizationPrescription`:
+
+| Entrada (texto) | Intervalo (horas) | Gerar tarefas em |
+|-----------------|-------------------|-------------------|
+| `8/8h` / `8 em 8` / `every_8h` / `TID` | 8 | 06:00, 14:00, 22:00 |
+| `12/12h` / `12 em 12` / `every_12h` / `BID` | 12 | 08:00, 20:00 |
+| `6/6h` / `6 em 6` / `every_6h` / `QID` | 6 | 06:00, 12:00, 18:00, 00:00 |
+| `24h` / `1x ao dia` / `SID` / `daily` | 24 | 08:00 |
+| `once` / `dose única` | null | Uma única vez, sem repetição |
+| outro | null | Tarefa manual sem hora automática |
+
+A lógica fica em um método estático `ExecutionTask::parseFrequency($text)`.
+
+### AE14 — Testes
+
+| Teste | O que cobre |
+|-------|-------------|
+| `ExecutionMapTest` (Unit/Model) | fillable, casts, relationships (hospitalization, tasks, creator), unique constraint |
+| `ExecutionTaskTest` (Unit/Model) | fillable, casts, relationships (executionMap, logs, creator), scopes (pending, overdue) |
+| `ExecutionLogTest` (Unit/Model) | fillable, casts, relationships (task, performer) |
+| `ExecutionBoardTest` (Feature/Livewire) | renderiza board, gera tarefas de prescrições, executa tarefa, adiciona tarefa manual, validações |
+| `ExecutionMapIndexTest` (Feature/Livewire) | renderiza listagem, filtra por status, busca por pet/tutor, ordenação prioriza admitted, contagem de pendentes |
+
+### AE15 — Documentação (Manuais de Usuário)
+
+O sistema possui documentação própria em `resources/docs/` servida via `Route::docs.*` com 25 módulos no Manual do Usuário + 13 no Manual do Tutor + Manual Técnico + Changelog.
+
+**Arquivos a modificar nesta fase:**
+
+| Arquivo | Mudança |
+|---------|---------|
+| `resources/docs/user-manual/06-internacoes.md` | Adicionar seção "Mapa de Execução" explicando a 4ª aba, como gerar tarefas de prescrições, adicionar procedimentos manuais e registrar execução |
+| `resources/docs/user-manual/index.md` | Adicionar link para a nova seção no índice |
+| `resources/docs/technical-manual/index.md` | Adicionar permissões `execution-maps.*`, novo perfil Técnico, novas tabelas e relacionamentos |
+| `resources/docs/changelog/index.md` | Registrar a fase AE |
+
+**Como publicar:** `php artisan docs:publish` (copia `resources/docs/` → `storage/docs/`)
+
+---
+
 ## Phase W — Vet Shift Scheduling & Availability (Portal) ✅
 
 **Contexto:** Adicionar suporte a turnos de veterinário (`is_vet_shift`) com serviço de disponibilidade para o Portal do Tutor, observer que cancela appointments automaticamente quando a escala muda.
