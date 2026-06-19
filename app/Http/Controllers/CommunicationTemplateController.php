@@ -39,7 +39,7 @@ class CommunicationTemplateController extends Controller
 
     public function create()
     {
-        return view('communication-templates.create');
+        return redirect()->route('communication-templates.index');
     }
 
     public function store(Request $request)
@@ -65,9 +65,9 @@ class CommunicationTemplateController extends Controller
         return view('communication-templates.show', compact('communicationTemplate'));
     }
 
-    public function edit(CommunicationTemplate $communicationTemplate)
+    public function edit($communicationTemplate)
     {
-        return view('communication-templates.edit', compact('communicationTemplate'));
+        return redirect()->route('communication-templates.index');
     }
 
     public function update(Request $request, CommunicationTemplate $communicationTemplate)

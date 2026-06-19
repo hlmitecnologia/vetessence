@@ -20,7 +20,7 @@ class GroomingTemplateController extends Controller
 
     public function create()
     {
-        return view('grooming-templates.create');
+        return redirect()->route('grooming-templates.index');
     }
 
     public function store(Request $request)
@@ -51,9 +51,9 @@ class GroomingTemplateController extends Controller
         return view('grooming-templates.show', compact('groomingTemplate'));
     }
 
-    public function edit(GroomingTemplate $groomingTemplate)
+    public function edit($groomingTemplate)
     {
-        return view('grooming-templates.edit', compact('groomingTemplate'));
+        return redirect()->route('grooming-templates.index');
     }
 
     public function update(Request $request, GroomingTemplate $groomingTemplate)

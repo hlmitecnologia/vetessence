@@ -43,7 +43,7 @@ class DrugInteractionController extends Controller
 
     public function create()
     {
-        return view('drug-interactions.create');
+        return redirect()->route('drug-interactions.index');
     }
 
     public function store(Request $request)
@@ -87,9 +87,9 @@ class DrugInteractionController extends Controller
         return view('drug-interactions.show', compact('drugInteraction'));
     }
 
-    public function edit(DrugInteraction $drugInteraction)
+    public function edit($drugInteraction)
     {
-        return view('drug-interactions.edit', compact('drugInteraction'));
+        return redirect()->route('drug-interactions.index');
     }
 
     public function update(Request $request, DrugInteraction $drugInteraction)

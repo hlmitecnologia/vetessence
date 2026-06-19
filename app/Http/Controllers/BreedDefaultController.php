@@ -20,7 +20,7 @@ class BreedDefaultController extends Controller
 
     public function create()
     {
-        return view('breed-defaults.create');
+        return redirect()->route('breed-defaults.index');
     }
 
     public function store(Request $request)
@@ -52,9 +52,9 @@ class BreedDefaultController extends Controller
         return view('breed-defaults.show', compact('breedDefault'));
     }
 
-    public function edit(BreedDefault $breedDefault)
+    public function edit($breedDefault)
     {
-        return view('breed-defaults.edit', compact('breedDefault'));
+        return redirect()->route('breed-defaults.index');
     }
 
     public function update(Request $request, BreedDefault $breedDefault)

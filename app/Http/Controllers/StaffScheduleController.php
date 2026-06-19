@@ -93,6 +93,11 @@ class StaffScheduleController extends Controller
             ->with('success', 'Escala atualizada.');
     }
 
+    public function show(StaffSchedule $staffSchedule)
+    {
+        return redirect()->route('staff-schedules.index');
+    }
+
     public function destroy(StaffSchedule $staffSchedule)
     {
         $staffSchedule->delete();

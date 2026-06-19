@@ -56,14 +56,9 @@ class CategoryController extends Controller
         return view('categories.show', compact('category'));
     }
 
-    public function edit(Category $category)
+    public function edit($category)
     {
-        $parentCategories = Category::whereNull('parent_id')
-            ->where('id', '!=', $category->id)
-            ->orderBy('name')
-            ->get();
-
-        return view('categories.edit', compact('category', 'parentCategories'));
+        return redirect()->route('categories.index');
     }
 
     public function update(Request $request, Category $category)

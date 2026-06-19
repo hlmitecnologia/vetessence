@@ -23,7 +23,7 @@ class DepartmentController extends Controller
 
     public function create()
     {
-        return view('departments.create');
+        return redirect()->route('departments.index');
     }
 
     public function store(Request $request)
@@ -44,9 +44,9 @@ class DepartmentController extends Controller
         return view('departments.show', compact('department'));
     }
 
-    public function edit(Department $department)
+    public function edit($department)
     {
-        return view('departments.edit', compact('department'));
+        return redirect()->route('departments.index');
     }
 
     public function update(Request $request, Department $department)

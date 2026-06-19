@@ -31,7 +31,7 @@ class ConvenioController extends Controller
 
     public function create()
     {
-        return view('convenios.create');
+        return redirect()->route('convenios.index');
     }
 
     public function store(Request $request)
@@ -60,9 +60,9 @@ class ConvenioController extends Controller
         return view('convenios.show', compact('convenio'));
     }
 
-    public function edit(Convenio $convenio)
+    public function edit($convenio)
     {
-        return view('convenios.edit', compact('convenio'));
+        return redirect()->route('convenios.index');
     }
 
     public function update(Request $request, Convenio $convenio)

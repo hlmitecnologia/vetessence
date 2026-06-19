@@ -23,7 +23,7 @@ class DrugFormularyController extends Controller
 
     public function create()
     {
-        return view('drug-formulary.create');
+        return redirect()->route('drug-formulary.index');
     }
 
     public function store(Request $request)
@@ -42,9 +42,9 @@ class DrugFormularyController extends Controller
         return redirect()->route('drug-formulary.index')->with('success', 'Fármaco cadastrado.');
     }
 
-    public function edit(DrugFormulary $drugFormulary)
+    public function edit($drugFormulary)
     {
-        return view('drug-formulary.edit', compact('drugFormulary'));
+        return redirect()->route('drug-formulary.index');
     }
 
     public function update(Request $request, DrugFormulary $drugFormulary)
@@ -61,6 +61,11 @@ class DrugFormularyController extends Controller
 
         $drugFormulary->update($data);
         return redirect()->route('drug-formulary.index')->with('success', 'Fármaco atualizado.');
+    }
+
+    public function show(DrugFormulary $drugFormulary)
+    {
+        return redirect()->route('drug-formulary.index');
     }
 
     public function destroy(DrugFormulary $drugFormulary)

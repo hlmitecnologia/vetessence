@@ -40,7 +40,7 @@ class EmergencyProtocolController extends Controller
 
     public function create()
     {
-        return view('emergency-protocols.create');
+        return redirect()->route('emergency-protocols.index');
     }
 
     public function store(Request $request)
@@ -65,9 +65,9 @@ class EmergencyProtocolController extends Controller
         return view('emergency-protocols.show', compact('emergencyProtocol'));
     }
 
-    public function edit(EmergencyProtocol $emergencyProtocol)
+    public function edit($emergencyProtocol)
     {
-        return view('emergency-protocols.edit', compact('emergencyProtocol'));
+        return redirect()->route('emergency-protocols.index');
     }
 
     public function update(Request $request, EmergencyProtocol $emergencyProtocol)

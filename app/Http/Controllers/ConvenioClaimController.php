@@ -27,9 +27,7 @@ class ConvenioClaimController extends Controller
 
     public function create()
     {
-        $convenioPets = ConvenioPet::with(['convenio', 'pet'])->get();
-        $invoices = Invoice::where('status', 'pending')->orderBy('created_at', 'desc')->get();
-        return view('convenio-claims.create', compact('convenioPets', 'invoices'));
+        return redirect()->route('convenio-claims.index');
     }
 
     public function store(Request $request)
@@ -54,11 +52,9 @@ class ConvenioClaimController extends Controller
         return view('convenio-claims.show', compact('convenioClaim'));
     }
 
-    public function edit(ConvenioClaim $convenioClaim)
+    public function edit($convenioClaim)
     {
-        $convenioPets = ConvenioPet::with(['convenio', 'pet'])->get();
-        $invoices = Invoice::where('status', 'pending')->orderBy('created_at', 'desc')->get();
-        return view('convenio-claims.edit', compact('convenioClaim', 'convenioPets', 'invoices'));
+        return redirect()->route('convenio-claims.index');
     }
 
     public function update(Request $request, ConvenioClaim $convenioClaim)

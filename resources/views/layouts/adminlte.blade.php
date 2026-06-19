@@ -959,6 +959,18 @@
                     initTomSelects(el);
                 }, 0);
             });
+
+            Livewire.on('notify', function(data) {
+                if (typeof Toast !== 'undefined') {
+                    Toast.fire({ icon: data.type || 'info', title: data.message || '' });
+                } else if (typeof Swal !== 'undefined') {
+                    Swal.fire({ icon: data.type || 'info', title: data.message || '', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+                } else if (typeof toastr !== 'undefined') {
+                    toastr[data.type || 'info'](data.message || '');
+                } else {
+                    alert(data.message || '');
+                }
+            });
         });
 
         // Bootstrap modal integration

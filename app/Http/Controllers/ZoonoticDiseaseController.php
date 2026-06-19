@@ -41,7 +41,7 @@ class ZoonoticDiseaseController extends Controller
 
     public function create()
     {
-        return view('zoonotic-diseases.create');
+        return redirect()->route('zoonotic-diseases.index');
     }
 
     public function store(Request $request)
@@ -79,9 +79,9 @@ class ZoonoticDiseaseController extends Controller
         return view('zoonotic-diseases.show', compact('zoonoticDisease'));
     }
 
-    public function edit(ZoonoticDisease $zoonoticDisease)
+    public function edit($zoonoticDisease)
     {
-        return view('zoonotic-diseases.edit', compact('zoonoticDisease'));
+        return redirect()->route('zoonotic-diseases.index');
     }
 
     public function update(Request $request, ZoonoticDisease $zoonoticDisease)

@@ -38,6 +38,7 @@ class ChatBox extends Component
         ]);
 
         $this->newMessage = '';
+        $this->dispatch('refreshChat');
     }
 
     public function markAsRead($userId)
@@ -71,7 +72,6 @@ class ChatBox extends Component
         }
 
         $this->unreadCount = ChatMessage::unread(auth()->id())->count();
-        $this->dispatch('unread-count', count: $this->unreadCount);
 
         return view('livewire.chat-box', compact('users', 'messages'));
     }

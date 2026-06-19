@@ -32,30 +32,42 @@
                 <div class="card-body">
                     <p class="text-muted small">Marque as permissões que este perfil terá acesso.</p>
 
-                    @foreach($groupedPermissions as $group => $data)
-                    <div class="card card-outline card-secondary mb-3">
-                        <div class="card-header py-2 d-flex align-items-center">
-                            <h6 class="card-title mb-0">{{ $data['label'] }}</h6>
-                            <label class="ml-3 mb-0 small">
-                                <input type="checkbox" class="check-all-group" data-group="{{ $group }}"> Marcar todos
-                            </label>
+                    @foreach($groupedPermissions['sections'] as $sectionLabel => $groupKeys)
+                    <div class="card card-primary card-outline mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">{{ $sectionLabel }}</h5>
                         </div>
-                        <div class="card-body py-2">
-                            <div class="row">
-                                @foreach($data['perms'] as $perm)
-                                <div class="col-md-3 col-sm-4 col-6">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" name="permissions[]" value="{{ $perm->id }}"
-                                            class="custom-control-input perm-{{ $group }}"
-                                            id="perm-{{ $perm->id }}"
-                                            @checked(in_array($perm->id, old('permissions', [])))>
-                                        <label class="custom-control-label small" for="perm-{{ $perm->id }}">
-                                            {{ $perm->name }}
+                        <div class="card-body">
+                            @foreach($groupKeys as $groupKey)
+                                @php $group = $groupedPermissions['groups'][$groupKey] ?? null; @endphp
+                                @if($group)
+                                <div class="card card-secondary card-outline mb-3">
+                                    <div class="card-header py-2 d-flex align-items-center">
+                                        <h6 class="card-title mb-0">{{ $group['label'] }}</h6>
+                                        <label class="ml-3 mb-0 small">
+                                            <input type="checkbox" class="check-all-group" data-group="{{ $groupKey }}"> Marcar todos
                                         </label>
                                     </div>
+                                    <div class="card-body py-2">
+                                        <div class="row">
+                                            @foreach($group['perms'] as $perm)
+                                            <div class="col-md-3 col-sm-4 col-6">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" name="permissions[]" value="{{ $perm->id }}"
+                                                        class="custom-control-input perm-{{ $groupKey }}"
+                                                        id="perm-{{ $perm->id }}"
+                                                        @checked(in_array($perm->id, old('permissions', [])))>
+                                                    <label class="custom-control-label small" for="perm-{{ $perm->id }}">
+                                                        {{ $perm->name }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
                                 </div>
-                                @endforeach
-                            </div>
+                                @endif
+                            @endforeach
                         </div>
                     </div>
                     @endforeach

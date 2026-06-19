@@ -27,8 +27,7 @@ class PreAnestheticEvaluationController extends Controller
 
     public function create()
     {
-        $pets = Pet::with('tutors')->orderBy('name')->get();
-        return view('pre-anesthetic-evaluations.create', compact('pets'));
+        return redirect()->route('pre-anesthetic-evaluations.index');
     }
 
     public function store(Request $request)
@@ -59,10 +58,9 @@ class PreAnestheticEvaluationController extends Controller
         return view('pre-anesthetic-evaluations.show', compact('preAnestheticEvaluation'));
     }
 
-    public function edit(PreAnestheticEvaluation $preAnestheticEvaluation)
+    public function edit($preAnestheticEvaluation)
     {
-        $pets = Pet::with('tutors')->orderBy('name')->get();
-        return view('pre-anesthetic-evaluations.edit', compact('preAnestheticEvaluation', 'pets'));
+        return redirect()->route('pre-anesthetic-evaluations.index');
     }
 
     public function update(Request $request, PreAnestheticEvaluation $preAnestheticEvaluation)

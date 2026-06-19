@@ -36,7 +36,7 @@ class ConsentTemplateController extends Controller
 
     public function create()
     {
-        return view('consent-templates.create');
+        return redirect()->route('consent-templates.index');
     }
 
     public function store(Request $request)
@@ -64,9 +64,9 @@ class ConsentTemplateController extends Controller
         return view('consent-templates.show', compact('consentTemplate'));
     }
 
-    public function edit(ConsentTemplate $consentTemplate)
+    public function edit($consentTemplate)
     {
-        return view('consent-templates.edit', compact('consentTemplate'));
+        return redirect()->route('consent-templates.index');
     }
 
     public function update(Request $request, ConsentTemplate $consentTemplate)

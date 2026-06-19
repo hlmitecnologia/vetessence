@@ -24,8 +24,7 @@ class PositionController extends Controller
 
     public function create()
     {
-        $departments = Department::orderBy('name')->pluck('name', 'id');
-        return view('positions.create', compact('departments'));
+        return redirect()->route('positions.index');
     }
 
     public function store(Request $request)
@@ -47,10 +46,9 @@ class PositionController extends Controller
         return view('positions.show', compact('position'));
     }
 
-    public function edit(Position $position)
+    public function edit($position)
     {
-        $departments = Department::orderBy('name')->pluck('name', 'id');
-        return view('positions.edit', compact('position', 'departments'));
+        return redirect()->route('positions.index');
     }
 
     public function update(Request $request, Position $position)

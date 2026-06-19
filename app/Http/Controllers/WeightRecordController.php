@@ -28,8 +28,7 @@ class WeightRecordController extends Controller
 
     public function create()
     {
-        $pets = Pet::with('tutors')->orderBy('name')->get();
-        return view('weight-records.create', compact('pets'));
+        return redirect()->route('weight-records.index');
     }
 
     public function store(Request $request)
@@ -55,10 +54,9 @@ class WeightRecordController extends Controller
         return view('weight-records.show', compact('weightRecord'));
     }
 
-    public function edit(WeightRecord $weightRecord)
+    public function edit($weightRecord)
     {
-        $pets = Pet::with('tutors')->orderBy('name')->get();
-        return view('weight-records.edit', compact('weightRecord', 'pets'));
+        return redirect()->route('weight-records.index');
     }
 
     public function update(Request $request, WeightRecord $weightRecord)

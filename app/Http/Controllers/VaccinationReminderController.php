@@ -40,8 +40,7 @@ class VaccinationReminderController extends Controller
 
     public function create()
     {
-        $pets = Pet::with('vaccinations')->where('is_active', true)->orderBy('name')->get();
-        return view('vaccination-reminders.create', compact('pets'));
+        return redirect()->route('vaccination-reminders.index');
     }
 
     public function store(Request $request)
@@ -67,11 +66,9 @@ class VaccinationReminderController extends Controller
         return view('vaccination-reminders.show', compact('vaccinationReminder'));
     }
 
-    public function edit(VaccinationReminder $vaccinationReminder)
+    public function edit($vaccinationReminder)
     {
-        $vaccinationReminder->load(['vaccination', 'pet']);
-        $pets = Pet::with('vaccinations')->where('is_active', true)->orderBy('name')->get();
-        return view('vaccination-reminders.edit', compact('vaccinationReminder', 'pets'));
+        return redirect()->route('vaccination-reminders.index');
     }
 
     public function update(Request $request, VaccinationReminder $vaccinationReminder)

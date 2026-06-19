@@ -30,7 +30,7 @@ class VaccineProtocolController extends Controller
 
     public function create()
     {
-        return view('vaccine-protocols.create');
+        return redirect()->route('vaccine-protocols.index');
     }
 
     public function store(Request $request)
@@ -59,9 +59,9 @@ class VaccineProtocolController extends Controller
         return view('vaccine-protocols.show', compact('vaccineProtocol'));
     }
 
-    public function edit(VaccineProtocol $vaccineProtocol)
+    public function edit($vaccineProtocol)
     {
-        return view('vaccine-protocols.edit', compact('vaccineProtocol'));
+        return redirect()->route('vaccine-protocols.index');
     }
 
     public function update(Request $request, VaccineProtocol $vaccineProtocol)

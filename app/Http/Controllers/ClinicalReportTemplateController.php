@@ -42,7 +42,7 @@ class ClinicalReportTemplateController extends Controller
 
     public function create()
     {
-        return view('clinical-report-templates.create');
+        return redirect()->route('clinical-report-templates.index');
     }
 
     public function store(Request $request)
@@ -72,9 +72,9 @@ class ClinicalReportTemplateController extends Controller
         return view('clinical-report-templates.show', compact('clinicalReportTemplate'));
     }
 
-    public function edit(ClinicalReportTemplate $clinicalReportTemplate)
+    public function edit($clinicalReportTemplate)
     {
-        return view('clinical-report-templates.edit', compact('clinicalReportTemplate'));
+        return redirect()->route('clinical-report-templates.index');
     }
 
     public function update(Request $request, ClinicalReportTemplate $clinicalReportTemplate)

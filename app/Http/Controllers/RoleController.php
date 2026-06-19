@@ -34,6 +34,7 @@ class RoleController extends Controller
             'communication' => 'Comunicação',
             'configuracoes' => 'Configurações',
             'consent-forms' => 'Termos de Consentimento',
+            'consent-templates' => 'Modelos de Termos',
             'controlled-substances' => 'Substâncias Controladas',
             'convenio-claims' => 'Guias de Convênio',
             'convenios' => 'Convênios',
@@ -97,15 +98,47 @@ class RoleController extends Controller
             'zoonotic-diseases' => 'Doenças Zoonóticas',
         ];
 
+        $sections = [
+            'Cadastros' => ['tutors', 'pets', 'convenios', 'zoonotic-diseases'],
+            'Atendimento' => ['appointments', 'triage', 'online-bookings', 'medical-records',
+                'treatment-plans', 'clinical-report-templates', 'vaccinations', 'boardings',
+                'vaccine-protocols', 'parasite-controls', 'health-certificates',
+                'vaccination-reminders', 'hospitalizations', 'anesthesia', 'pre-anesthetic',
+                'surgeries', 'laboratory', 'imaging', 'exams', 'prescriptions',
+                'drug-interactions', 'dental-charts', 'consent-forms', 'weight-records',
+                'diet-plans', 'referrals', 'teleconsultations', 'convenio-claims',
+                'grooming-templates', 'emergency-protocols', 'drug-formulary',
+                'pet-death-records', 'therapy-sessions', 'execution-maps'],
+            'Comunicação' => ['chat', 'staff-notes', 'notification-logs', 'communication',
+                'communication-templates'],
+            'Agenda' => ['staff-schedules', 'schedules-on-call', 'vet-shifts'],
+            'Financeiro' => ['invoices', 'payments', 'financial-reports', 'payment-gateways',
+                'nfse', 'nfse-config', 'nfe', 'nfe-config', 'bank-reconciliation',
+                'commissions', 'purchase-orders'],
+            'Estoque' => ['products', 'stock', 'suppliers', 'controlled-substances',
+                'lab-equipment', 'categories'],
+            'Configurações' => ['users', 'roles', 'employees', 'departments', 'positions',
+                'services', 'consent-templates', 'branches',
+                'system-update', 'configuracoes', 'breed-defaults', 'audit-logs',
+                'backups', 'nfe-config', 'nfse-config'],
+        ];
+
         $permissions = Permission::orderBy('name')->get();
-        $grouped = [];
+        $groups = [];
         foreach ($permissions as $perm) {
             $parts = explode('.', $perm->name, 2);
             $group = $parts[0] ?? 'outros';
-            $grouped[$group]['perms'][] = $perm;
-            $grouped[$group]['label'] = $labels[$group] ?? ucfirst($group);
+            $groups[$group]['perms'][] = $perm;
+            $groups[$group]['label'] = $labels[$group] ?? ucfirst($group);
         }
-        return $grouped;
+
+        $assigned = collect($sections)->flatten()->unique()->values()->all();
+        $outros = array_diff(array_keys($groups), $assigned);
+        if ($outros) {
+            $sections['Outros'] = array_values($outros);
+        }
+
+        return ['groups' => $groups, 'sections' => $sections];
     }
 
     public function index()

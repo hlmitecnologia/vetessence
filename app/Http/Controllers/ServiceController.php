@@ -48,9 +48,7 @@ class ServiceController extends Controller
 
     public function create()
     {
-        $categories = Category::where('type', 'service')->orderBy('name')->get();
-        $speciesList = config('species');
-        return view('services.create', compact('categories', 'speciesList'));
+        return redirect()->route('services.index');
     }
 
     public function store(Request $request)
@@ -84,12 +82,9 @@ class ServiceController extends Controller
         return view('services.show', compact('service'));
     }
 
-    public function edit(Service $service)
+    public function edit($service)
     {
-        $categories = Category::where('type', 'service')->orderBy('name')->get();
-        $service->load('priceTiers');
-        $speciesList = config('species');
-        return view('services.edit', compact('service', 'categories', 'speciesList'));
+        return redirect()->route('services.index');
     }
 
     public function update(Request $request, Service $service)

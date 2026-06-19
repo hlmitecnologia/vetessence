@@ -40,7 +40,7 @@ class ControlledSubstanceController extends Controller
 
     public function create()
     {
-        return view('controlled-substances.create');
+        return redirect()->route('controlled-substances.index');
     }
 
     public function store(Request $request)
@@ -70,9 +70,9 @@ class ControlledSubstanceController extends Controller
         return view('controlled-substances.show', compact('controlledSubstance'));
     }
 
-    public function edit(ControlledSubstance $controlledSubstance)
+    public function edit($controlledSubstance)
     {
-        return view('controlled-substances.edit', compact('controlledSubstance'));
+        return redirect()->route('controlled-substances.index');
     }
 
     public function update(Request $request, ControlledSubstance $controlledSubstance)

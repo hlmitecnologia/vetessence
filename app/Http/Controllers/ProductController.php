@@ -37,10 +37,7 @@ class ProductController extends Controller
 
     public function create()
     {
-        $categories = Category::where('type', 'product')->orderBy('name')->get();
-        $suppliers = Supplier::orderBy('name')->get();
-
-        return view('products.create', compact('categories', 'suppliers'));
+        return redirect()->route('products.index');
     }
 
     public function store(Request $request)
@@ -67,12 +64,9 @@ class ProductController extends Controller
         return view('products.show', compact('product'));
     }
 
-    public function edit(Product $product)
+    public function edit($product)
     {
-        $categories = Category::where('type', 'product')->orderBy('name')->get();
-        $suppliers = Supplier::orderBy('name')->get();
-
-        return view('products.edit', compact('product', 'categories', 'suppliers'));
+        return redirect()->route('products.index');
     }
 
     public function update(Request $request, Product $product)
