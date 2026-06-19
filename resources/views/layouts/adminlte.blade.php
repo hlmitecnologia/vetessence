@@ -930,6 +930,8 @@
                             "sLengthMenu": "_MENU_ registros por página",
                             "sLoadingRecords": "Carregando...",
                             "sProcessing": "Processando...",
+                            "sSearch": "Pesquisar:",
+                            "sSearchPlaceholder": "Buscar...",
                             "sZeroRecords": "Nenhum registro encontrado",
                             "oPaginate": {
                                 "sNext": "Próximo",
