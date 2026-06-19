@@ -87,6 +87,50 @@
         @endforeach
     @endif
 
+    @if ($showManualTaskModal)
+        <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Adicionar Procedimento</h5>
+                        <button type="button" class="close" wire:click="$set('showManualTaskModal', false)">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Título <span class="text-danger">*</span></label>
+                            <input wire:model="manualTaskTitle" class="form-control">
+                            @error('manualTaskTitle') <span class="text-danger small">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="form-group">
+                            <label>Categoria</label>
+                            <select wire:model="manualTaskCategory" class="form-control">
+                                <option value="procedure">Procedimento</option>
+                                <option value="medication">Medicação</option>
+                                <option value="exam">Exame</option>
+                                <option value="care">Cuidado</option>
+                                <option value="other">Outro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Horário</label>
+                            <input wire:model="manualTaskTime" type="time" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição</label>
+                            <textarea wire:model="manualTaskDescription" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" wire:click="$set('showManualTaskModal', false)">Cancelar</button>
+                        <button type="button" class="btn btn-primary" wire:click="saveManualTask">Adicionar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     @if ($showExecuteModal)
         <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
             <div class="modal-dialog">

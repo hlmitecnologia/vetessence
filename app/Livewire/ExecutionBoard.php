@@ -18,10 +18,19 @@ class ExecutionBoard extends Component
     public $executingTaskId;
     public $executeStatus = 'completed';
     public $executeNotes = '';
+    public $showManualTaskModal = false;
+    public $manualTaskTitle = '';
+    public $manualTaskCategory = 'procedure';
+    public $manualTaskTime = '';
+    public $manualTaskDescription = '';
 
     protected $rules = [
         'executeStatus' => 'required|in:completed,skipped,partially',
         'executeNotes' => 'nullable|string|max:500',
+        'manualTaskTitle' => 'required|string|max:255',
+        'manualTaskCategory' => 'required|string|max:50',
+        'manualTaskTime' => 'nullable|date_format:H:i',
+        'manualTaskDescription' => 'nullable|string|max:1000',
     ];
 
     public function mount(Hospitalization $hospitalization, $date = null)
@@ -143,21 +152,26 @@ class ExecutionBoard extends Component
 
     public function addManualTask()
     {
-        $this->dispatch('open-manual-task-modal');
+        $this->reset(['manualTaskTitle', 'manualTaskCategory', 'manualTaskTime', 'manualTaskDescription']);
+        $this->manualTaskCategory = 'procedure';
+        $this->showManualTaskModal = true;
     }
 
-    public function saveManualTask($title, $category = 'procedure', $scheduledTime = null, $description = null)
+    public function saveManualTask()
     {
+        $this->validate(['manualTaskTitle' => 'required|string|max:255']);
+
         $this->executionMap->tasks()->create([
-            'category' => $category,
-            'title' => $title,
-            'description' => $description,
-            'scheduled_time' => $scheduledTime ?: null,
+            'category' => $this->manualTaskCategory,
+            'title' => $this->manualTaskTitle,
+            'description' => $this->manualTaskDescription ?: null,
+            'scheduled_time' => $this->manualTaskTime ?: null,
             'source_type' => 'manual',
             'status' => 'pending',
             'created_by' => auth()->id(),
         ]);
 
+        $this->showManualTaskModal = false;
         $this->loadTasks();
         $this->dispatch('notify', type: 'success', message: 'Tarefa manual adicionada.');
     }
