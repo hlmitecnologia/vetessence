@@ -133,4 +133,4 @@
 ## Diagrama do Processo
 
 ![Convênio, Claims e CVI](../diagrams/18-fluxo-convenio.svg)
-*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*

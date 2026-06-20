@@ -1,0 +1,55 @@
+@startuml
+!include _common.puml
+
+title Macro-Fluxo do Sistema
+
+|Tutor|
+start
+split
+  :Solicitar / Cadastrar;
+split again
+  :Receber Notificações;
+split again
+  :Visualizar Resultados;
+endsplit
+
+|Recepcionista|
+split
+  :Agendar Consulta;
+split again
+  :Cadastrar Tutor / Pet;
+endsplit
+
+|Veterinário|
+:Fazer Prontuário (SOAP);
+split
+  :Prescrição;
+split again
+  :Vacina;
+split again
+  :Solicitar Exame;
+split again
+  :Realizar Cirurgia;
+endsplit
+
+|Financeiro|
+:Faturar Serviços;
+if (NFSe?) then ([sim])
+  :NFSe + Comissão;
+else ([não])
+  :Conciliação;
+endif
+
+|Estoque|
+:Pedido de Compra;
+:Recebimento + Lotes;
+
+|Sistema|
+split
+  :Disparar Notificações;
+split again
+  :Lembretes Automáticos;
+endsplit
+
+stop
+@enduml

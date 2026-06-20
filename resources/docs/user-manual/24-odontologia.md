@@ -76,4 +76,4 @@ O odontograma é uma representação gráfica dos dentes do animal:
 ## Diagrama do Processo
 
 ![Odontologia](../diagrams/30-fluxo-odontologia.svg)
-*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*

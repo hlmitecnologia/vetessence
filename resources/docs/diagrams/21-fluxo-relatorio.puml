@@ -1,0 +1,27 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Relatórios
+
+|Usuário|
+start
+:Acessar Módulo Relatórios;
+:Selecionar Tipo + Filtros;
+
+if (Formato?) then ([Visualizar])
+  :Visualizar na Tela;
+elseif ([PDF])
+  :Gerar PDF;
+else ([Excel])
+  :Exportar Excel/CSV;
+endif
+
+|Sistema|
+if (Agendar Envio?) then ([não])
+else ([sim])
+  :Configurar Recorrência;
+  :Enviar por E-mail;
+endif
+
+stop
+@enduml

@@ -102,4 +102,4 @@ O módulo de hospedagem gerencia check-in, check-out, tarefas diárias, banho e 
 ## Diagrama do Processo
 
 ![Hospedagem/Boarding](../diagrams/29-fluxo-hospedagem.svg)
-*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*

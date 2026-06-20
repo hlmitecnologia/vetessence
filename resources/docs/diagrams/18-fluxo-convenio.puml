@@ -1,0 +1,31 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Convênio, Claims e CVI
+
+|Veterinário|
+start
+:Cadastrar Convênio;
+:Tabela de Procedimentos;
+:Realizar Atendimento;
+
+if (Pet é Conveniado?) then ([não])
+  stop
+else ([sim])
+  :Faturamento de Guia;
+  :Lote de Faturamento;
+  |Sistema|
+  :Enviar ao Convênio;
+  |Operadora|
+  :Processar Guia;
+  :Status: Pago/Glosado/Pendente;
+  |Sistema|
+  if (Auto-Claim Ativo?) then ([não])
+  else ([sim])
+    :claims:auto-file API Porto Seguro;
+    :Webhook POST /api/...;
+  endif
+endif
+
+stop
+@enduml

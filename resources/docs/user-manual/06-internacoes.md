@@ -72,4 +72,4 @@ O **Mapa de Execução** é um cronograma visual de tarefas (medicações, proce
 ## Diagrama do Processo
 
 ![Internação](../diagrams/12-fluxo-internacao.svg)
-*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*

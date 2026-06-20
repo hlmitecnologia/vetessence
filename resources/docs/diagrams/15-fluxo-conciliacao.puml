@@ -1,0 +1,20 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Conciliação Bancária
+
+|Sistema|
+start
+:Importar Extrato (OFX/QIF/CSV);
+:Processar Transações;
+|Financeiro|
+:Sugerir Correspondências;
+
+if (Match Automático?) then ([não])
+  :Arrastar + Confirmar;
+else ([sim])
+  :Reconcilied (Automático);
+endif
+
+stop
+@enduml

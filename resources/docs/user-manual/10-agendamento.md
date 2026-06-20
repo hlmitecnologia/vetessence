@@ -131,4 +131,4 @@ Esse comportamento garante que o tutor não tenha uma consulta agendada para um 
 ## Diagrama do Processo
 
 ![Agendamento e Consulta](../diagrams/16-fluxo-agendamento.svg)
-*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*

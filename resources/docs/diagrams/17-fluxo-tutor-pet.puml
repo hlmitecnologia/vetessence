@@ -1,0 +1,32 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Cadastro de Tutor e Pet
+
+|Recepcionista|
+start
+:Cadastrar Tutor;
+:Preencher Nome+CPF+Email+Telefone+Endereço;
+|Sistema|
+:Validar CPF Único;
+:Registrar Preferências de Notificação;
+|Recepcionista|
+:Cadastrar Pet (nome, espécie, raça);
+
+if (Microchip?) then ([não])
+else ([sim])
+  :Registrar Microchip;
+endif
+
+:RG Animal + Órgão;
+
+if (Vínculos Adicionais?) then ([não])
+else ([sim])
+  :Adicionar Vínculos;
+endif
+
+|Sistema|
+:Timeline do Paciente;
+
+stop
+@enduml

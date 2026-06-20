@@ -1,0 +1,43 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Recursos Humanos (Admissão)
+
+|RH|
+start
+:Iniciar Admissão;
+
+split
+  :Criar Departamento;
+split again
+  |Admin|
+  :Criar Cargo / Posição;
+endsplit
+
+|RH|
+:Cadastrar Funcionário;
+
+if (Acesso ao Sistema?) then ([não])
+  |Sistema|
+  :Definir Escala;
+else ([sim])
+  |Sistema|
+  :Vincular Usuário;
+  |Admin|
+  :Atribuir Role + Permissões;
+  |Sistema|
+  :Definir Escala;
+endif
+
+|RH|
+if (Plantão?) then ([não])
+  |Sistema|
+  :Lembretes (staff:remind);
+  stop
+else ([sim])
+  :Configurar Sobreaviso;
+  |Sistema|
+  :Lembretes (staff:remind);
+  stop
+endif
+@enduml

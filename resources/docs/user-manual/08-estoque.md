@@ -185,11 +185,11 @@ Ao criar ou editar uma fatura, é possível adicionar itens do tipo **produto**:
 ## Diagrama do Processo
 
 ![Estoque e Pedidos de Compra](../diagrams/14-fluxo-estoque.svg)
-*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*
 
 ---
 
 ## Diagrama do Processo
 
 ![Substâncias Controladas](../diagrams/14-fluxo-substancias.svg)
-*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*

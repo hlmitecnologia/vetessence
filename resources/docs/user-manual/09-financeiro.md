@@ -423,11 +423,11 @@ Isso permite, por exemplo, faturar uma consulta (serviço) + medicamento (produt
 ## Diagrama do Processo
 
 ![Faturamento, NFSe e Comissões](../diagrams/15-fluxo-fatura.svg)
-*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*
 
 ---
 
 ## Diagrama do Processo
 
 ![Conciliação Bancária](../diagrams/15-fluxo-conciliacao.svg)
-*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*

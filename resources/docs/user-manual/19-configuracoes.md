@@ -223,4 +223,4 @@ As integrações abaixo são configuradas via painel admin.
 ## Diagrama do Processo
 
 ![Auto-Update e Configurações](../diagrams/25-fluxo-autoupdate.svg)
-*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*

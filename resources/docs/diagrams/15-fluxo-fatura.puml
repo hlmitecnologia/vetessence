@@ -1,0 +1,43 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Faturamento, NFSe e Comissões
+
+|Veterinário|
+start
+:Fatura Gerada;
+:Adicionar Itens/Serviços;
+|Tutor|
+:Pagar (Dinheiro/Cartão/PIX);
+
+|Sistema|
+if (Pago?) then ([não])
+  stop
+else ([sim])
+  :InvoicePaid (evento);
+  if (NFSe Config?) then ([não])
+  else ([sim])
+    :Emitir NFSe;
+    :Processar NFSe;
+    :Salvar XML + PDF;
+    |Tutor|
+    :Receber NFSe por E-mail;
+  endif
+  |Sistema|
+  if (Comissão Config?) then ([não])
+  else ([sim])
+    :Calcular Comissão;
+    :Commission pending;
+    |Financeiro|
+    :Financeiro paga;
+  endif
+  |Sistema|
+  if (Conciliação Automática?) then ([não])
+  else ([sim])
+    :Transação Bancária;
+    :Reconcilied;
+  endif
+endif
+
+stop
+@enduml

@@ -84,4 +84,4 @@ O painel de triagem é uma interface em tempo real para classificação de risco
 ## Diagrama do Processo
 
 ![Triagem Manchester](../diagrams/28-fluxo-triagem.svg)
-*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*

@@ -1,0 +1,42 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Zoonoses e Notificação Compulsória
+
+|Veterinário|
+start
+:Diagnosticar Zoonose;
+
+if (Notificação Compulsória?) then ([não])
+  stop
+else ([sim])
+endif
+
+|Sistema|
+:Prazos: Raiva 24h / Leptospirose 24h;
+
+|Veterinário|
+:Gerar Formulário Oficial;
+:Enviar ao Órgão Competente;
+
+|Vigilância|
+:Receber Notificação;
+
+|Sistema|
+:Registrar Protocolo;
+
+|Tutor|
+:Informar Diagnóstico;
+
+split
+  |Veterinário|
+  :Medidas de Controle;
+  |Sistema|
+  :Relatório Epidemiológico;
+split again
+  |Tutor|
+  :Encaminhamento Médico;
+endsplit
+
+stop
+@enduml

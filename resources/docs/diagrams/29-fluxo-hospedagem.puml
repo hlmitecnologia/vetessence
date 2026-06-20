@@ -1,0 +1,40 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Hospedagem
+
+|Recepcionista|
+start
+:Solicitar Hospedagem;
+
+if (Vacinas OK?) then ([não])
+  |Tutor|
+  :Assinar Termo de Responsabilidade;
+  |Recepcionista|
+endif
+
+:Alocar Acomodação;
+
+if (Banho e Tosa?) then ([sim])
+  :Agendar Grooming;
+endif
+
+|Sistema|
+repeat
+  :Ciclo Diário: Alim+Med+Pas+Limpeza;
+
+  if (Intercorrência?) then ([sim])
+    |Tutor|
+    :Notificado;
+    stop
+  endif
+
+  |Recepcionista|
+repeat while (Check-out?) is ([não])
+->[sim] :Calcular Diárias;
+
+:Gerar Fatura;
+|Tutor|
+:Pagar e Retirar Pet;
+stop
+@enduml

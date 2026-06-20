@@ -50,11 +50,11 @@ Guia prático para utilização do VetEssence no dia a dia da clínica.
 ## Diagrama do Processo
 
 ![Macro-Fluxo do Sistema](../diagrams/macro-fluxo-sistema.svg)
-*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*
 
 ---
 
 ## Diagrama do Processo
 
 ![Matriz de Perfis RACI](../diagrams/matriz-perfis.svg)
-*Clique na imagem para ampliar. Diagrama BPMN 2.0 — setas contínuas = fluxo sequencial, tracejadas = fluxo de mensagem, losangos = decisão.*
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*
