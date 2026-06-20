@@ -1,0 +1,24 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Substâncias Controladas
+
+|Estoque|
+start
+:Compra Controlada;
+
+:Registrar Entrada Lote+Validade+Qtd;
+
+|Veterinário|
+:Saída Auditada (quem/pet/prescrição);
+
+|Sistema|
+split
+  :Relatório Mensal ANVISA;
+split again
+  :Relatório Anual;
+endsplit
+
+|Estoque|
+stop
+@enduml

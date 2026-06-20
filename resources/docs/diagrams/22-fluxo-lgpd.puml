@@ -1,0 +1,38 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Auditoria e LGPD
+
+|Tutor|
+start
+:Solicitar Direito LGPD;
+
+|Sistema|
+:Tipo de Solicitação?;
+split
+  |Sistema|
+  :Exportar Dados (JSON);
+split again
+  |Admin|
+  :Editar Dados;
+split again
+  |Auditor|
+  :Anonimizar;
+split again
+  |Auditor|
+  :Exportar Formato Estruturado;
+split again
+  |Sistema|
+  :Revogar Consentimento;
+split again
+  |Auditor|
+  :Auditar Logs;
+endsplit
+
+|Sistema|
+:Registrar Auditoria;
+
+|Tutor|
+:Resposta em até 15 dias;
+stop
+@enduml

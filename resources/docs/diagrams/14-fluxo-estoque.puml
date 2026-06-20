@@ -1,0 +1,43 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Estoque e Pedidos de Compra
+
+|Estoque|
+start
+:Criar Pedido (draft);
+
+while (Valor > Limite?) is ([verifica])
+  :Adicionar Itens+Qtd+Preço;
+
+  if (Valor > Limite?) then ([não])
+    break
+  else ([sim])
+    |Admin|
+    :Aprovação Necessária;
+
+    if (Aprovado?) then ([não])
+      |Estoque|
+      :Rejeitado (volta a draft);
+    else ([sim])
+      break
+    endif
+  endif
+endwhile
+
+|Estoque|
+:Enviar ao Fornecedor;
+
+|Fornecedor|
+:Receber Pedido;
+
+|Estoque|
+if (Receb. Parcial?) then ([sim])
+  |Financeiro|
+  :Conciliação (confere valores);
+endif
+
+|Estoque|
+:Pedido Finalizado;
+stop
+@enduml

@@ -1,0 +1,47 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Internação
+
+|Veterinário|
+start
+:Registrar Internação;
+
+|Sistema|
+:Notificar Tutor;
+
+|Tutor|
+:Recebe Notificações;
+
+|Enfermeiro|
+repeat
+  :Ciclo: Evolução Diária;
+
+  |Veterinário|
+  :Prescrição Diária;
+
+  if (Alta Médica?) then ([não])
+  else ([sim])
+    break
+  endif
+repeat while ([não]) is (Continua ciclo)
+
+split
+  :Resumo de Alta;
+split again
+  :Prescrição de Alta;
+split again
+  :Orientações;
+split again
+  :Agendar Retorno;
+endsplit
+
+|Sistema|
+:Notificar Tutor;
+
+|Tutor|
+:Recebe Notificações;
+
+|Veterinário|
+stop
+@enduml

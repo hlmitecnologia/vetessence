@@ -1,0 +1,26 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Exame
+
+|Veterinário|
+start
+:Solicitar Exame;
+if (Tipo?) then ([Laboratório])
+  |Sistema|
+  :Laboratório (coleta + laudo);
+else ([Imagem])
+  |Sistema|
+  :Imagem (laudo + assinatura);
+endif
+:Resultado Liberado;
+
+split
+  |Tutor|
+  :Visualizar Resultado;
+split again
+  |Veterinário|
+  :Fim;
+  stop
+endsplit
+@enduml

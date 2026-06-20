@@ -1,0 +1,31 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Farmácia
+
+|Estoque|
+start
+:Cadastrar Produto;
+
+if (Controlado ANVISA?) then ([não])
+else ([sim])
+  :Marcar como Controlado;
+endif
+
+:Registrar Lote+Validade;
+
+if (Preço por Espécie?) then ([não])
+else ([sim])
+  :Configurar Tiers;
+endif
+
+if (Venda ou Uso Clínico?) then ([Venda])
+  :Debitar Estoque;
+else ([Uso Clínico])
+  |Veterinário|
+  :Consumo no Prontuário;
+endif
+
+|Estoque|
+stop
+@enduml

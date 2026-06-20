@@ -1,0 +1,38 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Cirurgia
+
+|Recepcionista|
+start
+:Agendar;
+
+split
+  |Veterinário|
+  :Avaliação Pré-Anestésica;
+split again
+  |Sistema|
+  :Checklist Cirúrgico;
+split again
+  |Tutor|
+  :Termo de Consentimento;
+endsplit
+
+|Veterinário|
+if (Todos OK?) then ([não])
+  stop
+else ([sim])
+  :Realizar Cirurgia;
+endif
+
+split
+  |Veterinário|
+  :Registrar Transoperatório;
+  :Alta;
+  stop
+split again
+  |Sistema|
+  :Pós-OP + Prescrição;
+  :Notificar Tutor;
+endsplit
+@enduml

@@ -1,0 +1,38 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Emergência
+
+|Veterinário|
+start
+:Pet chega em Emergência;
+
+|Tutor|
+:Autorizar Atendimento;
+
+|Veterinário|
+:Buscar Protocolo;
+
+|Sistema|
+:Filtrar por Espécie + Gravidade;
+
+|Veterinário|
+:Selecionar Protocolo;
+:Seguir Passo a Passo;
+
+split
+  :Registrar no Prontuário;
+split again
+  |Sistema|
+  :Notificar Tutor;
+endsplit
+
+|Veterinário|
+if (Internar?) then ([sim])
+  |Sistema|
+  :Fluxo Internação;
+  stop
+else ([não])
+  stop
+endif
+@enduml

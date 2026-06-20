@@ -1,0 +1,35 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Prontuário (SOAP)
+
+|Veterinário|
+start
+:Abrir ficha do pet;
+:Preencher SOAP (S+O+A+P);
+:Adicionar Anexos;
+
+if (Plano de Tratamento?) then ([não])
+  :Prescrever (se necessário);
+else ([sim])
+  :Elaborar Plano de Tratamento;
+  |Tutor|
+  :Aprovar/Rejeitar Plano;
+  |Veterinário|
+  if (Plano Aprovado?) then ([não])
+    :Prescrever (se necessário);
+  else ([sim])
+    :Executar Plano;
+  endif
+endif
+
+:Prontuário Salvo;
+
+if (Gerar Fatura?) then ([sim])
+  :Gerar Fatura (ServiceTypeMap);
+  :Fatura Pendente;
+  stop
+endif
+
+stop
+@enduml

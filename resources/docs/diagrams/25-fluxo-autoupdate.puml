@@ -1,0 +1,38 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Auto-Update e Configurações
+
+|Admin|
+start
+:Acessar Config. > Atualização;
+:Configurar Token + Repo + Branch;
+
+|Sistema|
+:Verificar Atualizações;
+
+|GitHub|
+:git ls-remote;
+
+|Sistema|
+:Comparar Hash Local vs Remoto;
+
+if (Atualização Disponível?) then ([não])
+  :(voltar a verificar);
+else ([sim])
+  |Admin|
+  :Exibir Changelog;
+  :Aplicar Atualização;
+
+  |Sistema|
+  :down → git pull → migrate → up;
+
+  if (Merge Conflict?) then ([sim])
+    :Abortar Restaurar Backup;
+  else ([não])
+  endif
+
+  :Registrar Histórico;
+  stop
+endif
+@enduml

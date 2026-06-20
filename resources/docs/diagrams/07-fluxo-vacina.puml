@@ -1,0 +1,32 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Vacinacao
+
+|Veterinário|
+start
+:Selecionar Pet + Vacina;
+if (Protocolo Ativo?) then ([não])
+  |Recepcionista|
+  :Lançar Manual;
+else ([sim])
+  |Veterinário|
+  :Sugerir Vacina Dose + Intervalo;
+endif
+|Recepcionista|
+:Informar Lote + Validade;
+|Veterinário|
+:Aplicar Vacina;
+|Sistema|
+:Gerar Certificado PDF;
+:Agendar Próximo Lembrete;
+
+split
+  |Veterinário|
+  :Vacina Registrada;
+  stop
+split again
+  |Tutor|
+  :Receber Certificado;
+endsplit
+@enduml

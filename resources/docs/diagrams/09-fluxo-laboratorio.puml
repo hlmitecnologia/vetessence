@@ -1,0 +1,31 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Laboratorio
+
+|Veterinário|
+start
+:Pedido de Exame;
+|Técnico|
+:Registrar Coleta;
+|Sistema|
+if (Equipamento Integrado?) then ([não])
+  |Técnico|
+  :Lançamento Manual;
+else ([sim])
+  |Equipamento|
+  :Webhook HL7;
+endif
+|Sistema|
+:Laudo + Conclusão;
+:Resultado Liberado;
+
+split
+  |Tutor|
+  :Visualizar Portal;
+split again
+  |Veterinário|
+  :Fim;
+  stop
+endsplit
+@enduml

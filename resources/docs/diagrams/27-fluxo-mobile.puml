@@ -1,0 +1,32 @@
+@startuml
+!include _common.puml
+
+title Fluxo Mobile (Veterinário em Campo)
+
+|Veterinário|
+start
+:Acessar /m no celular;
+
+:Ação Desejada?;
+split
+  :Agenda do Dia;
+split again
+  |Sistema|
+  :Pesquisar Pet;
+split again
+  :Check-in (confirmação);
+split again
+  |Veterinário|
+  :Vacinação Rápida;
+split again
+  :Scanner (Código/QR);
+split again
+  |Sistema|
+  :Chat com Tutor;
+split again
+  :Visualizar Triagem;
+endsplit
+
+|Veterinário|
+stop
+@enduml

@@ -1,0 +1,32 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Triagem Manchester
+
+|Tutor|
+start
+:Tutor chega com Pet;
+
+|Recepcionista|
+:Registrar Queixa + Sinais Vitais;
+
+:Classificar Manchester (cor);
+
+|Sistema|
+:Temporizador (cor++);
+
+if (Tempo Máx Excedido?) then ([não])
+else ([sim])
+  :Escalar Prioridade;
+
+  :Sugerir Protocolo;
+endif
+
+|Veterinário|
+:Realizar Atendimento;
+
+:Registrar na Timeline do Pet;
+
+|Recepcionista|
+stop
+@enduml

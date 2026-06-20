@@ -1,0 +1,34 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Notificações
+
+|Sistema|
+start
+:Evento de Negócio;
+:Verificar Preferências;
+
+if (Tutor optou por notifs?) then ([não])
+  stop
+endif
+
+:Hierarquia de Canais;
+split
+  :WhatsApp (Z-API);
+split again
+  :SMS (fallback);
+split again
+  :E-mail;
+endsplit
+
+:Registrar Log de Entrega;
+
+if (Falhou?) then ([sim])
+  :3 tentativas + desativar canal;
+  stop
+else ([não])
+  |Tutor|
+  :Notificação Recebida;
+  stop
+endif
+@enduml

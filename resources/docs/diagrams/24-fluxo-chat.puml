@@ -1,0 +1,37 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Chat Tutor ↔ Clínica
+
+|Tutor|
+start
+:Abrir Chat;
+
+|Funcionário|
+if (Anexo?) then ([sim])
+  |Sistema|
+  :Validar (máx 10MB);
+  |Funcionário|
+  :Anexar Imagem/PDF;
+endif
+
+|Tutor|
+:Enviar Mensagem;
+
+|Sistema|
+:Persiste em chat_messages;
+
+|Funcionário|
+:Badge de Não Lido;
+:Abrir Conversa;
+split
+  :Digitar Resposta;
+split again
+  |Sistema|
+  :Notificação Push/WhatsApp;
+endsplit
+
+|Tutor|
+:Visualizar Resposta;
+stop
+@enduml

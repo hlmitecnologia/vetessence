@@ -1,0 +1,47 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Agendamento e Consulta
+
+|Sistema|
+start
+if (Origem?) then ([Portal])
+  |Tutor|
+  :Acessa Portal Pet+Serviço+Horário;
+else ([Recepção])
+  |Recepcionista|
+  :Calendário + Dados Tutor;
+endif
+
+|Sistema|
+repeat
+  :pending;
+
+  |Recepcionista|
+  if (Tutor Confirmou?) then ([não])
+  else ([sim])
+    break
+  endif
+repeat while ([não]) is (Aguardando)
+
+|Sistema|
+:confirmed;
+
+:Lembrete 24h;
+
+:Lembrete 2h;
+
+|Veterinário|
+:Consulta Realizada;
+
+if (Concluída?) then ([não])
+  |Sistema|
+  :Reagenda;
+  -->|Volta|
+else ([sim])
+  |Sistema|
+  :Auto-Faturamento;
+endif
+
+stop
+@enduml

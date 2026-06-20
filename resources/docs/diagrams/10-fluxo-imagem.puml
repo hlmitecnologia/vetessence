@@ -1,0 +1,23 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Imagem
+
+|Veterinário|
+start
+:Solicitar Exame de Imagem;
+|Radiologista|
+:Upload DICOM;
+:Redigir Laudo;
+:Assinatura Digital;
+
+split
+  |Veterinário|
+  :Associar ao Prontuário;
+  :Fim;
+  stop
+split again
+  |Tutor|
+  :Visualizar Resultado;
+endsplit
+@enduml

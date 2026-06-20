@@ -1,0 +1,53 @@
+@startuml
+!define ICON_PROCESS <$cog>
+!define ICON_DECISION <$question>
+
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam backgroundColor #FEFEFE
+skinparam activity {
+  BorderColor #333333
+  BackgroundColor #FFFFFF
+  FontName Arial
+  FontSize 10
+}
+skinparam arrow {
+  Color #333333
+  FontSize 9
+}
+skinparam swimlane {
+  BorderColor #333333
+  FontName Arial
+  FontSize 12
+  FontStyle bold
+}
+
+' === Actor Colors (matching original BPMN palette) ===
+!define COLOR_TUTOR #E1D5E7
+!define COLOR_TUTOR_BG #F5EEF8
+!define COLOR_RECEPCAO #DAE8FC
+!define COLOR_RECEPCAO_BG #EDF3FB
+!define COLOR_VET #D5E8D4
+!define COLOR_VET_BG #EBF5EA
+!define COLOR_FINANCEIRO #FFE6CC
+!define COLOR_FINANCEIRO_BG #FFF3E6
+!define COLOR_ESTOQUE #FFF2CC
+!define COLOR_ESTOQUE_BG #FFF8E6
+!define COLOR_SISTEMA #F5F5F5
+!define COLOR_SISTEMA_BG #FAFAFA
+
+' === Helper macros ===
+!define Tutor_Start skinparam swimlaneBackgroundColor COLOR_TUTOR_BG
+!define Tutor_End skinparam swimlaneBackgroundColor #FEFEFE
+!define Recepcao_Start skinparam swimlaneBackgroundColor COLOR_RECEPCAO_BG
+!define Recepcao_End skinparam swimlaneBackgroundColor #FEFEFE
+!define Vet_Start skinparam swimlaneBackgroundColor COLOR_VET_BG
+!define Vet_End skinparam swimlaneBackgroundColor #FEFEFE
+!define Financeiro_Start skinparam swimlaneBackgroundColor COLOR_FINANCEIRO_BG
+!define Financeiro_End skinparam swimlaneBackgroundColor #FEFEFE
+!define Estoque_Start skinparam swimlaneBackgroundColor COLOR_ESTOQUE_BG
+!define Estoque_End skinparam swimlaneBackgroundColor #FEFEFE
+!define Sistema_Start skinparam swimlaneBackgroundColor COLOR_SISTEMA_BG
+!define Sistema_End skinparam swimlaneBackgroundColor #FEFEFE
+
+@enduml
