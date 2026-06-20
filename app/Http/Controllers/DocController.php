@@ -99,6 +99,13 @@ class DocController extends Controller
             );
         }
 
+        // Wrap image + italic caption in <figure><figcaption>
+        $html = preg_replace(
+            '#<p>(<img[^>]*>)</p>\s*<p><em>(Clique na imagem para ampliar[^<]*)</em></p>#',
+            "<figure>\n$1\n<figcaption>$2</figcaption>\n</figure>",
+            $html
+        );
+
         return $html;
     }
 

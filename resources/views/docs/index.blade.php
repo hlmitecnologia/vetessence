@@ -102,6 +102,10 @@
 .docs-content a:hover { color: #4338ca; }
 .docs-content blockquote { border-left: 4px solid #6366f1; padding-left: 1rem; margin-left: 0; color: #6b7280; }
 .docs-content strong { font-weight: 600; }
+.docs-content figure { margin: 1.5rem 0; text-align: center; }
+.docs-content figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+.docs-content figure svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+.docs-content figcaption { margin-top: 0.5rem; font-style: italic; color: #6b7280; font-size: 0.9rem; }
 .docs-content img { max-width: 100%; height: auto; }
 .docs-content svg { max-width: 100%; height: auto; }
 </style>
