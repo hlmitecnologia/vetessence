@@ -99,10 +99,10 @@ class DocController extends Controller
             );
         }
 
-        // Wrap image + italic caption in <figure><figcaption>
+        // Image + italic caption are in one <p> (CommonMark soft break)
         $html = preg_replace(
-            '#<p>(<img[^>]*>)</p>\s*<p><em>(Clique na imagem para ampliar[^<]*)</em></p>#',
-            "<figure>\n$1\n<figcaption>$2</figcaption>\n</figure>",
+            '#<p>(<img[^>]*>)\s*<em>(Clique na imagem para ampliar[^<]*)</em></p>#',
+            '<p class="diagram-wrapper">$1<br><em>$2</em></p>',
             $html
         );
 
