@@ -22,7 +22,7 @@
             <tbody>
                 @foreach($movements as $mov)
                 <tr>
-                    <td>{{ $mov->created_at->format('d/m/Y H:i') }}</td>
+                    <td>{{ $mov->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
                     <td><strong>{{ $mov->product->name ?? '-' }}</strong></td>
                     <td>
                         @php
