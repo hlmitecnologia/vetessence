@@ -186,13 +186,23 @@
 @endsection
 
 @push('scripts')
+<script>
 function toggleLlmProviderFields() {
     var select = document.querySelector('.provider-select[data-group="llm"]');
     if (!select) return;
     var selected = select.value;
     var fields = document.querySelectorAll('.provider-fields[data-group="llm"]');
     for (var i = 0; i < fields.length; i++) {
-        fields[i].style.display = fields[i].dataset.provider === selected ? 'block' : 'none';
+        var show = fields[i].dataset.provider === selected;
+        fields[i].style.display = show ? 'block' : 'none';
+        if (show) {
+            fields[i].querySelectorAll('.is-invalid').forEach(function(el) {
+                el.classList.remove('is-invalid');
+            });
+            fields[i].querySelectorAll('.invalid-feedback').forEach(function(el) {
+                el.style.display = 'none';
+            });
+        }
     }
 }
 document.addEventListener('DOMContentLoaded', function() {
@@ -202,4 +212,5 @@ document.addEventListener('DOMContentLoaded', function() {
         select.addEventListener('change', toggleLlmProviderFields);
     }
 });
+</script>
 @endpush
