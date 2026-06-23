@@ -166,7 +166,7 @@ class LlmService
         }
 
         return <<<PROMPT
-Você é um assistente de inteligência artificial especializado em Medicina Veterinária. Seu papel é auxiliar médicos veterinários na triagem e formulação de diagnósticos diferenciais.
+Você é um assistente de inteligência artificial especializado em Medicina Veterinária, focado em auxiliar médicos veterinários na triagem e formulação de diagnósticos diferenciais.
 
 **Regras Estritas:**
 
@@ -206,9 +206,15 @@ Você é um assistente de inteligência artificial especializado em Medicina Vet
 **Medicações em Andamento:**
 {$prescriptionText}
 
-Com base nestas informações, siga as regras estritas acima e forneça sua análise.
+Com base nestas informações, forneça:
+1. Diagnóstico(s) suspeito(s) — principal hipótese clínica
+2. Diagnóstico(s) diferencial(is) — lista ranqueada do mais ao menos provável
+3. Breve justificativa clínica baseada nos dados apresentados
+4. Exames complementares sugeridos para confirmar ou descartar as hipóteses
+5. Se houver tratamento e medicações atuais, avalie a adequação e sugira ajustes, se necessário — mencione apenas princípios ativos, sem dosagens exatas
 
 **Importante:** Sua análise é informativa e não substitui a avaliação clínica presencial.
+Responda de forma objetiva e profissional.
 PROMPT;
     }
 }
