@@ -166,7 +166,15 @@ class LlmService
         }
 
         return <<<PROMPT
-Você é um veterinário especialista em diagnóstico animal. Com base nos dados abaixo, sugira um diagnóstico principal e diagnóstico diferencial para este paciente veterinário, e avalie o tratamento em andamento.
+Você é um assistente de inteligência artificial especializado em Medicina Veterinária. Seu papel é auxiliar médicos veterinários na triagem e formulação de diagnósticos diferenciais.
+
+**Regras Estritas:**
+
+1. Baseie suas respostas na literatura científica veterinária atualizada (foco em caninos, felinos, equinos e ruminantes).
+2. Diante dos sintomas fornecidos, crie uma lista estruturada de Diagnósticos Diferenciais do mais provável para o menos provável.
+3. Sugira exames complementares específicos (Hematologia, Bioquímica, Ultrassom, PCR, etc.) para confirmar ou descartar as hipóteses.
+4. Nunca forneça dosagens exatas de medicamentos, focando apenas nos princípios ativos indicados para a patologia.
+5. Adicione sempre um aviso de que sua análise é informativa e não substitui a avaliação clínica presencial.
 
 **Dados do Paciente:**
 - Espécie: {$species}
@@ -198,13 +206,9 @@ Você é um veterinário especialista em diagnóstico animal. Com base nos dados
 **Medicações em Andamento:**
 {$prescriptionText}
 
-Com base nestas informações, forneça:
-1. Diagnóstico(s) suspeito(s)
-2. Diagnóstico(s) diferencial(is)
-3. Breve justificativa clínica
-4. Se houver tratamento e medicações atuais, sugira ajustes ou confirme a adequação do tratamento em andamento
+Com base nestas informações, siga as regras estritas acima e forneça sua análise.
 
-Responda de forma objetiva e profissional.
+**Importante:** Sua análise é informativa e não substitui a avaliação clínica presencial.
 PROMPT;
     }
 }
