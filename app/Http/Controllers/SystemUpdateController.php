@@ -21,7 +21,7 @@ class SystemUpdateController extends Controller
         $repo = $this->getRepo();
         $branch = $this->getBranch();
 
-        $currentHash = trim(`git log --oneline -1 2>/dev/null`) ?: 'desconhecido';
+        $currentHash = $this->getCurrentHash();
         $remoteHash = null;
         $behind = null;
 
@@ -181,12 +181,49 @@ class SystemUpdateController extends Controller
         return Setting::get('github_branch') ?? config('update.branch');
     }
 
+    private function getCurrentHash(): string
+    {
+        $hash = $this->readGitHead();
+        return $hash ? substr($hash, 0, 7) : 'desconhecido';
+    }
+
+    private function getFullCurrentHash(): ?string
+    {
+        return $this->readGitHead();
+    }
+
+    private function readGitHead(): ?string
+    {
+        $headFile = base_path('.git/HEAD');
+        $head = @file_get_contents($headFile);
+        if (!$head) {
+            return null;
+        }
+
+        // Detached HEAD: arquivo contém o hash direto
+        if (preg_match('/^[a-f0-9]{40}$/i', trim($head))) {
+            return trim($head);
+        }
+
+        // Branch: ref: refs/heads/main
+        if (preg_match('/^ref: (.+)$/m', $head, $m)) {
+            $refPath = base_path('.git/' . trim($m[1]));
+            $hash = @file_get_contents($refPath);
+            if ($hash && preg_match('/^[a-f0-9]{40}$/i', trim($hash))) {
+                return trim($hash);
+            }
+        }
+
+        return null;
+    }
+
     private function fetchRemoteHash(string $repo, string $branch, string $token): ?string
     {
         $url = "https://api.github.com/repos/{$repo}/branches/{$branch}";
         $ch = curl_init($url);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTPHEADER => [
                 "Authorization: Bearer {$token}",
                 'User-Agent: VetEssence',
@@ -197,10 +234,12 @@ class SystemUpdateController extends Controller
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $error = curl_error($ch);
+        $effectiveUrl = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
         curl_close($ch);
 
         if ($httpCode !== 200) {
             Log::warning('GitHub API (branches) falhou', [
+                'url' => $effectiveUrl,
                 'repo' => $repo,
                 'branch' => $branch,
                 'http_code' => $httpCode,
@@ -216,13 +255,14 @@ class SystemUpdateController extends Controller
 
     private function countBehind(string $repo, string $branch, string $token): ?int
     {
-        $current = trim(`git rev-parse HEAD 2>/dev/null`);
+        $current = $this->getFullCurrentHash();
         if (!$current) return null;
 
         $url = "https://api.github.com/repos/{$repo}/compare/{$current}...{$branch}";
         $ch = curl_init($url);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTPHEADER => [
                 "Authorization: Bearer {$token}",
                 'User-Agent: VetEssence',
