@@ -38,7 +38,7 @@
                     <td>{{ $prod->batch_number ?? $prod->lot_number ?? '-' }}</td>
                     <td class="{{ $prod->isLowStock ? 'text-danger font-weight-bold' : '' }}">{{ $prod->stock }}</td>
                     <td>R$ {{ number_format($prod->sale_price, 2, ',', '.') }}</td>
-                    <td data-order="{{ $prod->expiration_date->format('Y-m-d') }}">
+                    <td data-order="{{ $prod->expiration_date?->format('Y-m-d') }}">
                         @if($prod->expiration_date)
                             @php $diff = now()->diffInDays($prod->expiration_date, false); @endphp
                             <span class="badge {{ $diff <= 0 ? 'badge-danger' : ($diff <= 30 ? 'badge-warning' : 'badge-secondary') }}">
