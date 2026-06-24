@@ -58,6 +58,7 @@ Route::middleware('auth:tutor')->group(function () {
 
     Route::get('invoices', [InvoiceController::class, 'index'])->name('portal.invoices.index');
     Route::get('invoices/{id}', [InvoiceController::class, 'show'])->name('portal.invoices.show');
+    Route::get('invoices/{id}/download', [InvoiceController::class, 'download'])->name('portal.invoices.download');
 
     Route::get('medical-records', [MedicalRecordController::class, 'index'])->name('portal.medical-records.index');
     Route::get('medical-records/{id}', [MedicalRecordController::class, 'show'])->name('portal.medical-records.show');

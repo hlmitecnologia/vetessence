@@ -9,7 +9,13 @@
 
 <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
     <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">Fatura #{{ $invoice->id }}</h1>
+        <div class="flex items-center gap-3">
+            <h1 class="text-2xl font-bold text-gray-800">Fatura #{{ $invoice->id }}</h1>
+            <a href="{{ route('portal.invoices.download', $invoice->id) }}"
+               class="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">
+                <i class="fas fa-download"></i> Download PDF
+            </a>
+        </div>
         <span class="text-sm px-3 py-1 rounded-full
             {{ $invoice->status === 'paid' ? 'bg-green-100 text-green-700' : '' }}
             {{ $invoice->status === 'pending' ? 'bg-yellow-100 text-yellow-700' : '' }}
