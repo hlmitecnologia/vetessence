@@ -16,7 +16,7 @@ class Supplier extends Model
         'name', 'cnpj', 'ie', 'phone', 'email',
         'address', 'number', 'neighborhood', 'complement',
         'city', 'state', 'contact', 'notes', 'branch_id',
-        'state_id', 'city_id', 'zipcode',
+        'state_id', 'city_id', 'zipcode', 'lead_time_days',
     ];
 
     public function products(): HasMany

@@ -21,7 +21,7 @@ class InsuranceProviderFactoryTest extends ModuleTestCase
     public function test_make_throws_exception_for_unsupported_provider(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Unknown insurance provider: unreal');
+        $this->expectExceptionMessage('Operadora de convênio desconhecida: unreal');
 
         InsuranceProviderFactory::make('unreal');
     }

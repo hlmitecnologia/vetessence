@@ -6,13 +6,14 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\StockMovement;
 use App\Models\Branch;
+use App\Services\StockForecastService;
 use Illuminate\Http\Request;
 
 class StockController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:stock.view')->only(['movements']);
+        $this->middleware('can:stock.view')->only(['movements', 'dashboard', 'reorderSuggestions', 'expiring']);
         $this->middleware('can:stock.create')->only(['create', 'store']);
         $this->middleware('can:stock.transfer')->only(['transferForm', 'transfer']);
     }
@@ -163,5 +164,33 @@ class StockController extends Controller
 
         return redirect()->route('stock.movements')
             ->with('success', 'Transferência realizada com sucesso.');
+    }
+
+    public function reorderSuggestions(StockForecastService $service)
+    {
+        $suggestions = $service->suggestPurchaseOrder();
+        return view('stock.reorder-suggestions', compact('suggestions'));
+    }
+
+    public function expiring(StockForecastService $service, Request $request)
+    {
+        $days = $request->integer('days', 30);
+        $products = $service->expiringProducts($days);
+        return view('stock.expiring', compact('products', 'days'));
+    }
+
+    public function dashboard(StockForecastService $service)
+    {
+        $totalProducts = Product::where('is_active', true)->count();
+        $lowStock = Product::whereColumn('stock', '<=', 'min_stock')->where('is_active', true)->count();
+        $belowReorder = Product::needingReorder()->count();
+        $expiringSoon = Product::expiringSoon(30)->count();
+        $expired = Product::expired()->count();
+        $totalStockValue = Product::where('is_active', true)->get()->sum(fn ($p) => $p->stock * $p->cost_price);
+
+        return view('stock.index', compact(
+            'totalProducts', 'lowStock', 'belowReorder',
+            'expiringSoon', 'expired', 'totalStockValue'
+        ));
     }
 }

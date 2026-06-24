@@ -28,6 +28,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('nfse:emit-pending')->everyTenMinutes();
         $schedule->command('nfe:emit-pending')->everyTenMinutes();
         $schedule->command('claims:auto-file')->everyThirtyMinutes();
+        $schedule->command('stock:forecast --recalculate')->dailyAt('03:00');
+        $schedule->command('stock:forecast --alert-expiry')->dailyAt('06:00');
     }
 
     /**

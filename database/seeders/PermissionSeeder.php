@@ -162,6 +162,16 @@ class PermissionSeeder extends Seeder
 
             // Execution Maps
             'execution-maps.view', 'execution-maps.execute', 'execution-maps.manage',
+
+            // ZG1 — Stock Intelligence
+            'stock.forecast', 'stock.reorder',
+
+            // ZG2 — Pet Shop Packages
+            'pet-shop-packages.view', 'pet-shop-packages.create', 'pet-shop-packages.edit', 'pet-shop-packages.delete',
+            'pet-shop-subscriptions.view', 'pet-shop-subscriptions.create', 'pet-shop-subscriptions.edit', 'pet-shop-subscriptions.delete',
+
+            // ZG3 — Petlove
+            'insurance.petlove',
         ];
 
         // Create all permissions
@@ -226,6 +236,8 @@ class PermissionSeeder extends Seeder
                 'drug-formulary.view', 'drug-formulary.create',
                 'emergency-protocols.view', 'emergency-protocols.create', 'emergency-protocols.edit', 'emergency-protocols.delete',
                 'execution-maps.view', 'execution-maps.execute', 'execution-maps.manage',
+                'insurance.petlove',
+                'pet-shop-subscriptions.view', 'pet-shop-subscriptions.create',
             ],
 
             'tecnico' => [
@@ -289,6 +301,8 @@ class PermissionSeeder extends Seeder
                 'invoices.view', 'invoices.create',
                 'payments.view', 'payments.create',
                 'nfse.view',
+                'pet-shop-packages.view', 'pet-shop-packages.create',
+                'pet-shop-subscriptions.view', 'pet-shop-subscriptions.create',
             ],
 
             'financeiro' => [
@@ -305,6 +319,7 @@ class PermissionSeeder extends Seeder
                 'purchase-orders.view',
                 'nfse.view', 'nfse.emit',
                 'nfe.view', 'nfe.emit',
+                'insurance.petlove',
             ],
             'super-financial' => [
                 'docs.view',
@@ -328,6 +343,7 @@ class PermissionSeeder extends Seeder
                 'docs.view',
                 'products.view', 'products.create', 'products.edit', 'products.delete',
                 'stock.view', 'stock.create', 'stock.edit',
+                'stock.forecast', 'stock.reorder',
                 'suppliers.view', 'suppliers.create', 'suppliers.edit', 'suppliers.delete',
                 'categories.view', 'categories.create', 'categories.edit', 'categories.delete',
                 'controlled-substances.view', 'controlled-substances.create', 'controlled-substances.edit',
@@ -337,6 +353,8 @@ class PermissionSeeder extends Seeder
                 'stock.transfer',
                 'emergency-protocols.view', 'emergency-protocols.create', 'emergency-protocols.edit',
                 'notification-logs.view',
+                'pet-shop-packages.view', 'pet-shop-packages.create', 'pet-shop-packages.edit', 'pet-shop-packages.delete',
+                'pet-shop-subscriptions.view', 'pet-shop-subscriptions.create', 'pet-shop-subscriptions.edit', 'pet-shop-subscriptions.delete',
             ],
 
             'human-resources' => [

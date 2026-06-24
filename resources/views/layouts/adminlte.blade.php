@@ -546,7 +546,7 @@
 
                         <!-- ESTOQUE -->
                         @can('estoque')
-                        <li class="nav-item has-treeview {{ request()->routeIs('products.*') || request()->routeIs('stock.*') || request()->routeIs('suppliers.*') || request()->routeIs('controlled-substances.*') || request()->routeIs('lab-equipment-integrations.*') ? 'menu-open' : '' }}">
+                        <li class="nav-item has-treeview {{ request()->routeIs('products.*') || request()->routeIs('stock.*') || request()->routeIs('suppliers.*') || request()->routeIs('controlled-substances.*') || request()->routeIs('lab-equipment-integrations.*') || request()->routeIs('pet-shop-packages.*') || request()->routeIs('pet-shop-subscriptions.*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-boxes"></i>
                                 <p>Estoque <i class="right fas fa-angle-left"></i></p>
@@ -569,6 +569,42 @@
                                     <a href="{{ route('stock.adjust') }}" class="nav-link {{ request()->routeIs('stock.adjust*') ? 'active' : '' }}">
                                         <i class="fas fa-pen nav-icon"></i>
                                         <p>Ajustar</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('stock.forecast')
+                                <li class="nav-item">
+                                    <a href="{{ route('stock.index') }}" class="nav-link {{ request()->routeIs('stock.index') ? 'active' : '' }}">
+                                        <i class="fas fa-chart-line nav-icon"></i>
+                                        <p>Dashboard Estoque</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('stock.reorder-suggestions') }}" class="nav-link {{ request()->routeIs('stock.reorder-suggestions') ? 'active' : '' }}">
+                                        <i class="fas fa-shopping-cart nav-icon"></i>
+                                        <p>Sugestão de Reposição</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('stock.expiring') }}" class="nav-link {{ request()->routeIs('stock.expiring') ? 'active' : '' }}">
+                                        <i class="fas fa-clock nav-icon"></i>
+                                        <p>Vencimentos</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('pet-shop-packages.view')
+                                <li class="nav-item">
+                                    <a href="{{ route('pet-shop-packages.index') }}" class="nav-link {{ request()->routeIs('pet-shop-packages.*') ? 'active' : '' }}">
+                                        <i class="fas fa-gift nav-icon"></i>
+                                        <p>Pacotes Petshop</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('pet-shop-subscriptions.view')
+                                <li class="nav-item">
+                                    <a href="{{ route('pet-shop-subscriptions.index') }}" class="nav-link {{ request()->routeIs('pet-shop-subscriptions.*') ? 'active' : '' }}">
+                                        <i class="fas fa-file-contract nav-icon"></i>
+                                        <p>Assinaturas</p>
                                     </a>
                                 </li>
                                 @endcan

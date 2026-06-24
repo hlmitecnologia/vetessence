@@ -22,6 +22,7 @@ class Product extends Model
         'ipi_cst', 'ipi_aliquot',
         'pis_cst', 'cofins_cst', 'pis_aliquot', 'cofins_aliquot',
         'fiscal_classification',
+        'avg_daily_consumption', 'safety_stock', 'reorder_point', 'last_consumption_calculated_at',
     ];
 
     protected $casts = [
@@ -38,6 +39,10 @@ class Product extends Model
         'ipi_aliquot' => 'decimal:2',
         'pis_aliquot' => 'decimal:2',
         'cofins_aliquot' => 'decimal:2',
+        'avg_daily_consumption' => 'decimal:4',
+        'safety_stock' => 'decimal:2',
+        'reorder_point' => 'decimal:2',
+        'last_consumption_calculated_at' => 'datetime',
     ];
 
     public function category(): BelongsTo
@@ -58,6 +63,33 @@ class Product extends Model
     public function getIsLowStockAttribute(): bool
     {
         return $this->stock <= $this->min_stock;
+    }
+
+    public function getIsBelowReorderPointAttribute(): bool
+    {
+        return $this->reorder_point > 0 && $this->stock < $this->reorder_point;
+    }
+
+    public function scopeNeedingReorder($query)
+    {
+        return $query->where('reorder_point', '>', 0)
+            ->whereColumn('stock', '<', 'reorder_point')
+            ->where('is_active', true);
+    }
+
+    public function scopeExpiringSoon($query, int $days = 30)
+    {
+        return $query->whereNotNull('expiration_date')
+            ->whereDate('expiration_date', '<=', now()->addDays($days))
+            ->whereDate('expiration_date', '>', now())
+            ->where('is_active', true);
+    }
+
+    public function scopeExpired($query)
+    {
+        return $query->whereNotNull('expiration_date')
+            ->whereDate('expiration_date', '<', now())
+            ->where('is_active', true);
     }
 
     public function getMarginAttribute(): float

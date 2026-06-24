@@ -253,11 +253,32 @@ Route::middleware(['auth'])->group(function () {
         ->name('services.type-map.update');
 
     // Stock
+    Route::get('stock', 'App\Http\Controllers\StockController@dashboard')->name('stock.index');
     Route::get('stock/movements', 'App\Http\Controllers\StockController@movements')->name('stock.movements');
+    Route::get('stock/reorder-suggestions', 'App\Http\Controllers\StockController@reorderSuggestions')->name('stock.reorder-suggestions');
+    Route::get('stock/expiring', 'App\Http\Controllers\StockController@expiring')->name('stock.expiring');
     Route::get('stock/adjust', 'App\Http\Controllers\StockController@create')->name('stock.adjust');
     Route::post('stock/adjust', 'App\Http\Controllers\StockController@store')->name('stock.adjust.store');
     Route::get('stock/transfer', 'App\Http\Controllers\StockController@transferForm')->name('stock.transfer-form');
     Route::post('stock/transfer', 'App\Http\Controllers\StockController@transfer')->name('stock.transfer');
+
+    // Pet Shop Packages
+    Route::get('pet-shop-packages', 'App\Http\Controllers\PetShopPackageController@index')->name('pet-shop-packages.index');
+    Route::get('pet-shop-packages/create', 'App\Http\Controllers\PetShopPackageController@create')->name('pet-shop-packages.create');
+    Route::post('pet-shop-packages', 'App\Http\Controllers\PetShopPackageController@store')->name('pet-shop-packages.store');
+    Route::get('pet-shop-packages/{petShopPackage}/edit', 'App\Http\Controllers\PetShopPackageController@edit')->name('pet-shop-packages.edit');
+    Route::put('pet-shop-packages/{petShopPackage}', 'App\Http\Controllers\PetShopPackageController@update')->name('pet-shop-packages.update');
+    Route::delete('pet-shop-packages/{petShopPackage}', 'App\Http\Controllers\PetShopPackageController@destroy')->name('pet-shop-packages.destroy');
+
+    // Pet Shop Subscriptions
+    Route::get('pet-shop-subscriptions', 'App\Http\Controllers\PetShopSubscriptionController@index')->name('pet-shop-subscriptions.index');
+    Route::get('pet-shop-subscriptions/create', 'App\Http\Controllers\PetShopSubscriptionController@create')->name('pet-shop-subscriptions.create');
+    Route::post('pet-shop-subscriptions', 'App\Http\Controllers\PetShopSubscriptionController@store')->name('pet-shop-subscriptions.store');
+    Route::get('pet-shop-subscriptions/{petShopSubscription}', 'App\Http\Controllers\PetShopSubscriptionController@show')->name('pet-shop-subscriptions.show');
+    Route::post('pet-shop-subscriptions/{petShopSubscription}/cancel', 'App\Http\Controllers\PetShopSubscriptionController@cancel')->name('pet-shop-subscriptions.cancel');
+
+    // Pet Shop Consumptions
+    Route::post('pet-shop-consumptions', 'App\Http\Controllers\PetShopConsumptionController@store')->name('pet-shop-consumptions.store');
 
     // Suppliers
     Route::resource('suppliers', 'App\Http\Controllers\SupplierController')->names([

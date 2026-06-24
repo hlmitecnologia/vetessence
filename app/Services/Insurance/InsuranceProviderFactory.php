@@ -8,6 +8,7 @@ class InsuranceProviderFactory
 {
     private static array $providers = [
         'porto-seguro' => PortoSeguroProvider::class,
+        'petlove' => PetloveProvider::class,
     ];
 
     public static function make(string $provider): InsuranceProvider

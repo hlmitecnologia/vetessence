@@ -17,7 +17,7 @@ class StockMovement extends Model
     protected $fillable = [
         'product_id', 'type', 'quantity', 'batch_number', 'lot_number',
         'expiry_date', 'balance_after', 'reference', 'notes',
-        'user_id', 'created_at', 'branch_id'
+        'user_id', 'created_at', 'branch_id', 'movement_reason',
     ];
 
     protected $casts = [

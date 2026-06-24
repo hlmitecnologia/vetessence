@@ -277,6 +277,27 @@
                         <i class="fas fa-arrow-right w-5 mr-2"></i> Transferir
                     </a>
                     @endcan
+                @can('stock.forecast')
+                <a href="{{ route('stock.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-chart-line w-5 mr-2"></i> Dashboard Estoque
+                </a>
+                <a href="{{ route('stock.reorder-suggestions') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-shopping-cart w-5 mr-2"></i> Sugestão de Reposição
+                </a>
+                <a href="{{ route('stock.expiring') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-clock w-5 mr-2"></i> Vencimentos
+                </a>
+                @endcan
+                @can('pet-shop-packages.view')
+                <a href="{{ route('pet-shop-packages.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-gift w-5 mr-2"></i> Pacotes Petshop
+                </a>
+                @endcan
+                @can('pet-shop-subscriptions.view')
+                <a href="{{ route('pet-shop-subscriptions.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-file-contract w-5 mr-2"></i> Assinaturas
+                </a>
+                @endcan
                 <a href="{{ route('suppliers.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-truck w-5 mr-2"></i> Fornecedores
                 </a>
