@@ -74,6 +74,13 @@ class StockController extends Controller
         $product = Product::findOrFail($data['product_id']);
 
         if ($data['type'] === 'transfer') {
+            if ($data['quantity'] > $product->stock) {
+                return back()->withErrors(['quantity' => 'Quantidade superior ao estoque disponível do produto.'])->withInput();
+            }
+            if ($data['from_branch_id'] === $data['to_branch_id']) {
+                return back()->withErrors(['to_branch_id' => 'A unidade de destino deve ser diferente da origem.'])->withInput();
+            }
+
             StockMovement::create([
                 'product_id' => $data['product_id'],
                 'quantity'   => $data['quantity'],
