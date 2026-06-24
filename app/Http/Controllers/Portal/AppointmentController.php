@@ -79,6 +79,7 @@ class AppointmentController extends Controller
                 'type' => 'consulta',
                 'reason' => $validated['reason'] ?? 'Agendamento pelo portal',
                 'status' => 'scheduled',
+                'branch_id' => $tutor->created_at_branch_id,
             ]);
 
             DB::commit();
