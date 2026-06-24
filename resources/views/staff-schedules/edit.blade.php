@@ -68,6 +68,21 @@
                 @enderror
             </div>
             <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" name="is_on_call" id="is_on_call" value="1" class="custom-control-input" {{ old('is_on_call', $staffSchedule->is_on_call) ? 'checked' : '' }} onchange="document.getElementById('on_call_type_group').style.display = this.checked ? '' : 'none'">
+                    <label class="custom-control-label" for="is_on_call">Plantão</label>
+                </div>
+            </div>
+            <div class="form-group" id="on_call_type_group" style="{{ old('is_on_call', $staffSchedule->is_on_call) ? '' : 'display:none' }}">
+                <label for="on_call_type">Tipo de Plantão</label>
+                <select name="on_call_type" id="on_call_type" class="form-control">
+                    <option value="">Selecione</option>
+                    <option value="sobreaviso" {{ old('on_call_type', $staffSchedule->on_call_type) == 'sobreaviso' ? 'selected' : '' }}>Sobreaviso</option>
+                    <option value="presencial" {{ old('on_call_type', $staffSchedule->on_call_type) == 'presencial' ? 'selected' : '' }}>Presencial</option>
+                    <option value="telefone" {{ old('on_call_type', $staffSchedule->on_call_type) == 'telefone' ? 'selected' : '' }}>Telefone</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="notes">Observações</label>
                 <textarea name="notes" id="notes" class="wysiwyg form-control @error('notes') is-invalid @enderror" rows="3">{{ old('notes', $staffSchedule->notes) }}</textarea>
                 @error('notes')
