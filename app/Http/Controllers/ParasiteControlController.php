@@ -28,7 +28,7 @@ class ParasiteControlController extends Controller
             $query->whereHas('pet', fn($q) => $q->where('name', 'like', "%{$request->search}%"));
         }
 
-        $controls = $query->orderBy('application_date', 'desc')->paginate(20);
+        $controls = $query->orderBy('application_date', 'desc')->get();
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
 
         return view('parasite-controls.index', compact('controls', 'pets'));

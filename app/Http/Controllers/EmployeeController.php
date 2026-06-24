@@ -47,7 +47,7 @@ class EmployeeController extends Controller
             $query->where('is_active', $request->is_active === '1');
         }
 
-        $employees = $query->orderBy('name')->paginate(20);
+        $employees = $query->orderBy('name')->get();
 
         $departments = Department::orderBy('name')->pluck('name', 'id');
         $positions = Position::orderBy('name')->pluck('name', 'id');

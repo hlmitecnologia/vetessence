@@ -92,9 +92,7 @@
             </table>
         </div>
 
-        <div class="d-flex justify-content-center">
-            {{ $transactions->appends(request()->query())->links() }}
-        </div>
+
     </div>
 </div>
 @endsection

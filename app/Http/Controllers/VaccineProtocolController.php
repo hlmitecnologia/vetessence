@@ -23,7 +23,7 @@ class VaccineProtocolController extends Controller
             $query->where('is_core', $request->is_core);
         }
 
-        $protocols = $query->orderBy('species')->orderBy('age_start_weeks')->paginate(20);
+        $protocols = $query->orderBy('species')->orderBy('age_start_weeks')->get();
 
         return view('vaccine-protocols.index', compact('protocols'));
     }

@@ -66,9 +66,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">
-            {{ $records->links() }}
-        </div>
+
         @else
         <p class="text-center text-muted">Nenhum registro diário encontrado.</p>
         @endif

@@ -68,7 +68,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">{{ $controls->links() }}</div>
+        
         @else
         <p class="text-center text-muted">Nenhum registro encontrado.</p>
         @endif

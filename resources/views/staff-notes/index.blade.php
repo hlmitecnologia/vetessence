@@ -112,7 +112,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">{{ $notes->appends(request()->query())->links() }}</div>
+        
         @else
         <p class="text-center text-muted my-4">Nenhuma nota interna encontrada.</p>
         @endif

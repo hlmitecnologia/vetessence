@@ -43,7 +43,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">{{ $positions->appends(request()->query())->links() }}</div>
+
         @else
         <p class="text-center text-muted my-4">Nenhum cargo cadastrado.</p>
         @endif

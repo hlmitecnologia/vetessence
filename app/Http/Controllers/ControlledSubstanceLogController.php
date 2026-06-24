@@ -36,7 +36,7 @@ class ControlledSubstanceLogController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $logs = $query->orderBy('created_at', 'desc')->paginate(20);
+        $logs = $query->orderBy('created_at', 'desc')->get();
 
         return view('controlled-substance-logs.index', compact('logs', 'substances'));
     }

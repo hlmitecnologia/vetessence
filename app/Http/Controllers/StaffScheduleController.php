@@ -191,7 +191,7 @@ class StaffScheduleController extends Controller
         $schedules = StaffSchedule::with('user', 'branch')
             ->where('is_vet_shift', true)
             ->orderBy('work_date', 'desc')
-            ->paginate(20);
+->get();
 
         return view('staff-schedules.vet-shifts', compact('schedules'));
     }

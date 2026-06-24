@@ -82,9 +82,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">
-            {{ $templates->appends(request()->query())->links() }}
-        </div>
+
         @else
         <p class="text-center text-muted my-4">Nenhum modelo de laudo encontrado.</p>
         @endif

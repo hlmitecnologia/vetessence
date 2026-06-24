@@ -89,7 +89,6 @@
                 </tbody>
             </table>
         </div>
-        {{ $logs->links() }}
         @else
         <p class="text-center text-muted">Nenhuma movimentação encontrada.</p>
         @endif

@@ -79,9 +79,6 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">
-            {{ $queues->links() }}
-        </div>
         @else
         <p class="text-center text-muted">Nenhuma comunicação na fila.</p>
         @endif

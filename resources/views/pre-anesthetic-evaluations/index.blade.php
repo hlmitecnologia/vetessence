@@ -23,7 +23,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="card-footer">{{ $evaluations->links() }}</div>
+        
     </div>
 
 <!-- PreAnestheticEvaluation Modal -->

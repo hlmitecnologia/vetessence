@@ -15,7 +15,7 @@ class LabEquipmentIntegrationController extends Controller
     }
     public function index(Request $request)
     {
-        $integrations = LabEquipmentIntegration::orderBy('name')->paginate(20);
+        $integrations = LabEquipmentIntegration::orderBy('name')->get();
         return view('lab-equipment-integrations.index', compact('integrations'));
     }
 

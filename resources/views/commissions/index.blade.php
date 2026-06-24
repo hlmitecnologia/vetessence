@@ -101,9 +101,7 @@
             </table>
         </div>
 
-        <div class="d-flex justify-content-center">
-            {{ $logs->appends(request()->query())->links() }}
-        </div>
+        
     </div>
 </div>
 @endsection

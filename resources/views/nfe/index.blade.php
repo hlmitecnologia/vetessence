@@ -70,9 +70,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">
-            {{ $nfeInvoices->links() }}
-        </div>
+
         @else
         <p class="text-muted">Nenhuma NF-e emitida ainda.</p>
         @endif

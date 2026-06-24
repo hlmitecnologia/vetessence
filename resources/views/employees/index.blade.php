@@ -97,7 +97,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">{{ $employees->appends(request()->query())->links() }}</div>
+        
         @else
         <p class="text-center text-muted my-4">Nenhum funcionário encontrado.</p>
         @endif

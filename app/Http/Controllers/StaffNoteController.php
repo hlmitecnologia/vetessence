@@ -36,7 +36,7 @@ class StaffNoteController extends Controller
             $query->where('category', $request->category);
         }
 
-        $notes = $query->orderBy('created_at', 'desc')->paginate(20);
+        $notes = $query->orderBy('created_at', 'desc')->get();
         $unreadCount = StaffNote::where(function ($q) {
             $q->where('assigned_to', auth()->id())->orWhereNull('assigned_to');
         })->where('is_read', false)->where('created_by', '!=', auth()->id())->count();

@@ -79,7 +79,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">{{ $diseases->appends(request()->query())->links() }}</div>
+
         @else
         <p class="text-center text-muted">Nenhuma doença encontrada.</p>
         @endif

@@ -78,9 +78,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">
-            {{ $reminders->links() }}
-        </div>
+
         @else
         <p class="text-center text-muted">Nenhum lembrete encontrado.</p>
         @endif

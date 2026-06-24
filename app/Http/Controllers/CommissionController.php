@@ -40,7 +40,7 @@ class CommissionController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $logs = $query->orderBy('created_at', 'desc')->paginate(20);
+        $logs = $query->orderBy('created_at', 'desc')->get();
         $vets = User::where(fn($q) => $q->whereHas('roles', fn($q) => $q->whereIn('name', ['veterinarian', 'super-admin']))->orWhere('is_veterinarian', true))->orderBy('name')->get();
 
         $totals = (clone $query)->selectRaw('SUM(base_value) as total_base, SUM(commission_value) as total_commission')->first();

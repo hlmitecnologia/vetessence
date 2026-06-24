@@ -29,7 +29,7 @@ class NotificationLogController extends Controller
             $query->where('status', $request->status);
         }
 
-        $logs = $query->orderBy('sent_at', 'desc')->paginate(20);
+        $logs = $query->orderBy('sent_at', 'desc')->get();
 
         return view('notification-logs.index', compact('logs'));
     }

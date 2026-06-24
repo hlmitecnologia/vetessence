@@ -31,7 +31,7 @@ class NfeController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $nfeInvoices = $query->latest()->paginate(20);
+        $nfeInvoices = $query->latest()->get();
 
         return view('nfe.index', compact('nfeInvoices'));
     }

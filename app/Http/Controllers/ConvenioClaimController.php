@@ -21,7 +21,7 @@ class ConvenioClaimController extends Controller
     {
         $query = ConvenioClaim::with(['convenioPet.convenio', 'convenioPet.pet', 'invoice']);
         if ($request->status) $query->where('status', $request->status);
-        $claims = $query->latest()->paginate(20);
+        $claims = $query->latest()->get();
         return view('convenio-claims.index', compact('claims'));
     }
 

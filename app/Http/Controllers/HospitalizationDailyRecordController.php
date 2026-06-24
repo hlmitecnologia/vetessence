@@ -21,7 +21,7 @@ class HospitalizationDailyRecordController extends Controller
             $query->where('hospitalization_id', $request->hospitalization_id);
         }
 
-        $records = $query->orderBy('record_date', 'desc')->paginate(20);
+        $records = $query->orderBy('record_date', 'desc')->get();
 
         return view('hospitalization-daily-records.index', compact('records'));
     }

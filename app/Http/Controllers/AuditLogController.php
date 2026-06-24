@@ -32,7 +32,7 @@ class AuditLogController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $logs = $query->latest()->paginate(30);
+        $logs = $query->latest()->get();
 
         return view('audit-logs.index', compact('logs'));
     }

@@ -40,7 +40,7 @@ class CommunicationQueueController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $queues = $query->orderBy('created_at', 'desc')->paginate(20);
+        $queues = $query->orderBy('created_at', 'desc')->get();
 
         return view('communication-queues.index', compact('queues'));
     }

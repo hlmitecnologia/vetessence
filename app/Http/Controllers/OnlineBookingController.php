@@ -30,7 +30,7 @@ class OnlineBookingController extends Controller
             });
         }
 
-        $bookings = $query->orderBy('created_at', 'desc')->paginate(20);
+        $bookings = $query->orderBy('created_at', 'desc')->get();
 
         return view('online-bookings.index', compact('bookings'));
     }

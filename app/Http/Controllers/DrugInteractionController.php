@@ -36,7 +36,7 @@ class DrugInteractionController extends Controller
             $query->where('is_active', $request->boolean('is_active'));
         }
 
-        $interactions = $query->orderBy('drug_a')->orderBy('drug_b')->paginate(20);
+        $interactions = $query->orderBy('drug_a')->orderBy('drug_b')->get();
 
         return view('drug-interactions.index', compact('interactions'));
     }

@@ -21,7 +21,7 @@ class DietPlanController extends Controller
         $query = DietPlan::with(['pet', 'createdBy']);
         if ($request->pet_id) $query->where('pet_id', $request->pet_id);
         if ($request->diet_type) $query->where('diet_type', $request->diet_type);
-        $plans = $query->latest()->paginate(20);
+        $plans = $query->latest()->get();
         return view('diet-plans.index', compact('plans'));
     }
 

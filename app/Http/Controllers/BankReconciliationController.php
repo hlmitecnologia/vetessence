@@ -34,7 +34,7 @@ class BankReconciliationController extends Controller
             $query->whereDate('transaction_date', '<=', $request->date_to);
         }
 
-        $transactions = $query->orderBy('transaction_date', 'desc')->paginate(20);
+        $transactions = $query->orderBy('transaction_date', 'desc')->get();
         $accounts = BankAccount::where('is_active', true)->orderBy('bank')->get();
 
         return view('bank-reconciliation.index', compact('transactions', 'accounts'));

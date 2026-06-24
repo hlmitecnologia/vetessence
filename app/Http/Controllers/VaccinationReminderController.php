@@ -31,7 +31,7 @@ class VaccinationReminderController extends Controller
             $query->where('pet_id', $request->pet_id);
         }
 
-        $reminders = $query->orderBy('scheduled_date', 'desc')->paginate(20);
+        $reminders = $query->orderBy('scheduled_date', 'desc')->get();
 
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
 

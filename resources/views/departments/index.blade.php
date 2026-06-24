@@ -43,7 +43,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">{{ $departments->appends(request()->query())->links() }}</div>
+
         @else
         <p class="text-center text-muted my-4">Nenhum departamento cadastrado.</p>
         @endif

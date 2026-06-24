@@ -21,7 +21,7 @@ class PreAnestheticEvaluationController extends Controller
         $query = PreAnestheticEvaluation::with(['pet', 'vet']);
         if ($request->pet_id) $query->where('pet_id', $request->pet_id);
         if ($request->status) $query->where('status', $request->status);
-        $evaluations = $query->latest()->paginate(20);
+        $evaluations = $query->latest()->get();
         return view('pre-anesthetic-evaluations.index', compact('evaluations'));
     }
 

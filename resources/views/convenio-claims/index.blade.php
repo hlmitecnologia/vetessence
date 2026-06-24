@@ -23,7 +23,6 @@
                 </tbody>
             </table>
         </div>
-        <div class="card-footer">{{ $claims->links() }}</div>
     </div>
 
 <!-- ConvenioClaim Modal -->

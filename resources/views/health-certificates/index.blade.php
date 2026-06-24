@@ -71,7 +71,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">{{ $certificates->links() }}</div>
+
         @else
         <p class="text-center text-muted">Nenhum certificado encontrado.</p>
         @endif

@@ -29,7 +29,7 @@ class HealthCertificateController extends Controller
             });
         }
 
-        $certificates = $query->orderBy('issue_date', 'desc')->paginate(20);
+        $certificates = $query->orderBy('issue_date', 'desc')->get();
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
 
         return view('health-certificates.index', compact('certificates', 'pets'));

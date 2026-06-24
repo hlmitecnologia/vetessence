@@ -199,7 +199,7 @@ class BoardingController extends Controller
         $boardings = Boarding::with(['pet', 'createdBy'])
             ->active()
             ->orderBy('check_in_at')
-            ->paginate(20);
+->get();
 
         return view('boardings.index', compact('boardings'));
     }

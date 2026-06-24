@@ -92,9 +92,6 @@
             </table>
         </div>
 
-        <div class="d-flex justify-content-center">
-            {{ $nfseInvoices->appends(request()->query())->links() }}
-        </div>
     </div>
 </div>
 @endsection

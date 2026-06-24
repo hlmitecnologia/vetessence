@@ -30,7 +30,7 @@ class ZoonoticDiseaseController extends Controller
             $query->where('is_notifiable', $request->boolean('is_notifiable'));
         }
 
-        $diseases = $query->orderBy('name')->paginate(20);
+        $diseases = $query->orderBy('name')->get();
 
         if ($request->ajax()) {
             return response()->json($diseases);

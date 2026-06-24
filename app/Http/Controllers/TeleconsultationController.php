@@ -22,7 +22,7 @@ class TeleconsultationController extends Controller
             $query->whereHas('pet', fn($q) => $q->where('name', 'like', "%{$request->search}%"));
         }
 
-        $teleconsultations = $query->orderBy('scheduled_at', 'desc')->paginate(20);
+        $teleconsultations = $query->orderBy('scheduled_at', 'desc')->get();
 
         return view('teleconsultations.index', compact('teleconsultations'));
     }

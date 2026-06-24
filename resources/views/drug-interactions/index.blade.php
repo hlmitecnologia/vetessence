@@ -93,9 +93,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">
-            {{ $interactions->appends(request()->query())->links() }}
-        </div>
+
         @else
         <p class="text-center text-muted my-4">Nenhuma interação medicamentosa cadastrada.</p>
         @endif
