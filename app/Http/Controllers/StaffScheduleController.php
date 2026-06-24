@@ -126,7 +126,7 @@ class StaffScheduleController extends Controller
             ->orderBy('work_date')
             ->orderBy('start_time')
             ->get()
-            ->groupBy('work_date');
+            ->groupBy(fn ($s) => $s->work_date->format('Y-m-d'));
 
         return view('staff-schedules.on-call-calendar', compact('schedules', 'month', 'start', 'end'));
     }
