@@ -8,9 +8,9 @@
             <a href="{{ route('staff-schedules.index') }}" class="btn btn-default btn-sm">
                 <i class="fas fa-arrow-left"></i> Escalas
             </a>
-            <a href="{{ route('staff-schedules.time-off.store') }}" class="btn btn-primary btn-sm">
+            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalTimeOff">
                 <i class="fas fa-plus"></i> Nova Solicitação
-            </a>
+            </button>
         </div>
     </div>
     <div class="card-body">
@@ -66,6 +66,62 @@
         @else
         <p class="text-center text-muted">Nenhuma solicitação encontrada.</p>
         @endif
+    </div>
+</div>
+<div class="modal fade" id="modalTimeOff" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form action="{{ route('staff-schedules.time-off.store') }}" method="POST">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nova Solicitação de Folga</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Funcionário *</label>
+                        <select name="user_id" class="form-control" required>
+                            <option value="">Selecione...</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo *</label>
+                        <select name="type" class="form-control" required>
+                            <option value="">Selecione...</option>
+                            <option value="vacation">Férias</option>
+                            <option value="sick">Licença Médica</option>
+                            <option value="personal">Folga Pessoal</option>
+                            <option value="other">Outro</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Data Início *</label>
+                                <input type="date" name="start_date" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Data Término *</label>
+                                <input type="date" name="end_date" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Motivo</label>
+                        <textarea name="reason" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Solicitar</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 @endsection

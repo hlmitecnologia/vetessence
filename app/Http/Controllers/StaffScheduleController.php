@@ -199,7 +199,8 @@ class StaffScheduleController extends Controller
     public function timeOff()
     {
         $timeOffs = StaffTimeOff::with(['user', 'approvedBy'])->latest()->paginate(20);
-        return view('staff-schedules.time-off', compact('timeOffs'));
+        $users = User::where('is_active', true)->orderBy('name')->get();
+        return view('staff-schedules.time-off', compact('timeOffs', 'users'));
     }
 
     public function storeTimeOff(Request $request)
