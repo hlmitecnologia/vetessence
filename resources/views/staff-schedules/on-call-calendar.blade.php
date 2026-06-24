@@ -51,8 +51,21 @@
                                 <td style="height: 100px; vertical-align: top;">
                                     <div class="font-weight-bold mb-1">{{ $day }}</div>
                                     @foreach ($daySchedules as $schedule)
-                                        <div class="badge badge-danger d-block mb-1 p-1 text-left" style="font-size: 11px; white-space: normal;">
-                                            <i class="fas fa-phone-alt"></i>
+                                        @php
+                                            $onCallType = $schedule->on_call_type;
+                                            $icon = match ($onCallType) {
+                                                'presencial' => 'fa-user',
+                                                'sobreaviso' => 'fa-home',
+                                                default => 'fa-phone-alt',
+                                            };
+                                            $color = match ($onCallType) {
+                                                'presencial' => 'badge-primary',
+                                                'sobreaviso' => 'badge-success',
+                                                default => 'badge-danger',
+                                            };
+                                        @endphp
+                                        <div class="badge {{ $color }} d-block mb-1 p-1 text-left" style="font-size: 11px; white-space: normal;">
+                                            <i class="fas {{ $icon }}"></i>
                                             {{ $schedule->user->name }}
                                             <small>({{ substr($schedule->start_time, 0, 5) }}–{{ substr($schedule->end_time, 0, 5) }})</small>
                                         </div>
