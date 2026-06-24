@@ -37,7 +37,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Hora *</label>
-                                <input type="time" name="time" value="{{ substr($appointment->time, 0, 5) }}" required class="form-control">
+                                <input type="time" name="time" value="{{ $appointment->time instanceof \Carbon\Carbon ? $appointment->time->format('H:i') : substr($appointment->time, 0, 5) }}" required class="form-control">
                             </div>
                         </div>
                         <div class="col-md-6">
