@@ -40,7 +40,10 @@ class TreatmentPlanController extends Controller
 
     public function create()
     {
-        return view('treatment-plans.create');
+        $pets = \App\Models\Pet::with('tutors')->get();
+        $tutors = \App\Models\Tutor::all();
+        $veterinarians = \App\Models\User::where('is_veterinarian', true)->get();
+        return view('treatment-plans.create', compact('pets', 'tutors', 'veterinarians'));
     }
 
     public function store(Request $request)
@@ -100,7 +103,11 @@ class TreatmentPlanController extends Controller
     public function edit(TreatmentPlan $treatmentPlan)
     {
         $treatmentPlan->load('items');
-        return view('treatment-plans.edit', compact('treatmentPlan'));
+        $plan = $treatmentPlan;
+        $pets = \App\Models\Pet::all();
+        $tutors = \App\Models\Tutor::all();
+        $veterinarians = \App\Models\User::where('is_veterinarian', true)->get();
+        return view('treatment-plans.edit', compact('plan', 'pets', 'tutors', 'veterinarians'));
     }
 
     public function update(Request $request, TreatmentPlan $treatmentPlan)
