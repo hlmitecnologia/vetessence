@@ -1,0 +1,77 @@
+@startuml
+!include _common.puml
+
+title Diagrama de Atividades UML com raias — Estoque Inteligente
+
+|Fornecedor|
+start
+:Entrega produto;
+note right
+  Lead time configurado
+  no cadastro do fornecedor
+end note
+stop
+
+|Sistema|
+start
+:Recalcula consumo médio
+diário (últimos 90 dias);
+note right
+  Comando agendado
+  stock:forecast --recalculate
+  (03:00 todos os dias)
+end note
+:Calcula ponto de reposição;
+note right
+  (consumo_médio × lead_time)
+  + estoque_segurança
+end note
+
+if (Estoque atual < ponto de reposição?) then ([sim])
+  :Calcula sugestão de compra;
+  :Gera alerta no dashboard;
+  :Dispara notificação;
+else ([não])
+  :Nenhuma ação necessária;
+endif
+
+:Verifica lotes próximos
+ao vencimento;
+note right
+  Comando agendado
+  stock:forecast --alert-expiry
+  (06:00 todos os dias)
+end note
+
+if (Lote a vencer nos próximos dias?) then ([sim])
+  :Gera alerta por criticidade;
+  note right
+    Vermelho: 15 dias
+    Laranja: 30 dias
+    Amarelo: 60 dias
+    Azul: 90 dias
+  end note
+else ([não])
+  :Nenhum alerta;
+endif
+stop
+
+|Usuário (Estoque)|
+start
+:Visualiza dashboard
+de estoque;
+:Verifica sugestões
+de reposição;
+:Decide comprar;
+if (Compra aprovada?) then ([sim])
+  :Gera pedido de compra;
+  :Recebe produto;
+  :Registra movimentação
+  de entrada;
+else ([não])
+  :Ajusta estoque
+  de segurança;
+endif
+stop
+
+@enduml

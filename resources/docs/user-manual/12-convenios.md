@@ -120,12 +120,37 @@
 - `convenio-claims.view/create/edit/delete` — Claims de convênio
 - CVI reusa permissões de `health-certificates.*`
 
+### Petlove (Integração)
+
+O sistema oferece integração com a **Petlove** como provedor de convênio adicional, registrado no `InsuranceProviderFactory` com a chave `'petlove'`.
+
+#### Funcionalidades
+- **checkEligibility**: Verifica elegibilidade do pet para cobertura antes do atendimento
+- **requestPreAuthorization**: Solicita pré-autorização para procedimentos
+- **submitClaim**: Envia claim (solicitação de reembolso) para a Petlove
+- **checkStatus**: Consulta status de um claim já enviado
+
+#### Campos Adicionais
+- `external_policy_id`: ID da apólice externa (Petlove)
+- `eligibility_last_checked_at`: Data da última verificação de elegibilidade
+- Ambos armazenados na tabela `convenio_pet` para cada pet vinculado ao convênio
+
+#### Uso
+1. Acesse o cadastro do pet vinculado ao convênio
+2. Na aba **Petlove**, informe o `external_policy_id`
+3. Utilize os botões de ação para verificar elegibilidade, solicitar autorização ou enviar claim
+
+## Permissões
+- `convenio-claims.view/create/edit/delete` — Claims de convênio
+- `insurance.petlove` — Acesso à integração Petlove
+- CVI reusa permissões de `health-certificates.*`
+
 ## Regras de Negócio
 - Cada convênio pode ter tabela própria de valores
 - Autorização prévia para procedimentos específicos
 - Guias têm numeração sequencial por convênio
 - Prazo para envio de faturamento conforme contrato
-- Claims podem ser enviados automaticamente via API Porto Seguro
+- Claims podem ser enviados automaticamente via API Porto Seguro ou Petlove
 - CVI exige microchip obrigatório (verificação automática)
 
 ---

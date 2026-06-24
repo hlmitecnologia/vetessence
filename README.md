@@ -40,9 +40,12 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 ### Farmácia & Estoque
 - **Produtos** — Catálogo completo com SKU, código de barras, preço custo/venda, rastreamento por lote
 - **Movimentações de Estoque** — Entrada/saída/ajuste/transferência, alertas de estoque baixo
+- **Estoque Inteligente** — Dashboard com widgets de visão geral, sugestão de reposição baseada em consumo médio + lead time + estoque de segurança, alerta de vencimentos (15/30/60/90 dias)
 - **Pedidos de Compra** — Fluxo de compras: rascunho → pedido → recebimento → conciliação
 - **Substâncias Controladas** — Rastreamento conforme ANVISA com registro de uso
-- **Fornecedores** — Gestão de fornecedores e histórico de pedidos
+- **Fornecedores** — Gestão de fornecedores e histórico de pedidos, com lead time por fornecedor
+- **Pacotes Petshop** — Pacotes de banho & tosa/hotel com preço promocional, assinaturas com usos, consumo com cálculo de economia
+- **Renovação Automática de Assinaturas** — Comando `subscriptions:renew` para renovar assinaturas expiradas
 
 ### Financeiro
 - **Faturas** — Faturamento de serviços/produtos com controle de pagamentos e cancelamento
@@ -54,7 +57,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 - **Conciliação Bancária** — Importação de extrato OFX/QIF/CSV, correspondência automática por valor
 - **Comissões** — Cálculo de comissão por procedimento ou produto por veterinário, relatório por período
 - **Guias de Convênio** — Faturamento de convênios, claims, comando de envio automático, webhook
-- **Claims de Convênio** — Registro de solicitações, aprovação/rejeição, auto-envio via API Porto Seguro
+- **Claims de Convênio** — Registro de solicitações, aprovação/rejeição, auto-envio via API Porto Seguro, integração Petlove (checkEligibility, requestPreAuthorization, submitClaim, checkStatus)
 - **Relatórios Financeiros** — Receita, contas a receber, DRE, formas de pagamento
 
 ### Regulatório & Compliance
@@ -100,7 +103,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 - **PIX** — Gateway PIX nativo com chave PIX e suporte a PIX dinâmico, dados do recebedor obtidos da unidade
 - **Rebranding** — Personalização de logo, cores, nome da clínica, posição do nome, fundo do login
 - **Dashboard Corporativo** — Indicadores consolidados de todas as filiais (faturamento, agendamentos, ocupação)
-- **Documentação do Sistema (/docs)** — Manuais do usuário (25 módulos), manual técnico e manual do tutor, renderizados em Markdown com diagramas BPMN interativos
+- **Documentação do Sistema (/docs)** — Manuais do usuário (26 módulos), manual técnico e manual do tutor, renderizados em Markdown com diagramas BPMN interativos
 
 ---
 
@@ -122,7 +125,7 @@ Construído com **Laravel 13**, **AdminLTE 3.2**, **Livewire 3**, **Spatie Permi
 ## Suite de Testes
 
 ```
-Tests: 2,005 total (394 files), Livewire 222 (33 files), Controllers 772 (108 files), Services 203 (32 files), Models 378 (92 files)
+Tests: 2,045 total (397 files), Livewire 222 (33 files), Controllers 780 (109 files), Services 213 (33 files), Models 378 (92 files)
 ```
 
 ## Início Rápido

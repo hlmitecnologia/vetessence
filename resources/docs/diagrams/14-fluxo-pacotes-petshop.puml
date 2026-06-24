@@ -1,0 +1,79 @@
+@startuml
+!include _common.puml
+
+title Diagrama de Atividades UML com raias — Pacotes e Assinaturas Petshop
+
+|Admin / Estoque|
+start
+:Configurar pacote;
+repeat
+  :Definir nome, preço
+  promocional, validade;
+  :Vincular serviços inclusos;
+repeat while (Pacote válido?) is ([não])
+->[sim] yes
+:Pacote criado e ativo;
+stop
+
+|Atendente / Recepcionista|
+start
+:Vender pacote ao tutor;
+
+if (Cliente quer assinatura?) then ([sim])
+  :Criar assinatura;
+  :Vincular pacote + pet;
+  :Definir usos contratados;
+  :Assinatura ativa;
+else ([não])
+  :Venda avulsa avulsa;
+endif
+stop
+
+|Sistema|
+start
+:Registrar assinatura;
+:Disparar comando
+subscriptions:renew;
+note right
+  Verifica assinaturas
+  expiradas diariamente
+end note
+if (Assinatura expirou?) then ([sim])
+  :Renovar com mesmos
+  parâmetros;
+  :Nova assinatura ativa;
+else ([não])
+  :Manter status atual;
+endif
+stop
+
+|Atendente|
+start
+:Atender pet na clínica;
+:Registrar consumo
+na assinatura;
+note right
+  Informa serviço prestado
+  e valor original
+end note
+:Calcular economia;
+:Reduzir usos restantes;
+if (Usos esgotados?) then ([sim])
+  :Notificar tutor;
+  :Oferecer renovação;
+else ([não])
+  :Continuar;
+endif
+stop
+
+|Tutor|
+start
+:Receber notificação;
+if (Renovar?) then ([sim])
+  :Nova assinatura;
+else ([não])
+  :Usar avulso;
+endif
+stop
+
+@enduml

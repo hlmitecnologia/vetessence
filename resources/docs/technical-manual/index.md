@@ -21,7 +21,7 @@ Documentação para desenvolvedores e administradores do sistema.
 ### Estrutura de Diretórios
 ```
 app/
-├─ Console/Commands/     # Comandos Artisan (~15 comandos)
+  ├─ Console/Commands/     # Comandos Artisan (~18 comandos)
 ├─ Events/               # Eventos do sistema
 ├─ Exceptions/           # Exceções customizadas
 ├─ Http/
@@ -30,11 +30,11 @@ app/
 │  ├─ Livewire/         # Componentes Livewire (~35)
 │  └─ Middleware/       # Middlewares (SetBranchContext, etc.)
 ├─ Listeners/           # Listeners de eventos
-├─ Models/              # Eloquent Models (~63: +NfeConfig, NfeInvoice)
+├─ Models/              # Eloquent Models (~66: +PetShopPackage, PetShopSubscription, PetShopConsumption)
 ├─ Providers/           # Service Providers
-└─ Services/            # Classes de serviço
+    └─ Services/            # Classes de serviço (StockForecastService, VetAvailabilityService, etc.)
     ├─ Communication/   # WhatsAppProvider, SmsProvider
-    ├─ Insurance/       # PortoSeguroProvider
+    ├─ Insurance/       # PortoSeguroProvider, PetloveProvider
     ├─ Nfe/             # NfeProvider, NfeService, FocusNfeProvider, NfeIoProvider, WebmaniaProvider
     └─ Nfse/            # NfseProvider, NfseService, WebmaniaProvider
 resources/
@@ -53,13 +53,13 @@ storage/
 └─ docs/                # Documentação publicada (cópia de resources/docs/)
 tests/
 ├─ Unit/Models/         # Testes unitários de modelos (~290)
-├─ Feature/Controllers/ # Testes de controllers (~400)
+├─ Feature/Controllers/ # Testes de controllers (~405)
 ├─ Feature/Commands/    # Testes de comandos (~25)
 ├─ Feature/Integrations/# Testes de fluxo (~12)
 ├─ Feature/Api/         # Testes de API (~18)
 ├─ Feature/Portal/      # Testes do portal (~20)
 ├─ Feature/Services/    # Testes de serviços (~12)
-└─ Unit/Services/       # Testes unitários de serviços (~18)
+└─ Unit/Services/       # Testes unitários de serviços (~30)
 ```
 
 ### Escopo de Dados
@@ -145,8 +145,9 @@ Mapeamento entre tipo de atendimento e serviço com preço para geração de fat
 | U   | Manutenção (auto-update, rebranding, docs, white label) | ✅ |
 | V   | Modal CRUD + SweetAlert2 (29 Livewire form components) | ✅ |
 | W   | NFSe (Nota Fiscal de Serviços Eletrônica) | ✅ |
+| ZG  | Diferenciais Competitivos (estoque inteligente, pacotes petshop, Petlove) | ✅ |
 
-### Módulos do Sistema (25 módulos no Manual do Usuário)
+### Módulos do Sistema (26 módulos no Manual do Usuário)
 | # | Módulo | Descrição |
 |---|--------|-----------|
 | 01 | Prontuários | SOAP, planos de tratamento, aprovação, dietas, consentimento |
@@ -174,26 +175,27 @@ Mapeamento entre tipo de atendimento e serviço com preço para geração de fat
 | 23 | Hospedagem | Boarding, check-in/out, tarefas, banho e tosa |
 | 24 | Odontologia | Odontograma, procedimentos, periodontia |
 | 25 | Zoonoses | Cadastro, notificação compulsória, relatórios |
+| 26 | Pacotes Petshop | Pacotes de banho & tosa/hotel, assinaturas, consumo com economia |
 
 ---
 
 ## Permissões
 
-O sistema utiliza **Spatie Laravel Permission v7** com **11 papéis**:
+O sistema utiliza **Spatie Laravel Permission v7** com **12 papéis**:
 
 | Papel | Slug | Descrição | Permissões |
 |-------|------|-----------|------------|
-| Super Admin | super-admin | Acesso total irrestrito | ~163 (todas) |
-| Admin | admin | Acesso total ao sistema | ~163 (todas) |
-| Branch Admin | branch-admin | Administração por filial | ~163 (escopo filial) |
-| Veterinarian | veterinarian | Acesso clínico completo | ~110 |
+| Super Admin | super-admin | Acesso total irrestrito | ~180+ (todas) |
+| Admin | admin | Acesso total ao sistema | ~180+ (todas) |
+| Branch Admin | branch-admin | Administração por filial | ~180+ (escopo filial) |
+| Veterinarian | veterinarian | Acesso clínico completo | ~120 |
 | **Técnico** | **tecnico** | **Execução de tarefas clínicas sem prescrição** | **~7** |
-| Receptionist | receptionist | Agenda e cadastro | ~22 |
-| Financial | financial | Módulo financeiro | ~14 |
-| Super Financial | super-financial | Financeiro global | ~19 |
-| Stock Manager | stock-manager | Estoque e farmácia | ~25 |
-| Human Resources | human-resources | RH | ~10 |
-| Tutor | tutor | Portal do tutor | 0 |
+| Receptionist | receptionist | Agenda e cadastro | ~26 |
+| Financial | financial | Módulo financeiro | ~18 |
+| Super Financial | super-financial | Financeiro global | ~23 |
+| Stock Manager | stock-manager | Estoque e farmácia | ~30 |
+| Human Resources | human-resources | RH | ~12 |
+| Tutor | tutor | Portal do tutor | 4 |
 | Auditor | auditor | Apenas leitura | ~80+ |
 
 As permissões seguem o padrão `modulo.acao` (ex: `appointments.create`, `products.view`, `nfse.emit`).
@@ -204,10 +206,13 @@ As permissões seguem o padrão `modulo.acao` (ex: `appointments.create`, `produ
 - **Clínico:** medical-records.*, prescriptions.*, vaccinations.*, exams.*, surgeries.*, triage.*
 - **Internação:** hospitalizations.*, execution-maps.*
 - **Farmácia:** products.*, stock.*, suppliers.*, categories.*, controlled-substances.*
-- **Financeiro:** invoices.*, payments.*, nfse.*, commissions.*, bank-reconciliation.*
-- **Estoque:** purchase-orders.*, stock.transfer
-- **Sistema:** configuracoes.view, docs.view, system-update, branding
-- **Outros:** chat.*, emergency-protocols.*, diet-plans.*, pre-anesthetic.*, convenio-claims.*
+- **Financeiro:** invoices.*, payments.*, nfse.*, nfe.*, commissions.*, bank-reconciliation.*
+- **Estoque:** purchase-orders.*, stock.transfer, stock.forecast, stock.reorder
+- **Petshop:** pet-shop-packages.*, pet-shop-subscriptions.*
+- **Convênios:** convenio-claims.*, insurance.petlove
+- **Comunicação:** staff-notes.*, chat.*, communication-templates.*
+- **Sistema:** configuracoes.view, docs.view, system-update, branding, nfe-config.edit
+- **Outros:** emergency-protocols.*, diet-plans.*, pre-anesthetic.*
 
 ---
 
@@ -286,6 +291,26 @@ Gerenciado via banco de dados na tabela `payment_gateways`. Acesse o painel admi
 
 ### APIs Externas
 
+#### Estoque Inteligente (StockForecastService)
+**Service**: `App\Services\StockForecastService`
+**Métodos**:
+- `getAverageDailyConsumption(Product $product, ?int $days = 90)`: calcula consumo médio diário
+- `needsReorder(Product $product)`: verifica se estoque está abaixo do ponto de reposição
+- `suggestPurchaseOrder(?Branch $branch = null)`: retorna sugestões de compra
+- `expiringProducts(?Branch $branch = null, ?int $days = 30)`: lista produtos próximos ao vencimento
+- `recalculateConsumption(?Branch $branch = null)`: recalcula consumo para todos os produtos
+
+**Comandos Artisan**:
+- `stock:forecast --recalculate`: recalcula consumo médio (agendado 03:00)
+- `stock:forecast --alert-expiry`: alerta sobre vencimentos (agendado 06:00)
+- `subscriptions:renew`: renova assinaturas petshop expiradas
+
+**Agendamento (Kernel)**:
+```php
+$schedule->command('stock:forecast --recalculate')->dailyAt('03:00');
+$schedule->command('stock:forecast --alert-expiry')->dailyAt('06:00');
+```
+
 #### GitHub (Auto-Update)
 Configurado via painel admin em **Configurações > Atualizar Sistema**:
 
@@ -308,6 +333,12 @@ Configurado via painel admin em **Configurações > Atualizar Sistema**:
 **Provider**: `App\Services\Insurance\PortoSeguroProvider`
 **Comando**: `claims:auto-file` — envia claims pendentes automaticamente
 **Webhook**: `POST /api/insurance/webhook` (público, rate-limited: 60/min)
+
+#### Petlove (Insurance Provider)
+**Provider**: `App\Services\Insurance\PetloveProvider` (implementa `InsuranceProvider` interface)
+**Chave**: `'petlove'` registrada em `InsuranceProviderFactory`
+**Métodos**: `checkEligibility()`, `requestPreAuthorization()`, `submitClaim()`, `checkStatus()`
+**Testes**: `tests/Unit/Services/Insurance/PetloveProviderTest.php` (11 testes)
 
 #### Equipamentos de Laboratório
 Gerenciado via banco de dados na tabela `lab_equipment_integrations`. Acesse o painel admin:
@@ -351,14 +382,14 @@ Gera salas automaticamente no formato `https://meet.jit.si/{app-name}-{token}`. 
 | Suite | Count | Descrição |
 |-------|-------|-----------|
 | Unit/Models | ~290 | Todos os modelos |
-| Feature/Controllers | ~400 | Todos os controllers |
+| Feature/Controllers | ~405 | Todos os controllers |
 | Feature/Commands | ~25 | Comandos Artisan |
 | Feature/Integrations | ~12 | Fluxos completos |
 | Feature/Api | ~18 | Endpoints de API |
 | Feature/Portal | ~20 | Portal do tutor |
 | Feature/Services | ~12 | Serviços (NFSe providers, etc.) |
-| Unit/Services | ~18 | Serviços (Pix, EmailApi, BranchContext) |
-| **Total** | **~887** | **238 files, 865 methods, 1520 assertions** |
+| Unit/Services | ~30 | Serviços (Pix, EmailApi, BranchContext, StockForecast, Petlove) |
+| **Total** | **~912** | **242 files, 885 methods, 1560 assertions** |
 
 ### Como Rodar
 
@@ -946,7 +977,7 @@ Para variáveis de integração (WhatsApp, NFSe, PIX, etc.), veja a seção [Int
 - **Tutor route**: `/portal/docs` (autenticado como tutor)
 - **Controllers**: `DocController` + `Portal\DocController`
 - **Conteúdo**:
-  - Manual do Usuário: 25 módulos (01 a 25)
+  - Manual do Usuário: 26 módulos (01 a 26)
   - Manual Técnico: Este documento
   - Changelog
   - Manual do Tutor: 13 tópicos

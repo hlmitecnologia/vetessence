@@ -173,12 +173,105 @@ Ao criar ou editar uma fatura, é possível adicionar itens do tipo **produto**:
 5. Permissão específica: `stock.transfer`
 6. Transferências têm registro de auditoria completo
 
+## Estoque Inteligente (Dashboard)
+
+Dashboard com visão geral do estoque em **Estoque > Dashboard** (permissão `stock.forecast`):
+
+### Widgets
+- **Produtos no estoque**: total de produtos cadastrados
+- **Abaixo do ponto de reposição**: quantos produtos precisam ser comprados
+- **Valor total em estoque**: soma do custo médio × saldo
+- **Produtos a vencer**: nos próximos 30 dias
+- **Comandas de assinaturas ativas**: total de assinaturas petshop ativas
+- **Valor economizado com pacotes**: soma da economia de todos os consumos registrados
+
+### Ações Rápidas
+- **Nova movimentação**: atalho para registrar entrada/saída
+- **Sugestões de reposição**: baseadas em consumo médio
+- **Produtos a vencer**: filtro por período
+- **Ajustar estoque**: registrar ajuste manual ou transferência
+
+## Sugestão de Reposição
+
+Acesse **Estoque > Reposição** (permissão `stock.reorder`) para visualizar produtos abaixo do ponto de reposição.
+
+Funciona com base em:
+- **Consumo médio diário**: calculado automaticamente (consumo total dos últimos 90 dias ÷ 90)
+- **Lead time do fornecedor**: dias entre pedido e recebimento
+- **Estoque de segurança**: margem adicional configurada
+- **Ponto de reposição**: `(consumo_médio × lead_time) + estoque_segurança`
+
+### Colunas da Tabela
+| Coluna | Descrição |
+|--------|-----------|
+| Produto | Nome + estoque atual |
+| Consumo médio/dia | Média dos últimos 90 dias |
+| Lead time | Dias do fornecedor |
+| Est. segurança | Margem configurada |
+| Ponto de reposição | Limite calculado |
+| Sugestão de compra | Quantidade recomendada |
+| Fornecedor | Fornecedor principal |
+
+> A sugestão de compra é calculada como: `(consumo_médio × lead_time + estoque_segurança) − estoque_atual`, arredondado para cima.
+
+### Recálculo Automático
+- Comando `stock:forecast --recalculate` roda diariamente às **03:00** (agendado no Kernel)
+- Recalcula consumo médio com base nos últimos 90 dias de movimentações de saída
+
+## Produtos a Vencer
+
+Acesse **Estoque > Vencimentos** (permissão `stock.view`) para listar produtos próximos ao vencimento.
+
+### Filtros
+- **15 dias**: vermelho (crítico)
+- **30 dias**: laranja (atenção)
+- **60 dias**: amarelo (monitoramento)
+- **90 dias**: azul (planejamento)
+
+### Alerta Automático
+- Comando `stock:forecast --alert-expiry` roda diariamente às **06:00** (Kernel)
+- Envia notificação para usuários com acesso a estoque sobre lotes próximos ao vencimento
+
+## Ajuste Manual com Transferência
+
+O formulário de ajuste de estoque em **Estoque > Ajustar** unifica entrada, saída, perda, devolução e transferência:
+
+### Tipos de Movimentação
+| Tipo | Efeito no estoque |
+|------|-------------------|
+| **Entrada** | Aumenta saldo |
+| **Saída** | Reduz saldo |
+| **Ajuste** | Corrige divergência (positivo ou negativo) |
+| **Perda** | Reduz saldo (quebra, extravio) |
+| **Devolução** | Aumenta saldo (cliente devolveu) |
+| **Transferência** | Saída na origem + entrada no destino (simultâneo) |
+
+### Transferência entre Unidades
+1. Selecione o tipo **Transferência**
+2. Informe produto, quantidade, lote e validade
+3. Selecione **filial de origem** e **filial de destino**
+4. O sistema cria duas movimentações: `transfer_out` na origem e `transfer_in` no destino
+5. Ambas com registro de auditoria completo
+
+### Campo Estoque na Edição de Produtos
+- Na criação do produto, o campo **Estoque inicial** está disponível
+- Na edição, o campo é **desabilitado** com a mensagem: *"Altere o estoque via Ajustar Estoque ou vendas"*
+- Isso garante que toda alteração de saldo seja registrada como movimentação
+
 ## Regras de Negócio
 - Transferência cria registro de auditoria completo
 - Estoque negativo não é permitido
 - Apenas admin, estoque e super-financial podem fazer ajustes
 - Substâncias controladas têm rastreamento lote-a-lote
 - Transferência só pode ser feita entre filiais do mesmo grupo
+- Campo `stock` em produto só é editável no cadastro inicial; alterações posteriores exclusivamente por movimentações ou vendas
+
+---
+
+## Diagrama do Processo
+
+![Estoque Inteligente](../diagrams/14-fluxo-estoque-inteligente.svg)
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*
 
 ---
 

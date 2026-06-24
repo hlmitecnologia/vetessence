@@ -1,5 +1,48 @@
 # Changelog
 
+## [Não versionado] — 2026-06-24
+
+### Adicionado
+
+#### Diferenciais Competitivos (Phase ZG)
+- **Estoque Inteligente**:
+  - Dashboard com 6 widgets (produtos, abaixo do ponto de reposição, valor em estoque, vencimentos, assinaturas ativas, economia)
+  - Cálculo automático de consumo médio diário (últimos 90 dias)
+  - Ponto de reposição: `(consumo_médio × lead_time) + estoque_segurança`
+  - Sugestão de compra com quantidade recomendada
+  - Alerta de vencimentos com filtro por período (15/30/60/90 dias)
+  - Comandos agendados: `stock:forecast --recalculate` (03:00) e `stock:forecast --alert-expiry` (06:00)
+  - `StockForecastService` com `suggestPurchaseOrder()`, `expiringProducts()`
+  - Permissões: `stock.forecast`, `stock.reorder`
+  - 3 views: dashboard, sugestão de reposição, vencimentos
+  - 10 testes unitários (`StockForecastServiceTest`)
+
+- **Pacotes Petshop**:
+  - 3 models: `PetShopPackage`, `PetShopSubscription`, `PetShopConsumption`
+  - 3 controllers: CRUD completo de pacotes e assinaturas
+  - Pacotes com preço promocional, validade, serviços inclusos
+  - Assinaturas com usos, economia calculada, renovação automática (`subscriptions:renew`)
+  - Comando `subscriptions:renew` para renovar assinaturas expiradas
+  - Permissões: `pet-shop-packages.*`, `pet-shop-subscriptions.*`
+  - Testes: `PetShopPackageControllerTest` (8 testes)
+
+- **Petlove (Insurance Provider)**:
+  - `PetloveProvider` com `checkEligibility()`, `requestPreAuthorization()`, `submitClaim()`, `checkStatus()`
+  - Registrado em `InsuranceProviderFactory` com chave `'petlove'`
+  - Campos: `external_policy_id`, `eligibility_last_checked_at` em `convenio_pet`
+  - Permissão: `insurance.petlove` na seção Financeiro
+  - 11 testes unitários (`PetloveProviderTest`)
+
+- **Sidebar**: links para dashboard de estoque, sugestão de reposição, vencimentos, pacotes, assinaturas
+- **RoleController**: labels/grupos/seções para pet-shop-packages, pet-shop-subscriptions, insurance, communication-templates
+- **PermissionSeeder**: 11 novas permissões ZG + atribuição a `estoque`
+- **Migration dedicada**: `seed_zg_permissions` para deploys existentes
+- Total: ~~40 testes ZG passando~~ (40/40)
+
+### Corrigido
+- `InsuranceProviderFactoryTest`: mensagem de exceção em português vs inglês
+- `Products index view`: null-safe `expiration_date?->format('Y-m-d')`
+
 ## [Não versionado] — 2026-06-19
 
 ### Adicionado

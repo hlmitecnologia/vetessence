@@ -18,7 +18,7 @@ Guia prático para utilização do VetEssence no dia a dia da clínica.
 | 10 | [Agendamento](10-agendamento) | Calendário visual (FullCalendar), agendamento online, escala de veterinários e plantões, lembretes, cancelamento automático |
 | 11 | [Tutores e Pets](11-tutores-pets) | Cadastro, microchip/RG, timeline, óbito/cremação, múltiplos tutores, portal |
 | 12 | [Convênios](12-convenios) | Planos, tabela procedimentos, guias, claims, CVI, glosas |
-| 13 | [Usuários e Permissões](13-usuarios-e-permissoes) | 11 funções, 170+ permissões, controle de acesso |
+| 13 | [Usuários e Permissões](13-usuarios-e-permissoes) | 12 funções, 180+ permissões, controle de acesso |
 | 14 | [Multi-Filiais](14-multi-filiais) | Estrutura, corporate dashboard, transferências, isolamento de dados |
 | 15 | [Relatórios](15-relatorios) | Clínicos, estoque, financeiros, comissões, exportação PDF/Excel |
 | 16 | [Auditoria e LGPD](16-auditoria-lgpd) | Logs, direitos do titular, consentimento, política de retenção |
@@ -31,6 +31,7 @@ Guia prático para utilização do VetEssence no dia a dia da clínica.
 | 23 | [Hospedagem](23-hospedagem) | Boarding, check-in/out, tarefas diárias, banho e tosa, diárias |
 | 24 | [Odontologia](24-odontologia) | Odontograma, procedimentos, classificação periodontal |
 | 25 | [Zoonoses](25-zoonoses) | Cadastro, notificação compulsória, relatórios epidemiológicos |
+| 26 | [Pacotes Petshop](26-pacotes-petshop) | Pacotes de banho & tosa/hotel, assinaturas, consumo com economia |
 
 ---
 
