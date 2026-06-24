@@ -14,7 +14,18 @@
         @csrf
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Pet</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Clínica *</label>
+            <select name="branch_id" id="branch_id" required
+                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm">
+                <option value="">Selecione uma clínica</option>
+                @foreach($branches as $branch)
+                <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Pet *</label>
             <select name="pet_id" id="pet_id" required
                 class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm">
                 <option value="">Selecione um pet</option>
@@ -71,6 +82,7 @@
 @push('scripts')
 <script>
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+const branchSelect = document.getElementById('branch_id');
 const dateInput = document.getElementById('date');
 const vetSelect = document.getElementById('vet_id');
 const slotsContainer = document.getElementById('slotsContainer');
@@ -79,7 +91,7 @@ const noSlotsMessage = document.getElementById('noSlotsMessage');
 const submitBtn = document.getElementById('submitBtn');
 let selectedTime = null;
 
-async function loadAvailableVets(date) {
+async function loadAvailableVets(date, branchId) {
     vetSelect.innerHTML = '<option value="">Carregando...</option>';
     slotsContainer.classList.add('hidden');
     noSlotsMessage.classList.add('hidden');
@@ -87,7 +99,8 @@ async function loadAvailableVets(date) {
     selectedTime = null;
 
     try {
-        const res = await fetch(`{{ route("portal.vet-availability.available-vets") }}?date=${date}`, {
+        const params = new URLSearchParams({ date, branch_id: branchId });
+        const res = await fetch(`{{ route("portal.vet-availability.available-vets") }}?${params}`, {
             headers: { 'Accept': 'application/json' }
         });
         const data = await res.json();
@@ -146,9 +159,19 @@ function selectSlot(btn, time) {
     submitBtn.disabled = false;
 }
 
+function canLoadVets() {
+    return branchSelect.value && dateInput.value;
+}
+
+branchSelect.addEventListener('change', function() {
+    if (dateInput.value) {
+        loadAvailableVets(dateInput.value, this.value);
+    }
+});
+
 dateInput.addEventListener('change', function() {
-    if (this.value) {
-        loadAvailableVets(this.value);
+    if (canLoadVets()) {
+        loadAvailableVets(this.value, branchSelect.value);
     }
 });
 
@@ -167,6 +190,7 @@ document.getElementById('bookingForm').addEventListener('submit', async function
 
     const formData = new FormData();
     formData.append('_token', csrfToken);
+    formData.append('branch_id', branchSelect.value);
     formData.append('pet_id', document.getElementById('pet_id').value);
     formData.append('vet_id', vetSelect.value);
     formData.append('date', dateInput.value);

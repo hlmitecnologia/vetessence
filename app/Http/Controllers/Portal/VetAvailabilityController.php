@@ -17,9 +17,12 @@ class VetAvailabilityController extends Controller
 
     public function availableVets(Request $request)
     {
-        $request->validate(['date' => 'required|date|after_or_equal:today']);
+        $request->validate([
+            'date' => 'required|date|after_or_equal:today',
+            'branch_id' => 'nullable|exists:branches,id',
+        ]);
 
-        $vets = $this->availabilityService->getAvailableVets($request->date);
+        $vets = $this->availabilityService->getAvailableVets($request->date, $request->branch_id);
 
         return response()->json([
             'vets' => $vets->map(function ($vet) {

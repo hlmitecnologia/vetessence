@@ -10,6 +10,17 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label>Clínica *</label>
+                                <select name="branch_id" class="form-control" required>
+                                    <option value="">Selecione...</option>
+                                    @foreach($branches as $branch)
+                                    <option value="{{ $branch->id }}" {{ old('branch_id', auth()->user()->branch_id) == $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label>Pet *</label>
                                 <x-tom-select name="pet_id" :value="old('pet_id')" required>
                                     @foreach($pets as $pet)

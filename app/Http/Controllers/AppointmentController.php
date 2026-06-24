@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use App\Models\AppointmentService;
+use App\Models\Branch;
 use App\Models\Pet;
 use App\Models\Role;
 use App\Models\Service;
@@ -35,11 +36,16 @@ class AppointmentController extends Controller
             $query->where('vet_id', $request->vet_id);
         }
 
+        if ($request->branch_id) {
+            $query->where('branch_id', $request->branch_id);
+        }
+
         $appointments = $query->orderBy('date')->orderBy('time')->paginate(20);
 
         $veterinarians = $this->getVeterinarians();
+        $branches = Branch::where('is_active', true)->orderBy('name')->get();
 
-        return view('appointments.index', compact('appointments', 'veterinarians'));
+        return view('appointments.index', compact('appointments', 'veterinarians', 'branches'));
     }
 
     public function create()
@@ -47,8 +53,9 @@ class AppointmentController extends Controller
         $pets = Pet::with('tutors')->where('is_active', true)->orderBy('name')->get();
         $veterinarians = $this->getVeterinarians();
         $services = Service::where('is_active', true)->orderBy('name')->get();
+        $branches = Branch::where('is_active', true)->orderBy('name')->get();
 
-        return view('appointments.create', compact('pets', 'veterinarians', 'services'));
+        return view('appointments.create', compact('pets', 'veterinarians', 'services', 'branches'));
     }
 
     public function store(Request $request)
@@ -65,6 +72,7 @@ class AppointmentController extends Controller
             'is_recurring' => 'nullable|boolean',
             'recurrence_rule' => 'nullable|string|max:100',
             'recurrence_end_date' => 'nullable|date|after:date',
+            'branch_id' => 'nullable|exists:branches,id',
         ]);
 
         DB::beginTransaction();

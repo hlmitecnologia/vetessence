@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Portal;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
+use App\Models\Branch;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\VetAvailabilityService;
@@ -38,13 +39,14 @@ class AppointmentController extends Controller
     {
         $tutor = Auth::guard('tutor')->user();
         $pets = $tutor->pets;
+        $branches = Branch::where('is_active', true)->orderBy('name')->get();
 
         $vets = User::where('is_active', true)
             ->where(fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->orWhere('is_veterinarian', true))
             ->orderBy('name')
             ->get();
 
-        return view('portal.appointments.create', compact('pets', 'vets'));
+        return view('portal.appointments.create', compact('pets', 'vets', 'branches'));
     }
 
     public function store(Request $request)
@@ -55,6 +57,7 @@ class AppointmentController extends Controller
             'date' => 'required|date|after_or_equal:today',
             'time' => 'required|date_format:H:i',
             'reason' => 'nullable|string|max:500',
+            'branch_id' => 'required|exists:branches,id',
         ]);
 
         $tutor = Auth::guard('tutor')->user();
@@ -79,7 +82,7 @@ class AppointmentController extends Controller
                 'type' => 'consulta',
                 'reason' => $validated['reason'] ?? 'Agendamento pelo portal',
                 'status' => 'scheduled',
-                'branch_id' => $tutor->created_at_branch_id,
+                'branch_id' => $validated['branch_id'],
             ]);
 
             DB::commit();

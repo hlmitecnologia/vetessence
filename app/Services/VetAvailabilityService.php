@@ -11,10 +11,11 @@ use Carbon\Carbon;
 
 class VetAvailabilityService
 {
-    public function getAvailableVets(string $date)
+    public function getAvailableVets(string $date, ?int $branchId = null)
     {
         $vets = User::where('is_active', true)
             ->where(fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->orWhere('is_veterinarian', true))
+            ->when($branchId, fn($q) => $q->where('branch_id', $branchId))
             ->orderBy('name')
             ->get();
 
