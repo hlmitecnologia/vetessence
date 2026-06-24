@@ -58,13 +58,13 @@
                                                 'sobreaviso' => 'fa-home',
                                                 default => 'fa-phone-alt',
                                             };
-                                            $color = match ($onCallType) {
-                                                'presencial' => 'badge-primary',
-                                                'sobreaviso' => 'badge-success',
-                                                default => 'badge-danger',
+                                            $bg = match ($onCallType) {
+                                                'presencial' => '#007bff',
+                                                'sobreaviso' => '#28a745',
+                                                default => '#dc3545',
                                             };
                                         @endphp
-                                        <div class="badge {{ $color }} d-block mb-1 p-1 text-left" style="font-size: 11px; white-space: normal;">
+                                        <div class="badge d-block mb-1 p-1 text-left" style="background-color: {{ $bg }}; font-size: 11px; white-space: normal; color: #fff;">
                                             <i class="fas {{ $icon }}"></i>
                                             {{ $schedule->user->name }}
                                             <small>({{ substr($schedule->start_time, 0, 5) }}–{{ substr($schedule->end_time, 0, 5) }})</small>
