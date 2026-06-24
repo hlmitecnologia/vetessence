@@ -16,10 +16,11 @@
             <div class="card-body">
                 <div class="form-group">
                     <label for="type">Tipo *</label>
-                    <select name="type" id="type" class="form-control @error('type') is-invalid @enderror" required>
+                    <select name="type" id="type" class="form-control @error('type') is-invalid @enderror" required onchange="toggleTransferFields()">
                         <option value="">Selecione</option>
                         <option value="entry" {{ old('type') == 'entry' ? 'selected' : '' }}>Entrada</option>
                         <option value="exit" {{ old('type') == 'exit' ? 'selected' : '' }}>Saída</option>
+                        <option value="transfer" {{ old('type') == 'transfer' ? 'selected' : '' }}>Transferência</option>
                         <option value="adjustment" {{ old('type') == 'adjustment' ? 'selected' : '' }}>Ajuste</option>
                         <option value="loss" {{ old('type') == 'loss' ? 'selected' : '' }}>Perda</option>
                         <option value="return" {{ old('type') == 'return' ? 'selected' : '' }}>Devolução</option>
@@ -49,9 +50,9 @@
                     @enderror
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="branch_group">
                     <label for="branch_id">Unidade *</label>
-                    <x-tom-select name="branch_id" :value="old('branch_id')" required>
+                    <x-tom-select name="branch_id" id="branch_id" :value="old('branch_id')" required>
                         @foreach($branches as $b)
                             <option value="{{ $b->id }}" {{ old('branch_id') == $b->id ? 'selected' : '' }}>{{ $b->name }}</option>
                         @endforeach
@@ -59,6 +60,35 @@
                     @error('branch_id')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
+                </div>
+
+                <div class="row" id="transfer_branch_group" style="display: none;">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="from_branch_id">Unidade de Origem *</label>
+                            <x-tom-select name="from_branch_id" id="from_branch_id" :value="old('from_branch_id')">
+                                @foreach($branches as $b)
+                                    <option value="{{ $b->id }}" {{ old('from_branch_id') == $b->id ? 'selected' : '' }}>{{ $b->name }}</option>
+                                @endforeach
+                            </x-tom-select>
+                            @error('from_branch_id')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="to_branch_id">Unidade de Destino *</label>
+                            <x-tom-select name="to_branch_id" id="to_branch_id" :value="old('to_branch_id')">
+                                @foreach($branches as $b)
+                                    <option value="{{ $b->id }}" {{ old('to_branch_id') == $b->id ? 'selected' : '' }}>{{ $b->name }}</option>
+                                @endforeach
+                            </x-tom-select>
+                            @error('to_branch_id')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -99,3 +129,24 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function toggleTransferFields() {
+    const type = document.getElementById('type').value;
+    const isTransfer = type === 'transfer';
+    document.getElementById('branch_group').style.display = isTransfer ? 'none' : '';
+    document.getElementById('transfer_branch_group').style.display = isTransfer ? '' : 'none';
+
+    const branchSelects = document.querySelectorAll('#branch_id, #from_branch_id, #to_branch_id');
+    branchSelects.forEach(s => s.removeAttribute('required'));
+    if (isTransfer) {
+        document.getElementById('from_branch_id').setAttribute('required', 'required');
+        document.getElementById('to_branch_id').setAttribute('required', 'required');
+    } else {
+        document.getElementById('branch_id').setAttribute('required', 'required');
+    }
+}
+toggleTransferFields();
+</script>
+@endpush

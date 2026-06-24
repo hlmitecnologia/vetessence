@@ -53,17 +53,48 @@ class StockController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $rules = [
             'product_id' => 'required|exists:products,id',
-            'type'       => 'required|in:entry,exit,adjustment,loss,return',
+            'type'       => 'required|in:entry,exit,adjustment,loss,return,transfer',
             'quantity'   => 'required|numeric|min:0.01',
-            'branch_id'  => 'required|exists:branches,id',
             'batch_number' => 'nullable|string|max:100',
             'expiry_date'  => 'nullable|date',
             'notes'        => 'nullable|string',
-        ]);
+        ];
+
+        if ($request->type === 'transfer') {
+            $rules['from_branch_id'] = 'required|exists:branches,id';
+            $rules['to_branch_id'] = 'required|exists:branches,id|different:from_branch_id';
+        } else {
+            $rules['branch_id'] = 'required|exists:branches,id';
+        }
+
+        $data = $request->validate($rules);
 
         $product = Product::findOrFail($data['product_id']);
+
+        if ($data['type'] === 'transfer') {
+            StockMovement::create([
+                'product_id' => $data['product_id'],
+                'quantity'   => $data['quantity'],
+                'type'       => 'transfer_out',
+                'branch_id'  => $data['from_branch_id'],
+                'user_id'    => auth()->id(),
+                'notes'      => "Transferido para filial #{$data['to_branch_id']}. {$data['notes']}",
+            ]);
+
+            StockMovement::create([
+                'product_id' => $data['product_id'],
+                'quantity'   => $data['quantity'],
+                'type'       => 'transfer_in',
+                'branch_id'  => $data['to_branch_id'],
+                'user_id'    => auth()->id(),
+                'notes'      => "Recebido da filial #{$data['from_branch_id']}. {$data['notes']}",
+            ]);
+
+            return redirect()->route('stock.movements')
+                ->with('success', 'Transferência realizada com sucesso.');
+        }
 
         $movement = StockMovement::create([
             'product_id'  => $data['product_id'],

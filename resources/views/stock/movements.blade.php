@@ -26,14 +26,14 @@
                     <td><strong>{{ $mov->product->name ?? '-' }}</strong></td>
                     <td>
                         @php
-                            $typeColors = ['entry' => 'badge-success', 'exit' => 'badge-danger', 'adjustment' => 'badge-info', 'loss' => 'badge-dark', 'return' => 'badge-warning'];
-                            $typeLabels = ['entry' => 'Entrada', 'exit' => 'Saída', 'adjustment' => 'Ajuste', 'loss' => 'Perda', 'return' => 'Devolução'];
+                            $typeColors = ['entry' => 'badge-success', 'exit' => 'badge-danger', 'adjustment' => 'badge-info', 'loss' => 'badge-dark', 'return' => 'badge-warning', 'transfer_out' => 'badge-primary', 'transfer_in' => 'badge-primary'];
+                            $typeLabels = ['entry' => 'Entrada', 'exit' => 'Saída', 'adjustment' => 'Ajuste', 'loss' => 'Perda', 'return' => 'Devolução', 'transfer_out' => 'Transferência (Saída)', 'transfer_in' => 'Transferência (Entrada)'];
                         @endphp
                         <span class="badge {{ $typeColors[$mov->type] ?? 'badge-secondary' }}">{{ $typeLabels[$mov->type] ?? $mov->type }}</span>
                     </td>
                     <td>{{ $mov->batch_number ?? $mov->lot_number ?? '-' }}</td>
-                    <td class="{{ $mov->type === 'entry' ? 'text-success' : 'text-danger' }}">
-                        {{ $mov->type === 'entry' ? '+' : '-' }}{{ abs($mov->quantity) }}
+                    <td class="{{ in_array($mov->type, ['entry', 'return', 'transfer_in']) ? 'text-success' : 'text-danger' }}">
+                        {{ in_array($mov->type, ['entry', 'return', 'transfer_in']) ? '+' : '-' }}{{ abs($mov->quantity) }}
                     </td>
                     <td>{{ $mov->balance_after }}</td>
                     <td>{{ $mov->user->name ?? '-' }}</td>
