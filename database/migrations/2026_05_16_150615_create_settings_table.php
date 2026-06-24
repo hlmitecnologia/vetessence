@@ -16,7 +16,7 @@ class CreateSettingsTable extends Migration
 
         DB::table('settings')->insert([
             ['key' => 'github_token', 'value' => null, 'created_at' => now(), 'updated_at' => now()],
-            ['key' => 'github_repo', 'value' => 'hectordufau/vetessence', 'created_at' => now(), 'updated_at' => now()],
+            ['key' => 'github_repo', 'value' => 'hlmitecnologia/vetessence', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'github_branch', 'value' => 'main', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }

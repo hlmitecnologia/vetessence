@@ -892,6 +892,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('system-update/token', 'App\Http\Controllers\SystemUpdateController@token')->name('system-update.token');
     Route::get('system-update/check', 'App\Http\Controllers\SystemUpdateController@check')->name('system-update.check');
     Route::post('system-update/apply', 'App\Http\Controllers\SystemUpdateController@apply')->name('system-update.apply');
+    Route::post('system-update/license', 'App\Http\Controllers\SystemUpdateController@license')->name('system-update.license');
     Route::get('system-update/history', 'App\Http\Controllers\SystemUpdateController@history')->name('system-update.history');
 
     // Documentation

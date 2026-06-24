@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 
 class SystemUpdateController extends Controller
@@ -16,9 +17,9 @@ class SystemUpdateController extends Controller
 
     public function index()
     {
-        $token = Setting::get('github_token');
-        $repo = Setting::get('github_repo', 'hectordufau/vetessence');
-        $branch = Setting::get('github_branch', 'main');
+        $token = $this->getDecryptedToken();
+        $repo = $this->getRepo();
+        $branch = $this->getBranch();
 
         $currentHash = trim(`git log --oneline -1 2>/dev/null`) ?: 'desconhecido';
         $remoteHash = null;
@@ -29,36 +30,52 @@ class SystemUpdateController extends Controller
             $behind = $this->countBehind($repo, $branch, $token);
         }
 
+        $hasToken = (bool) Setting::get('github_token');
+        $hasRepo = (bool) Setting::get('github_repo');
+        $hasBranch = (bool) Setting::get('github_branch');
+
+        $licenseKey = Setting::getEncrypted('license_key');
+
         $logs = cache()->get('update_logs', []);
 
         return view('system-update.index', compact(
-            'token', 'repo', 'branch', 'currentHash', 'remoteHash', 'behind', 'logs'
+            'hasToken', 'hasRepo', 'hasBranch',
+            'currentHash', 'remoteHash', 'behind', 'logs',
+            'licenseKey', 'repo', 'branch'
         ));
     }
 
     public function token(Request $request)
     {
         $data = $request->validate([
-            'github_token' => 'required|string',
-            'github_repo' => 'required|string|max:200',
-            'github_branch' => 'required|string|max:100',
+            'github_token' => 'nullable|string',
+            'github_repo' => 'nullable|string|max:200',
+            'github_branch' => 'nullable|string|max:100',
         ]);
 
-        Setting::set('github_token', $data['github_token']);
-        Setting::set('github_repo', $data['github_repo']);
-        Setting::set('github_branch', $data['github_branch']);
+        if (!empty($data['github_token'])) {
+            Setting::setEncrypted('github_token', $data['github_token']);
+        }
 
-        return redirect()->route('system-update.index')->with('success', 'Token salvo.');
+        if (!empty($data['github_repo'])) {
+            Setting::set('github_repo', $data['github_repo']);
+        }
+
+        if (!empty($data['github_branch'])) {
+            Setting::set('github_branch', $data['github_branch']);
+        }
+
+        return redirect()->route('system-update.index')->with('success', 'Configuração salva.');
     }
 
     public function check()
     {
-        $repo = Setting::get('github_repo', 'hectordufau/vetessence');
-        $branch = Setting::get('github_branch', 'main');
-        $token = Setting::get('github_token');
+        $token = $this->getDecryptedToken();
+        $repo = $this->getRepo();
+        $branch = $this->getBranch();
 
         if (!$token) {
-            return redirect()->route('system-update.index')->withErrors(['token' => 'Token nao configurado.']);
+            return redirect()->route('system-update.index')->withErrors(['token' => 'Token não configurado.']);
         }
 
         $remoteHash = $this->fetchRemoteHash($repo, $branch, $token);
@@ -67,31 +84,43 @@ class SystemUpdateController extends Controller
         return redirect()->route('system-update.index')->with('remote_hash', $remoteHash)->with('behind', $behind);
     }
 
-    public function apply()
+    public function license(Request $request)
     {
-        $token = Setting::get('github_token');
-        $repo = Setting::get('github_repo', 'hectordufau/vetessence');
-        $branch = Setting::get('github_branch', 'main');
+        $data = $request->validate([
+            'license_key' => 'nullable|string|max:255',
+        ]);
+
+        Setting::setEncrypted('license_key', $data['license_key'] ?? '');
+
+        return redirect()->route('system-update.index')->with('success', 'Licença salva.');
+    }
+
+    public function apply(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|current_password',
+        ]);
+
+        $token = $this->getDecryptedToken();
+        $repo = $this->getRepo();
+        $branch = $this->getBranch();
 
         if (!$token) {
-            return redirect()->route('system-update.index')->withErrors(['token' => 'Token nao configurado.']);
+            return redirect()->route('system-update.index')->withErrors(['token' => 'Token não configurado.']);
         }
 
         $log = [];
-        $log[] = '[' . now() . '] Iniciando atualizacao...';
+        $log[] = '[' . now() . '] Iniciando atualização...';
 
         try {
-            // maintenance down
             $log[] = exec('php artisan down 2>&1');
             $log[] = exec('php artisan route:clear 2>&1');
             $log[] = exec('php artisan config:clear 2>&1');
 
-            // git pull
             $url = "https://{$token}@github.com/{$repo}.git";
             $log[] = exec("git pull {$url} {$branch} 2>&1", $out, $exitCode);
 
             if ($exitCode === 0) {
-                // migrations
                 Artisan::call('migrate', ['--force' => true]);
                 $log[] = Artisan::output();
 
@@ -105,22 +134,47 @@ class SystemUpdateController extends Controller
             $log[] = 'ERRO: ' . $e->getMessage();
         }
 
-        // maintenance up
         $log[] = exec('php artisan up 2>&1');
         $log[] = '[' . now() . '] Finalizado.';
 
-        // store log
         $logs = cache()->get('update_logs', []);
         array_unshift($logs, implode("\n", $log));
         cache()->forever('update_logs', array_slice($logs, 0, 20));
 
-        return redirect()->route('system-update.index')->with('success', 'Atualizacao concluida.');
+        return redirect()->route('system-update.index')->with('success', 'Atualização concluída.');
     }
 
     public function history()
     {
         $logs = cache()->get('update_logs', []);
         return view('system-update.history', compact('logs'));
+    }
+
+    private function getDecryptedToken(): ?string
+    {
+        $dbToken = Setting::getEncrypted('github_token');
+        if ($dbToken) {
+            return $dbToken;
+        }
+
+        // Fallback: existing plaintext token (migração suave)
+        $plain = Setting::get('github_token');
+        if ($plain) {
+            Setting::setEncrypted('github_token', $plain);
+            return $plain;
+        }
+
+        return config('update.token');
+    }
+
+    private function getRepo(): string
+    {
+        return Setting::get('github_repo') ?? config('update.repo');
+    }
+
+    private function getBranch(): string
+    {
+        return Setting::get('github_branch') ?? config('update.branch');
     }
 
     private function fetchRemoteHash(string $repo, string $branch, string $token): ?string

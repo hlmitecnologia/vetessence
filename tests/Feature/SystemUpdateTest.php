@@ -47,10 +47,11 @@ class SystemUpdateTest extends TestCase
 
         $this->actingAs($user)->post(route('system-update.token'), [
             'github_token' => 'ghp_test123',
-            'github_repo' => 'hectordufau/vetessence',
+            'github_repo' => 'hlmitecnologia/vetessence',
             'github_branch' => 'main',
         ])->assertRedirect(route('system-update.index'));
 
-        $this->assertEquals('ghp_test123', Setting::get('github_token'));
+        $this->assertNotNull(Setting::get('github_token'));
+        $this->assertEquals('ghp_test123', Setting::getEncrypted('github_token'));
     }
 }
