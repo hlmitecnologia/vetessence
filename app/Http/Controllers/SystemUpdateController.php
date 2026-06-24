@@ -188,16 +188,27 @@ class SystemUpdateController extends Controller
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => [
-                "Authorization: token {$token}",
+                "Authorization: Bearer {$token}",
                 'User-Agent: VetEssence',
+                'Accept: application/vnd.github+json',
             ],
             CURLOPT_TIMEOUT => 10,
         ]);
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
         curl_close($ch);
 
-        if ($httpCode !== 200) return null;
+        if ($httpCode !== 200) {
+            Log::warning('GitHub API (branches) falhou', [
+                'repo' => $repo,
+                'branch' => $branch,
+                'http_code' => $httpCode,
+                'error' => $error,
+                'response' => mb_substr($response, 0, 500),
+            ]);
+            return null;
+        }
 
         $data = json_decode($response, true);
         return $data['commit']['sha'] ?? null;
@@ -213,16 +224,27 @@ class SystemUpdateController extends Controller
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => [
-                "Authorization: token {$token}",
+                "Authorization: Bearer {$token}",
                 'User-Agent: VetEssence',
+                'Accept: application/vnd.github+json',
             ],
             CURLOPT_TIMEOUT => 10,
         ]);
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
         curl_close($ch);
 
-        if ($httpCode !== 200) return null;
+        if ($httpCode !== 200) {
+            Log::warning('GitHub API (compare) falhou', [
+                'repo' => $repo,
+                'branch' => $branch,
+                'http_code' => $httpCode,
+                'error' => $error,
+                'response' => mb_substr($response, 0, 500),
+            ]);
+            return null;
+        }
 
         $data = json_decode($response, true);
         return $data['behind_by'] ?? null;
