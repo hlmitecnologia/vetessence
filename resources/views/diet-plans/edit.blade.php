@@ -3,7 +3,7 @@
     <div class="card"><div class="card-body">
         <form method="POST" action="{{ route('diet-plans.update', $dietPlan) }}">@csrf @method('PUT')
             <div class="form-group"><label>Pet</label><x-tom-select name="pet_id" :value="old('pet_id', $dietPlan->pet_id)" required>
-                @foreach($pets as $pet)<option value="{{ $pet->id }}" {{ old('pet_id', $dietPlan->pet_id) == $pet->id ? 'selected' : '' }}>{{ $pet->name }}</option>@endforeach
+                @foreach($pets as $pet)<option value="{{ $pet->id }}" {{ old('pet_id', $dietPlan->pet_id) == $pet->id ? 'selected' : '' }}>{{ $pet->name }} - {{ $pet->tutors->first()->name ?? 'Sem tutor' }}</option>@endforeach
             </x-tom-select></div>
             <div class="form-group"><label>Tipo de Dieta</label>
                 <select name="diet_type" class="form-control" required>

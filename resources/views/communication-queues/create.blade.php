@@ -31,12 +31,11 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="pet_id">Pet</label>
-                        <select name="pet_id" id="pet_id" class="form-control">
-                            <option value="">Selecione um pet (opcional)</option>
+                        <x-tom-select name="pet_id" id="pet_id" :value="old('pet_id')">
                             @foreach(\App\Models\Pet::where('is_active', true)->orderBy('name')->get() as $pet)
-                                <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>{{ $pet->name }}</option>
+                                <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>{{ $pet->name }} - {{ $pet->tutors->first()->name ?? 'Sem tutor' }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                     </div>
                 </div>
             </div>

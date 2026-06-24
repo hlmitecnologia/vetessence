@@ -9,12 +9,11 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label>Pet *</label>
-                        <select name="pet_id" required class="form-control">
-                            <option value="">Selecione...</option>
+                        <x-tom-select name="pet_id" :value="old('pet_id', $selectedPet->id ?? '')" required>
                             @foreach($pets as $pet)
-                            <option value="{{ $pet->id }}" {{ old('pet_id', $selectedPet->id ?? '') == $pet->id ? 'selected' : '' }}>{{ $pet->name }}</option>
+                            <option value="{{ $pet->id }}" {{ old('pet_id', $selectedPet->id ?? '') == $pet->id ? 'selected' : '' }}>{{ $pet->name }} - {{ $pet->tutors->first()->name ?? 'Sem tutor' }}</option>
                             @endforeach
-                        </select>
+                        </x-tom-select>
                     </div>
                     <div class="form-group">
                         <label>Vacina *</label>

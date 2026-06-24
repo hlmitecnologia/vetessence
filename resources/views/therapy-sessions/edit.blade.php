@@ -10,7 +10,7 @@
                 <label>Pet *</label>
                 <x-tom-select name="pet_id" :value="old('pet_id', $therapySession->pet_id)" required>
                     @foreach($pets as $pet)
-                    <option value="{{ $pet->id }}" {{ $therapySession->pet_id == $pet->id ? 'selected' : '' }}>{{ $pet->name }}</option>
+                    <option value="{{ $pet->id }}" {{ $therapySession->pet_id == $pet->id ? 'selected' : '' }}>{{ $pet->name }} - {{ $pet->tutors->first()->name ?? 'Sem tutor' }}</option>
                     @endforeach
                 </x-tom-select>
             </div>

@@ -3,7 +3,7 @@
     <div class="card"><div class="card-body">
         <form method="POST" action="{{ route('diet-plans.store') }}">@csrf
             <div class="form-group"><label>Pet</label><x-tom-select name="pet_id" :value="old('pet_id')" required>
-                @foreach($pets as $pet)<option value="{{ $pet->id }}">{{ $pet->name }}</option>@endforeach
+                @foreach($pets as $pet)<option value="{{ $pet->id }}">{{ $pet->name }} - {{ $pet->tutors->first()->name ?? 'Sem tutor' }}</option>@endforeach
             </x-tom-select></div>
             <div class="form-group"><label>Tipo de Dieta</label>
                 <select name="diet_type" class="form-control" required>

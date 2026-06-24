@@ -17,7 +17,7 @@
                         <label for="pet_id">Pet *</label>
                         <x-tom-select name="pet_id" id="pet_id" :value="old('pet_id')" required>
                             @foreach($pets as $pet)
-                                <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>{{ $pet->name }} ({{ optional($pet->tutor)->name ?? 'Sem tutor' }})</option>
+                                <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>{{ $pet->name }} - {{ $pet->tutors->first()->name ?? 'Sem tutor' }}</option>
                             @endforeach
                         </x-tom-select>
                         @error('pet_id')<span class="invalid-feedback">{{ $message }}</span>@enderror

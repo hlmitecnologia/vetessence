@@ -27,7 +27,7 @@
                 <select name="pet_id" class="form-control">
                     <option value="">Todos os pets</option>
                     @foreach($pets as $pet)
-                        <option value="{{ $pet->id }}" {{ request('pet_id') == $pet->id ? 'selected' : '' }}>{{ $pet->name }}</option>
+                        <option value="{{ $pet->id }}" {{ request('pet_id') == $pet->id ? 'selected' : '' }}>{{ $pet->name }} - {{ $pet->tutors->first()->name ?? 'Sem tutor' }}</option>
                     @endforeach
                 </select>
             </div>
