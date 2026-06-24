@@ -164,8 +164,8 @@ class StaffScheduleController extends Controller
         $daySchedules = $query->get();
 
         foreach ($daySchedules as $schedule) {
-            $existingStart = \Carbon\Carbon::parse($schedule->work_date . ' ' . $schedule->start_time);
-            $existingEnd = \Carbon\Carbon::parse($schedule->work_date . ' ' . $schedule->end_time);
+            $existingStart = \Carbon\Carbon::parse($schedule->work_date->format('Y-m-d') . ' ' . $schedule->start_time);
+            $existingEnd = \Carbon\Carbon::parse($schedule->work_date->format('Y-m-d') . ' ' . $schedule->end_time);
 
             if ($startCarbon->between($existingStart, $existingEnd) || $endCarbon->between($existingStart, $existingEnd)) {
                 continue;
