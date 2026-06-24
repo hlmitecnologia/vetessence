@@ -80,12 +80,17 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Funcionário *</label>
+                        @if($isAdmin)
                         <select name="user_id" class="form-control" required>
                             <option value="">Selecione...</option>
                             @foreach($users as $user)
                                 <option value="{{ $user->id }}">{{ $user->name }}</option>
                             @endforeach
                         </select>
+                        @else
+                        <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+                        <p class="form-control-plaintext">{{ auth()->user()->name }}</p>
+                        @endif
                     </div>
                     <div class="form-group">
                         <label>Tipo *</label>
