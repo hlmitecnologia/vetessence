@@ -38,6 +38,8 @@ class AppointmentController extends Controller
 
         if ($request->branch_id) {
             $query->where('branch_id', $request->branch_id);
+        } else {
+            $query->withoutGlobalScope(\App\Scopes\BranchScope::class);
         }
 
         $appointments = $query->orderBy('date')->orderBy('time')->paginate(20);

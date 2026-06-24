@@ -15,6 +15,14 @@
                 <i class="fas fa-plus"></i> Nova Consulta
             </a>
         </div>
+        <div class="btn-group ml-2">
+            <select id="branch-filter" class="form-control" style="width: auto; display: inline-block;">
+                <option value="">Todas as Unidades</option>
+                @foreach($branches as $branch)
+                <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
+                @endforeach
+            </select>
+        </div>
     </div>
     <div class="col-md-4 text-right">
         <a href="{{ route('appointments.index') }}" class="btn btn-outline-secondary">
@@ -94,10 +102,13 @@ document.addEventListener('DOMContentLoaded', function () {
         dayMaxEvents: 3,
         noEventsText: 'Nenhum agendamento',
         events: function (fetchInfo, successCallback, failureCallback) {
-            fetch('/appointments/calendar-json?' + new URLSearchParams({
+            var params = {
                 start: fetchInfo.startStr.slice(0, 10),
                 end: fetchInfo.endStr.slice(0, 10)
-            }))
+            };
+            var branchId = document.getElementById('branch-filter')?.value;
+            if (branchId) params.branch_id = branchId;
+            fetch('/appointments/calendar-json?' + new URLSearchParams(params))
             .then(function (res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 return res.json();
@@ -154,6 +165,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     calendar.render();
+
+    document.getElementById('branch-filter').addEventListener('change', function () {
+        calendar.refetchEvents();
+    });
 
     function updateAppointmentDate(info) {
         var start = info.event.start;

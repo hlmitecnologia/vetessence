@@ -113,11 +113,16 @@ class AppointmentController extends Controller
             'end' => 'required|date',
         ]);
 
-        $appointments = Appointment::with(['pet.tutors', 'vet', 'services.service'])
-            ->whereBetween('date', [$request->start, $request->end])
-            ->orderBy('date')
-            ->orderBy('time')
-            ->get();
+        $query = Appointment::with(['pet.tutors', 'vet', 'services.service'])
+            ->whereBetween('date', [$request->start, $request->end]);
+
+        if ($request->branch_id) {
+            $query->where('branch_id', $request->branch_id);
+        } else {
+            $query->withoutGlobalScope(\App\Scopes\BranchScope::class);
+        }
+
+        $appointments = $query->orderBy('date')->orderBy('time')->get();
 
         $statusColors = [
             'scheduled' => '#007bff',
