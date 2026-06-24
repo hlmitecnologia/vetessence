@@ -16,13 +16,19 @@ class StaffScheduleController extends Controller
 
     public function index()
     {
-        $schedules = StaffSchedule::with('user')->orderBy('work_date', 'desc')->get();
+        $schedules = StaffSchedule::with('user', 'branch')
+            ->when(\App\Services\BranchContext::hasBranch(), fn($q) => $q->where('branch_id', \App\Services\BranchContext::get()))
+            ->orderBy('work_date', 'desc')
+            ->get();
         return view('staff-schedules.index', compact('schedules'));
     }
 
     public function create()
     {
-        $users = User::where('is_active', true)->orderBy('name')->get();
+        $users = User::where('is_active', true)
+            ->when(\App\Services\BranchContext::hasBranch(), fn($q) => $q->where('branch_id', \App\Services\BranchContext::get()))
+            ->orderBy('name')
+            ->get();
         return view('staff-schedules.create', compact('users'));
     }
 
@@ -59,7 +65,10 @@ class StaffScheduleController extends Controller
 
     public function edit(StaffSchedule $staffSchedule)
     {
-        $users = User::where('is_active', true)->orderBy('name')->get();
+        $users = User::where('is_active', true)
+            ->when(\App\Services\BranchContext::hasBranch(), fn($q) => $q->where('branch_id', \App\Services\BranchContext::get()))
+            ->orderBy('name')
+            ->get();
         return view('staff-schedules.edit', compact('staffSchedule', 'users'));
     }
 
@@ -202,7 +211,10 @@ class StaffScheduleController extends Controller
         $timeOffs = StaffTimeOff::with(['user', 'approvedBy'])
             ->when(!$isAdmin, fn($q) => $q->where('user_id', auth()->id()))
             ->latest()->paginate(20);
-        $users = User::where('is_active', true)->orderBy('name')->get();
+        $users = User::where('is_active', true)
+            ->when(\App\Services\BranchContext::hasBranch(), fn($q) => $q->where('branch_id', \App\Services\BranchContext::get()))
+            ->orderBy('name')
+            ->get();
         return view('staff-schedules.time-off', compact('timeOffs', 'users', 'isAdmin'));
     }
 
