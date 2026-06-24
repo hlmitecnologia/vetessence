@@ -42,7 +42,7 @@
                         </span>
                     </td>
                     <td>
-                        @if($timeOff->status == 'pending')
+                        @if($timeOff->status == 'pending' && $isAdmin)
                         <form action="{{ route('staff-time-off.approve', $timeOff) }}" method="POST" class="d-inline">
                             @csrf
                             <button type="submit" class="btn btn-action btn-success" title="Aprovar">
