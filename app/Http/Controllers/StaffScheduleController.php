@@ -198,7 +198,7 @@ class StaffScheduleController extends Controller
 
     public function timeOff()
     {
-        $isAdmin = auth()->user()->hasRole('super-admin') || auth()->user()->hasRole('admin');
+        $isAdmin = auth()->user()->hasRole('super-admin') || auth()->user()->hasRole('admin') || auth()->user()->hasRole('human-resources');
         $timeOffs = StaffTimeOff::with(['user', 'approvedBy'])
             ->when(!$isAdmin, fn($q) => $q->where('user_id', auth()->id()))
             ->latest()->paginate(20);
