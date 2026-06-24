@@ -30,7 +30,7 @@
                 @foreach($schedules as $schedule)
                 <tr>
                     <td>{{ $schedule->user->name ?? '-' }}</td>
-                    <td>{{ $schedule->work_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $schedule->work_date->format('Y-m-d') }}">{{ $schedule->work_date->format('d/m/Y') }}</td>
                     <td>{{ $schedule->start_time ? \Carbon\Carbon::parse($schedule->start_time)->format('H:i') : '-' }}</td>
                     <td>{{ $schedule->end_time ? \Carbon\Carbon::parse($schedule->end_time)->format('H:i') : '-' }}</td>
                     <td>

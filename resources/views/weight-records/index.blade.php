@@ -40,7 +40,7 @@
                                 <td><strong>{{ $record->pet->name ?? '-' }}</strong></td>
                                 <td>{{ number_format($record->weight, 2, ',', '.') }} kg</td>
                                 <td>{{ $record->bcs ?? '-' }}</td>
-                                <td>{{ $record->measurement_date->format('d/m/Y') }}</td>
+                                <td data-order="{{ $record->measurement_date->format('Y-m-d') }}">{{ $record->measurement_date->format('d/m/Y') }}</td>
                                 <td>{{ $record->measuredBy->name ?? '-' }}</td>
                                 <td class="text-truncate" style="max-width: 150px;">{{ $record->notes ?? '-' }}</td>
                                 <td>

@@ -29,7 +29,7 @@
                 <tr>
                     <td><strong>{{ $hospitalization->pet->name ?? '-' }}</strong></td>
                     <td>{{ $hospitalization->tutor->name ?? '-' }}</td>
-                    <td>{{ $hospitalization->admission_date->format('d/m/Y') }} {{ $hospitalization->admission_time ?? '' }}</td>
+                    <td data-order="{{ $hospitalization->admission_date->format('Y-m-d') }} {{ $hospitalization->admission_time ?? '' }}">{{ $hospitalization->admission_date->format('d/m/Y') }} {{ $hospitalization->admission_time ?? '' }}</td>
                     <td>{{ $hospitalization->department ?? '-' }}</td>
                     <td>{{ $hospitalization->bed ?? '-' }}</td>
                     <td>

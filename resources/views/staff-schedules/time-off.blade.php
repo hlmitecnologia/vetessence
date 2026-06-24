@@ -30,8 +30,8 @@
                 @foreach($timeOffs as $timeOff)
                 <tr>
                     <td>{{ $timeOff->user->name ?? '-' }}</td>
-                    <td>{{ $timeOff->start_date->format('d/m/Y') }}</td>
-                    <td>{{ $timeOff->end_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $timeOff->start_date->format('Y-m-d') }}">{{ $timeOff->start_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $timeOff->end_date->format('Y-m-d') }}">{{ $timeOff->end_date->format('d/m/Y') }}</td>
                     <td>{{ ucfirst($timeOff->type) }}</td>
                     <td>
                         @php

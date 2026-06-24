@@ -28,7 +28,7 @@
                     <td>{{ strtoupper($gateway->provider) }}</td>
                     <td>@if($gateway->is_active) <span class="badge badge-success">Sim</span> @else <span class="badge badge-secondary">Não</span> @endif</td>
                     <td>@if($gateway->is_sandbox) <span class="badge badge-warning">Sim</span> @else <span class="badge badge-info">Não</span> @endif</td>
-                    <td>{{ $gateway->created_at->format('d/m/Y') }}</td>
+                    <td data-order="{{ $gateway->created_at->format('Y-m-d') }}">{{ $gateway->created_at->format('d/m/Y') }}</td>
                     <td>
                         <a href="{{ route('payment-gateways.show', $gateway) }}" class="btn btn-action btn-info"><i class="fas fa-eye"></i></a>
                         <a href="{{ route('payment-gateways.edit', $gateway) }}" class="btn btn-action btn-primary"><i class="fas fa-edit"></i></a>

@@ -26,7 +26,7 @@
             <tbody>
                 @foreach($records as $record)
                 <tr>
-                    <td>{{ $record->date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $record->date->format('Y-m-d') }}">{{ $record->date->format('d/m/Y') }}</td>
                     <td><strong>{{ $record->pet->name ?? '-' }}</strong></td>
                     <td>{{ $record->vet->name ?? '-' }}</td>
                     <td>

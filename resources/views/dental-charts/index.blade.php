@@ -28,7 +28,7 @@
                 @foreach($charts as $chart)
                 <tr>
                     <td><strong>{{ $chart->pet->name ?? '-' }}</strong></td>
-                    <td>{{ $chart->examination_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $chart->examination_date->format('Y-m-d') }}">{{ $chart->examination_date->format('d/m/Y') }}</td>
                     <td>
                         @php
                             $procLabels = ['cleaning' => 'Limpeza', 'extraction' => 'Extração', 'surgery' => 'Cirurgia', 'exam' => 'Exame', 'other' => 'Outro'];

@@ -40,7 +40,7 @@
                             {{ $statusLabels[$form->status] ?? $form->status }}
                         </span>
                     </td>
-                    <td>{{ $form->created_at->format('d/m/Y') }}</td>
+                    <td data-order="{{ $form->created_at->format('Y-m-d') }}">{{ $form->created_at->format('d/m/Y') }}</td>
                     <td>
                         <a href="{{ route('consent-forms.show', $form) }}" class="btn btn-action btn-info" title="Visualizar">
                             <i class="fas fa-eye"></i>

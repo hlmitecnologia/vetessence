@@ -27,7 +27,7 @@
                             <td>{{ $nfe->invoice->invoice_number ?? '-' }}</td>
                             <td>{{ $nfe->invoice->tutor->name ?? '-' }}</td>
                             <td>R$ {{ number_format($nfe->invoice->total ?? 0, 2, ',', '.') }}</td>
-                            <td>{{ $nfe->issuance_date ? $nfe->issuance_date->format('d/m/Y') : '-' }}</td>
+                            <td data-order="{{ $nfe->issuance_date ? $nfe->issuance_date->format('Y-m-d') : '' }}">{{ $nfe->issuance_date ? $nfe->issuance_date->format('d/m/Y') : '-' }}</td>
                         </tr>
                         @endforeach
                     </tbody>

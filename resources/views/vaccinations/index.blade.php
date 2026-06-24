@@ -28,8 +28,8 @@
                 <tr>
                     <td><strong>{{ $vac->pet->name ?? '-' }}</strong></td>
                     <td>{{ $vac->vaccine }}</td>
-                    <td>{{ $vac->date->format('d/m/Y') }}</td>
-                    <td>{{ $vac->next_date ? $vac->next_date->format('d/m/Y') : '-' }}</td>
+                    <td data-order="{{ $vac->date->format('Y-m-d') }}">{{ $vac->date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $vac->next_date ? $vac->next_date->format('Y-m-d') : '' }}">{{ $vac->next_date ? $vac->next_date->format('d/m/Y') : '-' }}</td>
                     <td>{{ $vac->vet->name ?? '-' }}</td>
                     <td>
                         <a href="{{ route('vaccinations.show', $vac) }}" class="btn btn-action btn-info" title="Visualizar">

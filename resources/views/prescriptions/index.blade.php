@@ -36,7 +36,7 @@
                     <td>{{ $prescription->medication }}</td>
                     <td>{{ $prescription->dosage }}</td>
                     <td>{{ $prescription->frequency }}</td>
-                    <td>{{ $prescription->created_at->format('d/m/Y') }}</td>
+                    <td data-order="{{ $prescription->created_at->format('Y-m-d') }}">{{ $prescription->created_at->format('d/m/Y') }}</td>
                     <td>
                         <a href="{{ route('prescriptions.show', $prescription) }}" class="btn btn-action btn-info" title="Visualizar">
                             <i class="fas fa-eye"></i>

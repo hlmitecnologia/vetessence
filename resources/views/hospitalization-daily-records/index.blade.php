@@ -44,7 +44,7 @@
             <tbody>
                 @foreach($records as $record)
                 <tr>
-                    <td>{{ $record->record_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $record->record_date->format('Y-m-d') }}">{{ $record->record_date->format('d/m/Y') }}</td>
                     <td>
                         @php $shiftLabels = ['morning' => 'Manhã', 'afternoon' => 'Tarde', 'night' => 'Noite']; @endphp
                         {{ $shiftLabels[$record->shift] ?? $record->shift }}

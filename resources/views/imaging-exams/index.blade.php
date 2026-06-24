@@ -36,7 +36,7 @@
                         {{ $typeLabels[$exam->exam_type] ?? $exam->exam_type }}
                     </td>
                     <td>{{ $exam->region ?? '-' }}</td>
-                    <td>{{ $exam->exam_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $exam->exam_date->format('Y-m-d') }}">{{ $exam->exam_date->format('d/m/Y') }}</td>
                     <td>
                         @php
                             $statusLabels = ['scheduled' => 'Agendado', 'performed' => 'Realizado', 'reported' => 'Laudado', 'cancelled' => 'Cancelado'];

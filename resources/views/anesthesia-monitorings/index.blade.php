@@ -28,7 +28,7 @@
             <tbody>
                 @foreach($monitorings as $monitoring)
                 <tr>
-                    <td>{{ $monitoring->created_at->format('d/m/Y') }}</td>
+                    <td data-order="{{ $monitoring->created_at->format('Y-m-d') }}">{{ $monitoring->created_at->format('d/m/Y') }}</td>
                     <td><strong>{{ $monitoring->pet->name ?? '-' }}</strong></td>
                     <td>{{ $monitoring->surgery->surgery_type ?? '-' }}</td>
                     <td>{{ $monitoring->anesthetist ?? $monitoring->vet->name ?? '-' }}</td>

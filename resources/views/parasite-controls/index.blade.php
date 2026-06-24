@@ -57,8 +57,8 @@
                         @endphp
                         {{ $typeLabels[$c->type] ?? $c->type }}
                     </td>
-                    <td>{{ $c->application_date->format('d/m/Y') }}</td>
-                    <td>{{ $c->next_due_date ? $c->next_due_date->format('d/m/Y') : '-' }}</td>
+                    <td data-order="{{ $c->application_date->format('Y-m-d') }}">{{ $c->application_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $c->next_due_date ? $c->next_due_date->format('Y-m-d') : '' }}">{{ $c->next_due_date ? $c->next_due_date->format('d/m/Y') : '-' }}</td>
                     <td>{{ $c->vet->name ?? '-' }}</td>
                     <td>
                         <a href="{{ route('parasite-controls.show', $c) }}" class="btn btn-action btn-info"><i class="fas fa-eye"></i></a>

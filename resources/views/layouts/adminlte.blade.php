@@ -905,7 +905,7 @@
                             $row.remove();
                         }
                     });
-                    jQuery(this).DataTable({
+                    var dtConfig = {
                         "paging": true,
                         "lengthChange": true,
                         "searching": true,
@@ -914,7 +914,12 @@
                         "autoWidth": false,
                         "columns": Array.from({length: colCount}, function() { return {}; }),
                         "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
-                        "language": {
+                    };
+                    var $firstBodyCol = jQuery(this).find('tbody tr:first td:first');
+                    if ($firstBodyCol.length && $firstBodyCol.attr('data-order')) {
+                        dtConfig.order = [[0, 'desc']];
+                    }
+                    dtConfig.language = {
                             "sEmptyTable": "Nenhum registro encontrado",
                             "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
                             "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
@@ -935,8 +940,8 @@
                                 "sSortAscending": ": Ordenar colunas de forma ascendente",
                                 "sSortDescending": ": Ordenar colunas de forma descendente"
                             }
-                        }
-                    });
+                        };
+                    jQuery(this).DataTable(dtConfig);
                 });
             }
         });

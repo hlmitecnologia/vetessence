@@ -45,7 +45,7 @@
                 <tbody>
                     @forelse($transactions as $tx)
                     <tr>
-                        <td>{{ $tx->transaction_date->format('d/m/Y') }}</td>
+                        <td data-order="{{ $tx->transaction_date->format('Y-m-d') }}">{{ $tx->transaction_date->format('d/m/Y') }}</td>
                         <td>{{ $tx->bankAccount->bank ?? '-' }}</td>
                         <td>{!! $tx->description !!}</td>
                         <td class="{{ $tx->type === 'credit' ? 'text-success' : 'text-danger' }}">

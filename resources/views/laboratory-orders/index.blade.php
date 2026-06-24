@@ -30,8 +30,8 @@
                     <td><strong>{{ $order->order_number }}</strong></td>
                     <td>{{ $order->pet->name ?? '-' }}</td>
                     <td>{{ $order->lab_name ?? '-' }}</td>
-                    <td>{{ $order->order_date->format('d/m/Y') }}</td>
-                    <td>{{ $order->result_date ? $order->result_date->format('d/m/Y') : '-' }}</td>
+                    <td data-order="{{ $order->order_date->format('Y-m-d') }}">{{ $order->order_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $order->result_date ? $order->result_date->format('Y-m-d') : '' }}">{{ $order->result_date ? $order->result_date->format('d/m/Y') : '-' }}</td>
                     <td>
                         @php
                             $statusLabels = ['requested' => 'Solicitado', 'collected' => 'Coletado', 'in_analysis' => 'Em Análise', 'completed' => 'Concluído', 'cancelled' => 'Cancelado'];

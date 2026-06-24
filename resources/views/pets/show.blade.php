@@ -150,8 +150,8 @@
                         @foreach($pet->vaccinations as $vaccination)
                         <tr>
                             <td>{{ $vaccination->vaccine }}</td>
-                            <td>{{ $vaccination->date->format('d/m/Y') }}</td>
-                            <td>{{ $vaccination->next_date ? $vaccination->next_date->format('d/m/Y') : '-' }}</td>
+                            <td data-order="{{ $vaccination->date->format('Y-m-d') }}">{{ $vaccination->date->format('d/m/Y') }}</td>
+                            <td data-order="{{ $vaccination->next_date ? $vaccination->next_date->format('Y-m-d') : '' }}">{{ $vaccination->next_date ? $vaccination->next_date->format('d/m/Y') : '-' }}</td>
                         </tr>
                         @endforeach
                     </tbody>

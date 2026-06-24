@@ -123,7 +123,7 @@
                         <tr>
                             <td>{{ $invoice->invoice_number }}</td>
                             <td>R$ {{ number_format($invoice->total, 2, ',', '.') }}</td>
-                            <td>{{ $invoice->due_date->format('d/m/Y') }}</td>
+                            <td data-order="{{ $invoice->due_date->format('Y-m-d') }}">{{ $invoice->due_date->format('d/m/Y') }}</td>
                             <td>
                                 @php
                                     $statusLabels = ['paid' => 'Pago', 'pending' => 'Pendente', 'overdue' => 'Vencida', 'cancelled' => 'Cancelada'];

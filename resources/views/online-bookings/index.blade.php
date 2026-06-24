@@ -41,7 +41,7 @@
                 <tr class="{{ $booking->status == 'pending' ? 'table-warning' : '' }}">
                     <td>{{ $booking->tutor_name }}<br><small>{{ $booking->tutor_email }}</small></td>
                     <td>{{ $booking->pet_name }} ({{ $booking->pet_species }})</td>
-                    <td>{{ $booking->preferred_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $booking->preferred_date->format('Y-m-d') }}">{{ $booking->preferred_date->format('d/m/Y') }}</td>
                     <td>
                         @if($booking->status == 'pending') <span class="badge badge-warning">Pendente</span>
                         @elseif($booking->status == 'confirmed') <span class="badge badge-success">Confirmado</span>

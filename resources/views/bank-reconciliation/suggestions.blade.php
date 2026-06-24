@@ -23,7 +23,7 @@
             <tbody>
                 @foreach($suggestions as $s)
                 <tr>
-                    <td>{{ $s['transaction']->transaction_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $s['transaction']->transaction_date->format('Y-m-d') }}">{{ $s['transaction']->transaction_date->format('d/m/Y') }}</td>
                     <td>{{ $s['transaction']->description }}</td>
                     <td>R$ {{ number_format($s['transaction']->amount, 2, ',', '.') }}</td>
                     <td><a href="{{ route('invoices.show', $s['invoice']) }}">#{{ $s['invoice']->invoice_number }}</a></td>

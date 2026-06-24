@@ -29,7 +29,7 @@
                     <td><strong>{{ $exam->pet->name ?? '-' }}</strong></td>
                     <td>{{ $exam->type }}</td>
                     <td>{{ $exam->vet->name ?? '-' }}</td>
-                    <td>{{ $exam->requested_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $exam->requested_date->format('Y-m-d') }}">{{ $exam->requested_date->format('d/m/Y') }}</td>
                     <td>
                         @php
                             $statusColors = [

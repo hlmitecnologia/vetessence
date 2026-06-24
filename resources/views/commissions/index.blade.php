@@ -83,7 +83,7 @@
                                 <span class="badge badge-warning">Pendente</span>
                             @endif
                         </td>
-                        <td>{{ $log->created_at->format('d/m/Y') }}</td>
+                        <td data-order="{{ $log->created_at->format('Y-m-d') }}">{{ $log->created_at->format('d/m/Y') }}</td>
                         <td>
                             <a href="{{ route('commissions.show', $log) }}" class="btn btn-sm btn-info" title="Detalhes"><i class="fas fa-eye"></i></a>
                             @if($log->status === 'pending')

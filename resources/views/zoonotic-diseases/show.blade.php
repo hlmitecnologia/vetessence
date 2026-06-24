@@ -149,7 +149,7 @@
                     <tbody>
                         @foreach($zoonoticDisease->medicalRecords as $record)
                         <tr>
-                            <td>{{ $record->date->format('d/m/Y') }}</td>
+                            <td data-order="{{ $record->date->format('Y-m-d') }}">{{ $record->date->format('d/m/Y') }}</td>
                             <td><a href="{{ route('medical-records.show', $record) }}">{{ $record->pet->name ?? '-' }}</a></td>
                             <td>
                                 @if($record->pivot->is_suspected)

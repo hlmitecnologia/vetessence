@@ -157,7 +157,7 @@
                                 <tbody>
                                     @foreach($hospitalization->dailyRecords as $record)
                                     <tr>
-                                        <td>{{ $record->record_date->format('d/m/Y') }}</td>
+                                        <td data-order="{{ $record->record_date->format('Y-m-d') }}">{{ $record->record_date->format('d/m/Y') }}</td>
                                         <td>
                                             @php $shiftLabels = ['morning' => 'Manhã', 'afternoon' => 'Tarde', 'night' => 'Noite']; @endphp
                                             {{ $shiftLabels[$record->shift] ?? $record->shift }}
@@ -235,8 +235,8 @@
                                         <td>{{ $rx->dosage }} {{ $rx->unit }}</td>
                                         <td>{{ $rx->frequency }}</td>
                                         <td>{{ $rx->route ?? '-' }}</td>
-                                        <td>{{ $rx->start_date ? $rx->start_date->format('d/m/Y') : '-' }}</td>
-                                        <td>{{ $rx->end_date ? $rx->end_date->format('d/m/Y') : '-' }}</td>
+                                        <td data-order="{{ $rx->start_date ? $rx->start_date->format('Y-m-d') : '' }}">{{ $rx->start_date ? $rx->start_date->format('d/m/Y') : '-' }}</td>
+                                        <td data-order="{{ $rx->end_date ? $rx->end_date->format('Y-m-d') : '' }}">{{ $rx->end_date ? $rx->end_date->format('d/m/Y') : '-' }}</td>
                                         <td>
                                             @php
                                                 $rxStatusLabels = ['active' => 'Ativa', 'discontinued' => 'Descontinuada', 'completed' => 'Concluída'];

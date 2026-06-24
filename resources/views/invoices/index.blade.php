@@ -33,7 +33,7 @@
                     <td>{{ $inv->tutor->name ?? '-' }}</td>
                     <td>{{ $inv->pet->name ?? '-' }}</td>
                     <td>R$ {{ number_format($inv->total, 2, ',', '.') }}</td>
-                    <td>{{ $inv->due_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $inv->due_date->format('Y-m-d') }}">{{ $inv->due_date->format('d/m/Y') }}</td>
                     <td>
                         @php
                             $statusColors = ['pending' => 'badge-warning', 'paid' => 'badge-success', 'overdue' => 'badge-danger', 'cancelled' => 'badge-secondary'];

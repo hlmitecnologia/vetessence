@@ -59,8 +59,8 @@
                         @elseif($boarding->type == 'grooming') Banho/Tosa
                         @else Ambos @endif
                     </td>
-                    <td>{{ $boarding->check_in_at->format('d/m/Y H:i') }}</td>
-                    <td>{{ optional($boarding->expected_check_out)->format('d/m/Y') ?? '-' }}</td>
+                    <td data-order="{{ $boarding->check_in_at->format('Y-m-d H:i') }}">{{ $boarding->check_in_at->format('d/m/Y H:i') }}</td>
+                    <td data-order="{{ optional($boarding->expected_check_out)->format('Y-m-d') ?? '' }}">{{ optional($boarding->expected_check_out)->format('d/m/Y') ?? '-' }}</td>
                     <td>
                         @if($boarding->status == 'checked_in')
                             <span class="badge badge-success">Hospedado</span>
