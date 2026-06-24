@@ -52,7 +52,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="dose">Dosagem</label>
-                        <input type="text" name="dose" id="dose" class="form-control" value="{{ old('dose') }}" placeholder="Ex: 10-25 kg">
+                        <input type="text" name="dose" id="dose" class="form-control" value="{{ old('dose') }}" placeholder="Ex: 10-25 mg">
                     </div>
                 </div>
             </div>
