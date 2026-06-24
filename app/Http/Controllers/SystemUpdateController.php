@@ -30,9 +30,9 @@ class SystemUpdateController extends Controller
             $behind = $this->countBehind($repo, $branch, $token);
         }
 
-        $hasToken = (bool) Setting::get('github_token');
-        $hasRepo = (bool) Setting::get('github_repo');
-        $hasBranch = (bool) Setting::get('github_branch');
+        $hasToken = (bool) ($this->getDecryptedToken());
+        $hasRepo = (bool) ($this->getRepo());
+        $hasBranch = (bool) ($this->getBranch());
 
         $licenseKey = Setting::getEncrypted('license_key');
 
@@ -75,13 +75,17 @@ class SystemUpdateController extends Controller
         $branch = $this->getBranch();
 
         if (!$token) {
-            return redirect()->route('system-update.index')->withErrors(['token' => 'Token não configurado.']);
+            return redirect()->route('system-update.index')->with('error', 'Token não configurado.');
         }
 
         $remoteHash = $this->fetchRemoteHash($repo, $branch, $token);
         $behind = $this->countBehind($repo, $branch, $token);
 
-        return redirect()->route('system-update.index')->with('remote_hash', $remoteHash)->with('behind', $behind);
+        if ($remoteHash === null) {
+            return redirect()->route('system-update.index')->with('error', 'Erro ao consultar GitHub. Verifique token e repositório.');
+        }
+
+        return redirect()->route('system-update.index')->with('success', 'Verificação concluída.');
     }
 
     public function license(Request $request)
@@ -106,7 +110,7 @@ class SystemUpdateController extends Controller
         $branch = $this->getBranch();
 
         if (!$token) {
-            return redirect()->route('system-update.index')->withErrors(['token' => 'Token não configurado.']);
+            return redirect()->route('system-update.index')->with('error', 'Token não configurado.');
         }
 
         $log = [];
