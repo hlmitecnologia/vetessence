@@ -202,7 +202,7 @@
     @endif
 
     <div class="footer">
-        <p>{{ branding('clinic_name', config('app.name', 'VetEssence')) }} - Documento gerado em {{ now()->format('d/m/Y H:i:s') }}</p>
+        <p>{{ branding('clinic_name', 'VetEssence') }} - Documento gerado em {{ now()->format('d/m/Y H:i:s') }}</p>
     </div>
 </body>
 </html>
