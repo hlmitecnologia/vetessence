@@ -113,10 +113,9 @@
 </head>
 <body>
     <div class="header">
-        <h1>{{ branding('clinic_name', config('app.name', 'VetEssence')) }}</h1>
+        <h1>{{ branding('clinic_name', 'VetEssence') }}</h1>
         <div class="clinic-info">
-            {{ branding('clinic_address', '') }}<br>
-            CNPJ: {{ branding('clinic_cnpj', '') }} | Tel: {{ branding('clinic_phone', '') }}
+            {{ config('app.address', '') }}{{ config('app.address') ? ' | ' : '' }}CNPJ: {{ config('app.cnpj', '') }}{{ config('app.cnpj') ? ' | ' : '' }}Tel: {{ config('app.phone', '') }}
         </div>
     </div>
 
