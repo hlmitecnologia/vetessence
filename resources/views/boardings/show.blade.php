@@ -23,10 +23,9 @@
             </p></div>
         </div>
         <div class="row mt-2">
-            <div class="col-md-3"><strong>Diária:</strong><p>R$ {{ number_format($boarding->daily_rate, 2, ',', '.') }}</p></div>
+            <div class="col-md-3"><strong>Diária:</strong><p>R$ {{ number_format($boarding->daily_rate, 2, ',', '.') }} ({{ $boarding->daysBoarded() }} dias)</p></div>
             <div class="col-md-3"><strong>Taxa Banho/Tosa:</strong><p>R$ {{ number_format($boarding->grooming_fee, 2, ',', '.') }}</p></div>
-            <div class="col-md-3"><strong>Total:</strong><p class="h5">R$ {{ number_format($boarding->total_amount, 2, ',', '.') }}</p></div>
-            <div class="col-md-3"><strong>Dias:</strong><p>{{ $boarding->daysBoarded() }}</p></div>
+            <div class="col-md-3"><strong>Total:</strong><p class="h5">R$ {{ number_format($boarding->daily_rate * $boarding->daysBoarded() + $boarding->grooming_fee, 2, ',', '.') }}</p></div>
         </div>
         <div class="row mt-2">
             <div class="col-md-4"><strong>Responsável Check-in:</strong><p>{{ $boarding->createdBy->name ?? '-' }}</p></div>
