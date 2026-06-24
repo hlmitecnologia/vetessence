@@ -3309,4 +3309,407 @@ O sistema possui documentação própria em `resources/docs/` servida via `Route
 | `VetAvailabilityControllerTest` | Feature/Portal | 8 | `availableVets`, `vetSlots`, `vetDates` (successo, validação, usuário não-vet, autenticação) |
 | `StaffScheduleTest` (Unit) | Unit/Model | +3 | `is_vet_shift` default false, pode ser true, fillable |
 | `StaffScheduleControllerTest` | Feature | +1 | Rota `vet-shifts` |
+
+---
+
+## Phase ZG — Diferenciais Competitivos (vs SimplesVet)
+
+**Aprovado em:** 2026-06-24 (postergado — não implementar agora).
+
+**Contexto:** Análise comparativa com o sistema líder SimplesVet destacou 3 áreas onde o VetEssence precisa evoluir para competir em diferenciais de marketing e funcionalidades.
+
+### ZG1 — Estoque Inteligente com Reposição Preditiva
+
+**Problema:** SimplesVet destaca-se como "o único sistema que mostra exatamente quando e quanto comprar", com análise automática de reposição, prevenção de perdas por validade e cálculos precisos. VetEssence tem bom controle de estoque/lotes/ANVISA, mas não tem inteligência preditiva.
+
+**O que já existe:**
+- `Product` com `min_stock`, `max_stock`, `batch_number`, `lot_number`, `expiration_date`, `cost_price`, `sale_price`
+- `StockMovement` com tipo (entry/exit/adjustment/loss/return), batch, expiry, balance_after
+- `InventoryReconciliation` com variance tracking
+- `PurchaseOrder` + `PurchaseOrderItem` com aprovação
+- `AlertaEstoque` command (reconciliation check only)
+- `StockDeductionService` (apenas para vacinação)
+- Dashboard low-stock widget (5 produtos)
+- Transferência entre filiais
+
+**O que falta (gaps):**
+1. Nenhum cálculo de consumo médio diário (moving average por período)
+2. Nenhum lead time por produto ou fornecedor
+3. Nenhum ponto de reposição (ROP = avg_daily_consumption * lead_time + safety_stock)
+4. `max_stock` existe mas nunca é usado (nem overstock alert, nem lote econômico)
+5. `stock/index.blade.php` é placeholder vazio
+6. Nenhuma UI de entrada/saída manual de estoque (StockController sem store)
+7. Nenhum alerta de validade agendado (product expiry alert existe mas sem schedule)
+8. Nenhuma sugestão de pedido de compra baseada em estoque
+
+#### ZG1.1 — Migrations
+
+| # | Migration | Tabela | Colunas |
+|---|-----------|--------|---------|
+| 1 | `add_lead_time_to_suppliers` | `suppliers` | `lead_time_days` (integer, nullable — prazo médio de entrega) |
+| 2 | `add_consumption_fields_to_products` | `products` | `avg_daily_consumption` (decimal 10.4, default 0), `safety_stock` (decimal 10.2, default 0), `reorder_point` (decimal 10.2, computed), `last_consumption_calculated_at` (datetime nullable) |
+| 3 | `create_stock_entry_exit_tables` (opcional) | — | Se optar por usar `StockMovement` existente em vez de tabelas novas |
+
+**Decisão:** Reutilizar `StockMovement` para entradas/saídas/ajustes (já tem `type` enum). Adicionar `type` = `sale`, `manual_entry`, `manual_exit`, `loss`, `return` (alguns já existem). Adicionar `movement_reason` (string) para contextualizar.
+
+#### ZG1.2 — Models
+
+| Model | Ações |
+|-------|-------|
+| `Product` | Add fillable/casts: `avg_daily_consumption`, `safety_stock`, `reorder_point`, `last_consumption_calculated_at`. Accessor `isBelowReorderPoint`. Scopes `needingReorder`, `expiringSoon(days)` |
+| `Supplier` | Add fillable: `lead_time_days` |
+| `StockMovement` | Add fillable: `movement_reason` |
+
+#### ZG1.3 — Service: `StockForecastService`
+
+```php
+class StockForecastService
+{
+    // 1. Calcula consumo médio dos últimos 30/60/90 dias
+    public function calculateAvgDailyConsumption(Product $product, int $days = 30): float;
+
+    // 2. Atualiza reorder_point = avg_daily * lead_time + safety_stock
+    public function updateReorderPoint(Product $product): void;
+
+    // 3. Sugere pedido de compra (produtos abaixo do reorder_point)
+    public function suggestPurchaseOrder(Branch $branch): Collection;
+
+    // 4. Produtos próximos ao vencimento (dentro de N dias)
+    public function expiringProducts(int $days = 30, ?Branch $branch = null): Collection;
+
+    // 5. Executa em lote para todos os produtos ativos
+    public function recalculateAll(): array; // returns count of updated products
+}
+```
+
+#### ZG1.4 — Command: `stock:forecast`
+
+```
+php artisan stock:forecast
+    --recalculate       Recalcula consumo médio + reorder point de todos os produtos
+    --alert-expiry      Dispara alertas de vencimento (próximos 30 dias)
+```
+
+**Schedule no Kernel:**
+```php
+$schedule->command('stock:forecast --recalculate')->dailyAt('03:00');
+$schedule->command('stock:forecast --alert-expiry')->dailyAt('06:00');
+```
+
+#### ZG1.5 — Controllers
+
+| Controller | Ações |
+|------------|-------|
+| `StockController` (expandir) | `store()` — registrar entrada/saída manual/ajuste/perda; `reorderSuggestions()` — view com produtos sugeridos para compra; `expiring()` — view de produtos próximos ao vencimento |
+| `ProductController` (edit) | Validação dos novos campos |
+
+#### ZG1.6 — Views
+
+| View | Conteúdo |
+|------|----------|
+| `stock/index.blade.php` (substituir placeholder) | Dashboard de estoque: cards com resumo (total produtos, abaixo do mínimo, abaixo do reorder, vencendo em 30 dias). Tabela interativa com filtros por categoria, status, validade, busca |
+| `stock/movements.blade.php` (expandir) | Adicionar coluna `movement_reason`, filtro por tipo de movimento |
+| `stock/reorder-suggestions.blade.php` | Tabela com produtos abaixo do reorder point: nome, estoque atual, consumo médio, reorder point, lead time, qtd sugerida, botão "Criar Pedido de Compra" que pré-preenche `PurchaseOrder` |
+| `stock/expiring.blade.php` | Produtos com validade próxima (30/60/90 dias): nome, lote, validade, estoque, ação sugerida (promoção/doação/descarte) |
+
+**Preview da tela de sugestão de reposição:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Sugestão de Reposição — Estoque Inteligente                  │
+│                                                             │
+│ Produtos abaixo do ponto de reorder (5 itens):              │
+│                                                             │
+│ Produto         | Estoque | Cons. Médio | ROP | Lead | Sug. │
+│ ──────────────────────────────────────────────────────────── │
+│ Antifúngico 50mg |  12    |  5/dia      | 25  | 3d   |  18  │
+│ Vacina V10      |   3    |  2/dia      | 10  | 5d   |  12  │
+│ Coleira AntiPulga| 20    |  3/dia      | 15  | 2d   |   0  │ ✅
+│ ...                                                            │
+│                                                             │
+│ [Criar Pedido de Compra para 2 produtos]                     │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### ZG1.7 — Dashboard Widgets
+
+Adicionar ao dashboard existente:
+- **Produtos abaixo do reorder point** (contador + lista)
+- **Produtos vencendo em 30 dias** (contador + lista)
+- **Valor total em estoque próximo ao vencimento** (R$)
+
+#### ZG1.8 — Testes
+
+| Grupo | Testes |
+|-------|--------|
+| Unit — Product new fields | 3 (fillable, casts, scopes/accessors) |
+| Unit — Supplier lead_time | 1 (fillable) |
+| Unit — StockForecastService | 6 (avg consumption, reorder point, suggest purchase, expiring, recalculate all, edge cases) |
+| Feature — StockController store | 4 (entry, exit, adjustment, loss) |
+| Feature — StockController reorderSuggestions | 2 (with products below ROP, all above) |
+| Feature — StockController expiring | 2 (with expiring products, none) |
+| Feature — Command stock:forecast | 2 (recalculate, alert-expiry) |
+| **Total** | **~20** |
+
+---
+
+### ZG2 — Pacotes Petshop (Recorrentes, Check-list, Consumo, Economia)
+
+**Problema:** SimplesVet tem pacotes recorrentes, check-list, consumo controlado e visualização de economia para o cliente. VetEssence tem suporte a banho & tosa/hotel mas sem pacotes ou recorrência.
+
+**O que já existe:**
+- `Boarding` com check-in/out, tasks diárias, kennel map, tipo (boarding/grooming/both)
+- `GroomingTemplate` (name, species, breed, size, services JSON, price, duration)
+- `Appointment` com `is_recurring`, `recurrence_rule`
+- `GenerateRecurringAppointments` command (gera consultas recorrentes)
+- `Service` + `ServicePriceTier` (preço por espécie/porte)
+
+**O que falta (gaps):**
+1. Grooming templates não são integrados a boardings (serviços em JSON solto, não linkados à tabela `services`)
+2. Nenhum conceito de "pacote" (conjunto de serviços com preço fechado por período)
+3. Nenhum check-list de consumo (tutor contrata pacote de 10 banhos, consome 1 por vez)
+4. Nenhuma visualização de economia para o tutor ("você economizou R$ 80,00 neste pacote")
+5. Nenhuma recorrência para banho & tosa (semanal/quinzenal/mensal)
+6. Boarding não tem precificação por kennel
+
+#### ZG2.1 — Migrations
+
+| # | Migration | Tabela | Colunas |
+|---|-----------|--------|---------|
+| 1 | `create_pet_shop_packages` | `pet_shop_packages` | `id`, `branch_id`, `name`, `description`, `type` (enum: grooming/boarding/both), `services` (JSON — array de service_id + qty), `total_price`, `original_price` (soma dos serviços individuais, para mostrar economia), `validity_days` (integer, dias para expirar), `max_uses` (integer, ex: 10 banhos), `is_active`, `created_at`, `updated_at` |
+| 2 | `create_pet_shop_subscriptions` | `pet_shop_subscriptions` | `id`, `pet_id`, `package_id`, `branch_id`, `start_date`, `end_date`, `remaining_uses` (integer), `total_uses` (integer), `total_savings` (decimal — acumulado), `status` (enum: active/expired/cancelled/completed), `recurrence_rule` (string nullable — ex: `FREQ=WEEKLY;BYDAY=MO`), `auto_renew` (boolean), `created_at`, `updated_at` |
+| 3 | `create_pet_shop_consumptions` | `pet_shop_consumptions` | `id`, `subscription_id`, `boarding_id` (nullable — se consumo via boarding), `appointment_id` (nullable), `service_id`, `service_date`, `used_by` (user_id), `savings_amount` (decimal — preço cheio - preço pacote), `created_at` |
+
+#### ZG2.2 — Models
+
+| Model | Fillable/Casts | Relationships |
+|-------|----------------|---------------|
+| `PetShopPackage` | branch_id, name, desc, type, services(JSON), total_price, original_price, validity_days, max_uses, is_active. Casts: services(array), prices(decimal) | `branch()`, `subscriptions()` |
+| `PetShopSubscription` | pet_id, package_id, branch_id, start_date, end_date, remaining_uses, total_uses, total_savings, status, recurrence_rule, auto_renew. Casts: dates, boolean | `pet()`, `package()`, `consumptions()`, `branch()` |
+| `PetShopConsumption` | subscription_id, boarding_id, appointment_id, service_id, service_date, used_by, savings_amount. Casts: date | `subscription()`, `boarding()`, `appointment()`, `service()`, `user()` |
+
+#### ZG2.3 — Controllers
+
+| Controller | Ações |
+|------------|-------|
+| `PetShopPackageController` | CRUD completo. Modal Livewire. Gates: `pet-shop-packages.*` |
+| `PetShopSubscriptionController` | `index` (lista por pet/tutor), `create` (seleciona pacote + pet), `store`, `show` (consumo), `cancel`, `addConsumption` (marca serviço como usado). Gates: `pet-shop-subscriptions.*` |
+| `PetShopConsumptionController` | `store` (registra consumo avulso ou vinculado a boarding/appointment), `index` (histórico por subscription). |
+
+#### ZG2.4 — Views
+
+| View | Conteúdo |
+|------|----------|
+| `pet-shop-packages/index.blade.php` | Tabela de pacotes: nome, tipo, preço, economia %, validade, usos, ativo |
+| `pet-shop-subscriptions/index.blade.php` | Tabela de assinaturas: pet, pacote, restantes, status, economia total, botões consumir/cancelar |
+| `pet-shop-subscriptions/show.blade.php` | Detalhe: pacote, consumo (tabela de usos com datas, serviços, economia), progresso (ex: 4/10 usos) |
+| `pet-shop-consumptions/index.blade.php` | Histórico de consumo (global) |
+
+#### ZG2.5 — Portal do Tutor
+
+Adicionar ao portal do tutor:
+- **Meus Pacotes** — lista de assinaturas ativas com progresso (ex: "7 de 10 banhos restantes"), economia total, próxima data agendada
+- **Histórico de Consumo** — tabela com datas, serviços usados
+- **Contratar Pacote** — seleciona pacote disponível, assina
+
+#### ZG2.6 — Integração com Boarding
+
+No check-in de boarding, se o pet tiver uma assinatura de pacote ativa:
+- Sugerir usar o pacote (desconto automático)
+- Registrar consumo ao check-out
+- Badge "PACOTE" no boarding ativo
+
+#### ZG2.7 — Command: `subscriptions:renew`
+
+```
+php artisan subscriptions:renew
+```
+
+Verifica assinaturas com `auto_renew = true` e próximo do vencimento → renova automaticamente (nova subscription com `remaining_uses = max_uses`).
+
+Schedule: `$schedule->command('subscriptions:renew')->dailyAt('04:00');`
+
+#### ZG2.8 — Testes
+
+| Grupo | Testes |
+|-------|--------|
+| Unit — PetShopPackage | 4 (fillable, casts, relationships, active scope) |
+| Unit — PetShopSubscription | 4 (fillable, casts, relationships, active scope) |
+| Unit — PetShopConsumption | 2 (fillable, relationships) |
+| Feature — Package CRUD | 6 (index, create, store, edit, update, delete) |
+| Feature — Subscription CRUD | 6 (index, create, store, show, cancel, addConsumption) |
+| Feature — Integration: boarding check-in sugere pacote | 2 (com pacote ativo, sem pacote) |
+| Feature — Command subscriptions:renew | 2 (renew due, nothing to renew) |
+| Feature — Portal: tutor visualiza pacotes | 2 (lista, consumo) |
+| **Total** | **~28** |
+
+---
+
+### ZG3 — Integração Petlove (Plano de Saúde)
+
+**Problema:** SimplesVet tem integração com Petlove (plano de saúde). VetEssence tem arquitetura de providers de seguros (Porto Seguro implementado) mas sem Petlove.
+
+**O que já existe:**
+- `InsuranceProvider` interface (submitClaim, checkStatus)
+- `InsuranceProviderFactory` (mapa de providers registrados)
+- `PortoSeguroProvider` (implementação completa)
+- `InsuranceClaimResult` DTO
+- `InsuranceWebhookController` (endpoint POST `/api/insurance/webhook/{provider}`)
+- `Convenio` + `ConvenioPet` + `ConvenioClaim` models
+- `ConvenioClaimController` (CRUD + status transitions)
+- `ConvenioForm` + `ConvenioClaimForm` Livewire forms
+
+**O que Petlove realmente é:** Petlove é um marketplace de produtos e planos de saúde veterinários. Eles vendem planos de saúde (Petlove Saúde) que clínicas podem aceitar como convênio. A integração ideal:
+1. **Credenciamento** — clínica se cadastra na rede Petlove
+2. **Consulta de elegibilidade** — verificar se o pet tem plano Petlove ativo
+3. **Autorização prévia** — solicitar autorização para procedimentos
+4. **Faturamento** — enviar guias de atendimento para reembolso
+5. **Claim status** — consultar status de pagamento
+
+**API Petlove:** Não há API pública documentada. A integração real acontece via:
+- Portal Petlove Parceiros (web)
+- API de planos de saúde (parceiros selecionados)
+- Alternativa: integração via operadora intermediária (Porto Seguro, que também opera planos Petlove)
+
+**Estratégia:** Como Petlove não tem API pública, a melhor abordagem é:
+
+| Abordagem | Viabilidade | Esforço |
+|-----------|-------------|---------|
+| A. Provider genérico "Petlove Partner API" (se houver) | ⚠️ Precisa verificar contrato | Alta |
+| B. Usar Porto Seguro como intermediário (Petlove usa Porto) | ✅ Mais viável | Média |
+| C. Criar provider mock/documentado para quando a API abrir | ✅ Sem dependência externa | Baixa |
+
+**Decisão recomendada:** Implementar **PetloveProvider** como um provider concreto usando a mesma interface `InsuranceProvider` (já testada com Porto Seguro). A implementação será:
+- Documentada para quando a API Petlove estiver disponível
+- Testada com Http fake (como todos os outros providers)
+- Configurável via settings (api_key, api_secret, base_url)
+- Pronta para produção quando Petlove liberar o acesso
+
+#### ZG3.1 — Model / Settings
+
+Armazenar credenciais Petlove no model `Setting` (já existente), chaves:
+- `petlove_api_key` (string, criptografada)
+- `petlove_api_secret` (string, criptografada)
+- `petlove_base_url` (string, default `https://api.petlove.com.br/v1`)
+
+#### ZG3.2 — Provider: `PetloveProvider`
+
+```
+app/Services/Insurance/PetloveProvider.php
+```
+
+Implementa `InsuranceProvider` interface:
+
+```php
+class PetloveProvider implements InsuranceProvider
+{
+    public function submitClaim(ConvenioClaim $claim): InsuranceClaimResult;
+    public function checkStatus(string $externalId): InsuranceClaimResult;
+    public function getName(): string; // 'petlove'
+
+    // Métodos específicos Petlove:
+    public function checkEligibility(ConvenioPet $convenioPet): array;
+        // GET /api/v1/plans/{policy_number}/eligibility
+        // Retorna: cobertura, carência, status
+
+    public function requestPreAuthorization(ConvenioPet $convenioPet, array $procedures): InsuranceClaimResult;
+        // POST /api/v1/authorizations
+        // Payload: policy_number, procedures (código TUSS), value
+        // Resposta: authorization_number, status (approved/denied/pending)
+}
+```
+
+#### ZG3.3 — Factory Registration
+
+Adicionar `petlove` ao `InsuranceProviderFactory`:
+
+```php
+public static function registerBuiltIn(): void
+{
+    self::register('porto-seguro', PortoSeguroProvider::class);
+    self::register('petlove', PetloveProvider::class);  // NOVO
+}
+```
+
+#### ZG3.4 — ConvenioPet Enhancement
+
+Adicionar campo `external_policy_id` ao `ConvenioPet` (para armazenar o ID do plano na Petlove):
+
+| Migration | Tabela | Coluna |
+|-----------|--------|--------|
+| `add_external_policy_fields_to_convenio_pet` | `convenio_pet` | `external_policy_id` (string, nullable — ID do plano na Petlove), `eligibility_last_checked_at` (datetime, nullable) |
+
+#### ZG3.5 — UI: Petlove na Tela de Convênio
+
+Adicionar na view `convenios/show.blade.php`:
+- Badge "Petlove" se o convênio for marcado como Petlove
+- Botão "Verificar Elegibilidade" → consulta API Petlove
+- Botão "Solicitar Autorização Prévia" → abre modal com procedimentos
+- Status da última verificação (data, resultado)
+
+#### ZG3.6 — Testes
+
+| Grupo | Testes |
+|-------|--------|
+| Unit — PetloveProvider submitClaim | 2 (success, error) |
+| Unit — PetloveProvider checkStatus | 2 (approved, pending) |
+| Unit — PetloveProvider checkEligibility | 2 (active, inactive) |
+| Unit — PetloveProvider requestPreAuthorization | 2 (approved, denied) |
+| Unit — PetloveProvider invalid credentials | 1 (401) |
+| Feature — ConvenioPet external_policy_id | 2 (fillable, save) |
+| Feature — Factory registration | 1 (resolves PetloveProvider) |
+| **Total** | **~12** |
+
+---
+
+### ZG4 — Totais da Fase
+
+| Subfase | Migrations | Models | Controllers | Commands | Services | Views | Testes |
+|---------|-----------|--------|-------------|----------|---------|-------|--------|
+| ZG1 Estoque Inteligente | 2 | 3 edit | 1 edit + 2 new actions | 1 new | 1 new | 3 new | ~20 |
+| ZG2 Pacotes Petshop | 3 | 3 new | 3 new | 1 new | — | 5 new | ~28 |
+| ZG3 Petlove | 1 | 1 edit + 1 new provider | — | — | — | 1 edit | ~12 |
+| **Total** | **6** | **3 new + 4 edit** | **3 new + 1 edit** | **2 new** | **1 new** | **8 new + 1 edit** | **~60** |
+
+### ZG5 — Novas Permissões
+
+| Permissão | super-admin | branch-admin | stock-manager | financial | receptionist | veterinarian |
+|-----------|:-----------:|:------------:|:-------------:|:---------:|:------------:|:------------:|
+| `stock.forecast` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `stock.reorder` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `pet-shop-packages.*` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| `pet-shop-subscriptions.*` | ✅ | ✅ | ❌ | ❌ | ✅ | ✅ |
+| `insurance.petlove` | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+
+**Total: 11 novas permissões** (5 grupos × view/create/edit/delete ou custom).
+
+### ZG6 — Sidebar
+
+Adicionar à sidebar existente:
+
+```
+Estoque
+├── Movimentações        (existente)
+├── Sugestão de Compra   ← NOVO (stock.reorder)
+├── Vencendo             ← NOVO (stock.view)
+├── Transferência        (existente)
+└── Dashboard            ← NOVO (stock.view) — substitui placeholder
+
+Petshop                  ← NOVA SEÇÃO (gate pet-shop)
+├── Pacotes              ← NOVO (pet-shop-packages.view)
+├── Assinaturas          ← NOVO (pet-shop-subscriptions.view)
+└── Consumo              ← NOVO (pet-shop-subscriptions.view)
+
+Convênios
+├── ... (existente)
+└── Petlove              ← NOVO (insurance.petlove)
+```
+
+### ZG7 — Observações
+
+- **Estoque Inteligente** é o diferencial mais importante para marketing direto vs SimplesVet. Prioridade alta.
+- **Pacotes Petshop** é o segundo maior impacto — fideliza o cliente com economia visível e recorrência.
+- **Petlove** é importante principalmente como check-list de vendas ("tem integração com Petlove? Sim, provider implementado"). A API real dependerá de contrato com a Petlove.
+- A economia visível para o tutor (badges "Você economizou R$ X") é um diferencial de retenção importante — deve ser destacada na UI.
+- A recorrência de banho & tosa (semanal/quinzenal) deve usar o mecanismo existente `recurrence_rule` (RRULE) já presente em `Appointment`.
 ```
