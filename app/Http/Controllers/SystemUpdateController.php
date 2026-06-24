@@ -5,11 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\Process\Process;
 
 class SystemUpdateController extends Controller
 {
+    const RATE_LIMIT_KEY = 'update_throttled_';
+    const RATE_LIMIT_MINUTES = 30;
+
     public function __construct()
     {
         $this->middleware('can:system-update');
@@ -38,10 +43,12 @@ class SystemUpdateController extends Controller
 
         $logs = cache()->get('update_logs', []);
 
+        $throttledUntil = Cache::get(self::RATE_LIMIT_KEY . auth()->id());
+
         return view('system-update.index', compact(
             'hasToken', 'hasRepo', 'hasBranch',
             'currentHash', 'remoteHash', 'behind', 'logs',
-            'licenseKey', 'repo', 'branch'
+            'licenseKey', 'repo', 'branch', 'throttledUntil'
         ));
     }
 
@@ -105,6 +112,14 @@ class SystemUpdateController extends Controller
             'password' => 'required|current_password',
         ]);
 
+        $userId = auth()->id();
+        $throttledUntil = Cache::get(self::RATE_LIMIT_KEY . $userId);
+        if ($throttledUntil && now()->lt($throttledUntil)) {
+            $minutes = now()->diffInMinutes($throttledUntil);
+            return redirect()->route('system-update.index')
+                ->with('error', "Aguarde {$minutes} minuto(s) antes de atualizar novamente.");
+        }
+
         $token = $this->getDecryptedToken();
         $repo = $this->getRepo();
         $branch = $this->getBranch();
@@ -115,6 +130,10 @@ class SystemUpdateController extends Controller
 
         $log = [];
         $log[] = '[' . now() . '] Iniciando atualização...';
+
+        // Pre-update backup
+        $backupResult = $this->backupDatabase();
+        $log[] = $backupResult['message'];
 
         try {
             $log[] = exec('php artisan down 2>&1');
@@ -144,6 +163,9 @@ class SystemUpdateController extends Controller
         $logs = cache()->get('update_logs', []);
         array_unshift($logs, implode("\n", $log));
         cache()->forever('update_logs', array_slice($logs, 0, 20));
+
+        // Rate limit: 30 min between updates per user
+        Cache::put(self::RATE_LIMIT_KEY . $userId, now()->addMinutes(self::RATE_LIMIT_MINUTES), now()->addMinutes(self::RATE_LIMIT_MINUTES));
 
         return redirect()->route('system-update.index')->with('success', 'Atualização concluída.');
     }
@@ -288,5 +310,37 @@ class SystemUpdateController extends Controller
 
         $data = json_decode($response, true);
         return $data['behind_by'] ?? null;
+    }
+
+    private function backupDatabase(): array
+    {
+        $filename = 'pre-update-' . now()->format('Y-m-d_H-i-s') . '.sql';
+
+        $db = config('database.connections.mysql');
+        $host = $db['host'];
+        $port = $db['port'];
+        $database = $db['database'];
+        $username = $db['username'];
+        $password = $db['password'];
+
+        $path = storage_path("app/backups/{$filename}");
+
+        $process = new Process([
+            'mysqldump',
+            '-h', $host,
+            '-P', $port,
+            '-u', $username,
+            '-p' . $password,
+            $database,
+        ]);
+        $process->setTimeout(120);
+        $process->run();
+
+        if ($process->isSuccessful()) {
+            file_put_contents($path, $process->getOutput());
+            return ['success' => true, 'message' => "Backup: {$filename}"];
+        }
+
+        return ['success' => false, 'message' => 'Backup falhou: ' . $process->getErrorOutput()];
     }
 }

@@ -77,9 +77,15 @@
                     <div class="btn-group w-100">
                         <a href="{{ route('system-update.check') }}" class="btn btn-info"><i class="fas fa-search"></i> Verificar</a>
                         @if($behind > 0)
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#applyModal">
-                            <i class="fas fa-play"></i> Aplicar
-                        </button>
+                            @if($throttledUntil && now()->lt($throttledUntil))
+                                <button type="button" class="btn btn-success" disabled>
+                                    <i class="fas fa-hourglass-half"></i> Aguarde {{ now()->diffInMinutes($throttledUntil) }} min
+                                </button>
+                            @else
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#applyModal">
+                                    <i class="fas fa-play"></i> Aplicar
+                                </button>
+                            @endif
                         @endif
                     </div>
                 </div>
