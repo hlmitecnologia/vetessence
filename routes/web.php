@@ -254,6 +254,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Stock
     Route::get('stock/movements', 'App\Http\Controllers\StockController@movements')->name('stock.movements');
+    Route::get('stock/adjust', 'App\Http\Controllers\StockController@create')->name('stock.adjust');
+    Route::post('stock/adjust', 'App\Http\Controllers\StockController@store')->name('stock.adjust.store');
     Route::get('stock/transfer', 'App\Http\Controllers\StockController@transferForm')->name('stock.transfer-form');
     Route::post('stock/transfer', 'App\Http\Controllers\StockController@transfer')->name('stock.transfer');
 

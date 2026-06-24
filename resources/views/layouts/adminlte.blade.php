@@ -564,6 +564,14 @@
                                         <p>Movimentações</p>
                                     </a>
                                 </li>
+                                @can('stock.create')
+                                <li class="nav-item">
+                                    <a href="{{ route('stock.adjust') }}" class="nav-link {{ request()->routeIs('stock.adjust*') ? 'active' : '' }}">
+                                        <i class="fas fa-pen nav-icon"></i>
+                                        <p>Ajustar</p>
+                                    </a>
+                                </li>
+                                @endcan
                                 <li class="nav-item">
                                     <a href="{{ route('controlled-substances.index') }}" class="nav-link {{ request()->routeIs('controlled-substances.*') ? 'active' : '' }}">
                                         <i class="fas fa-prescription-bottle nav-icon"></i>

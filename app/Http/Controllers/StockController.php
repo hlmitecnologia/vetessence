@@ -13,6 +13,7 @@ class StockController extends Controller
     public function __construct()
     {
         $this->middleware('can:stock.view')->only(['movements']);
+        $this->middleware('can:stock.create')->only(['create', 'store']);
         $this->middleware('can:stock.transfer')->only(['transferForm', 'transfer']);
     }
 
@@ -41,6 +42,50 @@ class StockController extends Controller
         $products = Product::orderBy('name')->get();
 
         return view('stock.movements', compact('movements', 'products'));
+    }
+
+    public function create()
+    {
+        $products = Product::where('is_active', true)->orderBy('name')->get();
+        $branches = Branch::where('is_active', true)->orderBy('name')->get();
+        return view('stock.create', compact('products', 'branches'));
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'type'       => 'required|in:entry,exit,adjustment,loss,return',
+            'quantity'   => 'required|numeric|min:0.01',
+            'branch_id'  => 'required|exists:branches,id',
+            'batch_number' => 'nullable|string|max:100',
+            'expiry_date'  => 'nullable|date',
+            'notes'        => 'nullable|string',
+        ]);
+
+        $product = Product::findOrFail($data['product_id']);
+
+        $movement = StockMovement::create([
+            'product_id'  => $data['product_id'],
+            'type'        => $data['type'],
+            'quantity'    => $data['quantity'],
+            'branch_id'   => $data['branch_id'],
+            'batch_number' => $data['batch_number'] ?? null,
+            'expiry_date'  => $data['expiry_date'] ?? null,
+            'user_id'     => auth()->id(),
+            'notes'       => $data['notes'] ?? null,
+        ]);
+
+        if (in_array($data['type'], ['entry', 'return'])) {
+            $product->increment('stock', $data['quantity']);
+        } elseif (in_array($data['type'], ['exit', 'loss', 'adjustment'])) {
+            $qty = min($data['quantity'], $product->stock);
+            $product->decrement('stock', $qty);
+            $movement->update(['quantity' => $qty]);
+        }
+
+        return redirect()->route('stock.movements')
+            ->with('success', 'Movimentação registrada com sucesso.');
     }
 
     public function transferForm()

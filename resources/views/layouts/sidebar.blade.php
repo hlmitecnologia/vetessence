@@ -267,6 +267,11 @@
                     <a href="{{ route('stock.movements') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                         <i class="fas fa-exchange-alt w-5 mr-2"></i> Movimentações
                     </a>
+                    @can('stock.create')
+                    <a href="{{ route('stock.adjust') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                        <i class="fas fa-pen w-5 mr-2"></i> Ajustar
+                    </a>
+                    @endcan
                     @can('stock.transfer')
                     <a href="{{ route('stock.transfer-form') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                         <i class="fas fa-arrow-right w-5 mr-2"></i> Transferir
