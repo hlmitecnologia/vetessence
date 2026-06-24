@@ -26,16 +26,22 @@ class ProductForm extends Component
     public $categories = [];
     public $suppliers = [];
 
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'sku' => 'nullable|string',
-        'category_id' => 'nullable|exists:categories,id',
-        'supplier_id' => 'nullable|exists:suppliers,id',
-        'cost_price' => 'required|numeric|min:0',
-        'sale_price' => 'required|numeric|min:0',
-        'stock' => 'required|integer|min:0',
-        'is_active' => 'boolean',
-    ];
+    protected function rules()
+    {
+        $rules = [
+            'name' => 'required|string|max:255',
+            'sku' => 'nullable|string',
+            'category_id' => 'nullable|exists:categories,id',
+            'supplier_id' => 'nullable|exists:suppliers,id',
+            'cost_price' => 'required|numeric|min:0',
+            'sale_price' => 'required|numeric|min:0',
+            'is_active' => 'boolean',
+        ];
+        if (!$this->productId) {
+            $rules['stock'] = 'required|integer|min:0';
+        }
+        return $rules;
+    }
 
     public function mount($id = null)
     {
@@ -107,6 +113,7 @@ class ProductForm extends Component
         ];
 
         if ($this->productId) {
+            unset($data['stock']);
             Product::findOrFail($this->productId)->update($data);
         } else {
             Product::create($data);

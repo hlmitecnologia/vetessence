@@ -15,9 +15,12 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Estoque *</label>
-                    <input type="number" wire:model="stock" class="form-control @error('stock') is-invalid @enderror" min="0" required>
+                    <label>Estoque @if(!$productId) * @endif</label>
+                    <input type="number" wire:model="stock" class="form-control @error('stock') is-invalid @enderror" min="0" {{ $productId ? 'disabled' : 'required' }}>
                     @error('stock') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    @if($productId)
+                        <small class="form-text text-muted">Altere o estoque via Ajustar Estoque ou vendas.</small>
+                    @endif
                 </div>
             </div>
         </div>

@@ -41,10 +41,13 @@ class ControlledSubstanceLogController extends Controller
         return view('controlled-substance-logs.index', compact('logs', 'substances'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $substances = ControlledSubstance::where('is_active', true)->orderBy('name')->get();
-        return view('controlled-substance-logs.create', compact('substances'));
+        $pets = \App\Models\Pet::with('tutors')->orderBy('name')->get();
+        $users = \App\Models\User::orderBy('name')->get();
+        $selectedSubstanceId = $request->controlled_substance_id;
+        return view('controlled-substance-logs.create', compact('substances', 'pets', 'users', 'selectedSubstanceId'));
     }
 
     public function store(Request $request)
@@ -82,7 +85,7 @@ class ControlledSubstanceLogController extends Controller
             $substance->save();
 
             DB::commit();
-            return redirect()->route('controlled-substance-logs.index', ['substance' => $substance->id])
+            return redirect()->route('controlled-substance-logs.index', ['substance_id' => $substance->id])
                 ->with('success', 'Movimentação registrada com sucesso!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -116,7 +119,7 @@ class ControlledSubstanceLogController extends Controller
             $controlledSubstanceLog->delete();
 
             DB::commit();
-            return redirect()->route('controlled-substance-logs.index', ['substance' => $substance->id])
+            return redirect()->route('controlled-substance-logs.index', ['substance_id' => $substance->id])
                 ->with('success', 'Movimentação excluída!');
         } catch (\Exception $e) {
             DB::rollBack();

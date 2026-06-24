@@ -447,13 +447,15 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'controlled-substances.update',
         'destroy' => 'controlled-substances.destroy',
     ]);
-    Route::get('controlled-substances/{substance}/movements', 'App\Http\Controllers\ControlledSubstanceLogController@index')
+    Route::get('controlled-substances/movements', 'App\Http\Controllers\ControlledSubstanceLogController@index')
         ->name('controlled-substance-logs.index');
-    Route::post('controlled-substances/{substance}/movements', 'App\Http\Controllers\ControlledSubstanceLogController@store')
+    Route::get('controlled-substances/movements/create', 'App\Http\Controllers\ControlledSubstanceLogController@create')
+        ->name('controlled-substance-logs.create');
+    Route::post('controlled-substances/movements', 'App\Http\Controllers\ControlledSubstanceLogController@store')
         ->name('controlled-substance-logs.store');
-    Route::get('controlled-substances/logs/{controlledSubstanceLog}', 'App\Http\Controllers\ControlledSubstanceLogController@show')
+    Route::get('controlled-substances/movements/{controlledSubstanceLog}', 'App\Http\Controllers\ControlledSubstanceLogController@show')
         ->name('controlled-substance-logs.show');
-    Route::delete('controlled-substances/logs/{controlledSubstanceLog}', 'App\Http\Controllers\ControlledSubstanceLogController@destroy')
+    Route::delete('controlled-substances/movements/{controlledSubstanceLog}', 'App\Http\Controllers\ControlledSubstanceLogController@destroy')
         ->name('controlled-substance-logs.destroy');
 
     // Anesthesia Monitoring

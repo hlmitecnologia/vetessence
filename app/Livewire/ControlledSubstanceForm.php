@@ -19,17 +19,23 @@ class ControlledSubstanceForm extends Component
     public $is_active = true;
     public $notes = '';
 
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'active_ingredient' => 'nullable|string|max:255',
-        'schedule' => 'required|string|max:10',
-        'anvisa_register' => 'nullable|string|max:50',
-        'unit' => 'required|string|max:50',
-        'current_stock' => 'required|numeric|min:0',
-        'min_stock' => 'nullable|numeric|min:0',
-        'is_active' => 'boolean',
-        'notes' => 'nullable|string',
-    ];
+    protected function rules()
+    {
+        $rules = [
+            'name' => 'required|string|max:255',
+            'active_ingredient' => 'nullable|string|max:255',
+            'schedule' => 'required|string|max:10',
+            'anvisa_register' => 'nullable|string|max:50',
+            'unit' => 'required|string|max:50',
+            'min_stock' => 'nullable|numeric|min:0',
+            'is_active' => 'boolean',
+            'notes' => 'nullable|string',
+        ];
+        if (!$this->controlledSubstanceId) {
+            $rules['current_stock'] = 'required|numeric|min:0';
+        }
+        return $rules;
+    }
 
     public function mount($id = null)
     {
@@ -89,6 +95,7 @@ class ControlledSubstanceForm extends Component
         ];
 
         if ($this->controlledSubstanceId) {
+            unset($data['current_stock']);
             ControlledSubstance::findOrFail($this->controlledSubstanceId)->update($data);
         } else {
             ControlledSubstance::create($data);

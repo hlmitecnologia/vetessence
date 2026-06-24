@@ -78,7 +78,6 @@ class ProductController extends Controller
             'supplier_id' => 'nullable|exists:suppliers,id',
             'cost_price' => 'required|numeric|min:0',
             'sale_price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
             'is_active' => 'boolean',
         ]);
 

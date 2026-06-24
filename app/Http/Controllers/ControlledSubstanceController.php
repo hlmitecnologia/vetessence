@@ -83,7 +83,6 @@ class ControlledSubstanceController extends Controller
             'schedule' => 'required|string|max:10',
             'anvisa_register' => 'nullable|string|max:50',
             'unit' => 'required|string|max:50',
-            'current_stock' => 'required|numeric|min:0',
             'min_stock' => 'nullable|numeric|min:0',
             'is_active' => 'boolean',
             'notes' => 'nullable|string',

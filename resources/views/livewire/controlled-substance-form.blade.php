@@ -59,9 +59,12 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Estoque Atual *</label>
-                    <input type="number" wire:model="current_stock" class="form-control @error('current_stock') is-invalid @enderror" step="0.01" min="0" required>
+                    <label>Estoque Atual @if(!$controlledSubstanceId) * @endif</label>
+                    <input type="number" wire:model="current_stock" class="form-control @error('current_stock') is-invalid @enderror" step="0.01" min="0" {{ $controlledSubstanceId ? 'disabled' : 'required' }}>
                     @error('current_stock') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                    @if($controlledSubstanceId)
+                        <small class="form-text text-muted">Altere o estoque via Movimentações.</small>
+                    @endif
                 </div>
             </div>
             <div class="col-md-6">

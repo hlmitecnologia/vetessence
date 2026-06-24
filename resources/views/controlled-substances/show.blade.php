@@ -10,6 +10,9 @@
                     <a href="{{ route('controlled-substances.edit', $controlledSubstance) }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-edit"></i> Editar
                     </a>
+                    <a href="{{ route('controlled-substance-logs.create', ['controlled_substance_id' => $controlledSubstance->id]) }}" class="btn btn-success btn-sm">
+                        <i class="fas fa-exchange-alt"></i> Movimentar
+                    </a>
                     <a href="{{ route('controlled-substances.index') }}" class="btn btn-default btn-sm">
                         <i class="fas fa-arrow-left"></i> Voltar
                     </a>
