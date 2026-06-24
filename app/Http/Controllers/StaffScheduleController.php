@@ -16,7 +16,7 @@ class StaffScheduleController extends Controller
 
     public function index()
     {
-        $schedules = StaffSchedule::with('user')->orderBy('work_date', 'desc')->paginate(20);
+        $schedules = StaffSchedule::with('user')->orderBy('work_date', 'desc')->get();
         return view('staff-schedules.index', compact('schedules'));
     }
 

@@ -58,9 +58,6 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="mt-3">
-            {{ $schedules->links() }}
-        </div>
         @else
         <p class="text-center text-muted">Nenhum registro encontrado.</p>
         @endif
