@@ -683,7 +683,32 @@ else
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════
-# ETAPA 13:  Finalização
+# ETAPA 13:  Cron — Agendador do Laravel
+# ═══════════════════════════════════════════════════════════════════════════
+echo ""
+echo -e "${BLUE}══════════════════════════════════════════${NC}"
+echo -e "${BLUE}   ETAPA 13: CRON (SCHEDULER)            ${NC}"
+echo -e "${BLUE}══════════════════════════════════════════${NC}"
+
+CRON_LINE="* * * * * ${WWW_USER} cd ${APP_DIR} && php artisan schedule:run >> /dev/null 2>&1"
+if command -v crontab &>/dev/null; then
+    # Adiciona ao crontab do www-user ou root — o ideal é /etc/cron.d/
+    CRON_FILE="/etc/cron.d/vetessence-scheduler"
+    if [[ ! -f "$CRON_FILE" ]]; then
+        echo "# Executa o agendador Laravel a cada minuto" | $SUDO tee "$CRON_FILE" > /dev/null
+        echo "${CRON_LINE}" | $SUDO tee -a "$CRON_FILE" > /dev/null
+        $SUDO chmod 644 "$CRON_FILE"
+        ok "Cron do scheduler configurado em ${CRON_FILE}"
+    else
+        ok "${CRON_FILE} já existe, pulando."
+    fi
+else
+    warn "crontab não encontrado. Adicione manualmente ao crontab:"
+    warn "${CRON_LINE}"
+fi
+
+# ═══════════════════════════════════════════════════════════════════════════
+# ETAPA 14:  Finalização
 # ═══════════════════════════════════════════════════════════════════════════
 echo ""
 echo -e "${BLUE}══════════════════════════════════════════${NC}"

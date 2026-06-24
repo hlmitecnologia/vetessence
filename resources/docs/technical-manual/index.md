@@ -804,7 +804,40 @@ supervisorctl update
 supervisorctl start all
 ```
 
-#### 3.7. SSL com Let's Encrypt
+#### 3.7. Cron — Agendador Laravel (Obrigatório)
+
+O Laravel Scheduler executa comandos agendados (estoque inteligente, claims, alertas, etc.). Sem ele, nenhum comando automático funciona.
+
+Adicione esta linha ao crontab do servidor (uma única vez):
+
+```bash
+echo "* * * * * www-data cd /var/www/vetessence && php artisan schedule:run >> /dev/null 2>&1" \
+  | sudo tee /etc/cron.d/vetessence-scheduler
+sudo chmod 644 /etc/cron.d/vetessence-scheduler
+```
+
+Substitua `/var/www/vetessence` pelo caminho real da instalação e `www-data` pelo usuário do PHP-FPM.
+
+**Verificação:**
+```bash
+# Confirmar que o arquivo existe
+cat /etc/cron.d/vetessence-scheduler
+
+# Testar o scheduler manualmente (não espera o minuto)
+php artisan schedule:list          # lista comandos agendados
+php artisan schedule:run           # executa comandos devidos
+```
+
+**Comandos agendados atuais:**
+
+| Comando | Horário | Descrição |
+|---------|---------|-----------|
+| `stock:forecast --recalculate` | 03:00 | Recalcula consumo médio de estoque |
+| `stock:forecast --alert-expiry` | 06:00 | Alerta sobre lotes próximos ao vencimento |
+
+> **Importante:** o `schedule:run` deve rodar **a cada minuto** via cron. O próprio Laravel decide se cada comando agendado deve ou não executar naquele minuto, baseado no horário configurado no Kernel.
+
+#### 3.8. SSL com Let's Encrypt
 
 No **Ubuntu 22.04+**, instale o Certbot via **snap** (recomendado pela Let's Encrypt):
 
