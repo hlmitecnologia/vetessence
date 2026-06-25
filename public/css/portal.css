@@ -1,0 +1,206 @@
+/* Portal do Tutor — Design System */
+:root {
+  --portal-font-size-sm: 0.9375rem;
+  --portal-font-size-base: 1rem;
+  --portal-font-size-lg: 1.125rem;
+  --portal-font-size-xl: 1.25rem;
+  --portal-font-size-2xl: 1.5rem;
+  --portal-font-size-3xl: 1.875rem;
+  --portal-font-size-4xl: 2.25rem;
+  --portal-card-radius: 1rem;
+  --portal-touch-min: 48px;
+}
+
+/* Cards padronizados */
+.portal-card {
+  background: #fff;
+  border-radius: var(--portal-card-radius);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.portal-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+/* Ícones em wrapper circular */
+.portal-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.portal-icon-wrapper i {
+  font-size: 1.5rem;
+}
+
+/* Botão portal */
+.portal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: var(--portal-touch-min);
+  font-size: var(--portal-font-size-base);
+  font-weight: 500;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  transition: background-color 0.2s, opacity 0.2s;
+  cursor: pointer;
+  border: none;
+}
+.portal-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Título de seção */
+.portal-section-title {
+  font-size: var(--portal-font-size-xl);
+  font-weight: 700;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.portal-section-title i {
+  font-size: 1.25rem;
+  color: var(--brand-primary, #455e36);
+}
+
+/* Badge de status */
+.portal-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* Bottom nav fixa mobile */
+.portal-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.375rem 0;
+  padding-bottom: max(0.375rem, env(safe-area-inset-bottom));
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+}
+.portal-bottom-nav a,
+.portal-bottom-nav button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  font-size: 0.6875rem;
+  color: #9ca3af;
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  min-width: 48px;
+  min-height: 44px;
+  justify-content: center;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.portal-bottom-nav a:hover,
+.portal-bottom-nav a.active,
+.portal-bottom-nav button:hover {
+  color: var(--brand-primary, #455e36);
+}
+.portal-bottom-nav a i,
+.portal-bottom-nav button i {
+  font-size: 1.25rem;
+}
+.portal-bottom-nav a span,
+.portal-bottom-nav button span {
+  line-height: 1;
+}
+
+/* Ajuste de padding no main para não cobrir bottom nav */
+.portal-has-bottom-nav {
+  padding-bottom: 5rem;
+}
+
+/* Touch targets */
+.touch-target {
+  min-height: var(--portal-touch-min);
+  min-width: var(--portal-touch-min);
+}
+.touch-target-sm {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Inputs maiores */
+.portal-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  font-size: var(--portal-font-size-base);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-height: var(--portal-touch-min);
+}
+.portal-input:focus {
+  border-color: var(--brand-primary, #455e36);
+  box-shadow: 0 0 0 3px rgba(69, 94, 54, 0.15);
+}
+.portal-label {
+  display: block;
+  font-size: var(--portal-font-size-base);
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.375rem;
+}
+
+/* Empty state */
+.portal-empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+.portal-empty i {
+  font-size: 3.75rem;
+  color: #d1d5db;
+  margin-bottom: 1rem;
+}
+.portal-empty p {
+  font-size: var(--portal-font-size-lg);
+  color: #6b7280;
+}
+
+/* Responsivo: desktop esconde bottom nav */
+@media (min-width: 768px) {
+  .portal-bottom-nav {
+    display: none;
+  }
+  .portal-has-bottom-nav {
+    padding-bottom: inherit;
+  }
+}
+
+/* Animação sutil */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.portal-fade-in {
+  animation: fadeInUp 0.3s ease-out;
+}
