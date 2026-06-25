@@ -56,10 +56,10 @@
         <h3 class="text-base font-semibold text-green-600 mb-3">Próximas</h3>
         <div class="space-y-3 mb-6">
             @foreach($upcomingAppointments as $appt)
-            <div class="p-4 bg-green-50 rounded-xl">
-                <p class="font-semibold text-gray-800 text-base">{{ \Carbon\Carbon::parse($appt->start_time)->format('d/m/Y H:i') }}</p>
+            <a href="{{ route('portal.appointments.show', $appt->id) }}" class="block p-4 bg-green-50 rounded-xl hover:bg-green-100 transition">
+                <p class="font-semibold text-gray-800 text-base">{{ \Carbon\Carbon::parse($appt->date)->format('d/m/Y') }} às {{ \Carbon\Carbon::parse($appt->time)->format('H:i') }}</p>
                 <p class="text-base text-gray-500">{{ strip_tags($appt->reason) ?: 'Consulta' }}</p>
-            </div>
+            </a>
             @endforeach
         </div>
         @endif
@@ -67,10 +67,10 @@
         <h3 class="text-base font-semibold text-gray-600 mb-3">Histórico</h3>
         <div class="space-y-3">
             @foreach($pastAppointments as $appt)
-            <div class="p-4 bg-gray-50 rounded-xl">
-                <p class="font-semibold text-gray-800 text-base">{{ \Carbon\Carbon::parse($appt->start_time)->format('d/m/Y H:i') }}</p>
+            <a href="{{ route('portal.appointments.show', $appt->id) }}" class="block p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition">
+                <p class="font-semibold text-gray-800 text-base">{{ \Carbon\Carbon::parse($appt->date)->format('d/m/Y') }} às {{ \Carbon\Carbon::parse($appt->time)->format('H:i') }}</p>
                 <p class="text-base text-gray-500">{{ strip_tags($appt->reason) ?: 'Consulta' }}</p>
-            </div>
+            </a>
             @endforeach
         </div>
         @endif
@@ -88,8 +88,11 @@
         <div class="space-y-3">
             @foreach($vaccinations as $vac)
             <div class="p-4 bg-gray-50 rounded-xl">
-                <p class="font-semibold text-gray-800 text-base">{{ $vac->vaccine_name ?? 'Vacina' }}</p>
-                <p class="text-base text-gray-500">Aplicada em {{ \Carbon\Carbon::parse($vac->applied_date)->format('d/m/Y') }}</p>
+                <p class="font-semibold text-gray-800 text-base">{{ $vac->vaccine ?? 'Vacina' }}</p>
+                <p class="text-base text-gray-500">Aplicada em {{ $vac->date ? $vac->date->format('d/m/Y') : '-' }}</p>
+                @if($vac->next_date)
+                <p class="text-sm text-blue-600 mt-1">Próxima dose: {{ $vac->next_date->format('d/m/Y') }}</p>
+                @endif
             </div>
             @endforeach
         </div>

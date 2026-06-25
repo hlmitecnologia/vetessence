@@ -1,10 +1,17 @@
 @extends('portal.layouts.app', ['title' => 'Consulta - ' . ($appointment->pet->name ?? '')])
 
 @section('content')
+@php $fromPet = str_contains(url()->previous(), route('portal.pets.show', $appointment->pet_id)); @endphp
 <div class="mb-6">
+    @if($fromPet)
+    <a href="{{ route('portal.pets.show', $appointment->pet_id) }}" class="text-base text-blue-600 hover:text-blue-700 touch-target-sm inline-flex items-center gap-1">
+        <i class="fas fa-arrow-left"></i>{{ $appointment->pet->name ?? 'Pet' }}
+    </a>
+    @else
     <a href="{{ route('portal.appointments.index') }}" class="text-base text-blue-600 hover:text-blue-700 touch-target-sm inline-flex items-center gap-1">
         <i class="fas fa-arrow-left"></i>Consultas
     </a>
+    @endif
 </div>
 
 <div class="max-w-2xl mx-auto portal-card p-8 sm:p-10 portal-fade-in">
