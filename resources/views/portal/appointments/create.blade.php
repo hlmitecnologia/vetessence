@@ -1,6 +1,10 @@
 @extends('portal.layouts.app', ['title' => 'Agendar Consulta'])
 
 @section('content')
+@php
+    $preselectedPetId = request()->query('pet_id');
+    $preselectedReason = request()->query('reason');
+@endphp
 <div class="mb-6">
     <a href="{{ route('portal.appointments.index') }}" class="text-base text-blue-600 hover:text-blue-700 touch-target-sm inline-flex items-center gap-1">
         <i class="fas fa-arrow-left"></i>Consultas
@@ -31,7 +35,7 @@
             <select name="pet_id" id="pet_id" required class="portal-input">
                 <option value="">Selecione um pet</option>
                 @foreach($pets as $pet)
-                <option value="{{ $pet->id }}">{{ $pet->name }} - {{ $pet->tutors->first()->name ?? 'Sem tutor' }}</option>
+                <option value="{{ $pet->id }}" {{ $preselectedPetId == $pet->id ? 'selected' : '' }}>{{ $pet->name }} - {{ $pet->tutors->first()->name ?? 'Sem tutor' }}</option>
                 @endforeach
             </select>
         </div>
@@ -39,7 +43,7 @@
         <div>
             <label class="portal-label">Motivo da consulta</label>
             <textarea name="reason" id="reason" rows="3"
-                class="wysiwyg portal-input @error('reason') is-invalid @enderror"></textarea>
+                class="wysiwyg portal-input @error('reason') is-invalid @enderror">{{ $preselectedReason }}</textarea>
             @error('reason')<span class="invalid-feedback">{{ $message }}</span>@enderror
         </div>
 

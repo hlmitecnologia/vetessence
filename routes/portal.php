@@ -68,6 +68,8 @@ Route::middleware('auth:tutor')->group(function () {
 
     Route::get('prescriptions', [PrescriptionController::class, 'index'])->name('portal.prescriptions.index');
 
+    Route::get('vaccinations', [\App\Http\Controllers\Portal\VaccinationController::class, 'index'])->name('portal.vaccinations.index');
+
     Route::get('docs', [DocController::class, 'index'])->name('portal.docs.index');
     Route::get('docs/{page}', [DocController::class, 'show'])->name('portal.docs.show');
 });
