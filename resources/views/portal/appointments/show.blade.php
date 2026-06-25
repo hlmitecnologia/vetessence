@@ -20,7 +20,7 @@
             @endif
             <div>
                 <h1 class="text-3xl font-bold text-gray-800">{{ $appointment->pet->name ?? 'Pet' }}</h1>
-                <p class="text-lg text-gray-500">{{ $appointment->reason ?? 'Consulta' }}</p>
+                <p class="text-lg text-gray-500">{{ strip_tags($appointment->reason) ?: 'Consulta' }}</p>
             </div>
         </div>
         @php $statusLabels = ['scheduled' => 'Agendado', 'confirmed' => 'Confirmado', 'in_progress' => 'Em Andamento', 'completed' => 'Concluído', 'cancelled' => 'Cancelado', 'no_show' => 'Não Compareceu']; @endphp
@@ -49,7 +49,7 @@
         @if($appointment->reason)
         <div class="py-3 border-b border-gray-100">
             <span class="text-gray-500 block mb-1">Motivo</span>
-            <span class="font-semibold text-gray-800">{{ $appointment->reason }}</span>
+            <div class="font-semibold text-gray-800 wysiwyg-render">{!! $appointment->reason !!}</div>
         </div>
         @endif
         <div class="flex justify-between py-3 border-b border-gray-100">

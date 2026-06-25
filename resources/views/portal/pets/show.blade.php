@@ -58,7 +58,7 @@
             @foreach($upcomingAppointments as $appt)
             <div class="p-4 bg-green-50 rounded-xl">
                 <p class="font-semibold text-gray-800 text-base">{{ \Carbon\Carbon::parse($appt->start_time)->format('d/m/Y H:i') }}</p>
-                <p class="text-base text-gray-500">{{ $appt->reason ?? 'Consulta' }}</p>
+                <p class="text-base text-gray-500">{{ strip_tags($appt->reason) ?: 'Consulta' }}</p>
             </div>
             @endforeach
         </div>
@@ -69,7 +69,7 @@
             @foreach($pastAppointments as $appt)
             <div class="p-4 bg-gray-50 rounded-xl">
                 <p class="font-semibold text-gray-800 text-base">{{ \Carbon\Carbon::parse($appt->start_time)->format('d/m/Y H:i') }}</p>
-                <p class="text-base text-gray-500">{{ $appt->reason ?? 'Consulta' }}</p>
+                <p class="text-base text-gray-500">{{ strip_tags($appt->reason) ?: 'Consulta' }}</p>
             </div>
             @endforeach
         </div>

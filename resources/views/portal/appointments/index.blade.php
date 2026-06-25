@@ -38,7 +38,7 @@
             <div>
                 <p class="text-lg font-semibold text-gray-800">{{ $appt->pet->name ?? 'Pet' }}</p>
                 <p class="text-base text-gray-500">{{ \Carbon\Carbon::parse($appt->date)->format('d/m/Y') }} às {{ \Carbon\Carbon::parse($appt->time)->format('H:i') }}</p>
-                <p class="text-sm text-gray-400">{{ $appt->branch->name ?? '' }} · {{ $appt->reason ?? 'Consulta' }}</p>
+                <p class="text-sm text-gray-400">{{ $appt->branch->name ?? '' }} · {{ strip_tags($appt->reason) ?: 'Consulta' }}</p>
             </div>
         </div>
         <span class="portal-badge bg-green-100 text-green-700">Agendado</span>
@@ -72,7 +72,7 @@
             <div>
                 <p class="text-lg font-semibold text-gray-800">{{ $appt->pet->name ?? 'Pet' }}</p>
                 <p class="text-base text-gray-500">{{ \Carbon\Carbon::parse($appt->date)->format('d/m/Y') }} às {{ \Carbon\Carbon::parse($appt->time)->format('H:i') }}</p>
-                <p class="text-sm text-gray-400">{{ $appt->branch->name ?? '' }} · {{ $appt->reason ?? 'Consulta' }}</p>
+                <p class="text-sm text-gray-400">{{ $appt->branch->name ?? '' }} · {{ strip_tags($appt->reason) ?: 'Consulta' }}</p>
             </div>
         </div>
         @php $statusLabels = ['scheduled' => 'Agendado', 'confirmed' => 'Confirmado', 'in_progress' => 'Em Andamento', 'completed' => 'Concluído', 'cancelled' => 'Cancelado', 'no_show' => 'Não Compareceu']; @endphp
