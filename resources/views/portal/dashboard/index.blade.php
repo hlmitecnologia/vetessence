@@ -67,7 +67,7 @@
     </h2>
     <div class="space-y-4">
         @foreach($upcomingAppointmentsList as $appt)
-        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+        <a href="{{ route('portal.appointments.show', $appt->id) }}" class="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition">
             <div class="flex items-center gap-4">
                 @if($appt->pet->photo_url)
                 <img src="{{ $appt->pet->photo_url }}" alt="{{ $appt->pet->name }}"
@@ -79,14 +79,15 @@
                 @endif
                 <div>
                     <p class="text-lg font-medium text-gray-800">{{ $appt->pet->name ?? 'Pet' }}</p>
-                    <p class="text-base text-gray-500">{{ \Carbon\Carbon::parse($appt->start_time)->format('d/m/Y H:i') }}</p>
+                    <p class="text-base text-gray-500">{{ \Carbon\Carbon::parse($appt->date)->format('d/m/Y') }} às {{ \Carbon\Carbon::parse($appt->time)->format('H:i') }}</p>
+                    <p class="text-sm text-gray-400">{{ $appt->branch->name ?? '' }}</p>
                 </div>
             </div>
             @php $statusLabels = ['scheduled' => 'Agendado', 'confirmed' => 'Confirmado', 'in_progress' => 'Em Andamento', 'completed' => 'Concluído', 'cancelled' => 'Cancelado', 'no_show' => 'Não Compareceu']; @endphp
             <span class="portal-badge {{ $appt->status == 'scheduled' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
                 {{ $statusLabels[$appt->status] ?? $appt->status }}
             </span>
-        </div>
+        </a>
         @endforeach
     </div>
 </div>

@@ -1,6 +1,12 @@
 @extends('portal.layouts.app', ['title' => 'Faturas'])
 
 @section('content')
+<div class="mb-4">
+    <a href="{{ route('portal.dashboard') }}" class="text-base text-blue-600 hover:text-blue-700 touch-target-sm inline-flex items-center gap-1">
+        <i class="fas fa-arrow-left"></i>Início
+    </a>
+</div>
+
 <div class="flex items-center justify-between mb-6">
     <h1 class="portal-section-title text-2xl sm:text-3xl mb-0">
         <i class="fas fa-file-invoice"></i>

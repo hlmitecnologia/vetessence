@@ -50,6 +50,7 @@ Route::middleware('auth:tutor')->group(function () {
 
     Route::get('appointments', [AppointmentController::class, 'index'])->name('portal.appointments.index');
     Route::get('appointments/create', [AppointmentController::class, 'create'])->name('portal.appointments.create');
+    Route::get('appointments/{id}', [AppointmentController::class, 'show'])->name('portal.appointments.show');
     Route::post('appointments', [AppointmentController::class, 'store'])->name('portal.appointments.store');
 
     Route::get('vet-availability/available-vets', [\App\Http\Controllers\Portal\VetAvailabilityController::class, 'availableVets'])->name('portal.vet-availability.available-vets');

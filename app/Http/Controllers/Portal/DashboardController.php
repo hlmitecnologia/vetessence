@@ -15,7 +15,9 @@ class DashboardController extends Controller
 
         $upcomingAppointmentsList = $tutor->pets()
             ->with(['appointments' => function ($q) {
-                $q->where('date', '>=', today())->orderBy('date')->orderBy('time');
+                $q->with(['vet', 'branch'])
+                  ->where('date', '>=', today())
+                  ->orderBy('date')->orderBy('time');
             }])
             ->get()
             ->pluck('appointments')

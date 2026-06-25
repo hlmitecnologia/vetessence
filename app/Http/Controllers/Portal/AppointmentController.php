@@ -19,13 +19,15 @@ class AppointmentController extends Controller
         $tutor = Auth::guard('tutor')->user();
         $petIds = $tutor->pets()->pluck('pets.id');
 
-        $upcoming = Appointment::whereIn('pet_id', $petIds)
+        $upcoming = Appointment::with(['pet', 'vet', 'branch'])
+            ->whereIn('pet_id', $petIds)
             ->where('date', '>=', today())
             ->orderBy('date')
             ->orderBy('time')
             ->get();
 
-        $past = Appointment::whereIn('pet_id', $petIds)
+        $past = Appointment::with(['pet', 'vet', 'branch'])
+            ->whereIn('pet_id', $petIds)
             ->where('date', '<', today())
             ->orderBy('date', 'desc')
             ->orderBy('time', 'desc')
@@ -33,6 +35,18 @@ class AppointmentController extends Controller
             ->get();
 
         return view('portal.appointments.index', compact('upcoming', 'past'));
+    }
+
+    public function show($id)
+    {
+        $tutor = Auth::guard('tutor')->user();
+        $petIds = $tutor->pets()->pluck('pets.id');
+
+        $appointment = Appointment::with(['pet', 'vet', 'branch'])
+            ->whereIn('pet_id', $petIds)
+            ->findOrFail($id);
+
+        return view('portal.appointments.show', compact('appointment'));
     }
 
     public function create()
