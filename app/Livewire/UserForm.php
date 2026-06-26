@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\Branch;
+use App\Models\Department;
+use App\Models\Position;
 use App\Models\User;
 use App\Models\Role;
 use Livewire\Attributes\On;
@@ -21,9 +23,16 @@ class UserForm extends Component
     public $branch_id = '';
     public $is_active = true;
     public $is_veterinarian = false;
+    public $department_id = '';
+    public $position_id = '';
+    public $hire_date = '';
+    public $contract_type = '';
 
     public $roles = [];
     public $branches = [];
+    public $departments = [];
+    public $positions = [];
+    public $contractTypes = [];
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -34,13 +43,30 @@ class UserForm extends Component
         'branch_id' => 'nullable|exists:branches,id',
         'is_active' => 'boolean',
         'is_veterinarian' => 'boolean',
+        'department_id' => 'nullable|exists:departments,id',
+        'position_id' => 'nullable|exists:positions,id',
+        'hire_date' => 'nullable|date',
+        'contract_type' => 'nullable|string|max:30',
     ];
 
     public function mount($id = null)
     {
         $this->roles = Role::orderBy('name')->get();
         $this->branches = Branch::orderBy('name')->get();
+        $this->departments = Department::orderBy('name')->pluck('name', 'id');
+        $this->positions = Position::orderBy('name')->pluck('name', 'id');
+        $this->contractTypes = config('hr.contract_types', []);
         if ($id) $this->load($id);
+    }
+
+    public function updatedDepartmentId($value)
+    {
+        $this->position_id = '';
+        if ($value) {
+            $this->positions = Position::where('department_id', $value)->orderBy('name')->pluck('name', 'id');
+        } else {
+            $this->positions = Position::orderBy('name')->pluck('name', 'id');
+        }
     }
 
     #[On('editUser')]
@@ -55,10 +81,17 @@ class UserForm extends Component
         $this->branch_id = (string) ($user->branch_id ?? '');
         $this->is_active = $user->is_active;
         $this->is_veterinarian = $user->is_veterinarian;
+        $this->department_id = (string) ($user->department_id ?? '');
+        $this->position_id = (string) ($user->position_id ?? '');
+        $this->hire_date = $user->hire_date?->format('Y-m-d') ?? '';
+        $this->contract_type = $user->contract_type ?? '';
         $this->password = '';
         $this->password_confirmation = '';
         $this->roles = Role::orderBy('name')->get();
         $this->branches = Branch::orderBy('name')->get();
+        $this->departments = Department::orderBy('name')->pluck('name', 'id');
+        $this->contractTypes = config('hr.contract_types', []);
+        $this->updatedDepartmentId($this->department_id);
     }
 
     #[On('resetForm')]
@@ -74,8 +107,15 @@ class UserForm extends Component
         $this->branch_id = '';
         $this->is_active = true;
         $this->is_veterinarian = false;
+        $this->department_id = '';
+        $this->position_id = '';
+        $this->hire_date = '';
+        $this->contract_type = '';
         $this->roles = Role::orderBy('name')->get();
         $this->branches = Branch::orderBy('name')->get();
+        $this->departments = Department::orderBy('name')->pluck('name', 'id');
+        $this->positions = Position::orderBy('name')->pluck('name', 'id');
+        $this->contractTypes = config('hr.contract_types', []);
         $this->resetValidation();
     }
 
@@ -89,6 +129,10 @@ class UserForm extends Component
             'branch_id' => 'nullable|exists:branches,id',
             'is_active' => 'boolean',
             'is_veterinarian' => 'boolean',
+            'department_id' => 'nullable|exists:departments,id',
+            'position_id' => 'nullable|exists:positions,id',
+            'hire_date' => 'nullable|date',
+            'contract_type' => 'nullable|string|max:30',
         ];
 
         if ($this->userId) {
@@ -112,6 +156,10 @@ class UserForm extends Component
             'branch_id' => $this->branch_id ?: null,
             'is_active' => $this->is_active,
             'is_veterinarian' => $this->is_veterinarian,
+            'department_id' => $this->department_id ?: null,
+            'position_id' => $this->position_id ?: null,
+            'hire_date' => $this->hire_date ?: null,
+            'contract_type' => $this->contract_type ?: null,
         ];
 
         if ($this->password) {

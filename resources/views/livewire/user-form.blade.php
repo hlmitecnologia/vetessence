@@ -82,6 +82,55 @@
             </div>
         </div>
 
+        <hr>
+        <h6>Dados Funcionais</h6>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Departamento</label>
+                    <x-tom-select wire="department_id" :value="$department_id">
+                        <option value="">Nenhum</option>
+                        @foreach($departments as $id => $name)
+                            <option value="{{ $id }}">{{ $name }}</option>
+                        @endforeach
+                    </x-tom-select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Cargo</label>
+                    <x-tom-select wire="position_id" :value="$position_id">
+                        <option value="">Nenhum</option>
+                        @foreach($positions as $id => $name)
+                            <option value="{{ $id }}">{{ $name }}</option>
+                        @endforeach
+                    </x-tom-select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Data de Admissão</label>
+                    <input type="date" wire:model="hire_date" class="form-control @error('hire_date') is-invalid @enderror">
+                    @error('hire_date') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Tipo de Contrato</label>
+                    <x-tom-select wire="contract_type" :value="$contract_type">
+                        <option value="">Nenhum</option>
+                        @foreach($contractTypes as $value => $label)
+                            <option value="{{ $value }}">{{ $label }}</option>
+                        @endforeach
+                    </x-tom-select>
+                </div>
+            </div>
+        </div>
+
         <div class="text-right">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Salvar</button>
