@@ -1,6 +1,4 @@
 <div>
-    @php $canSecurity = auth()->user()?->can('users.create') @endphp
-
     <form wire:submit.prevent="save">
         <div class="form-group">
             <label>Nome *</label>
@@ -24,7 +22,7 @@
             </div>
         </div>
 
-        @if($canSecurity)
+        @if($context === 'user')
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -50,7 +48,7 @@
             @endunless
         @endif
 
-        @if($canSecurity)
+        @if($context === 'user')
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -76,21 +74,18 @@
             </div>
         </div>
         @else
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Unidade</label>
-                    <x-tom-select wire="branch_id" :value="$branch_id">
-                        <option value="">Todas as unidades</option>
-                        @foreach($branches as $branch)
-                            <option value="{{ $branch->id }}">{{ $branch->name }}</option>
-                        @endforeach
-                    </x-tom-select>
-                </div>
-            </div>
+        <div class="form-group">
+            <label>Unidade</label>
+            <x-tom-select wire="branch_id" :value="$branch_id">
+                <option value="">Todas as unidades</option>
+                @foreach($branches as $branch)
+                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                @endforeach
+            </x-tom-select>
         </div>
         @endif
 
+        @if($context === 'employee')
         <hr>
         <h6>Dados Funcionais</h6>
 
@@ -139,6 +134,7 @@
                 </div>
             </div>
         </div>
+        @endif
 
         <div class="row">
             <div class="col-md-6">
@@ -149,7 +145,7 @@
                     </div>
                 </div>
             </div>
-            @if($canSecurity)
+            @if($context === 'user')
             <div class="col-md-6">
                 <div class="form-group">
                     <div class="custom-control custom-switch mt-4">

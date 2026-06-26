@@ -55,7 +55,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                @livewire('employee-form', key('employee-form-show'))
+                @livewire('employee-form', ['context' => 'employee'], key('employee-form-show'))
             </div>
         </div>
     </div>

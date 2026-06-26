@@ -29,6 +29,8 @@ class EmployeeForm extends Component
     public $hire_date = '';
     public $contract_type = '';
 
+    public $context = 'user';
+
     public $roles = [];
     public $branches = [];
     public $departments = [];
