@@ -28,7 +28,7 @@ class TriageRecordController extends Controller
         $history = TriageRecord::with(['pet'])
             ->whereIn('status', ['seen', 'discharged'])
             ->latest()
-            ->paginate(20);
+            ->get();
         return view('triage.index', compact('waiting', 'history'));
     }
 

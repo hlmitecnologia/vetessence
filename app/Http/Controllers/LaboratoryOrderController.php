@@ -32,7 +32,7 @@ class LaboratoryOrderController extends Controller
             $query->where('order_number', 'like', "%{$request->search}%");
         }
 
-        $orders = $query->orderBy('order_date', 'desc')->paginate(20);
+        $orders = $query->orderBy('order_date', 'desc')->get();
 
         return view('laboratory-orders.index', compact('orders'));
     }

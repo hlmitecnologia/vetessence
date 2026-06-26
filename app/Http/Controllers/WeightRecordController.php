@@ -21,7 +21,7 @@ class WeightRecordController extends Controller
             $query->where('pet_id', $request->pet_id);
         }
 
-        $weightRecords = $query->orderBy('measurement_date', 'desc')->paginate(20);
+        $weightRecords = $query->orderBy('measurement_date', 'desc')->get();
 
         return view('weight-records.index', compact('weightRecords'));
     }

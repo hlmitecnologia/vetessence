@@ -27,7 +27,7 @@ class PetController extends Controller
             $query->where('species', $request->species);
         }
 
-        $pets = $query->orderBy('name')->paginate(15);
+        $pets = $query->orderBy('name')->get();
 
         return view('pets.index', compact('pets'));
     }

@@ -33,7 +33,7 @@ class TreatmentPlanController extends Controller
             $query->where('pet_id', $request->pet_id);
         }
 
-        $plans = $query->orderBy('created_at', 'desc')->paginate(20);
+        $plans = $query->orderBy('created_at', 'desc')->get();
 
         return view('treatment-plans.index', compact('plans'));
     }

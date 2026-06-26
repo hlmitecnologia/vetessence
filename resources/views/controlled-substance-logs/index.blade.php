@@ -60,7 +60,7 @@
                 <tbody>
                     @foreach($logs as $log)
                     <tr>
-                        <td>{{ $log->created_at->format('d/m/Y H:i') }}</td>
+                        <td data-order="{{ $log->created_at?->timestamp ?? 0 }}">{{ $log->created_at->format('d/m/Y H:i') }}</td>
                         <td><strong>{{ $log->substance->name ?? '-' }}</strong></td>
                         <td>
                             @if($log->type === 'in')

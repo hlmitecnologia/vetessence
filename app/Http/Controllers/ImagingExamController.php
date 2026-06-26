@@ -34,7 +34,7 @@ class ImagingExamController extends Controller
             $query->where('exam_number', 'like', "%{$request->search}%");
         }
 
-        $exams = $query->orderBy('exam_date', 'desc')->paginate(20);
+        $exams = $query->orderBy('exam_date', 'desc')->get();
 
         return view('imaging-exams.index', compact('exams'));
     }

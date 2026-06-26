@@ -24,7 +24,7 @@ class ConvenioController extends Controller
             $query->where('is_active', $request->is_active);
         }
 
-        $convenios = $query->orderBy('name')->paginate(20);
+        $convenios = $query->orderBy('name')->get();
 
         return view('convenios.index', compact('convenios'));
     }

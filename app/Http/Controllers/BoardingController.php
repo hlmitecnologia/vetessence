@@ -30,7 +30,7 @@ class BoardingController extends Controller
             $query->where('type', $request->type);
         }
 
-        $boardings = $query->orderBy('check_in_at', 'desc')->paginate(20);
+        $boardings = $query->orderBy('check_in_at', 'desc')->get();
 
         return view('boardings.index', compact('boardings'));
     }

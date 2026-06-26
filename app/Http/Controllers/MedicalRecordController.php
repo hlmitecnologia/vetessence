@@ -36,7 +36,7 @@ class MedicalRecordController extends Controller
             $query->whereDate('date', '<=', $request->date_to);
         }
 
-        $records = $query->orderBy('date', 'desc')->paginate(20);
+        $records = $query->orderBy('date', 'desc')->get();
 
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
 

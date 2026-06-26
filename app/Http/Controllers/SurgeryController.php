@@ -27,7 +27,7 @@ class SurgeryController extends Controller
             $query->where('status', $request->status);
         }
 
-        $surgeries = $query->orderBy('scheduled_date', 'desc')->paginate(20);
+        $surgeries = $query->orderBy('scheduled_date', 'desc')->get();
 
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
 

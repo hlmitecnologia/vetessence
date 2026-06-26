@@ -210,7 +210,7 @@ class StaffScheduleController extends Controller
         $isAdmin = auth()->user()->hasRole('super-admin') || auth()->user()->hasRole('admin') || auth()->user()->hasRole('human-resources');
         $timeOffs = StaffTimeOff::with(['user', 'approvedBy'])
             ->when(!$isAdmin, fn($q) => $q->where('user_id', auth()->id()))
-            ->latest()->paginate(20);
+            ->latest()->get();
         $users = User::where('is_active', true)
             ->when(\App\Services\BranchContext::hasBranch(), fn($q) => $q->where('branch_id', \App\Services\BranchContext::get()))
             ->orderBy('name')

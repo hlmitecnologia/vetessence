@@ -21,7 +21,7 @@
             <tbody>
                 @foreach($consumptions as $c)
                 <tr>
-                    <td>{{ $c->service_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $c->service_date?->timestamp ?? 0 }}">{{ $c->service_date->format('d/m/Y') }}</td>
                     <td>{{ $c->subscription->pet->name ?? '-' }}</td>
                     <td>{{ $c->subscription->package->name ?? '-' }}</td>
                     <td>{{ $c->service->name ?? '-' }}</td>

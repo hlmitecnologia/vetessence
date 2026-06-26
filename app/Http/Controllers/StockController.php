@@ -38,7 +38,7 @@ class StockController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $movements = $query->orderBy('created_at', 'desc')->paginate(30);
+        $movements = $query->orderBy('created_at', 'desc')->get();
 
         $products = Product::orderBy('name')->get();
 

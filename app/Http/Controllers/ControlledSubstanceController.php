@@ -33,7 +33,7 @@ class ControlledSubstanceController extends Controller
             $query->where('is_active', $request->boolean('is_active'));
         }
 
-        $substances = $query->orderBy('name')->paginate(20);
+        $substances = $query->orderBy('name')->get();
 
         return view('controlled-substances.index', compact('substances'));
     }

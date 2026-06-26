@@ -21,7 +21,7 @@ class SupplierController extends Controller
                   ->orWhere('cnpj', 'like', "%{$request->search}%");
         }
 
-        $suppliers = $query->orderBy('name')->paginate(20);
+        $suppliers = $query->orderBy('name')->get();
 
         return view('suppliers.index', compact('suppliers'));
     }

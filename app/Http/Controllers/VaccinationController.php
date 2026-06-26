@@ -27,7 +27,7 @@ class VaccinationController extends Controller
             $query->where('pet_id', $request->pet_id);
         }
 
-        $vaccinations = $query->orderBy('date', 'desc')->paginate(20);
+        $vaccinations = $query->orderBy('date', 'desc')->get();
 
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
 

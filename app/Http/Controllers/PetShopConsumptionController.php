@@ -17,7 +17,7 @@ class PetShopConsumptionController extends Controller
     public function index()
     {
         $consumptions = PetShopConsumption::with(['subscription.pet', 'subscription.package', 'service', 'user'])
-            ->orderBy('service_date', 'desc')->paginate(30);
+            ->orderBy('service_date', 'desc')->get();
         return view('pet-shop-consumptions.index', compact('consumptions'));
     }
 

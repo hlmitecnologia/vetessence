@@ -29,7 +29,7 @@ class ConsentTemplateController extends Controller
             $query->where('is_active', $request->boolean('is_active'));
         }
 
-        $templates = $query->orderBy('name')->paginate(20);
+        $templates = $query->orderBy('name')->get();
 
         return view('consent-templates.index', compact('templates'));
     }

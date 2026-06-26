@@ -18,7 +18,7 @@ class PrescriptionController extends Controller
     {
         $query = Prescription::with('medicalRecord.pet');
 
-        $prescriptions = $query->orderBy('created_at', 'desc')->paginate(20);
+        $prescriptions = $query->orderBy('created_at', 'desc')->get();
 
         return view('prescriptions.index', compact('prescriptions'));
     }

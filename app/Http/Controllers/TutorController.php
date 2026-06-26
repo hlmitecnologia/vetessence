@@ -29,8 +29,7 @@ class TutorController extends Controller
         }
 
         $tutors = $query->orderBy('name')
-            ->paginate(15)
-            ->withQueryString();
+            ->get();
 
         return view('tutors.index', compact('tutors'));
     }

@@ -202,8 +202,8 @@
                                         <td>{{ $ft->rate ? $ft->rate . ' ml/kg/h' : '-' }}</td>
                                         <td>{{ $ft->volume ? $ft->volume . ' ml' : '-' }}</td>
                                         <td>{{ $ft->route ?? '-' }}</td>
-                                        <td>{{ $ft->start_time ? $ft->start_time->format('d/m/Y H:i') : '-' }}</td>
-                                        <td>{{ $ft->end_time ? $ft->end_time->format('d/m/Y H:i') : '-' }}</td>
+                                        <td data-order="{{ $ft->start_time?->timestamp ?? 0 }}">{{ $ft->start_time ? $ft->start_time->format('d/m/Y H:i') : '-' }}</td>
+                                        <td data-order="{{ $ft->end_time?->timestamp ?? 0 }}">{{ $ft->end_time ? $ft->end_time->format('d/m/Y H:i') : '-' }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

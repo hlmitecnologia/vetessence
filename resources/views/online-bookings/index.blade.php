@@ -48,7 +48,7 @@
                         @elseif($booking->status == 'rejected') <span class="badge badge-danger">Rejeitado</span>
                         @else @php $statusLabels = ['pending' => 'Pendente', 'confirmed' => 'Confirmado', 'rejected' => 'Rejeitado', 'cancelled' => 'Cancelado', 'converted' => 'Convertido']; @endphp <span class="badge badge-secondary">{{ $statusLabels[$booking->status] ?? $booking->status }}</span> @endif
                     </td>
-                    <td>{{ $booking->created_at->format('d/m/Y H:i') }}</td>
+                    <td data-order="{{ $booking->created_at?->timestamp ?? 0 }}">{{ $booking->created_at->format('d/m/Y H:i') }}</td>
                     <td>
                         <a href="{{ route('online-bookings.show', $booking) }}" class="btn btn-action btn-info" title="Ver"><i class="fas fa-eye"></i></a>
                         <form action="{{ route('online-bookings.destroy', $booking) }}" method="POST" class="d-inline">

@@ -32,8 +32,8 @@
                     <td>{{ $s->pet->name ?? '-' }}</td>
                     <td>{{ $s->package->name ?? '-' }}</td>
                     <td>{{ $s->branch->name ?? '-' }}</td>
-                    <td>{{ $s->start_date->format('d/m/Y') }}</td>
-                    <td>{{ $s->end_date?->format('d/m/Y') ?? '-' }}</td>
+                    <td data-order="{{ $s->start_date?->timestamp ?? 0 }}">{{ $s->start_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $s->end_date?->timestamp ?? 0 }}">{{ $s->end_date?->format('d/m/Y') ?? '-' }}</td>
                     <td>{{ $s->remaining_uses }}/{{ $s->total_uses }}</td>
                     <td class="text-success">R$ {{ number_format($s->total_savings, 2, ',', '.') }}</td>
                     <td>

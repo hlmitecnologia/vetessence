@@ -70,7 +70,7 @@
                             {{ ucfirst($log->status) }}
                         </span>
                     </td>
-                    <td>{{ $log->sent_at->format('d/m/Y H:i') }}</td>
+                    <td data-order="{{ $log->sent_at?->timestamp ?? 0 }}">{{ $log->sent_at->format('d/m/Y H:i') }}</td>
                     <td>
                         <a href="{{ route('notification-logs.show', $log) }}" class="btn btn-action btn-info" title="Visualizar">
                             <i class="fas fa-eye"></i>

@@ -36,7 +36,7 @@ class ConsentFormController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $consentForms = $query->orderBy('created_at', 'desc')->paginate(20);
+        $consentForms = $query->orderBy('created_at', 'desc')->get();
 
         return view('consent-forms.index', compact('consentForms'));
     }

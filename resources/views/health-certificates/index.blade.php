@@ -53,8 +53,8 @@
                         {{ $typeLabels[$c->type] ?? $c->type }}
                     </td>
                     <td>{{ $c->destination ?? '-' }}</td>
-                    <td>{{ $c->issue_date->format('d/m/Y') }}</td>
-                    <td>{{ $c->expiration_date ? $c->expiration_date->format('d/m/Y') : '-' }}</td>
+                    <td data-order="{{ $c->issue_date?->timestamp ?? 0 }}">{{ $c->issue_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $c->expiration_date?->timestamp ?? 0 }}">{{ $c->expiration_date ? $c->expiration_date->format('d/m/Y') : '-' }}</td>
                     <td>
                         @php
                             $statusLabels = ['draft' => 'Rascunho', 'issued' => 'Emitido', 'expired' => 'Vencido', 'cancelled' => 'Cancelado'];

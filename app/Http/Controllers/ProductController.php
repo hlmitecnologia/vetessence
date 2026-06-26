@@ -28,7 +28,7 @@ class ProductController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
-        $products = $query->orderBy('name')->paginate(20);
+        $products = $query->orderBy('name')->get();
 
         $categories = Category::where('type', 'product')->orderBy('name')->get();
 

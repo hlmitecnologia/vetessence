@@ -44,7 +44,7 @@
                     <td>{{ $tc->room_name }}</td>
                     <td>{{ $tc->pet->name ?? 'N/A' }}</td>
                     <td>{{ $tc->vet->name ?? '-' }}</td>
-                    <td>{{ optional($tc->scheduled_at)->format('d/m/Y H:i') ?? '-' }}</td>
+                    <td data-order="{{ $tc->scheduled_at?->timestamp ?? 0 }}">{{ optional($tc->scheduled_at)->format('d/m/Y H:i') ?? '-' }}</td>
                     <td>
                         @if($tc->status == 'scheduled') <span class="badge badge-info">Agendada</span>
                         @elseif($tc->status == 'active') <span class="badge badge-success">Em Andamento</span>

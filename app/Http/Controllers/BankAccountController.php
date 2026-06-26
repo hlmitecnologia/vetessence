@@ -18,7 +18,7 @@ class BankAccountController extends Controller
 
     public function index()
     {
-        $accounts = BankAccount::with('branch')->orderBy('bank')->paginate(20);
+        $accounts = BankAccount::with('branch')->orderBy('bank')->get();
         return view('bank-accounts.index', compact('accounts'));
     }
 

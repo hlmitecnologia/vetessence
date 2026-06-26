@@ -31,7 +31,7 @@ class DentalChartController extends Controller
             });
         }
 
-        $charts = $query->orderBy('examination_date', 'desc')->paginate(20);
+        $charts = $query->orderBy('examination_date', 'desc')->get();
 
         return view('dental-charts.index', compact('charts'));
     }

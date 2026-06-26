@@ -28,7 +28,7 @@ class UserController extends Controller
             $query->where('role_id', $request->role_id);
         }
 
-        $users = $query->orderBy('name')->paginate(20);
+        $users = $query->orderBy('name')->get();
 
         $roles = Role::orderBy('name')->get();
 

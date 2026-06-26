@@ -72,7 +72,7 @@
                     </td>
                     <td>{{ class_basename($log->model_type) }}</td>
                     <td>{{ $log->model_id }}</td>
-                    <td>{{ $log->created_at->format('d/m/Y H:i') }}</td>
+                    <td data-order="{{ $log->created_at?->timestamp ?? 0 }}">{{ $log->created_at->format('d/m/Y H:i') }}</td>
                     <td>
                         <a href="{{ route('audit-logs.show', $log) }}" class="btn btn-action btn-info" title="Visualizar">
                             <i class="fas fa-eye"></i> Ver

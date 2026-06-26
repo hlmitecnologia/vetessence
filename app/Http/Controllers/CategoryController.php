@@ -26,7 +26,7 @@ class CategoryController extends Controller
             $query->where('parent_id', $request->parent_id);
         }
 
-        $categories = $query->with('parent')->orderBy('type')->orderBy('name')->paginate(30);
+        $categories = $query->with('parent')->orderBy('type')->orderBy('name')->get();
 
         return view('categories.index', compact('categories'));
     }

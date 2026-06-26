@@ -38,7 +38,7 @@ class HospitalizationController extends Controller
             $query->whereDate('admission_date', '<=', $request->date_to);
         }
 
-        $hospitalizations = $query->orderBy('admission_date', 'desc')->paginate(20);
+        $hospitalizations = $query->orderBy('admission_date', 'desc')->get();
 
         return view('hospitalizations.index', compact('hospitalizations'));
     }

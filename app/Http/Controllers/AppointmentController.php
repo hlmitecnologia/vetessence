@@ -42,7 +42,7 @@ class AppointmentController extends Controller
             $query->withoutGlobalScope(\App\Scopes\BranchScope::class);
         }
 
-        $appointments = $query->orderBy('date')->orderBy('time')->paginate(20);
+        $appointments = $query->orderBy('date')->orderBy('time')->get();
 
         $veterinarians = $this->getVeterinarians();
         $branches = Branch::where('is_active', true)->orderBy('name')->get();

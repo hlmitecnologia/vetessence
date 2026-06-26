@@ -62,7 +62,7 @@ class CommissionController extends Controller
 
     public function rates()
     {
-        $rates = CommissionRate::with(['user', 'commissionable'])->orderBy('user_id')->paginate(20);
+        $rates = CommissionRate::with(['user', 'commissionable'])->orderBy('user_id')->get();
         $vets = User::where(fn($q) => $q->whereHas('roles', fn($q) => $q->whereIn('name', ['veterinarian', 'super-admin']))->orWhere('is_veterinarian', true))->orderBy('name')->get();
         $services = Service::orderBy('name')->get();
         $products = Product::orderBy('name')->get();

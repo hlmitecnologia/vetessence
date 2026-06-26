@@ -54,7 +54,7 @@
                 <tr>
                     <td><strong>{{ $reminder->pet->name ?? '-' }}</strong></td>
                     <td>{{ $reminder->vaccination->vaccine ?? '-' }}</td>
-                    <td>{{ $reminder->scheduled_date->format('d/m/Y') }}</td>
+                    <td data-order="{{ $reminder->scheduled_date?->timestamp ?? 0 }}">{{ $reminder->scheduled_date->format('d/m/Y') }}</td>
                     <td>
                         @php
                             $statusLabels = ['pending' => 'Pendente', 'sent' => 'Enviado', 'failed' => 'Falhou'];
@@ -65,7 +65,7 @@
                         </span>
                     </td>
                     <td>{{ $reminder->channel ?? '-' }}</td>
-                    <td>{{ $reminder->sent_at ? $reminder->sent_at->format('d/m/Y H:i') : '-' }}</td>
+                    <td data-order="{{ $reminder->sent_at?->timestamp ?? 0 }}">{{ $reminder->sent_at ? $reminder->sent_at->format('d/m/Y H:i') : '-' }}</td>
                     <td>
                         <a href="{{ route('vaccination-reminders.show', $reminder) }}" class="btn btn-action btn-info" title="Visualizar">
                             <i class="fas fa-eye"></i>

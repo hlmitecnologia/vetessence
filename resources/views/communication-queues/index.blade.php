@@ -68,8 +68,8 @@
                             {{ $statusLabels[$queue->status] ?? $queue->status }}
                         </span>
                     </td>
-                    <td>{{ $queue->scheduled_at ? $queue->scheduled_at->format('d/m/Y H:i') : 'Imediato' }}</td>
-                    <td>{{ $queue->sent_at ? $queue->sent_at->format('d/m/Y H:i') : '-' }}</td>
+                    <td data-order="{{ $queue->scheduled_at?->timestamp ?? 0 }}">{{ $queue->scheduled_at ? $queue->scheduled_at->format('d/m/Y H:i') : 'Imediato' }}</td>
+                    <td data-order="{{ $queue->sent_at?->timestamp ?? 0 }}">{{ $queue->sent_at ? $queue->sent_at->format('d/m/Y H:i') : '-' }}</td>
                     <td>
                         <a href="{{ route('communication-queues.show', $queue) }}" class="btn btn-action btn-info" title="Visualizar">
                             <i class="fas fa-eye"></i>

@@ -28,7 +28,7 @@ class AnesthesiaMonitoringController extends Controller
             $query->where('pet_id', $request->pet_id);
         }
 
-        $monitorings = $query->orderBy('monitoring_start', 'desc')->paginate(20);
+        $monitorings = $query->orderBy('monitoring_start', 'desc')->get();
 
         return view('anesthesia-monitorings.index', compact('monitorings'));
     }

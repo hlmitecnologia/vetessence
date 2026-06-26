@@ -30,7 +30,7 @@ class ReferralController extends Controller
             $query->where('referral_number', 'like', "%{$request->search}%");
         }
 
-        $referrals = $query->orderBy('created_at', 'desc')->paginate(20);
+        $referrals = $query->orderBy('created_at', 'desc')->get();
 
         return view('referrals.index', compact('referrals'));
     }

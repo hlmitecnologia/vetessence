@@ -96,7 +96,7 @@
                             @endif
                         </td>
                         <td>{{ $note->category ?? '-' }}</td>
-                        <td>{{ $note->created_at->format('d/m/Y H:i') }}</td>
+                        <td data-order="{{ $note->created_at?->timestamp ?? 0 }}">{{ $note->created_at->format('d/m/Y H:i') }}</td>
                         <td>
                             <a href="{{ route('staff-notes.show', $note) }}" class="btn btn-action btn-info" title="Ver"><i class="fas fa-eye"></i></a>
                             @if($note->created_by === auth()->id())

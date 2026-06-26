@@ -27,7 +27,7 @@ class ExamController extends Controller
             $query->where('status', $request->status);
         }
 
-        $exams = $query->orderBy('requested_date', 'desc')->paginate(20);
+        $exams = $query->orderBy('requested_date', 'desc')->get();
 
         $pets = Pet::where('is_active', true)->orderBy('name')->get();
 

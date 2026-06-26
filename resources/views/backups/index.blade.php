@@ -40,7 +40,7 @@
                         @endphp
                         {{ $formatted }}
                     </td>
-                    <td>{{ \Carbon\Carbon::createFromTimestamp($backup['last_modified'])->format('d/m/Y H:i') }}</td>
+                    <td data-order="{{ $backup['last_modified'] ?? 0 }}">{{ \Carbon\Carbon::createFromTimestamp($backup['last_modified'])->format('d/m/Y H:i') }}</td>
                     <td>
                         <a href="{{ route('backups.download', $backup['name']) }}" class="btn btn-action btn-success" title="Download">
                             <i class="fas fa-download"></i>

@@ -29,7 +29,7 @@ class ServiceController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
-        $services = $query->orderBy('name')->paginate(20);
+        $services = $query->orderBy('name')->get();
 
         $categories = Category::where('type', 'service')->orderBy('name')->get();
 

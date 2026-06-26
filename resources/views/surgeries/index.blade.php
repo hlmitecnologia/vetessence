@@ -26,7 +26,7 @@
             <tbody>
                 @foreach($surgeries as $surgery)
                 <tr>
-                    <td>{{ $surgery->scheduled_date->format('d/m/Y H:i') }}</td>
+                    <td data-order="{{ $surgery->scheduled_date?->timestamp ?? 0 }}">{{ $surgery->scheduled_date->format('d/m/Y H:i') }}</td>
                     <td><strong>{{ $surgery->pet->name ?? '-' }}</strong></td>
                     <td>{{ $surgery->surgery_type }}</td>
                     <td>{{ $surgery->vet->name ?? '-' }}</td>
