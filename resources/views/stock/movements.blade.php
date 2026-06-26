@@ -10,11 +10,7 @@
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>
-                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'direction' => ($sortField === 'created_at' && $sortDir === 'asc') ? 'desc' : 'asc']) }}" class="text-dark text-decoration-none">
-                            Data {!! $sortField === 'created_at' ? ($sortDir === 'asc' ? '▲' : '▼') : '' !!}
-                        </a>
-                    </th>
+                    <th>Data</th>
                     <th>Produto</th>
                     <th>Tipo</th>
                     <th>Lote</th>
@@ -26,7 +22,7 @@
             <tbody>
                 @foreach($movements as $mov)
                 <tr>
-                    <td>{{ $mov->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
+                    <td data-order="{{ $mov->created_at?->timestamp ?? 0 }}">{{ $mov->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
                     <td><strong>{{ $mov->product->name ?? '-' }}</strong></td>
                     <td>
                         @php
