@@ -12,7 +12,7 @@ class StockMovement extends Model
 {
     use HasFactory, BranchScoped;
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'product_id', 'type', 'quantity', 'batch_number', 'lot_number',
