@@ -36,13 +36,13 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="tutor_id">Tutor</label>
-                        <x-tom-select name="tutor_id" id="tutor_id" :value="old('tutor_id', $plan->tutor_id)">
-                            @foreach($tutors as $tutor)
-                                <option value="{{ $tutor->id }}" {{ old('tutor_id', $plan->tutor_id) == $tutor->id ? 'selected' : '' }}>{{ $tutor->name }}</option>
+                        <label for="vet_id">Veterinário *</label>
+                        <x-tom-select name="vet_id" id="vet_id" :value="old('vet_id', $plan->vet_id)" required>
+                            @foreach($veterinarians as $vet)
+                                <option value="{{ $vet->id }}" {{ old('vet_id', $plan->vet_id) == $vet->id ? 'selected' : '' }}>{{ $vet->name }}</option>
                             @endforeach
                         </x-tom-select>
-                        @error('tutor_id')
+                        @error('vet_id')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
                     </div>

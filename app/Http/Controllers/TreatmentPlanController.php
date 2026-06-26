@@ -41,16 +41,18 @@ class TreatmentPlanController extends Controller
     public function create()
     {
         $pets = \App\Models\Pet::with('tutors')->get();
-        $tutors = \App\Models\Tutor::all();
-        $veterinarians = \App\Models\User::where('is_veterinarian', true)->get();
-        return view('treatment-plans.create', compact('pets', 'tutors', 'veterinarians'));
+        $veterinarians = \App\Models\User::where('is_active', true)
+            ->where(fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->orWhere('is_veterinarian', true))
+            ->orderBy('name')
+            ->get();
+        return view('treatment-plans.create', compact('pets', 'veterinarians'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'pet_id' => 'required|exists:pets,id',
-            'tutor_id' => 'required|exists:tutors,id',
+            'tutor_id' => 'nullable|exists:tutors,id',
             'vet_id' => 'required|exists:users,id',
             'appointment_id' => 'nullable|exists:appointments,id',
             'title' => 'required|string|max:255',
@@ -68,6 +70,11 @@ class TreatmentPlanController extends Controller
             'items.*.is_authorized' => 'boolean',
             'items.*.notes' => 'nullable|string',
         ]);
+
+        if (!$validated['tutor_id']) {
+            $pet = \App\Models\Pet::with('tutors')->find($validated['pet_id']);
+            $validated['tutor_id'] = $pet?->tutors->first()?->id;
+        }
 
         DB::beginTransaction();
         try {
@@ -104,17 +111,19 @@ class TreatmentPlanController extends Controller
     {
         $treatmentPlan->load('items');
         $plan = $treatmentPlan;
-        $pets = \App\Models\Pet::all();
-        $tutors = \App\Models\Tutor::all();
-        $veterinarians = \App\Models\User::where('is_veterinarian', true)->get();
-        return view('treatment-plans.edit', compact('plan', 'pets', 'tutors', 'veterinarians'));
+        $pets = \App\Models\Pet::with('tutors')->get();
+        $veterinarians = \App\Models\User::where('is_active', true)
+            ->where(fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->orWhere('is_veterinarian', true))
+            ->orderBy('name')
+            ->get();
+        return view('treatment-plans.edit', compact('plan', 'pets', 'veterinarians'));
     }
 
     public function update(Request $request, TreatmentPlan $treatmentPlan)
     {
         $validated = $request->validate([
             'pet_id' => 'required|exists:pets,id',
-            'tutor_id' => 'required|exists:tutors,id',
+            'tutor_id' => 'nullable|exists:tutors,id',
             'vet_id' => 'required|exists:users,id',
             'appointment_id' => 'nullable|exists:appointments,id',
             'title' => 'required|string|max:255',
@@ -134,6 +143,11 @@ class TreatmentPlanController extends Controller
             'items.*.notes' => 'nullable|string',
             'items.*.id' => 'nullable|exists:treatment_plan_items,id',
         ]);
+
+        if (!$validated['tutor_id']) {
+            $pet = \App\Models\Pet::with('tutors')->find($validated['pet_id']);
+            $validated['tutor_id'] = $pet?->tutors->first()?->id;
+        }
 
         DB::beginTransaction();
         try {
