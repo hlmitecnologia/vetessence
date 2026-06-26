@@ -12,7 +12,9 @@ class EmployeeController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:employees.view');
+        $this->middleware('can:employees.view')->only(['index', 'show']);
+        $this->middleware('can:employees.create')->only(['create']);
+        $this->middleware('can:employees.edit')->only(['edit']);
     }
 
     public function index(Request $request)
@@ -55,6 +57,16 @@ class EmployeeController extends Controller
         $contractTypes = config('hr.contract_types', []);
 
         return view('employees.index', compact('employees', 'departments', 'positions', 'branches', 'contractTypes'));
+    }
+
+    public function create()
+    {
+        return redirect()->route('employees.index');
+    }
+
+    public function edit(User $employee)
+    {
+        return redirect()->route('employees.index');
     }
 
     public function show(User $employee)

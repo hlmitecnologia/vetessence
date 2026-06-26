@@ -7,11 +7,12 @@ use App\Models\Department;
 use App\Models\Position;
 use App\Models\User;
 use App\Models\Role;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Illuminate\Support\Facades\Hash;
 
-class UserForm extends Component
+class EmployeeForm extends Component
 {
     public $userId;
     public $name = '';
@@ -33,21 +34,6 @@ class UserForm extends Component
     public $departments = [];
     public $positions = [];
     public $contractTypes = [];
-
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:8|confirmed',
-        'phone' => 'nullable|string|max:20',
-        'role_id' => 'nullable|exists:roles,id',
-        'branch_id' => 'nullable|exists:branches,id',
-        'is_active' => 'boolean',
-        'is_veterinarian' => 'boolean',
-        'department_id' => 'nullable|exists:departments,id',
-        'position_id' => 'nullable|exists:positions,id',
-        'hire_date' => 'nullable|date',
-        'contract_type' => 'nullable|string|max:30',
-    ];
 
     public function mount($id = null)
     {
@@ -135,11 +121,13 @@ class UserForm extends Component
             'contract_type' => 'nullable|string|max:30',
         ];
 
+        $canManageSecurity = auth()->user()->can('users.create');
+
         if ($this->userId) {
             if ($this->password) {
                 $rules['password'] = 'min:8|confirmed';
             }
-        } else {
+        } elseif ($canManageSecurity) {
             $rules['password'] = 'required|min:8|confirmed';
         }
 
@@ -162,14 +150,14 @@ class UserForm extends Component
             'contract_type' => $this->contract_type ?: null,
         ];
 
-        if ($this->password) {
-            $data['password'] = Hash::make($this->password);
+        if ($canManageSecurity && $this->password) {
+            $data['password'] = bcrypt($this->password);
         }
 
         if ($this->userId) {
             $user = User::findOrFail($this->userId);
             $user->update($data);
-            if ($this->role_id) {
+            if ($canManageSecurity && $this->role_id) {
                 $role = Role::find($this->role_id);
                 if ($role) {
                     $user->role_id = $role->id;
@@ -177,10 +165,13 @@ class UserForm extends Component
                     $user->syncRoles([$role->name]);
                 }
             }
+            $this->dispatch('user-saved');
         } else {
-            $data['password'] = Hash::make($this->password);
+            if (!$canManageSecurity) {
+                $data['password'] = bcrypt(Str::random(32));
+            }
             $user = User::create($data);
-            if ($this->role_id) {
+            if ($canManageSecurity && $this->role_id) {
                 $role = Role::find($this->role_id);
                 if ($role) {
                     $user->role_id = $role->id;
@@ -188,14 +179,17 @@ class UserForm extends Component
                     $user->assignRole($role->name);
                 }
             }
+            if (!$canManageSecurity) {
+                Password::sendResetLink(['email' => $user->email]);
+            }
+            $this->dispatch('user-saved');
         }
 
-        $this->dispatch('user-saved');
         $this->dispatch('close-modal');
     }
 
     public function render()
     {
-        return view('livewire.user-form');
+        return view('livewire.employee-form');
     }
 }

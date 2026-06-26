@@ -4,6 +4,13 @@
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Funcionários</h3>
+        <div class="card-tools">
+            @can('employees.create')
+            <button onclick="openCreateModal()" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Novo Funcionário
+            </button>
+            @endcan
+        </div>
     </div>
     <div class="card-body">
         @if(session('success'))
@@ -71,13 +78,21 @@
                     <th>Unidade</th>
                     <th>Contrato</th>
                     <th>Status</th>
-                    <th style="width: 80px;">Ações</th>
+                    <th style="width: 140px;">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($employees as $employee)
                 <tr>
-                    <td><strong>{{ $employee->name }}</strong></td>
+                    <td>
+                        <strong>{{ $employee->name }}</strong>
+                        @unless($employee->role_id)
+                            <span class="badge badge-warning ml-1">Sem perfil</span>
+                        @endunless
+                        @unless($employee->department_id)
+                            <span class="badge badge-info ml-1">Dados incompletos</span>
+                        @endunless
+                    </td>
                     <td>{{ $employee->email }}</td>
                     <td>{{ $employee->department->name ?? '-' }}</td>
                     <td>{{ $employee->position->name ?? '-' }}</td>
@@ -91,7 +106,12 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('employees.show', $employee) }}" class="btn btn-action btn-info"><i class="fas fa-eye"></i></a>
+                        <a href="{{ route('employees.show', $employee) }}" class="btn btn-action btn-info" title="Visualizar"><i class="fas fa-eye"></i></a>
+                        @can('employees.edit')
+                        <button onclick="openEditModal({{ $employee->id }})" class="btn btn-action btn-primary" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        @endcan
                     </td>
                 </tr>
                 @endforeach
@@ -103,4 +123,38 @@
         @endif
     </div>
 </div>
+
+<!-- Employee Modal -->
+<div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="employeeModalTitle">Novo Funcionário</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('employee-form', key('employee-form'))
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('livewire:initialized', function() {
+        Livewire.on('close-modal', function() { $('#employeeModal').modal('hide'); });
+        Livewire.on('user-saved', function() { location.reload(); });
+    });
+    function openCreateModal() {
+        Livewire.dispatch('resetForm');
+        document.getElementById('employeeModalTitle').textContent = 'Novo Funcionário';
+        $('#employeeModal').modal('show');
+    }
+    function openEditModal(id) {
+        Livewire.dispatch('editUser', { id: id });
+        document.getElementById('employeeModalTitle').textContent = 'Editar Funcionário';
+        $('#employeeModal').modal('show');
+    }
+</script>
+@endpush

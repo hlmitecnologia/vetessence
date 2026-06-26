@@ -848,11 +848,15 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'positions.destroy',
     ]);
 
-    // HR - Employees (view-only)
+    // HR - Employees
     Route::resource('employees', 'App\Http\Controllers\EmployeeController')->names([
         'index' => 'employees.index',
+        'create' => 'employees.create',
+        'store' => 'employees.store',
+        'edit' => 'employees.edit',
+        'update' => 'employees.update',
         'show' => 'employees.show',
-    ])->only(['index', 'show']);
+    ]);
 
     // Pre-Anesthetic Evaluations
     Route::resource('pre-anesthetic-evaluations', 'App\Http\Controllers\PreAnestheticEvaluationController')->names([

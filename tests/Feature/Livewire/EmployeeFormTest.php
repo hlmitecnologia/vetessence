@@ -8,7 +8,7 @@ use App\Models\User;
 use Livewire\Livewire;
 use Tests\ModuleTestCase;
 
-class UserFormTest extends ModuleTestCase
+class EmployeeFormTest extends ModuleTestCase
 {
     protected function setUp(): void
     {
@@ -18,7 +18,7 @@ class UserFormTest extends ModuleTestCase
 
     public function test_can_create_user_with_required_fields()
     {
-        Livewire::test('user-form')
+        Livewire::test('employee-form')
             ->set('name', 'Novo Usuário')
             ->set('email', 'novo@teste.com')
             ->set('password', 'password')
@@ -35,14 +35,14 @@ class UserFormTest extends ModuleTestCase
 
     public function test_validates_required_fields_on_create()
     {
-        Livewire::test('user-form')
+        Livewire::test('employee-form')
             ->call('save')
             ->assertHasErrors(['name', 'email', 'password']);
     }
 
     public function test_validates_password_confirmation()
     {
-        Livewire::test('user-form')
+        Livewire::test('employee-form')
             ->set('name', 'Usuário Teste')
             ->set('email', 'user@teste.com')
             ->set('password', 'password')
@@ -55,7 +55,7 @@ class UserFormTest extends ModuleTestCase
     {
         User::factory()->create(['email' => 'existente@teste.com']);
 
-        Livewire::test('user-form')
+        Livewire::test('employee-form')
             ->set('name', 'Duplicado')
             ->set('email', 'existente@teste.com')
             ->set('password', 'password')
@@ -71,7 +71,7 @@ class UserFormTest extends ModuleTestCase
             'email' => 'editavel@teste.com',
         ]);
 
-        Livewire::test('user-form', ['id' => $user->id])
+        Livewire::test('employee-form', ['id' => $user->id])
             ->assertSet('name', 'Nome Antigo')
             ->set('name', 'Nome Novo')
             ->call('save')
@@ -90,7 +90,7 @@ class UserFormTest extends ModuleTestCase
             'email' => 'event@teste.com',
         ]);
 
-        Livewire::test('user-form')
+        Livewire::test('employee-form')
             ->dispatch('editUser', id: $user->id)
             ->assertSet('userId', $user->id)
             ->assertSet('name', 'Event User')
@@ -109,7 +109,7 @@ class UserFormTest extends ModuleTestCase
             'email' => 'nopass@teste.com',
         ]);
 
-        Livewire::test('user-form', ['id' => $user->id])
+        Livewire::test('employee-form', ['id' => $user->id])
             ->set('name', 'Updated Name')
             ->call('save')
             ->assertDispatched('user-saved');
@@ -123,7 +123,7 @@ class UserFormTest extends ModuleTestCase
             'email' => 'passchange@teste.com',
         ]);
 
-        Livewire::test('user-form', ['id' => $user->id])
+        Livewire::test('employee-form', ['id' => $user->id])
             ->set('password', 'newpassword')
             ->set('password_confirmation', 'newpassword')
             ->call('save')
@@ -134,7 +134,7 @@ class UserFormTest extends ModuleTestCase
     {
         $role = Role::create(['name' => 'TestRole', 'slug' => 'test-role']);
 
-        Livewire::test('user-form')
+        Livewire::test('employee-form')
             ->set('name', 'Com Role')
             ->set('email', 'comrole@teste.com')
             ->set('password', 'password')
@@ -149,7 +149,7 @@ class UserFormTest extends ModuleTestCase
 
     public function test_can_create_veterinarian_user()
     {
-        Livewire::test('user-form')
+        Livewire::test('employee-form')
             ->set('name', 'Dr. Veterinário')
             ->set('email', 'vet@clinica.com')
             ->set('password', 'password')
@@ -172,7 +172,7 @@ class UserFormTest extends ModuleTestCase
             'is_veterinarian' => false,
         ]);
 
-        Livewire::test('user-form', ['id' => $user->id])
+        Livewire::test('employee-form', ['id' => $user->id])
             ->assertSet('is_veterinarian', false)
             ->set('is_veterinarian', true)
             ->call('save')
@@ -188,7 +188,7 @@ class UserFormTest extends ModuleTestCase
     {
         $branch = Branch::factory()->create();
 
-        Livewire::test('user-form')
+        Livewire::test('employee-form')
             ->set('name', 'Com Filial')
             ->set('email', 'comfilial@teste.com')
             ->set('password', 'password')
@@ -203,7 +203,7 @@ class UserFormTest extends ModuleTestCase
 
     public function test_validates_password_min_length()
     {
-        Livewire::test('user-form')
+        Livewire::test('employee-form')
             ->set('name', 'Short Pass')
             ->set('email', 'short@teste.com')
             ->set('password', 'short')
@@ -216,7 +216,7 @@ class UserFormTest extends ModuleTestCase
     {
         $user = User::factory()->create(['email' => 'reset@teste.com']);
 
-        Livewire::test('user-form')
+        Livewire::test('employee-form')
             ->dispatch('editUser', id: $user->id)
             ->assertSet('userId', $user->id)
             ->dispatch('resetForm')

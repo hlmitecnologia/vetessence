@@ -1,4 +1,6 @@
 <div>
+    @php $canSecurity = auth()->user()?->can('users.create') @endphp
+
     <form wire:submit.prevent="save">
         <div class="form-group">
             <label>Nome *</label>
@@ -22,6 +24,7 @@
             </div>
         </div>
 
+        @if($canSecurity)
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -38,12 +41,22 @@
                 </div>
             </div>
         </div>
+        @else
+            @unless($userId)
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    O funcionário receberá um e-mail para definir a própria senha.
+                </div>
+            @endunless
+        @endif
 
+        @if($canSecurity)
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Perfil</label>
                     <x-tom-select wire="role_id" :value="$role_id">
+                        <option value="">Nenhum</option>
                         @foreach($roles as $role)
                             <option value="{{ $role->id }}">{{ $role->name }}</option>
                         @endforeach
@@ -62,25 +75,7 @@
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <div class="custom-control custom-switch mt-4">
-                        <input type="checkbox" wire:model="is_active" class="custom-control-input" id="userIsActive">
-                        <label class="custom-control-label" for="userIsActive">Ativo</label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <div class="custom-control custom-switch mt-4">
-                        <input type="checkbox" wire:model="is_veterinarian" class="custom-control-input" id="userIsVeterinarian">
-                        <label class="custom-control-label" for="userIsVeterinarian">Veterinário</label>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @endif
 
         <hr>
         <h6>Dados Funcionais</h6>
@@ -129,6 +124,27 @@
                     </x-tom-select>
                 </div>
             </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="custom-control custom-switch mt-4">
+                        <input type="checkbox" wire:model="is_active" class="custom-control-input" id="empIsActive">
+                        <label class="custom-control-label" for="empIsActive">Ativo</label>
+                    </div>
+                </div>
+            </div>
+            @if($canSecurity)
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="custom-control custom-switch mt-4">
+                        <input type="checkbox" wire:model="is_veterinarian" class="custom-control-input" id="empIsVet">
+                        <label class="custom-control-label" for="empIsVet">Veterinário</label>
+                    </div>
+                </div>
+            </div>
+            @endif
         </div>
 
         <div class="text-right">

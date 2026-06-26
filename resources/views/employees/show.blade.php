@@ -6,6 +6,11 @@
         <h3 class="card-title">{{ $employee->name }}</h3>
         <div class="card-tools">
             <a href="{{ route('employees.index') }}" class="btn btn-default btn-sm"><i class="fas fa-arrow-left"></i> Voltar</a>
+            @can('employees.edit')
+            <a href="{{ route('employees.edit', $employee) }}" class="btn btn-primary btn-sm" onclick="event.preventDefault(); Livewire.dispatch('editUser', { id: {{ $employee->id }} }); $('#employeeModal').modal('show');">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            @endcan
         </div>
     </div>
     <div class="card-body">
@@ -39,3 +44,29 @@
     </div>
 </div>
 @endsection
+
+@can('employees.edit')
+<!-- Employee Modal -->
+<div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Funcionário</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('employee-form', key('employee-form-show'))
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+    document.addEventListener('livewire:initialized', function() {
+        Livewire.on('close-modal', function() { $('#employeeModal').modal('hide'); });
+        Livewire.on('user-saved', function() { location.reload(); });
+    });
+</script>
+@endpush
+@endcan
