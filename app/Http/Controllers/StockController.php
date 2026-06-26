@@ -38,11 +38,20 @@ class StockController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $movements = $query->orderBy('created_at', 'desc')->paginate(30);
+        $sortField = $request->get('sort', 'created_at');
+        $sortDir = $request->get('direction', 'desc') === 'asc' ? 'asc' : 'desc';
+        $allowed = ['created_at', 'product_id', 'type', 'quantity', 'balance_after'];
+
+        if (!in_array($sortField, $allowed)) {
+            $sortField = 'created_at';
+            $sortDir = 'desc';
+        }
+
+        $movements = $query->orderBy($sortField, $sortDir)->paginate(30);
 
         $products = Product::orderBy('name')->get();
 
-        return view('stock.movements', compact('movements', 'products'));
+        return view('stock.movements', compact('movements', 'products', 'sortField', 'sortDir'));
     }
 
     public function create()

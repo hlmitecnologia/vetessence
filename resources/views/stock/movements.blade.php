@@ -10,7 +10,11 @@
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>Data</th>
+                    <th>
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'direction' => ($sortField === 'created_at' && $sortDir === 'asc') ? 'desc' : 'asc']) }}" class="text-dark text-decoration-none">
+                            Data {!! $sortField === 'created_at' ? ($sortDir === 'asc' ? '▲' : '▼') : '' !!}
+                        </a>
+                    </th>
                     <th>Produto</th>
                     <th>Tipo</th>
                     <th>Lote</th>
