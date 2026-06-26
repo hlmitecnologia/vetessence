@@ -104,6 +104,7 @@ class EmployeeForm extends Component
         $this->positions = Position::orderBy('name')->pluck('name', 'id');
         $this->contractTypes = config('hr.contract_types', []);
         $this->resetValidation();
+        $this->dispatch('employee-loaded');
     }
 
     public function save()

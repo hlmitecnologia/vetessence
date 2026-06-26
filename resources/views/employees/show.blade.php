@@ -64,18 +64,18 @@
 @push('scripts')
 <script>
     function refreshTomSelects() {
-        document.querySelectorAll('.tom-select-wrapper[data-wire]').forEach(function(wrapper) {
+        var modal = document.getElementById('employeeModal');
+        modal.querySelectorAll('.tom-select-wrapper[data-wire]').forEach(function(wrapper) {
             var wireModel = wrapper.dataset.wire;
             var componentEl = wrapper.closest('[wire\\:id]');
             if (!componentEl || !window.Livewire) return;
             var component = Livewire.find(componentEl.getAttribute('wire:id'));
             if (!component) return;
             var value = component.get(wireModel);
-            var tsWrapper = wrapper.querySelector('.ts-wrapper');
-            if (tsWrapper && tsWrapper.tomselect) {
-                tsWrapper.tomselect.setValue(typeof value !== 'undefined' && value !== null ? String(value) : '');
-            }
+            wrapper.dataset.value = typeof value !== 'undefined' && value !== null ? String(value) : '';
         });
+        destroyTomSelects(modal);
+        initTomSelects(modal);
     }
 
     document.addEventListener('livewire:initialized', function() {
