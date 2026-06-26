@@ -77,9 +77,25 @@
 
 @push('scripts')
 <script>
+    function refreshTomSelects() {
+        document.querySelectorAll('.tom-select-wrapper[data-wire]').forEach(function(wrapper) {
+            var wireModel = wrapper.dataset.wire;
+            var componentEl = wrapper.closest('[wire\\:id]');
+            if (!componentEl || !window.Livewire) return;
+            var component = Livewire.find(componentEl.getAttribute('wire:id'));
+            if (!component) return;
+            var value = component.get(wireModel);
+            var tsWrapper = wrapper.querySelector('.ts-wrapper');
+            if (tsWrapper && tsWrapper.tomselect) {
+                tsWrapper.tomselect.setValue(typeof value !== 'undefined' && value !== null ? String(value) : '');
+            }
+        });
+    }
+
     document.addEventListener('livewire:initialized', function() {
         Livewire.on('close-modal', function() { $('#userModal').modal('hide'); });
         Livewire.on('user-saved', function() { location.reload(); });
+        Livewire.on('employee-loaded', function() { refreshTomSelects(); });
     });
     function openCreateModal() {
         Livewire.dispatch('resetForm');

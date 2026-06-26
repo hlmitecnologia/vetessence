@@ -78,6 +78,7 @@ class EmployeeForm extends Component
         $this->departments = Department::orderBy('name')->pluck('name', 'id');
         $this->contractTypes = config('hr.contract_types', []);
         $this->updatedDepartmentId($this->department_id);
+        $this->dispatch('employee-loaded');
     }
 
     #[On('resetForm')]
