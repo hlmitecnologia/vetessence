@@ -82,45 +82,60 @@ class StockController extends Controller
                 return back()->withErrors(['to_branch_id' => 'A unidade de destino deve ser diferente da origem.'])->withInput();
             }
 
+            $currentStock = $product->stock;
+
             StockMovement::create([
-                'product_id' => $data['product_id'],
-                'quantity'   => $data['quantity'],
-                'type'       => 'transfer_out',
-                'branch_id'  => $data['from_branch_id'],
-                'user_id'    => auth()->id(),
-                'notes'      => "Transferido para filial #{$data['to_branch_id']}. {$data['notes']}",
+                'product_id'   => $data['product_id'],
+                'quantity'     => $data['quantity'],
+                'type'         => 'transfer_out',
+                'branch_id'    => $data['from_branch_id'],
+                'user_id'      => auth()->id(),
+                'notes'        => "Transferido para filial #{$data['to_branch_id']}. {$data['notes']}",
+                'balance_after' => $currentStock,
             ]);
 
             StockMovement::create([
-                'product_id' => $data['product_id'],
-                'quantity'   => $data['quantity'],
-                'type'       => 'transfer_in',
-                'branch_id'  => $data['to_branch_id'],
-                'user_id'    => auth()->id(),
-                'notes'      => "Recebido da filial #{$data['from_branch_id']}. {$data['notes']}",
+                'product_id'   => $data['product_id'],
+                'quantity'     => $data['quantity'],
+                'type'         => 'transfer_in',
+                'branch_id'    => $data['to_branch_id'],
+                'user_id'      => auth()->id(),
+                'notes'        => "Recebido da filial #{$data['from_branch_id']}. {$data['notes']}",
+                'balance_after' => $currentStock,
             ]);
 
             return redirect()->route('stock.movements')
                 ->with('success', 'Transferência realizada com sucesso.');
         }
 
+        $currentStock = $product->stock;
+
+        if (in_array($data['type'], ['entry', 'return'])) {
+            $balanceAfter = $currentStock + $data['quantity'];
+        } else {
+            $qty = min($data['quantity'], $currentStock);
+            $balanceAfter = $currentStock - $qty;
+        }
+
         $movement = StockMovement::create([
-            'product_id'  => $data['product_id'],
-            'type'        => $data['type'],
-            'quantity'    => $data['quantity'],
-            'branch_id'   => $data['branch_id'],
+            'product_id'   => $data['product_id'],
+            'type'         => $data['type'],
+            'quantity'     => $data['quantity'],
+            'branch_id'    => $data['branch_id'],
             'batch_number' => $data['batch_number'] ?? null,
             'expiry_date'  => $data['expiry_date'] ?? null,
-            'user_id'     => auth()->id(),
-            'notes'       => $data['notes'] ?? null,
+            'user_id'      => auth()->id(),
+            'notes'        => $data['notes'] ?? null,
+            'balance_after' => $balanceAfter,
         ]);
 
         if (in_array($data['type'], ['entry', 'return'])) {
             $product->increment('stock', $data['quantity']);
         } elseif (in_array($data['type'], ['exit', 'loss', 'adjustment'])) {
-            $qty = min($data['quantity'], $product->stock);
             $product->decrement('stock', $qty);
-            $movement->update(['quantity' => $qty]);
+            if ($qty !== (float) $data['quantity']) {
+                $movement->update(['quantity' => $qty, 'balance_after' => $balanceAfter]);
+            }
         }
 
         return redirect()->route('stock.movements')
@@ -144,22 +159,27 @@ class StockController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        $product = Product::findOrFail($data['product_id']);
+        $currentStock = $product->stock;
+
         StockMovement::create([
-            'product_id' => $data['product_id'],
-            'quantity' => $data['quantity'],
-            'type' => 'transfer_out',
-            'branch_id' => $data['from_branch_id'],
-            'user_id' => auth()->id(),
-            'notes' => "Transferido para filial #{$data['to_branch_id']}. {$data['notes']}",
+            'product_id'   => $data['product_id'],
+            'quantity'     => $data['quantity'],
+            'type'         => 'transfer_out',
+            'branch_id'    => $data['from_branch_id'],
+            'user_id'      => auth()->id(),
+            'notes'        => "Transferido para filial #{$data['to_branch_id']}. {$data['notes']}",
+            'balance_after' => $currentStock,
         ]);
 
         StockMovement::create([
-            'product_id' => $data['product_id'],
-            'quantity' => $data['quantity'],
-            'type' => 'transfer_in',
-            'branch_id' => $data['to_branch_id'],
-            'user_id' => auth()->id(),
-            'notes' => "Recebido da filial #{$data['from_branch_id']}. {$data['notes']}",
+            'product_id'   => $data['product_id'],
+            'quantity'     => $data['quantity'],
+            'type'         => 'transfer_in',
+            'branch_id'    => $data['to_branch_id'],
+            'user_id'      => auth()->id(),
+            'notes'        => "Recebido da filial #{$data['from_branch_id']}. {$data['notes']}",
+            'balance_after' => $currentStock,
         ]);
 
         return redirect()->route('stock.movements')
