@@ -75,6 +75,20 @@
                 </div>
             </div>
         </div>
+        @else
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Unidade</label>
+                    <x-tom-select wire="branch_id" :value="$branch_id">
+                        <option value="">Todas as unidades</option>
+                        @foreach($branches as $branch)
+                            <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                        @endforeach
+                    </x-tom-select>
+                </div>
+            </div>
+        </div>
         @endif
 
         <hr>
