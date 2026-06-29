@@ -16,15 +16,20 @@ class PixStaticProvider implements PaymentGatewayProvider
 
     public function charge(Invoice $invoice): array
     {
-        $this->log('Tentativa de cobrança PDV rejeitada (PIX não usa maquininha)', $invoice);
+        $this->log('Gerando QR Code PIX para PDV', $invoice);
+
+        $qrcode = $invoice->generatePixCode();
 
         return [
-            'success' => false,
-            'transaction_id' => null,
-            'status' => 'failed',
-            'message' => 'PIX não suporta PDV com maquininha de cartão. Configure um gateway PDV (Mercado Pago, PagSeguro ou Stone).',
+            'success' => true,
+            'transaction_id' => 'PIX-' . $invoice->invoice_number,
+            'status' => 'pending',
+            'message' => 'QR Code PIX gerado. Escaneie para pagar.',
             'redirect_url' => null,
-            'raw_response' => [],
+            'raw_response' => [
+                'payload' => $qrcode['payload'],
+                'qrcode_base64' => $qrcode['qrcode_base64'] ?? null,
+            ],
         ];
     }
 
@@ -56,7 +61,7 @@ class PixStaticProvider implements PaymentGatewayProvider
 
     public static function supportedChannels(): array
     {
-        return ['portal'];
+        return ['portal', 'pdv'];
     }
 
     protected function log(string $message, mixed $context = []): void

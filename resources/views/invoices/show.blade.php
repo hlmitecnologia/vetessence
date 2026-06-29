@@ -114,11 +114,19 @@
             <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-credit-card"></i> Pagamento via PDV</h3>
             </div>
-            <div class="card-body text-center">
-                <p class="text-muted">Inicie o pagamento na maquininha de cartão.</p>
-                <button onclick="startPdvCharge()" id="pdv-charge-btn" class="btn btn-primary btn-lg btn-block">
-                    <i class="fas fa-credit-card"></i> Pagar via PDV
-                </button>
+            <div class="card-body text-center" id="pdv-card-body">
+                <div id="pdv-initial">
+                    <p class="text-muted">Inicie o pagamento na maquininha ou gere o QR Code PIX.</p>
+                    <button onclick="startPdvCharge()" id="pdv-charge-btn" class="btn btn-primary btn-lg btn-block">
+                        <i class="fas fa-credit-card"></i> Pagar via PDV
+                    </button>
+                </div>
+                <div id="pdv-qrcode" class="d-none">
+                    <img id="pdv-qrcode-image" src="" alt="QR Code PIX" class="mb-3" style="max-width: 200px;">
+                    <p class="text-muted">Valor: <strong>R$ {{ number_format($invoice->total, 2, ',', '.') }}</strong></p>
+                    <div class="bg-light p-2 rounded text-left" style="font-size: 10px; word-break: break-all;" id="pdv-pix-payload"></div>
+                    <button onclick="copyPdvPix()" class="btn btn-default btn-sm mt-2"><i class="fas fa-copy"></i> Copiar código</button>
+                </div>
                 <div id="pdv-feedback" class="mt-3 d-none"></div>
             </div>
         </div>
@@ -316,10 +324,13 @@ function copyPix() {
 
 function startPdvCharge() {
     const btn = document.getElementById('pdv-charge-btn');
+    const initial = document.getElementById('pdv-initial');
     const feedback = document.getElementById('pdv-feedback');
+    const qrcodeDiv = document.getElementById('pdv-qrcode');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Aguardando pagamento...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
     feedback.classList.add('d-none');
+    qrcodeDiv.classList.add('d-none');
 
     fetch('{{ route('invoices.charge', $invoice) }}', {
         method: 'POST',
@@ -327,16 +338,27 @@ function startPdvCharge() {
     })
     .then(r => r.json())
     .then(data => {
-        feedback.classList.remove('d-none');
-        if (data.success) {
+        if (data.success && data.raw_response && data.raw_response.qrcode_base64) {
+            document.getElementById('pdv-qrcode-image').src = data.raw_response.qrcode_base64;
+            document.getElementById('pdv-pix-payload').textContent = data.raw_response.payload;
+            initial.classList.add('d-none');
+            qrcodeDiv.classList.remove('d-none');
+            feedback.classList.remove('d-none');
+            feedback.innerHTML = '<div class="alert alert-success mb-0"><i class="fas fa-check-circle"></i> ' + data.message + '</div>';
+            if (data.is_sandbox) {
+                feedback.innerHTML += '<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-flask"></i> Modo <strong>Sandbox</strong>. Transação ID: ' + data.transaction_id + '</div>';
+            }
+        } else if (data.success) {
+            feedback.classList.remove('d-none');
             feedback.innerHTML = '<div class="alert alert-info mb-0"><i class="fas fa-info-circle"></i> ' + data.message + '</div>';
             if (data.is_sandbox) {
-                feedback.innerHTML += '<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-flask"></i> Transação em modo <strong>Sandbox</strong>. Transação ID: ' + data.transaction_id + '</div>';
+                feedback.innerHTML += '<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-flask"></i> Modo <strong>Sandbox</strong>. Transação ID: ' + data.transaction_id + '</div>';
             }
             setTimeout(() => { window.location.reload(); }, 3000);
         } else {
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-credit-card"></i> Pagar via PDV';
+            feedback.classList.remove('d-none');
             feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fas fa-exclamation-circle"></i> ' + data.message + '</div>';
         }
     })
@@ -346,6 +368,14 @@ function startPdvCharge() {
         feedback.classList.remove('d-none');
         feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fas fa-exclamation-circle"></i> Erro ao comunicar com o gateway.</div>';
         console.error(err);
+    });
+}
+
+let pdvPixPayload = '';
+function copyPdvPix() {
+    const el = document.getElementById('pdv-pix-payload');
+    navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+        alert('Código PIX copiado!');
     });
 }
 </script>
