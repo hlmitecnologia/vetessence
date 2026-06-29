@@ -19,15 +19,17 @@ class PaymentServiceTest extends ModuleTestCase
         $this->service = app(PaymentService::class);
     }
 
-    public function test_get_active_gateway()
-    {
-        PaymentGateway::factory()->create(['is_active' => true]);
-        $this->assertNotNull($this->service->getActiveGateway());
-    }
-
     public function test_get_active_gateway_returns_null_when_none_active()
     {
-        $this->assertNull($this->service->getActiveGateway());
+        PaymentGateway::factory()->create(['channel' => 'pdv', 'is_active' => false, 'is_sandbox' => true]);
+
+        $result = $this->service->charge(Invoice::factory()->create([
+            'tutor_id' => Tutor::factory()->create()->id,
+            'total' => 100.00,
+            'status' => 'pending',
+        ]));
+
+        $this->assertFalse($result['success']);
     }
 
     public function test_charge_uses_active_gateway()
@@ -48,8 +50,8 @@ class PaymentServiceTest extends ModuleTestCase
         $result = $this->service->charge($invoice);
 
         $this->assertTrue($result['success']);
-        $this->assertEquals('mercadopago', $result['gateway']);
-        $this->assertTrue($result['sandbox']);
+        $this->assertEquals('mercadopago', $result['gateway_provider']);
+        $this->assertTrue($result['is_sandbox']);
     }
 
     public function test_charge_fails_without_active_gateway()
@@ -69,7 +71,28 @@ class PaymentServiceTest extends ModuleTestCase
 
     public function test_process_webhook()
     {
-        $result = $this->service->processWebhook('mercadopago', ['action' => 'payment.created']);
+        $tutor = Tutor::factory()->create();
+        $pet = Pet::factory()->create();
+        $pet->tutors()->attach($tutor->id, ['is_primary' => true]);
+
+        $gateway = PaymentGateway::factory()->create([
+            'provider' => 'mercadopago', 'is_active' => true, 'is_sandbox' => true,
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'tutor_id' => $tutor->id,
+            'total' => 100.00,
+            'status' => 'pending',
+            'gateway_id' => $gateway->id,
+        ]);
+
+        $result = $this->service->processWebhook($gateway, [
+            'action' => 'payment.updated',
+            'data' => ['id' => (string) $invoice->id],
+        ]);
+
         $this->assertTrue($result['success']);
+        $this->assertEquals($invoice->id, $result['invoice_id']);
+        $this->assertEquals('paid', $result['new_status']);
     }
 }

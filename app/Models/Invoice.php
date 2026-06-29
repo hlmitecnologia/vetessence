@@ -110,8 +110,7 @@ class Invoice extends Model
         }
         
         $pixService = app(\App\Services\PixService::class);
-        $result = $pixService->generateQRCode(0, '');
-        return $result['qrcode_base64'];
+        return $pixService->generateQRCodeFromPayload($this->pix_code);
     }
 
     public function isPixExpired(): bool

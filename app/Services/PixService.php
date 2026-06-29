@@ -184,6 +184,20 @@ class PixService
         ];
     }
 
+    public function generateQRCodeFromPayload(string $payload, int $size = 300): string
+    {
+        $result = Builder::create()
+            ->writer(new PngWriter())
+            ->data($payload)
+            ->encoding(new Encoding('UTF-8'))
+            ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
+            ->size($size)
+            ->margin(10)
+            ->build();
+
+        return $result->getDataUri();
+    }
+
     public function generateQRCodeFile($value, $txid = '', $size = 300, $filename = null)
     {
         $result = $this->generateQRCode($value, $txid, $size);

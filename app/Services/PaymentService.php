@@ -92,8 +92,14 @@ class PaymentService
         $invoice = Invoice::where('gateway_transaction_id', $data['transaction_id'])->first();
 
         if (!$invoice) {
-            if ($gateway->is_sandbox && ctype_digit($data['transaction_id'])) {
-                $invoice = Invoice::where('id', $data['transaction_id'])
+            $invoiceId = $data['reference'] ?? null;
+
+            if ($gateway->is_sandbox && !$invoiceId && ctype_digit($data['transaction_id'])) {
+                $invoiceId = $data['transaction_id'];
+            }
+
+            if ($invoiceId) {
+                $invoice = Invoice::where('id', $invoiceId)
                     ->where('gateway_id', $gateway->id)
                     ->first();
             }

@@ -14,6 +14,7 @@ class PaymentGatewayFactory extends Factory
         return [
             'name' => $this->faker->company . ' Gateway',
             'provider' => $this->faker->randomElement(['mercadopago', 'pix', 'stripe']),
+            'channel' => 'both',
             'is_active' => false,
             'is_sandbox' => true,
         ];
