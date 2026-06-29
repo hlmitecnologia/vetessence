@@ -144,11 +144,8 @@ class PaymentService
 
     protected function getCurrentBranchId(): ?int
     {
-        if (app()->has(\App\Services\BranchContext::class)) {
-            return app(\App\Services\BranchContext::class)::hasBranch()
-                ? app(\App\Services\BranchContext::class)::get()
-                : null;
-        }
-        return null;
+        return \App\Services\BranchContext::hasBranch()
+            ? \App\Services\BranchContext::get()
+            : null;
     }
 }
