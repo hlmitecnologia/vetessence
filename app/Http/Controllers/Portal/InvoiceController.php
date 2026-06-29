@@ -29,7 +29,7 @@ class InvoiceController extends Controller
         }
 
         $hasPortalGateway = PaymentGateway::withoutBranch()->active()
-            ->where(function ($q) {
+            ->where(function ($q) use ($invoice) {
                 $q->whereNull('branch_id')
                   ->orWhere('branch_id', $invoice->branch_id);
             })
