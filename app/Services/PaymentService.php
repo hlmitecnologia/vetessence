@@ -92,7 +92,15 @@ class PaymentService
         $invoice = Invoice::where('gateway_transaction_id', $data['transaction_id'])->first();
 
         if (!$invoice) {
-            return ['success' => false, 'message' => 'Nenhuma fatura encontrada para esta transação.'];
+            if ($gateway->is_sandbox && ctype_digit($data['transaction_id'])) {
+                $invoice = Invoice::where('id', $data['transaction_id'])
+                    ->where('gateway_id', $gateway->id)
+                    ->first();
+            }
+
+            if (!$invoice) {
+                return ['success' => false, 'message' => 'Nenhuma fatura encontrada para esta transação.'];
+            }
         }
 
         if ($data['status'] === 'paid' && $invoice->status !== 'paid') {

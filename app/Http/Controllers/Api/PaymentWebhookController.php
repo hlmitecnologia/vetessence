@@ -19,14 +19,23 @@ class PaymentWebhookController extends Controller
 
         $result = $this->paymentService->processWebhook($gateway, $payload);
 
-        if (!$result['success']) {
-            logger()->warning('Payment webhook failed', [
+        if ($result['success']) {
+            logger()->info('Payment webhook processed', [
+                'gateway_id' => $gateway->id,
+                'invoice_id' => $result['invoice_id'] ?? null,
+                'new_status' => $result['new_status'] ?? null,
+            ]);
+        } else {
+            logger()->warning('Payment webhook not processed', [
                 'gateway_id' => $gateway->id,
                 'provider' => $gateway->provider,
-                'result' => $result,
+                'reason' => $result['message'],
+                'sandbox' => $gateway->is_sandbox,
             ]);
         }
 
-        return response()->json($result, $result['success'] ? 200 : 422);
+        // Mercado Pago / PagSeguro / Stone esperam 200 mesmo para notificações
+        // que não puderam ser processadas (testes, notificações duplicadas, etc.)
+        return response()->json($result);
     }
 }
