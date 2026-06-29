@@ -29,12 +29,16 @@ class InvoiceController extends Controller
         }
 
         $hasPortalGateway = PaymentGateway::withoutBranch()->active()
-            ->where(function ($q) use ($invoice) {
-                $q->whereNull('branch_id')
-                  ->orWhere('branch_id', $invoice->branch_id);
-            })
             ->whereIn('channel', ['portal', 'both'])
+            ->whereNull('branch_id')
             ->exists();
+
+        if (!$hasPortalGateway && $invoice->branch_id) {
+            $hasPortalGateway = PaymentGateway::withoutBranch()->active()
+                ->whereIn('channel', ['portal', 'both'])
+                ->where('branch_id', $invoice->branch_id)
+                ->exists();
+        }
 
         return view('portal.invoices.show', compact('invoice', 'hasPortalGateway'));
     }

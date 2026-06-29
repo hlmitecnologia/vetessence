@@ -128,17 +128,16 @@ class PaymentService
 
     public function getActiveGatewayForChannel(string $channel): ?PaymentGateway
     {
-        $query = PaymentGateway::withoutBranch()->active()
-            ->where(function ($q) {
-                $q->whereNull('branch_id')
-                  ->orWhere('branch_id', $this->getCurrentBranchId());
-            });
+        $branchId = $this->getCurrentBranchId();
 
-        if ($channel === 'portal') {
-            $query->whereIn('channel', ['portal', 'both']);
-        } elseif ($channel === 'pdv') {
-            $query->whereIn('channel', ['pdv', 'both']);
-        }
+        $query = PaymentGateway::withoutBranch()->active()
+            ->where(function ($q) use ($branchId) {
+                $q->whereNull('branch_id');
+                if ($branchId) {
+                    $q->orWhere('branch_id', $branchId);
+                }
+            })
+            ->whereIn('channel', $channel === 'portal' ? ['portal', 'both'] : ['pdv', 'both']);
 
         return $query->first();
     }
