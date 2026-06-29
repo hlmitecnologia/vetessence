@@ -135,7 +135,11 @@ class InvoiceController extends Controller
 
         $hasNfseConfig = NfseConfig::where('is_active', true)->exists();
         $hasNfeConfig = NfeConfig::where('is_active', true)->exists();
-        $hasPdvGateway = PaymentGateway::active()
+        $hasPdvGateway = PaymentGateway::withoutBranch()->active()
+            ->where(function ($q) {
+                $q->whereNull('branch_id')
+                  ->orWhere('branch_id', $invoice->branch_id);
+            })
             ->whereIn('channel', ['pdv', 'both'])
             ->exists();
 

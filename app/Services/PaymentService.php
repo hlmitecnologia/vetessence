@@ -128,7 +128,11 @@ class PaymentService
 
     public function getActiveGatewayForChannel(string $channel): ?PaymentGateway
     {
-        $query = PaymentGateway::active();
+        $query = PaymentGateway::withoutBranch()->active()
+            ->where(function ($q) {
+                $q->whereNull('branch_id')
+                  ->orWhere('branch_id', $this->getCurrentBranchId());
+            });
 
         if ($channel === 'portal') {
             $query->whereIn('channel', ['portal', 'both']);
@@ -137,5 +141,15 @@ class PaymentService
         }
 
         return $query->first();
+    }
+
+    protected function getCurrentBranchId(): ?int
+    {
+        if (app()->has(\App\Services\BranchContext::class)) {
+            return app(\App\Services\BranchContext::class)::hasBranch()
+                ? app(\App\Services\BranchContext::class)::get()
+                : null;
+        }
+        return null;
     }
 }
