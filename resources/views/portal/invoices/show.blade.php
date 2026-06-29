@@ -45,21 +45,24 @@
         @endif
         <div class="flex justify-between py-3 text-2xl font-bold">
             <span class="text-gray-700">Valor total</span>
-            <span class="text-gray-800">R$ {{ number_format($invoice->amount ?? 0, 2, ',', '.') }}</span>
+            <span class="text-gray-800">R$ {{ number_format($invoice->amount ?? $invoice->total, 2, ',', '.') }}</span>
         </div>
     </div>
 
-    @if(in_array($invoice->status, ['pending', 'overdue']) && $invoice->pix_code)
-    <div class="bg-blue-50 border border-blue-200 rounded-xl p-8 text-center">
-        <h3 class="text-lg font-bold text-blue-800 mb-4">Pagamento via PIX</h3>
-        <div class="mb-4">
-            {!! $invoice->pix_code !!}
+    @if(in_array($invoice->status, ['pending', 'overdue']))
+    <div id="payment-root">
+        @if($invoice->pix_code)
+            @include('portal.invoices._pix', ['invoice' => $invoice])
+        @endif
+
+        @if($hasPortalGateway ?? false)
+        <div class="mt-4 text-center">
+            <button onclick="startCheckout()" id="checkout-btn"
+                class="portal-btn bg-green-600 hover:bg-green-700 text-white font-semibold text-lg px-8 py-3">
+                <i class="fas fa-credit-card"></i> Pagar Online
+            </button>
         </div>
-        <button onclick="copyPix()"
-            class="portal-btn bg-blue-600 hover:bg-blue-700 text-white font-semibold">
-            <i class="fas fa-copy"></i>Copiar código PIX
-        </button>
-        <p class="text-base text-blue-600 mt-3">Escaneie o QR Code ou copie o código para pagar</p>
+        @endif
     </div>
     @endif
 </div>
@@ -75,6 +78,35 @@ function copyPix() {
             alert('Código PIX copiado!');
         });
     }
+}
+
+function startCheckout() {
+    const btn = document.getElementById('checkout-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+
+    fetch('{{ route('portal.invoices.checkout', $invoice->id) }}', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.redirect_url) {
+            window.location.href = data.redirect_url;
+        } else if (data.pix_code) {
+            document.getElementById('payment-root').innerHTML = data.pix_code;
+        } else {
+            alert(data.message || 'Erro ao processar pagamento.');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-credit-card"></i> Pagar Online';
+        }
+    })
+    .catch(err => {
+        alert('Erro ao processar pagamento. Tente novamente.');
+        console.error(err);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-credit-card"></i> Pagar Online';
+    });
 }
 </script>
 @endpush

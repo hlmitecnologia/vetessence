@@ -2,44 +2,132 @@
 
 namespace App\Services;
 
-use App\Models\PaymentGateway;
 use App\Models\Invoice;
+use App\Models\PaymentGateway;
+use App\Services\Payment\PaymentGatewayProviderFactory;
+use InvalidArgumentException;
 
 class PaymentService
 {
-    public function charge(Invoice $invoice, array $paymentData = []): array
+    public function __construct(
+        protected PaymentGatewayProviderFactory $factory,
+    ) {}
+
+    public function charge(Invoice $invoice, string $channel = 'pdv'): array
     {
-        $gateway = PaymentGateway::active()->first();
+        $gateway = $this->getActiveGatewayForChannel($channel);
 
         if (!$gateway) {
-            return ['success' => false, 'message' => 'Nenhum gateway de pagamento ativo.'];
+            return [
+                'success' => false,
+                'message' => "Nenhum gateway ativo para o canal '{$channel}'.",
+                'transaction_id' => null,
+                'status' => 'failed',
+                'redirect_url' => null,
+                'raw_response' => [],
+            ];
         }
 
-        // Placeholder: implement real gateway integration here
-        // e.g., Mercado Pago SDK, Stripe SDK, etc.
+        $provider = $this->factory->make($gateway);
+        $result = $provider->charge($invoice);
 
-        $invoice->update([
-            'gateway_id' => $gateway->id,
-            'gateway_transaction_id' => 'TXN-' . strtoupper(uniqid()),
-            'gateway_status' => 'pending',
-        ]);
+        if ($result['success'] && $result['transaction_id']) {
+            $invoice->update([
+                'gateway_id' => $gateway->id,
+                'gateway_transaction_id' => $result['transaction_id'],
+                'gateway_status' => $result['status'],
+            ]);
+        }
+
+        $result['gateway_name'] = $gateway->name;
+        $result['gateway_provider'] = $gateway->provider;
+        $result['is_sandbox'] = $gateway->is_sandbox;
+
+        return $result;
+    }
+
+    public function checkout(Invoice $invoice): array
+    {
+        $gateway = $this->getActiveGatewayForChannel('portal');
+
+        if (!$gateway) {
+            $qrcode = $invoice->generatePixCode();
+            return [
+                'success' => true,
+                'message' => 'QR Code PIX gerado.',
+                'transaction_id' => 'PIX-' . $invoice->invoice_number,
+                'status' => 'pending',
+                'redirect_url' => null,
+                'raw_response' => ['payload' => $qrcode['payload'], 'qrcode_base64' => $qrcode['qrcode_base64'] ?? null],
+            ];
+        }
+
+        $provider = $this->factory->make($gateway);
+        $result = $provider->checkout($invoice);
+
+        if ($result['success'] && $result['transaction_id']) {
+            $invoice->update([
+                'gateway_id' => $gateway->id,
+                'gateway_transaction_id' => $result['transaction_id'],
+                'gateway_status' => $result['status'],
+            ]);
+        }
+
+        $result['gateway_name'] = $gateway->name;
+        $result['gateway_provider'] = $gateway->provider;
+        $result['is_sandbox'] = $gateway->is_sandbox;
+
+        return $result;
+    }
+
+    public function processWebhook(PaymentGateway $gateway, array $payload): array
+    {
+        $provider = $this->factory->make($gateway);
+        $data = $provider->verifyWebhook($payload, $gateway);
+
+        if (!$data || !isset($data['transaction_id'])) {
+            return ['success' => false, 'message' => 'Webhook inválido ou não processado.'];
+        }
+
+        $invoice = Invoice::where('gateway_transaction_id', $data['transaction_id'])->first();
+
+        if (!$invoice) {
+            return ['success' => false, 'message' => 'Nenhuma fatura encontrada para esta transação.'];
+        }
+
+        if ($data['status'] === 'paid' && $invoice->status !== 'paid') {
+            $invoice->update([
+                'status' => 'paid',
+                'paid_at' => $data['paid_at'] ?: now(),
+                'gateway_status' => $data['gateway_status'],
+                'gateway_paid_at' => $data['paid_at'] ?: now(),
+                'payment_method' => 'cartao_credito',
+            ]);
+            \App\Events\InvoicePaid::dispatch($invoice);
+        } elseif ($data['status'] !== $invoice->gateway_status) {
+            $invoice->update([
+                'gateway_status' => $data['gateway_status'],
+            ]);
+        }
 
         return [
             'success' => true,
-            'gateway' => $gateway->provider,
-            'transaction_id' => $invoice->gateway_transaction_id,
-            'sandbox' => $gateway->is_sandbox,
+            'message' => 'Webhook processado com sucesso.',
+            'invoice_id' => $invoice->id,
+            'new_status' => $invoice->status,
         ];
     }
 
-    public function processWebhook(string $provider, array $payload): array
+    public function getActiveGatewayForChannel(string $channel): ?PaymentGateway
     {
-        // Placeholder: validate webhook and update invoice status
-        return ['success' => true, 'message' => 'Webhook received'];
-    }
+        $query = PaymentGateway::active();
 
-    public function getActiveGateway(): ?PaymentGateway
-    {
-        return PaymentGateway::active()->first();
+        if ($channel === 'portal') {
+            $query->whereIn('channel', ['portal', 'both']);
+        } elseif ($channel === 'pdv') {
+            $query->whereIn('channel', ['pdv', 'both']);
+        }
+
+        return $query->first();
     }
 }

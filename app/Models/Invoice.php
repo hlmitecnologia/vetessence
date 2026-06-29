@@ -20,6 +20,7 @@ class Invoice extends Model
         'paid_at', 'payment_method', 'payment_proof', 'pix_code',
         'pix_expiration', 'convenio_discount', 'notes', 'user_id', 'branch_id',
         'nfse_status', 'nfse_invoice_id', 'nfe_status', 'nfe_invoice_id', 'medical_record_id',
+        'gateway_id', 'gateway_transaction_id', 'gateway_status', 'gateway_paid_at',
     ];
 
     protected $casts = [

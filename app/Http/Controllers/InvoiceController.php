@@ -9,11 +9,13 @@ use App\Models\Service;
 use App\Models\Product;
 use App\Models\NfseConfig;
 use App\Models\NfeConfig;
+use App\Models\PaymentGateway;
 use App\Events\InvoicePaid;
 use App\Services\Nfse\NfseService;
 use App\Services\Nfse\NfseResult;
 use App\Services\Nfe\NfeService;
 use App\Services\Nfe\NfeResult;
+use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -133,8 +135,11 @@ class InvoiceController extends Controller
 
         $hasNfseConfig = NfseConfig::where('is_active', true)->exists();
         $hasNfeConfig = NfeConfig::where('is_active', true)->exists();
+        $hasPdvGateway = PaymentGateway::active()
+            ->whereIn('channel', ['pdv', 'both'])
+            ->exists();
 
-        return view('invoices.show', compact('invoice', 'hasNfseConfig', 'hasNfeConfig'));
+        return view('invoices.show', compact('invoice', 'hasNfseConfig', 'hasNfeConfig', 'hasPdvGateway'));
     }
 
     public function emitirNotaFiscal(Invoice $invoice, NfseService $nfseService, NfeService $nfeService)
@@ -288,6 +293,17 @@ class InvoiceController extends Controller
         $invoice->update(['status' => 'cancelled']);
 
         return redirect()->route('invoices.index')->with('success', 'Fatura cancelada!');
+    }
+
+    public function charge(Request $request, Invoice $invoice, PaymentService $paymentService)
+    {
+        if ($invoice->status === 'paid') {
+            return response()->json(['success' => false, 'message' => 'Fatura já foi paga.'], 400);
+        }
+
+        $result = $paymentService->charge($invoice, 'pdv');
+
+        return response()->json($result, $result['success'] ? 200 : 422);
     }
 
     public function pay(Request $request, Invoice $invoice)

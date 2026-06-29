@@ -15,6 +15,7 @@
                 <tr>
                     <th>Nome</th>
                     <th>Provedor</th>
+                    <th>Canal</th>
                     <th>Ativo</th>
                     <th>Sandbox</th>
                     <th>Data</th>
@@ -26,6 +27,15 @@
                 <tr class="{{ $gateway->is_active ? 'table-success' : '' }}">
                     <td><strong>{{ $gateway->name }}</strong></td>
                     <td>{{ strtoupper($gateway->provider) }}</td>
+                    <td>
+                        @if($gateway->channel === 'portal')
+                            <span class="badge badge-info">Portal</span>
+                        @elseif($gateway->channel === 'pdv')
+                            <span class="badge badge-primary">PDV</span>
+                        @else
+                            <span class="badge badge-success">Ambos</span>
+                        @endif
+                    </td>
                     <td>@if($gateway->is_active) <span class="badge badge-success">Sim</span> @else <span class="badge badge-secondary">Não</span> @endif</td>
                     <td>@if($gateway->is_sandbox) <span class="badge badge-warning">Sim</span> @else <span class="badge badge-info">Não</span> @endif</td>
                     <td data-order="{{ $gateway->created_at->format('Y-m-d') }}">{{ $gateway->created_at->format('d/m/Y') }}</td>

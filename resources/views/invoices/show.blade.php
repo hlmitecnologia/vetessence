@@ -109,6 +109,21 @@
             </div>
         </div>
 
+        @if($hasPdvGateway)
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-credit-card"></i> Pagamento via PDV</h3>
+            </div>
+            <div class="card-body text-center">
+                <p class="text-muted">Inicie o pagamento na maquininha de cartão.</p>
+                <button onclick="startPdvCharge()" id="pdv-charge-btn" class="btn btn-primary btn-lg btn-block">
+                    <i class="fas fa-credit-card"></i> Pagar via PDV
+                </button>
+                <div id="pdv-feedback" class="mt-3 d-none"></div>
+            </div>
+        </div>
+        @endif
+
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Registrar Pagamento</h3>
@@ -296,6 +311,41 @@ function generatePix() {
 function copyPix() {
     navigator.clipboard.writeText(currentPayload).then(() => {
         alert('Código PIX copiado!');
+    });
+}
+
+function startPdvCharge() {
+    const btn = document.getElementById('pdv-charge-btn');
+    const feedback = document.getElementById('pdv-feedback');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Aguardando pagamento...';
+    feedback.classList.add('d-none');
+
+    fetch('{{ route('invoices.charge', $invoice) }}', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
+    })
+    .then(r => r.json())
+    .then(data => {
+        feedback.classList.remove('d-none');
+        if (data.success) {
+            feedback.innerHTML = '<div class="alert alert-info mb-0"><i class="fas fa-info-circle"></i> ' + data.message + '</div>';
+            if (data.is_sandbox) {
+                feedback.innerHTML += '<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-flask"></i> Transação em modo <strong>Sandbox</strong>. Transação ID: ' + data.transaction_id + '</div>';
+            }
+            setTimeout(() => { window.location.reload(); }, 3000);
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-credit-card"></i> Pagar via PDV';
+            feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fas fa-exclamation-circle"></i> ' + data.message + '</div>';
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-credit-card"></i> Pagar via PDV';
+        feedback.classList.remove('d-none');
+        feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fas fa-exclamation-circle"></i> Erro ao comunicar com o gateway.</div>';
+        console.error(err);
     });
 }
 </script>

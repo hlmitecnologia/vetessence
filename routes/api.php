@@ -98,3 +98,7 @@ Route::prefix('v1')->group(function () {
 
 // NFSe Webhooks (no auth - called by Webmania)
 Route::post('/webhooks/nfse/{branch}', \App\Http\Controllers\Api\NfseWebhookController::class);
+
+// Payment Gateway Webhook (no auth - called by gateway provider)
+Route::post('/payments/webhook/{gateway}', [\App\Http\Controllers\Api\PaymentWebhookController::class, 'handle'])
+    ->name('api.payments.webhook');

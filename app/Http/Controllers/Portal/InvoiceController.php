@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Portal;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentGateway;
+use App\Services\PaymentService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,7 +28,34 @@ class InvoiceController extends Controller
             $invoice->refresh();
         }
 
-        return view('portal.invoices.show', compact('invoice'));
+        $hasPortalGateway = PaymentGateway::active()
+            ->whereIn('channel', ['portal', 'both'])
+            ->exists();
+
+        return view('portal.invoices.show', compact('invoice', 'hasPortalGateway'));
+    }
+
+    public function checkout($id, PaymentService $paymentService)
+    {
+        $invoice = Auth::guard('tutor')->user()->invoices()->findOrFail($id);
+
+        if ($invoice->status === 'paid') {
+            return response()->json(['success' => false, 'message' => 'Fatura já foi paga.'], 400);
+        }
+
+        $result = $paymentService->checkout($invoice);
+
+        if ($result['success'] && $result['redirect_url']) {
+            return response()->json($result);
+        }
+
+        if ($result['success'] && !$result['redirect_url']) {
+            $invoice->refresh();
+            $result['pix_code'] = view('portal.invoices._pix', compact('invoice'))->render();
+            return response()->json($result);
+        }
+
+        return response()->json($result, 422);
     }
 
     public function download($id)

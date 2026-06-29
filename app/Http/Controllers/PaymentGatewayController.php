@@ -29,6 +29,7 @@ class PaymentGatewayController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'provider' => 'required|string|max:50',
+            'channel' => 'required|in:portal,pdv,both',
             'is_active' => 'boolean',
             'is_sandbox' => 'boolean',
             'public_key' => 'nullable|string',
@@ -54,7 +55,7 @@ class PaymentGatewayController extends Controller
         }
 
         if ($validated['is_active']) {
-            PaymentGateway::where('is_active', true)->update(['is_active' => false]);
+            $this->deactivateOtherGateways($validated['channel']);
         }
 
         PaymentGateway::create($validated);
@@ -79,6 +80,7 @@ class PaymentGatewayController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'provider' => 'required|string|max:50',
+            'channel' => 'required|in:portal,pdv,both',
             'is_active' => 'boolean',
             'is_sandbox' => 'boolean',
             'public_key' => 'nullable|string',
@@ -104,13 +106,30 @@ class PaymentGatewayController extends Controller
         }
 
         if ($validated['is_active']) {
-            PaymentGateway::where('is_active', true)->where('id', '!=', $paymentGateway->id)->update(['is_active' => false]);
+            $this->deactivateOtherGateways($validated['channel'], $paymentGateway->id);
         }
 
         $paymentGateway->update($validated);
 
         return redirect()->route('payment-gateways.index')
             ->with('success', 'Gateway atualizado com sucesso!');
+    }
+
+    protected function deactivateOtherGateways(string $channel, ?int $exceptId = null)
+    {
+        $query = PaymentGateway::where('is_active', true);
+
+        if ($exceptId) {
+            $query->where('id', '!=', $exceptId);
+        }
+
+        if ($channel === 'portal') {
+            $query->whereIn('channel', ['portal', 'both']);
+        } elseif ($channel === 'pdv') {
+            $query->whereIn('channel', ['pdv', 'both']);
+        }
+
+        $query->update(['is_active' => false]);
     }
 
     public function destroy(PaymentGateway $paymentGateway)
