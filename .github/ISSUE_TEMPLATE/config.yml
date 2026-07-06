@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Suporte Profissional
+    url: https://wa.me/5511999999999
+    about: Precisa de ajuda com instalação, hospedagem ou customização? Fale conosco pelo WhatsApp.
+  - name: Dúvidas Gerais
+    url: https://github.com/hlmitecnologia/vetessence/discussions
+    about: Tire dúvidas sobre uso, configuração ou contribuição nas Discussions.

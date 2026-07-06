@@ -1,0 +1,77 @@
+name: Bug Report
+description: Reporte um problema para nos ajudar a melhorar
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por reportar! Antes de abrir, verifique se já não existe uma issue similar.
+
+  - type: input
+    id: version
+    attributes:
+      label: Versão do Sistema
+      description: Qual versão do VetEssence você está usando? (commit hash ou tag)
+      placeholder: "ex: v1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Ambiente
+      description: Onde o problema ocorre?
+      options:
+        - Produção (servidor próprio)
+        - Homologação
+        - Desenvolvimento local
+        - Demo (demo.vetessence.com.br)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição do Problema
+      description: Descreva claramente o comportamento esperado vs. observado
+      placeholder: "Ao acessar X, esperava Y mas aconteceu Z..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passos para Reproduzir
+      description: Liste os passos para reproduzir o problema
+      placeholder: |
+        1. Acesse ...
+        2. Clique em ...
+        3. Veja o erro ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Screenshots
+      description: Cole logs de erro, screenshots ou prints do console do navegador
+      placeholder: "Logs ou prints aqui..."
+    validations:
+      required: false
+
+  - type: input
+    id: browser
+    attributes:
+      label: Navegador (se aplicável)
+      placeholder: "Chrome 120, Firefox 121..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Informações Adicionais
+      description: PHP, banco de dados, sistema operacional, etc.
+      placeholder: "PHP 8.4, MariaDB 10.11, Ubuntu 24.04..."
+    validations:
+      required: false

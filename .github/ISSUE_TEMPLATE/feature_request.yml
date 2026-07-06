@@ -1,0 +1,42 @@
+name: Feature Request
+description: Sugira uma ideia para o VetEssence
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por sugerir! Descreva sua ideia de forma clara para que possamos avaliar.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema Relacionado
+      description: Sua sugestão resolve um problema? Descreva.
+      placeholder: "Fico frustrado quando..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solução Desejada
+      description: Descreva o que você gostaria que acontecesse
+      placeholder: "Seria incrível se o sistema pudesse..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas Consideradas
+      description: Quais soluções alternativas você considerou?
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto Adicional
+      description: Screenshots, exemplos de outros sistemas, referências
+    validations:
+      required: false

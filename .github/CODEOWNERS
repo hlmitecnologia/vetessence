@@ -1,0 +1,11 @@
+# Owners responsáveis pela revisão de código
+# Para cada match, os usuários/times listados são automaticamente
+# solicitados para revisão em Pull Requests.
+
+* @hlmitecnologia/team
+
+# Documentação pode ser revisada por qualquer mantenedor
+docs/* @hlmitecnologia/team
+
+# Arquivos de configuração do repositório
+.github/* @hlmitecnologia/team
