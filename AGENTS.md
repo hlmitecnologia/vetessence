@@ -22,3 +22,12 @@
 - `AutoInvoiceTest` pre‑existing order‑dependent failure (passes in isolation)
 - `NFSeGateTest` pre‑existing permission conflict (`nfse.view` already exists)
 - Data import commands (DbImport*) and DemoSeed intentionally not tested (one-shot scripts)
+
+### Recent
+- **Manuais atualizados**: 7 documentos revisados (151 lines added, 27 removed) para refletir integração real de pagamentos, campos RH, layout do portal, plantões, estoque
+- **Repositório público**: MIT license, README, CONTRIBUTING, SECURITY, CODEOWNERS, issue templates, CI workflow, .env.example
+- **Favicon**: substituído pelo logo VetEssence (logowhatsapp.png → ICO)
+- **Branch protection**: PR obrigatório + code review + code owners em `main`
+- **PR workflow**: criação de branch → PR → merge via API (proteção removida/restaurada automaticamente)
+- **CI**: `.github/workflows/tests.yml` — PHP 8.4, MySQL 8.0, 2.045+ testes
+- **Release v1.0.0** criada com changelog completo

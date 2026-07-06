@@ -1,0 +1,59 @@
+@startuml
+!include _common.puml
+
+title Fluxo de Pagamento via Gateway
+
+|Admin|
+start
+:Configurar Gateway;
+:Definir Canal (PDV/Portal/Ambos);
+:Provedor + Credenciais;
+:Ativar;
+
+|Sistema|
+:Gateway Ativo;
+
+|Tutor|
+:Painel do Tutor;
+:Seleciona Fatura;
+:Clique em Pagar Online;
+
+|Sistema|
+if (Canal = Portal?) then ([sim])
+  :PaymentService@checkout;
+  if (Tem Gateway PIX?) then ([sim])
+    :Exibir QR Code PIX;
+  else ([não])
+    :Redirecionar para Checkout;
+  endif
+  |Provedor Externo|
+  :Processar Pagamento;
+  |Sistema|
+  :Webhook Recebido;
+  :Provider::verifyWebhook();
+  :Consulta API Real do Provedor;
+  if (Pagamento Confirmado?) then ([sim])
+    :Atualizar Invoice;
+    :Disparar InvoicePaid;
+  else ([não])
+    :Registrar Falha;
+  endif
+else ([não])
+  |Veterinário / Recepcionista|
+  :Acessa Fatura no PDV;
+  :Clique em Cobrar;
+  |Sistema|
+  :PaymentService@charge;
+  if (Tem Credenciais?) then ([sim])
+    :Provider::charge() API Real;
+  else ([não])
+    :Fallback Simulado;
+  endif
+  :Salvar gateway_transaction_id;
+  :Atualizar Status;
+  |Veterinário / Recepcionista|
+  :Pagamento Concluído;
+endif
+
+stop
+@enduml

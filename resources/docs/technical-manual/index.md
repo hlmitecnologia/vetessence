@@ -344,6 +344,9 @@ POST /api/payments/webhook/{gateway} (público, sempre 200)
 
 **Sandbox:** Com credenciais → chama API real do provedor no ambiente de testes. Sem credenciais → fallback simulado (retorna pagamento aprovado).
 
+![Fluxo do Gateway de Pagamento](../diagrams/32-fluxo-pagamento-gateway.svg)
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*
+
 ### APIs Externas
 
 #### Estoque Inteligente (StockForecastService)
