@@ -11,7 +11,7 @@ Documentação para desenvolvedores e administradores do sistema.
 |--------|-----------|
 | Backend | Laravel 13, PHP 8.4 |
 | Frontend | AdminLTE 3.2, Tailwind CSS, Alpine.js |
-| Componentes | Livewire 3, FullCalendar 6, Chart.js, TomSelect 2.3 |
+| Componentes | Livewire 3, FullCalendar 6, Chart.js, TomSelect, html5-qrcode |
 | Banco | MySQL 8+ |
 | Autenticação | Laravel Breeze, Spatie Permissions v7 |
 | PDF | Dompdf (barryvdh/laravel-dompdf) |
@@ -25,9 +25,9 @@ app/
 ├─ Events/               # Eventos do sistema
 ├─ Exceptions/           # Exceções customizadas
 ├─ Http/
-│  ├─ Controllers/      # Controladores (~52)
-│  │  └─ Portal/        # Portal do tutor (~9 controllers, +VetAvailability)
-│  ├─ Livewire/         # Componentes Livewire (~35)
+│  ├─ Controllers/      # Controladores (~68)
+│  │  └─ Portal/        # Portal do tutor (~12 controllers)
+│  ├─ Livewire/         # Componentes Livewire (~42)
 │  └─ Middleware/       # Middlewares (SetBranchContext, etc.)
 ├─ Listeners/           # Listeners de eventos
 ├─ Models/              # Eloquent Models (~66: +PetShopPackage, PetShopSubscription, PetShopConsumption)
@@ -97,12 +97,18 @@ Arquitetura com **2 servidores** separando aplicação e banco:
 
 > Para alta disponibilidade: balanceador + 2+ servidores app + réplica MySQL.
 
-### CRUD Pattern (Phase V — Modal CRUD)
-CRUDs de Tier 1 e Tier 2 usam modais Bootstrap + Livewire form components:
+### CRUD Pattern (Phase V — Modal CRUD + DataTables Client-Side)
+
+**Modal CRUD:** CRUDs de Tier 1 e Tier 2 usam modais Bootstrap + Livewire form components:
 - `app/Livewire/{Entity}Form.php` — Livewire component com mount($id), validação, save()
 - `resources/views/livewire/{entity}-form.blade.php` — form sem layout
 - Delete via SweetAlert2 global interceptador de `form[method=DELETE]`
-- ~29 Livewire form components, 27 index views com modal
+- ~33 Livewire form components, 32 index views com modal
+
+**DataTables Client-Side:** 48 controllers migraram de `paginate()` (server-side) para `get()` + `data-order` (client-side DataTables). Isso:
+- Reduz consultas SQL (uma única query sem COUNT)
+- Habilita ordenação por colunas sem recarregar página
+- Simplifica os controllers (removem lógica de ordenação server-side)
 
 ### Service Type Maps (Pós-Fase W)
 Mapeamento entre tipo de atendimento e serviço com preço para geração de faturas:
@@ -162,7 +168,7 @@ Mapeamento entre tipo de atendimento e serviço com preço para geração de fat
 | 10 | Agendamento | Calendário visual, agendamento online, recorrente, lembretes |
 | 11 | Tutores e Pets | Cadastro, microchip/RG, timeline, óbito, portal |
 | 12 | Convênios | Cadastro, tabelas, guias, faturamento, claims, CVI |
-| 13 | Usuários e Permissões | 11 funções, 160+ permissões |
+| 13 | Usuários e Permissões | 12 funções, 284 permissões |
 | 14 | Multi-filiais | Estrutura, corporate dashboard, transferências |
 | 15 | Relatórios | Clínicos, financeiros, estoque, exportação |
 | 16 | Auditoria e LGPD | Trilha auditoria, direitos titular, anonimização |
@@ -276,18 +282,67 @@ Suporte a Mailgun, SES, Postmark via `config/services.php`.
 **Testes**: `tests/Unit/Services/PixServiceTest.php` (9 testes)
 
 #### Gateway de Pagamento
-Gerenciado via banco de dados na tabela `payment_gateways`. Acesse o painel admin para configurar:
+
+**Arquitetura:** Multi-provedor com Interface + Factory Pattern + Service Layer.
+
+| Camada | Arquivo | Descrição |
+|--------|---------|-----------|
+| Interface | `app/Services/Payment/Contracts/PaymentGatewayProvider.php` | Contrato com `charge()`, `checkout()`, `verifyWebhook()`, `supportedChannels()` |
+| Factory | `app/Services/Payment/PaymentGatewayProviderFactory.php` | Mapeia `provider` string → classe concreta |
+| Service | `app/Services/PaymentService.php` | Orquestra `charge`/`checkout`/`processWebhook` com fallstack |
+| Controller | `app/Http/Controllers/Api/PaymentWebhookController.php` | Endpoint `/api/payments/webhook/{gateway}` (sempre 200) |
+
+**Providers implementados:**
+
+| Provider | Classe | SDK | API Real |
+|----------|--------|-----|----------|
+| Mercado Pago | `MercadoPagoProvider` | `mercadopago/dx-php` | `PaymentClient::get()` |
+| PagSeguro | `PagSeguroProvider` | `pagseguro/pagseguro-php-sdk` | `Search\Code::search()` |
+| Stripe | `StripeProvider` | `stripe/stripe-php` | `Session::retrieve()` / `PaymentIntent::retrieve()` |
+| Stone | `StoneProvider` | HTTP direto (OAuth) | `https://api.stone.co` |
+| PIX Estático | `PixStaticProvider` | Interno (PixService) | Gera QR Code do payload EMV |
+
+**Fluxo de Cobrança (PDV):**
+```
+InvoiceController@charge → PaymentService@charge
+  → PaymentGatewayProviderFactory::make($provider)
+  → Provider::charge($invoice, $gateway)
+    → Se hasCredentials(): chama API real do provedor
+    → Se não: fallstack simulado
+  → Salva gateway_transaction_id, gateway_status na invoice
+```
+
+**Fluxo de Checkout (Portal):**
+```
+Portal\InvoiceController@checkout → PaymentService@checkout
+  → Provider::checkout($invoice, $gateway)
+  → Retorna URL de redirecionamento ou QR Code PIX
+```
+
+**Webhook:**
+```
+POST /api/payments/webhook/{gateway} (público, sempre 200)
+  → PaymentService@processWebhook
+    → Provider::verifyWebhook($request) — valida payload
+    → Provider::verifyWebhook consulta API real (nunca confia só no webhook)
+    → Atualiza invoice (gateway_status, gateway_paid_at)
+    → Dispara InvoicePaid event
+```
+
+**Tabela `payment_gateways` (colunas principais):**
 
 | Campo | Descrição |
 |-------|-----------|
-| `provider` | Nome do provedor (mercadopago, pagseguro, stripe, pix) |
+| `provider` | Nome do provedor (mercadopago, pagseguro, stripe, stone, pix) |
+| `channel` | Canal: `portal`, `pdv` ou `both` |
 | `public_key` | Chave pública/API |
 | `secret_key` | Chave secreta (não serializada) |
 | `webhook_secret` | Segredo para validar callbacks |
 | `webhook_url` | URL de callback |
-| `is_sandbox` | Modo de teste |
+| `is_sandbox` | Modo de teste (sandbox com credenciais → API real de testes) |
+| `settings` | JSON com configurações adicionais específicas do provedor |
 
-> **Nota**: O CRUD de gateways está implementado, mas a chamada real à SDK do provedor (`PaymentService@charge`) ainda é um stub.
+**Sandbox:** Com credenciais → chama API real do provedor no ambiente de testes. Sem credenciais → fallback simulado (retorna pagamento aprovado).
 
 ### APIs Externas
 
@@ -369,6 +424,7 @@ Gera salas automaticamente no formato `https://meet.jit.si/{app-name}-{token}`. 
 |----------|---------|------------|-----------|
 | `POST /r/{hash}` | Sim | 10 req/min | Verificação pública de prescrição |
 | `POST /api/insurance/webhook` | Sim | 60/min | Callback de status de claims |
+| `POST /api/payments/webhook/{gateway}` | Sim | Sem limite | Webhook de pagamento (sempre retorna 200) |
 | `POST /api/webhooks/nfse/{branch_id}` | Sim | 60/min | Callback de atualização NFSe |
 | `POST /api/v1/lab-equipment/{id}/receive` | Sim | — | Recebimento de resultados lab |
 | `GET /api/v1/lab-equipment/{id}/status` | Sim | — | Status de equipamento lab |
@@ -381,15 +437,16 @@ Gera salas automaticamente no formato `https://meet.jit.si/{app-name}-{token}`. 
 
 | Suite | Count | Descrição |
 |-------|-------|-----------|
-| Unit/Models | ~290 | Todos os modelos |
-| Feature/Controllers | ~405 | Todos os controllers |
+| Unit/Models | ~378 | Todos os modelos |
+| Feature/Controllers | ~780 | Todos os controllers |
 | Feature/Commands | ~25 | Comandos Artisan |
 | Feature/Integrations | ~12 | Fluxos completos |
 | Feature/Api | ~18 | Endpoints de API |
 | Feature/Portal | ~20 | Portal do tutor |
-| Feature/Services | ~12 | Serviços (NFSe providers, etc.) |
-| Unit/Services | ~30 | Serviços (Pix, EmailApi, BranchContext, StockForecast, Petlove) |
-| **Total** | **~912** | **242 files, 885 methods, 1560 assertions** |
+| Feature/Services | ~213 | Serviços (Payment, NFSe, comunicação, etc.) |
+| Livewire | ~222 | Componentes Livewire |
+| Unit/Services | ~30 | Pix, EmailApi, BranchContext, StockForecast, Petlove |
+| **Total** | **~2.045** | **397 files, 1.812 methods, 6.420 assertions** |
 
 ### Como Rodar
 

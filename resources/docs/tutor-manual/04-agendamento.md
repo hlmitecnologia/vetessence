@@ -4,6 +4,8 @@
 
 1. Acesse **Agendamento > Nova Consulta**
 2. Selecione o **Pet** que será atendido
+
+> **Preenchimento automático:** Se você acessou "Nova Consulta" a partir da ficha de um pet (clicando em **Agendar**), o pet já vem selecionado. Basta escolher o tipo, data e veterinário.
 3. Escolha o **Tipo de atendimento** (consulta, retorno, vacina, exame, cirurgia)
 4. Selecione uma **data** — o sistema mostra em tempo real quais veterinários estão disponíveis naquele dia
 

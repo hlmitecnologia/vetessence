@@ -17,11 +17,14 @@
 1. Acesse **Estoque > Transferir**
 2. Selecione:
    - **Produto**
-   - **Quantidade**
+   - **Quantidade** (não pode exceder o estoque disponível na origem)
    - **Filial de origem**
    - **Filial de destino**
 3. Clique em **Transferir**
-4. O sistema cria duas movimentações: saída na origem + entrada no destino
+4. O sistema:
+   - Cria duas movimentações: saída na origem + entrada no destino
+   - Calcula automaticamente o saldo posterior (`balance_after`) em cada movimentação
+   - Registra a data/hora exata da transferência (timestamps habilitados em `StockMovement`)
 
 ### Ajuste de Estoque
 - Utilize para correção de inventário

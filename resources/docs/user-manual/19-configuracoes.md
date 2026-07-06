@@ -65,20 +65,54 @@ Cada tutor escolhe os canais que deseja receber (WhatsApp, SMS, E-mail) no cadas
 As integrações abaixo são configuradas via painel admin.
 
 ### Gateway de Pagamento
+
+O sistema possui integração real com **5 provedores** de pagamento, configuráveis por canal (PDV ou Portal).
+
+#### Canais
+| Canal | Descrição |
+|-------|-----------|
+| **PDV** | Pagamento presencial na clínica (maquininha, PIX QR Code) |
+| **Portal** | Checkout online no Portal do Tutor |
+| **Ambos** | Gateway disponível nos dois canais |
+
+#### Configuração
 1. Acesse **Financeiro > Gateways de Pagamento**
 2. Clique em **Novo**
 3. Configure:
-   - **Provedor**: Mercado Pago, PagSeguro, Stripe, PIX, Outro
+   - **Provedor**: Mercado Pago, PagSeguro, Stripe, Stone, PIX
+   - **Canal**: PDV, Portal ou Ambos
    - **Chave pública**
    - **Chave secreta**
-   - **Webhook secret** (para notificações)
-   - **Webhook URL** (URL de callback)
+   - **Webhook secret** (para validação de notificações)
    - **Configurações adicionais** (JSON, específicas por provedor)
    - **Modo de teste** (sandbox)
-4. Apenas um gateway pode estar ativo por vez
+4. Apenas um gateway pode estar ativo por vez por canal
 5. As credenciais do PIX (chave PIX, nome do recebedor, cidade) são obtidas dos dados da filial (cadastro da unidade)
 
-> **Nota**: O cadastro e a configuração do gateway estão implementados. A integração com a SDK de cada provedor está em desenvolvimento.
+#### Funcionamento
+- **Sandbox sem credenciais**: fallback simulado (retorna pagamento como aprovado)
+- **Sandbox com credenciais**: chama API real do provedor no ambiente de testes
+- **Produção**: chama API real do provedor
+
+#### Webhook
+Cada gateway gera uma URL de webhook única (`/api/payments/webhook/{gateway_id}`). O provedor envia notificações de pagamento para essa URL, e o sistema:
+1. Valida o payload conforme o provedor
+2. Consulta o status real da transação na API do provedor
+3. Atualiza a fatura e dispara o evento `InvoicePaid`
+
+> O webhook **sempre retorna HTTP 200** (exigência dos provedores). O processamento é assíncrono.
+
+#### Cobrança no PDV
+1. Acesse uma fatura em aberto
+2. Clique em **Cobrar**
+3. O sistema redireciona para o gateway ativo do canal PDV
+4. O pagamento é processado e a fatura é atualizada automaticamente
+
+#### Checkout no Portal
+1. O tutor acessa **Faturas** no Portal do Tutor
+2. Clica em **Pagar Online**
+3. É redirecionado ao checkout do gateway ativo do canal Portal
+4. Após o pagamento, o webhook atualiza a fatura
 
 ### NFSe — Configuração do Provedor
 1. Acesse **Financeiro > NFSe > Configurações**

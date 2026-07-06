@@ -22,6 +22,19 @@ O **Dashboard** é a página inicial do portal. Aqui você tem uma visão geral 
 - Número de contas em aberto
 - Clique para ver detalhes e realizar pagamento
 
+### Próximas Vacinas
+- Mostra as vacinas agendadas para os próximos dias
+- Exibe: **nome do pet**, **vacina**, **data prevista**
+- Clique no card para ver o calendário completo de vacinas
+- Vacinas com data vencida aparecem destacadas
+
+### Widgets Visuais
+O dashboard foi reformulado com cards maiores, ícones ampliados e cores por tipo:
+- 🐾 **Pets** — verde
+- 📅 **Consultas** — azul
+- 💰 **Faturas** — amarelo
+- 💉 **Vacinas** — roxo
+
 ## Atalhos Rápidos
 
 - **Ver pets**: Clique no card "Pets" ou no menu superior
