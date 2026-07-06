@@ -170,6 +170,27 @@ Após rodar `php artisan migrate --seed`, os seguintes usuários estarão dispon
 
 ---
 
+## Otimização de Performance
+
+Para ambientes de produção e demonstração, recomenda-se aplicar as seguintes otimizações no servidor. O guia completo está em [docs/performance.md](docs/performance.md).
+
+### Checklist rápido
+
+| Ação | Comando | Impacto |
+|------|---------|---------|
+| OPcache 256MB + 20k arquivos | `php.ini`: `opcache.memory_consumption=256`, `opcache.max_accelerated_files=20000` | Elimina recompilação do PHP |
+| Cache de config/route/events | `php artisan config:cache && route:cache && event:cache` | Unifica arquivos de configuração |
+| Queue assíncrona | `QUEUE_CONNECTION=database` + daemon `queue:work` | Jobs em background sem travar HTTP |
+| MariaDB buffer pool | `innodb_buffer_pool_size = 70–80% da RAM` | Consultas em memória |
+| PHP memory_limit | `memory_limit = 256M` | Evita estouro de RAM |
+| FPM pm.max_children | `20` para 2 vCPUs / 4GB | Mais concorrência |
+| Cron do scheduler | `* * * * * php artisan schedule:run` | Tarefas agendadas |
+| MariaDB Query Cache | `query_cache_type = 1`, `query_cache_size = 32M` | SELECTs repetidos em cache |
+
+> **Ambiente DEMO/tests:** mantenha `APP_ENV=local` e `APP_DEBUG=true` para visualizar erros. As otimizações de cache (config/route/events) funcionam normalmente — rode `php artisan optimize:clear` se precisar rebuildar após alterações.
+
+---
+
 ## Requisitos de Hardware
 
 ### Servidor de Demonstração (1–5 usuários simultâneos)
