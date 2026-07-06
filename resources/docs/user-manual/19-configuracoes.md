@@ -102,6 +102,9 @@ Cada gateway gera uma URL de webhook única (`/api/payments/webhook/{gateway_id}
 
 > O webhook **sempre retorna HTTP 200** (exigência dos provedores). O processamento é assíncrono.
 
+![Fluxo do Gateway de Pagamento](../diagrams/32-fluxo-pagamento-gateway.svg)
+*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*
+
 #### Cobrança no PDV
 1. Acesse uma fatura em aberto
 2. Clique em **Cobrar**
