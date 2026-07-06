@@ -105,10 +105,20 @@ Acesse **Agenda > Plantões** (sidebar) para visualizar **apenas** os turnos mar
 - Nome do veterinário e CRMV
 - Data, horário de início e término
 - Unidade (filial)
-- Tipo de turno (Regular, Manhã, Tarde, Noturno)
+- Tipo de plantão com ícone e cor:
+  - 📞 **Telefone** — plantão remoto
+  - 🏥 **Presencial** — badge verde
+  - 🆘 **Sobreaviso** — disponível para chamada
 - Indicador de plantão (badge vermelho)
 
+**Filtros disponíveis:**
+- Por filial (unidade)
+- Por período (data início/fim)
+
 A partir dessa tela é possível criar nova escala ou editar/excluir plantões existentes.
+
+#### Checkbox `is_on_call`
+Ao criar/editar uma escala de veterinário, o campo **Em plantão** (`is_on_call`) indica se aquele turno é um plantão ativo. Apenas turnos com `is_on_call = true` aparecem na tela de Plantões.
 
 ## Cancelamento Automático de Consultas
 

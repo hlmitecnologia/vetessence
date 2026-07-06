@@ -5,14 +5,19 @@
 ### Criar Usuário
 1. Acesse **Configurações > Usuários**
 2. Clique em **Novo**
-3. Preencha:
+3. Preencha os dados gerais:
    - **Nome** e **E-mail** (obrigatórios)
    - **Senha** (mínimo 8 caracteres)
    - **Telefone**
    - **CRMV** (se veterinário)
    - **Filial** (home branch, ou global para administradores)
    - **Cargo**
-4. Atribua **funções** (roles):
+4. Preencha os dados de RH (exibidos conforme permissão):
+   - **Departamento** (ex.: Clínico, Administrativo, Farmácia)
+   - **Cargo** (ex.: Veterinário Pleno, Recepcionista)
+   - **Data de Admissão**
+   - **Tipo de Contrato** (CLT, PJ, Estágio, Autônomo)
+5. Atribua **funções** (roles):
    - **Admin**: Acesso total ao sistema
    - **Branch Admin**: Administração por filial
    - **Veterinário**: Acesso clínico completo
