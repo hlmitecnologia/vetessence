@@ -193,7 +193,7 @@ O VetEssence é **gratuito e open source**. Se você precisa de:
 Entre em contato:
 
 - 🌐 [vetessence.com.br](https://vetessence.com.br)
-- 📱 [WhatsApp](https://wa.me/5511999999999)
+- 📱 [WhatsApp](https://wa.me/5511998464769)
 - 📧 [contato@vetessence.com.br](mailto:contato@vetessence.com.br)
 
 ---
