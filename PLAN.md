@@ -3713,3 +3713,25 @@ Convênios
 - A economia visível para o tutor (badges "Você economizou R$ X") é um diferencial de retenção importante — deve ser destacada na UI.
 - A recorrência de banho & tosa (semanal/quinzenal) deve usar o mecanismo existente `recurrence_rule` (RRULE) já presente em `Appointment`.
 ```
+
+---
+
+## Phase ZH — Testes de Fluxo End-to-End (Browser Dusk)
+
+Plano completo e progresso migrados para arquivos dedicados para manter o contexto gerenciável:
+
+| Arquivo | Conteúdo |
+|---------|----------|
+| [`PLAN-TESTS.md`](PLAN-TESTS.md) | Plano detalhado: 69 fluxos, matriz por perfil, estrutura de arquivos, fases |
+| [`TESTS-PROGRESS.md`](TESTS-PROGRESS.md) | Acompanhamento passo-a-passo: cada fluxo com status ✅/⏳/❌ |
+
+### Resumo
+
+| Métrica | Valor |
+|---------|:-----:|
+| Fluxos end-to-end | 69 |
+| Perfis de usuário | 12 |
+| Controllers envolvidos | ~80 |
+| Total testes Dusk | ~75 |
+| Fases de implementação | 16 |
+| Progresso atual | 0 / 16 fases concluídas |
