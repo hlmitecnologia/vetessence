@@ -166,13 +166,14 @@
 | Métrica | Valor |
 |---------|:-----:|
 | Fluxos end-to-end | 69 |
+| Fluxos implementados | 56 |
 | Etapas totais | ~330 |
 | Controllers envolvidos | ~80 |
 | Perfis de usuário | 12 |
-| Testes de permissão | 3 |
-| Testes de API + webhook | 3 |
-| **Total testes Dusk** | **~75** |
-| **Tempo execução (paralelo)** | **3–5 min** |
+| Testes de permissão | 4 |
+| Testes de API + webhook | 0 (stubs) |
+| **Total testes Dusk** | **56** |
+| **Tempo execução (sequencial)** | **~25 min** |
 
 ---
 
