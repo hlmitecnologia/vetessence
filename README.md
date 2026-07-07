@@ -132,7 +132,7 @@ O **VetEssence** é um sistema ERP completo para clínicas veterinárias, constr
 | QR Code | endroid/qr-code |
 | Pagamentos | Mercado Pago, PagSeguro, Stripe, PIX |
 | IA | OpenAI, Anthropic, Gemini, Grok, Ollama |
-| Testes | PHPUnit (2.045+ testes) |
+| Testes | PHPUnit (2.045+ testes), Laravel Dusk (56 testes E2E) |
 
 ---
 
