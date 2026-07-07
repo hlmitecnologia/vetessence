@@ -19,17 +19,17 @@
 
 | Fase | Descrição | Testes | Status |
 |------|-----------|:------:|:------:|
-| 1 | Setup Dusk + Factory + Helpers | — | Pendente |
-| 2 | Testes de Permissão (sidebar + acesso negado) | 3 | Pendente |
-| 3 | Fluxos Super Admin/Admin | 7 | Pendente |
-| 4 | Fluxos Veterinário parte 1 (prontuário, prescrição, fatura, plano, vacina, cirurgia) | 6 | Pendente |
-| 5 | Fluxos Veterinário parte 2 (internação, exames, dietas, consentimento, odonto, CVI, óbito) | 8 | Pendente |
-| 6 | Fluxos Veterinário parte 3 (triagem, emergência, calculadora, peso) | 4 | Pendente |
-| 7 | Fluxos Recepcionista (tutor, pet, timeline, agenda, hospedagem, banho, chat) | 8 | Pendente |
-| 8 | Fluxos Financeiro parte 1 (fatura, event chain, pagamentos, gateway) | 5 | Pendente |
-| 9 | Fluxos Financeiro parte 2 (NFSe, NF-e, comissão, conciliação, serviços) | 6 | Pendente |
+| 1 | Setup Dusk + Factory + Helpers | — | ✅ |
+| 2 | Testes de Permissão (sidebar + acesso negado) | 3 | ✅ |
+| 3 | Fluxos Super Admin/Admin | 7 | ✅ |
+| 4 | Fluxos Veterinário parte 1 (prontuário, prescrição, fatura, plano, vacina, cirurgia) | 6 | ✅ |
+| 5 | Fluxos Veterinário parte 2 (internação, exames, dietas, consentimento, odonto, CVI, óbito) | 8 | ✅ |
+| 6 | Fluxos Veterinário parte 3 (triagem, emergência, calculadora, peso) | 4 | ✅ |
+| 7 | Fluxos Recepcionista (tutor, pet, timeline, agenda, hospedagem, banho, chat) | 8 | ✅ |
+| 8 | Fluxos Financeiro parte 1 (fatura, event chain, pagamentos, gateway) | 5 | ✅ |
+| 9 | Fluxos Financeiro parte 2 (NFSe, NF-e, comissão, conciliação, serviços) | 5 | ✅ (1 sem UI) |
 | 10 | Fluxos Financeiro parte 3 (roteamento NF, relatórios, claims) | 3 | Pendente |
-| 11 | Fluxos Estoque (produto, movimentações, pedido compra, estoque inteligente, substâncias, pacotes) | 9 | Pendente |
+| 11 | Fluxos Estoque (produto, movimentações, pedido compra, estoque inteligente, substâncias, pacotes) | 9 | ✅ |
 | 12 | Fluxos Tutor Portal (autenticação, agendamento, pagamento, visualizações, chat, vacinas) | 6 | Pendente |
 | 13 | Fluxos RH (departamento, cargo, funcionário, escala, plantão, folga) | 1 | Pendente |
 | 14 | Fluxos Auditor | 1 | Pendente |
