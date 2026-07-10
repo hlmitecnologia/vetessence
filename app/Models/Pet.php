@@ -13,6 +13,18 @@ class Pet extends Model
 {
     use HasFactory, HasPhoto;
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Pet $pet) {
+            if ($pet->tutors()->exists()) {
+                throw new \RuntimeException(
+                    'Não é possível excluir o pet "' . $pet->name . '" pois possui ' .
+                    $pet->tutors()->count() . ' tutor(es) vinculado(s).'
+                );
+            }
+        });
+    }
+
     protected $fillable = [
         'name', 'species', 'breed', 'breed_default_id', 'gender', 'birth_date', 'weight',
         'color', 'microchip_number', 'microchip_date', 'rg_number', 'rg_issuer',

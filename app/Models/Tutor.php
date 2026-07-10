@@ -16,6 +16,18 @@ class Tutor extends Authenticatable
 {
     use HasFactory, HasPhoto, Notifiable, ConsentLoggable;
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Tutor $tutor) {
+            if ($tutor->pets()->exists()) {
+                throw new \RuntimeException(
+                    'Não é possível excluir o tutor "' . $tutor->name . '" pois possui ' .
+                    $tutor->pets()->count() . ' pet(s) vinculado(s).'
+                );
+            }
+        });
+    }
+
     protected $fillable = [
         'name', 'user_id', 'cpf', 'rg', 'phone', 'phone_secondary', 'email',
         'zipcode', 'address', 'number', 'complement', 'neighborhood',

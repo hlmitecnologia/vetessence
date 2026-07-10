@@ -16,3 +16,6 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+__pycache__/
+*.pyc
+bin/*.mp4
