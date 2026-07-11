@@ -38,6 +38,29 @@ python3 bin/treinamento.py --modulo 07-farmacia
 ```
 Requer super-admin (`super@vet.com`) para criar categoria de produto.
 
+### PROJETO WEBMANIA
+
+Para retomar a integração Webmania (NFe/NFCe e NFSe), chame por **PROJETO WEBMANIA**.
+
+**Feito nesta sessão:**
+- **NFe/NFCe WebmaniaProvider**: auth corrigida (4 headers: Consumer-Key, Consumer-Secret, Access-Token, Access-Token-Secret); base URL `webmania.com.br/api/1`; endpoint `/nfe/emissao/`; ambiente int 1/2
+- **NFSe WebmaniaProvider**: auth Bearer token v2.0; base URL `api.webmania.com.br`; endpoint `/2/nfse/emissao/`; payload com `rps[]`
+- **Migrations**: add `webmania_access_token` e `webmania_access_token_secret` em `nfe_configs`; add `webmania_access_token` em `nfse_configs`
+- **Telas de config**: campos `webmania_app_id/secret` removidos; `webmania_access_token` e `webmania_access_token_secret` adicionados (NFe); `webmania_access_token` único para NFSe
+- **Tecnospeed removido** do controller e service NFS-e
+- **NF-e de transferência**: migration `nfe_transfers`, model `NfeTransfer`, método `emitirTransferencia()` no `NfeService` + `WebmaniaProvider`, checkbox no form de transferência, implementação no `StockController::transfer()`
+- **Tests**: NFe/NFSe providers corrigidos, `NfeTransferTest`, `StockTransferNfeTest` — aguardando chaves Webmania para execução
+
+**Próximo passo (quando chegar as chaves):**
+```bash
+php artisan tinker
+# Configurar credenciais na tela de config e testar:
+>>> $config = App\Models\NfeConfig::first();
+>>> $nfseConfig = App\Models\NfseConfig::first();
+# Testar emissão NFe/NFCe e NFSe manualmente
+```
+Requer chaves de homologação Webmania para validar fluxo completo.
+
 ### Recent
 - **Manuais atualizados**: 7 documentos revisados (151 lines added, 27 removed) para refletir integração real de pagamentos, campos RH, layout do portal, plantões, estoque
 - **Repositório público**: MIT license, README, CONTRIBUTING, SECURITY, CODEOWNERS, issue templates, CI workflow, .env.example
