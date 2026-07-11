@@ -23,6 +23,21 @@
 - `NFSeGateTest` pre‑existing permission conflict (`nfse.view` already exists)
 - Data import commands (DbImport*) and DemoSeed intentionally not tested (one-shot scripts)
 
+### PROJETO TREINAMENTO
+
+Para retomar a criação dos vídeos de treinamento, chame por **PROJETO TREINAMENTO**.
+
+**Feito:**
+- Fase 01 (`11-tutores-pets`): roteiro + vídeo validado em `~/Videos/VetEssence/11-tutores-pets_20260710_095540.mp4`
+- Engine: `bin/treinamento.py` (Selenium + ffmpeg, helpers: `selecionar_tom_select`, `clicar_submit_modal` com scroll suave, `scroll_smoothly_modal`)
+- 5 roteiros definidos em `bin/roteiros.py`
+
+**Próximo passo:**
+```bash
+python3 bin/treinamento.py --modulo 07-farmacia
+```
+Requer super-admin (`super@vet.com`) para criar categoria de produto.
+
 ### Recent
 - **Manuais atualizados**: 7 documentos revisados (151 lines added, 27 removed) para refletir integração real de pagamentos, campos RH, layout do portal, plantões, estoque
 - **Repositório público**: MIT license, README, CONTRIBUTING, SECURITY, CODEOWNERS, issue templates, CI workflow, .env.example
