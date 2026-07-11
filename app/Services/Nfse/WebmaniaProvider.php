@@ -12,7 +12,7 @@ class WebmaniaProvider implements NfseProvider
 
     public function __construct()
     {
-        $this->baseUrl = config('nfse.webmania.base_url', 'https://api.webmania.com.br/v1');
+        $this->baseUrl = config('nfse.webmania.base_url', 'https://api.webmania.com.br');
     }
 
     public function emitir(NfseConfig $config, Invoice $invoice): NfseResult
@@ -20,13 +20,13 @@ class WebmaniaProvider implements NfseProvider
         $payload = $this->buildPayload($config, $invoice);
 
         $response = Http::withHeaders($this->headers($config))
-            ->post("{$this->baseUrl}/nfse/emitir", $payload);
+            ->post("{$this->baseUrl}/2/nfse/emissao/", $payload);
 
         $body = $response->json();
 
         if (!$response->successful()) {
             return NfseResult::error(
-                $body['error'] ?? 'Erro ao emitir NFSe',
+                $body['error'] ?? $body['erro'] ?? 'Erro ao emitir NFSe via Webmania',
                 $body
             );
         }
@@ -45,13 +45,13 @@ class WebmaniaProvider implements NfseProvider
     public function consultar(NfseConfig $config, string $nfseNumber): NfseResult
     {
         $response = Http::withHeaders($this->headers($config))
-            ->get("{$this->baseUrl}/nfse/{$nfseNumber}");
+            ->get("{$this->baseUrl}/2/nfse/{$nfseNumber}/");
 
         $body = $response->json();
 
         if (!$response->successful()) {
             return NfseResult::error(
-                $body['error'] ?? 'Erro ao consultar NFSe',
+                $body['error'] ?? 'Erro ao consultar NFSe via Webmania',
                 $body
             );
         }
@@ -70,7 +70,7 @@ class WebmaniaProvider implements NfseProvider
     public function cancelar(NfseConfig $config, string $nfseNumber, string $motivo): NfseResult
     {
         $response = Http::withHeaders($this->headers($config))
-            ->post("{$this->baseUrl}/nfse/{$nfseNumber}/cancelar", [
+            ->post("{$this->baseUrl}/2/nfse/{$nfseNumber}/cancelar/", [
                 'motivo' => $motivo,
             ]);
 
@@ -78,7 +78,7 @@ class WebmaniaProvider implements NfseProvider
 
         if (!$response->successful()) {
             return NfseResult::error(
-                $body['error'] ?? 'Erro ao cancelar NFSe',
+                $body['error'] ?? 'Erro ao cancelar NFSe via Webmania',
                 $body
             );
         }
@@ -92,10 +92,7 @@ class WebmaniaProvider implements NfseProvider
     protected function headers(NfseConfig $config): array
     {
         return [
-            'X-App-Id' => $config->webmania_app_id,
-            'X-App-Secret' => $config->webmania_app_secret,
-            'X-Consumer-Key' => $config->webmania_consumer_key,
-            'X-Consumer-Secret' => $config->webmania_consumer_secret,
+            'Authorization' => 'Bearer ' . $config->webmania_access_token,
             'Content-Type' => 'application/json',
         ];
     }
@@ -106,28 +103,32 @@ class WebmaniaProvider implements NfseProvider
         $branch = $invoice->branch;
 
         return [
-            'cnpj' => $branch->cnpj,
-            'municipio_ibge' => $branch->municipio_ibge,
-            'regime_tributario' => $branch->regime_tributario,
-            'serie' => $branch->serie,
-            'ambiente' => $config->ambiente,
-            'rps_tipo' => '1',
-            'tomador' => [
-                'cpf_cnpj' => preg_replace('/\D/', '', $tutor->cpf ?? $tutor->cnpj ?? ''),
-                'nome' => $tutor->name,
-                'email' => $tutor->email ?? '',
-                'telefone' => preg_replace('/\D/', '', $tutor->phone ?? ''),
-                'logradouro' => $tutor->address ?? '',
-                'numero' => $tutor->number ?? 'S/N',
-                'bairro' => $tutor->neighborhood ?? '',
-                'cidade' => $tutor->city ?? '',
-                'uf' => $tutor->state ?? '',
-                'cep' => preg_replace('/\D/', '', $tutor->zipcode ?? ''),
-            ],
-            'servico' => [
-                'descricao' => $invoice->description ?? "Serviços veterinários - Fatura #{$invoice->id}",
-                'valor' => (float) $invoice->total,
-                'iss_retido' => false,
+            'rps' => [
+                [
+                    'cnpj' => $branch->cnpj,
+                    'municipio_ibge' => $branch->municipio_ibge,
+                    'regime_tributario' => $branch->regime_tributario,
+                    'serie' => $branch->serie ?? '1',
+                    'ambiente' => $config->ambiente === 'producao' ? 1 : 2,
+                    'rps_tipo' => '1',
+                    'tomador' => [
+                        'cpf_cnpj' => preg_replace('/\D/', '', $tutor->cpf ?? $tutor->cnpj ?? ''),
+                        'nome' => $tutor->name,
+                        'email' => $tutor->email ?? '',
+                        'telefone' => preg_replace('/\D/', '', $tutor->phone ?? ''),
+                        'logradouro' => $tutor->address ?? '',
+                        'numero' => $tutor->number ?? 'S/N',
+                        'bairro' => $tutor->neighborhood ?? '',
+                        'cidade' => $tutor->city ?? '',
+                        'uf' => $tutor->state ?? '',
+                        'cep' => preg_replace('/\D/', '', $tutor->zipcode ?? ''),
+                    ],
+                    'servico' => [
+                        'descricao' => $invoice->description ?? "Serviços veterinários - Fatura #{$invoice->id}",
+                        'valor_servicos' => (float) $invoice->total,
+                        'iss_retido' => false,
+                    ],
+                ],
             ],
         ];
     }

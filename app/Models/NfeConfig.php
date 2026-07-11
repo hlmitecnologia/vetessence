@@ -12,8 +12,8 @@ class NfeConfig extends Model
     protected $fillable = [
         'provider', 'ambiente',
         'focusnfe_token', 'nfeio_api_key',
-        'webmania_app_id', 'webmania_app_secret',
         'webmania_consumer_key', 'webmania_consumer_secret',
+        'webmania_access_token', 'webmania_access_token_secret',
         'is_active',
     ];
 

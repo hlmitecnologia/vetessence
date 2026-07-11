@@ -12,14 +12,12 @@ class NfseConfig extends Model
     protected $fillable = [
         'provider',
         'ambiente',
-        'webmania_app_id',
-        'webmania_app_secret',
         'webmania_consumer_key',
         'webmania_consumer_secret',
+        'webmania_access_token',
         'focusnfe_token',
         'spedy_api_key',
         'spedy_api_secret',
-        'tecnospeed_token',
         'nfeio_api_key',
         'is_active',
     ];

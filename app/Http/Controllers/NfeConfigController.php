@@ -30,10 +30,10 @@ class NfeConfigController extends Controller
 
         $providerRules = match ($provider) {
             'webmania' => [
-                'webmania_app_id' => 'required|string',
-                'webmania_app_secret' => 'required|string',
                 'webmania_consumer_key' => 'required|string',
                 'webmania_consumer_secret' => 'required|string',
+                'webmania_access_token' => 'required|string',
+                'webmania_access_token_secret' => 'required|string',
             ],
             'focusnfe' => [
                 'focusnfe_token' => 'required|string',

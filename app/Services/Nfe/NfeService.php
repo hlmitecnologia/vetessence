@@ -57,6 +57,49 @@ class NfeService
         return $result;
     }
 
+    public function emitirTransferencia(
+        \App\Models\Product $product,
+        \App\Models\Branch $fromBranch,
+        \App\Models\Branch $toBranch,
+        float $quantity,
+        \App\Models\User $user,
+    ): NfeResult
+    {
+        $config = $this->getConfig();
+
+        if (!$config) {
+            return NfeResult::error('NF-e não configurada para o sistema.');
+        }
+
+        $provider = $this->resolveProvider($config);
+        $result = $provider->emitirTransferencia($config, [
+            'product' => $product,
+            'from_branch' => $fromBranch,
+            'to_branch' => $toBranch,
+            'quantity' => $quantity,
+        ]);
+
+        if ($result->success) {
+            \App\Models\NfeTransfer::create([
+                'branch_id' => $fromBranch->id,
+                'from_branch_id' => $fromBranch->id,
+                'to_branch_id' => $toBranch->id,
+                'product_id' => $product->id,
+                'user_id' => $user->id,
+                'nfe_number' => $result->nfeNumber,
+                'nfe_key' => $result->nfeKey,
+                'status' => 'issued',
+                'issuance_date' => now(),
+                'nfe_url_xml' => $result->xmlUrl,
+                'nfe_url_pdf' => $result->pdfUrl,
+                'danfe_url' => $result->danfeUrl,
+                'provider_response' => $result->rawResponse,
+            ]);
+        }
+
+        return $result;
+    }
+
     public function cancelar(Invoice $invoice, string $motivo): NfeResult
     {
         $config = $this->getConfig();

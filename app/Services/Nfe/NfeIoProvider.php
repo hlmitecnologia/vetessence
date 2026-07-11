@@ -42,6 +42,11 @@ class NfeIoProvider implements NfeProvider
         );
     }
 
+    public function emitirTransferencia(NfeConfig $config, array $data): NfeResult
+    {
+        return NfeResult::error('NFE.io não suporta emissão de NF-e de transferência.');
+    }
+
     public function consultar(NfeConfig $config, string $nfeNumber): NfeResult
     {
         $response = Http::withHeaders(['X-Api-Key' => $config->nfeio_api_key])
