@@ -218,6 +218,16 @@
                 <a href="{{ route('payment-gateways.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-credit-card w-5 mr-2"></i> Gateways Pagamento
                 </a>
+                @can('nfse.view')
+                <a href="{{ route('nfse.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-file-invoice w-5 mr-2"></i> NFS-e
+                </a>
+                @endcan
+                @can('nfe.view')
+                <a href="{{ route('nfe.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-box w-5 mr-2"></i> NF-e
+                </a>
+                @endcan
             </div>
         </div>
         @endrole
@@ -381,6 +391,11 @@
                 @can('zoonotic-diseases')
                 <a href="{{ route('zoonotic-diseases.index') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
                     <i class="fas fa-biohazard w-5 mr-2"></i> Zoonoses
+                </a>
+                @endcan
+                @can('nfe-config.edit')
+                <a href="{{ route('nf.config') }}" class="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">
+                    <i class="fas fa-file-invoice-dollar w-5 mr-2"></i> Config. NF
                 </a>
                 @endcan
             </div>

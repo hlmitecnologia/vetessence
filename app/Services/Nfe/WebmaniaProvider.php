@@ -92,10 +92,13 @@ class WebmaniaProvider implements NfeProvider
         );
     }
 
-    public function cancelar(NfeConfig $config, string $nfeNumber, string $motivo): NfeResult
+    public function cancelar(NfeConfig $config, string $nfeNumber, string $motivo, ?string $nfeKey = null): NfeResult
     {
+        $chave = $nfeKey ?: $nfeNumber;
+
         $response = Http::withHeaders($this->headers($config))
-            ->post("{$this->baseUrl}/nfe/{$nfeNumber}/cancelar/", [
+            ->put("{$this->baseUrl}/nfe/cancelar/", [
+                'chave' => $chave,
                 'motivo' => $motivo,
             ]);
 

@@ -115,7 +115,7 @@ class NfeService
         }
 
         $provider = $this->resolveProvider($config);
-        $result = $provider->cancelar($config, $nfeInvoice->nfe_number, $motivo);
+        $result = $provider->cancelar($config, $nfeInvoice->nfe_number, $motivo, $nfeInvoice->nfe_key);
 
         if ($result->success) {
             $nfeInvoice->update([

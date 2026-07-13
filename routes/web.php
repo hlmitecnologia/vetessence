@@ -206,6 +206,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('invoices/{invoice}/nfe-emitir', 'App\Http\Controllers\NfeController@emitir')->name('nfe.emitir')->middleware('can:nfe.emit');
     Route::post('invoices/{invoice}/nfe-cancelar', 'App\Http\Controllers\NfeController@cancelar')->name('nfe.cancelar')->middleware('can:nfe.cancel');
 
+    // Config NF (unificada)
+    Route::get('nf/config', 'App\Http\Controllers\NfConfigController@edit')->name('nf.config')->middleware('can:nfe-config.edit');
+
     // Bank Reconciliation
     Route::resource('bank-accounts', 'App\Http\Controllers\BankAccountController')->names([
         'index' => 'bank-accounts.index',

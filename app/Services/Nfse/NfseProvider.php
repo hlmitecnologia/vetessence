@@ -11,5 +11,5 @@ interface NfseProvider
 
     public function consultar(NfseConfig $config, string $nfseNumber): NfseResult;
 
-    public function cancelar(NfseConfig $config, string $nfseNumber, string $motivo): NfseResult;
+    public function cancelar(NfseConfig $config, string $nfseNumber, string $motivo, ?string $uuid = null): NfseResult;
 }

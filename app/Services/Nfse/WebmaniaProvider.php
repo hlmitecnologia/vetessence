@@ -67,12 +67,18 @@ class WebmaniaProvider implements NfseProvider
         );
     }
 
-    public function cancelar(NfseConfig $config, string $nfseNumber, string $motivo): NfseResult
+    public function cancelar(NfseConfig $config, string $nfseNumber, string $motivo, ?string $uuid = null): NfseResult
     {
+        $payload = [
+            'motivo' => (int) $motivo,
+        ];
+
+        if ($uuid) {
+            $payload['uuid'] = $uuid;
+        }
+
         $response = Http::withHeaders($this->headers($config))
-            ->post("{$this->baseUrl}/2/nfse/{$nfseNumber}/cancelar/", [
-                'motivo' => $motivo,
-            ]);
+            ->put("{$this->baseUrl}/2/nfse/cancelar", $payload);
 
         $body = $response->json();
 

@@ -71,7 +71,7 @@ class NfeIoProvider implements NfeProvider
         );
     }
 
-    public function cancelar(NfeConfig $config, string $nfeNumber, string $motivo): NfeResult
+    public function cancelar(NfeConfig $config, string $nfeNumber, string $motivo, ?string $nfeKey = null): NfeResult
     {
         $response = Http::withHeaders(['X-Api-Key' => $config->nfeio_api_key])
             ->post("{$this->baseUrl}/v1/nfe/{$nfeNumber}/cancelar", [

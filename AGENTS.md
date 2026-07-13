@@ -49,6 +49,9 @@ Para retomar a integração Webmania (NFe/NFCe e NFSe), chame por **PROJETO WEBM
 - **Telas de config**: campos `webmania_app_id/secret` removidos; `webmania_access_token` e `webmania_access_token_secret` adicionados (NFe); `webmania_access_token` único para NFSe
 - **Tecnospeed removido** do controller e service NFS-e
 - **NF-e de transferência**: migration `nfe_transfers`, model `NfeTransfer`, método `emitirTransferencia()` no `NfeService` + `WebmaniaProvider`, checkbox no form de transferência, implementação no `StockController::transfer()`
+- **Página de Configuração Unificada NF**: `NfConfigController`, view `resources/views/nf/config.blade.php` com ambas configs NFe e NFSe em cards lado a lado; rota `/nf/config`; link "Config. NF" no sidebar (menu Conf. Sistema)
+- **Sidebar NF**: links para "NFS-e" e "NF-e" adicionados no menu Faturamento; "Config. NF" no menu Conf. Sistema
+- **Cancelamento Webmania corrigido**: NF-e usa `PUT /api/1/nfe/cancelar/` com `chave` no body (era POST com nfe_number na URL); NFS-e usa `PUT /api/2/nfse/cancelar` com `uuid` no body (era POST). Interfaces atualizadas com parâmetros opcionais `nfeKey`/`uuid`
 - **Tests**: NFe/NFSe providers corrigidos, `NfeTransferTest`, `StockTransferNfeTest` — aguardando chaves Webmania para execução
 
 **Próximo passo (quando chegar as chaves):**

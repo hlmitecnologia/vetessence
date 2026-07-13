@@ -71,7 +71,7 @@ class FocusNfeProvider implements NfeProvider
         );
     }
 
-    public function cancelar(NfeConfig $config, string $nfeNumber, string $motivo): NfeResult
+    public function cancelar(NfeConfig $config, string $nfeNumber, string $motivo, ?string $nfeKey = null): NfeResult
     {
         $response = Http::withBasicAuth($config->focusnfe_token, '')
             ->delete("{$this->baseUrl}/v2/nfe/{$nfeNumber}?motivo=" . urlencode($motivo));

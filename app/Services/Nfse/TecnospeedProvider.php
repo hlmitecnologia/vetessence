@@ -67,7 +67,7 @@ class TecnospeedProvider implements NfseProvider
         );
     }
 
-    public function cancelar(NfseConfig $config, string $nfseNumber, string $motivo): NfseResult
+    public function cancelar(NfseConfig $config, string $nfseNumber, string $motivo, ?string $uuid = null): NfseResult
     {
         $response = Http::withHeaders($this->headers($config))
             ->post("{$this->baseUrl}/v1/nfse/{$nfseNumber}/cancelar", [

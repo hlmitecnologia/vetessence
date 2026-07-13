@@ -77,7 +77,14 @@ class NfseService
         }
 
         $provider = $this->resolveProvider($config);
-        $result = $provider->cancelar($config, $nfseInvoice->nfse_number, $motivo);
+        $uuid = null;
+        if ($nfseInvoice->provider_response) {
+            $response = is_string($nfseInvoice->provider_response)
+                ? json_decode($nfseInvoice->provider_response, true)
+                : $nfseInvoice->provider_response;
+            $uuid = $response['uuid'] ?? null;
+        }
+        $result = $provider->cancelar($config, $nfseInvoice->nfse_number, $motivo, $uuid);
 
         if ($result->success) {
             $nfseInvoice->update([
