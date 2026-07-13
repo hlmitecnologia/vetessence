@@ -86,8 +86,9 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <label for="cnpj">CNPJ</label>
-                        <input type="text" name="cnpj" class="form-control" value="{{ old('cnpj', $branch->cnpj) }}">
+                        <label for="cnpj">CNPJ *</label>
+                        <input type="text" name="cnpj" class="form-control @error('cnpj') is-invalid @enderror" value="{{ old('cnpj', $branch->cnpj) }}" required>
+                        @error('cnpj')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>
             </div>
@@ -134,8 +135,9 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <label for="im">Inscrição Municipal</label>
-                        <input type="text" name="im" class="form-control" value="{{ old('im', $branch->im) }}" maxlength="20" placeholder="I.M.">
+                        <label for="im">Inscrição Municipal *</label>
+                        <input type="text" name="im" class="form-control @error('im') is-invalid @enderror" value="{{ old('im', $branch->im) }}" maxlength="20" placeholder="I.M." required>
+                        @error('im')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>
             </div>
