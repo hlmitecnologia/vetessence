@@ -16,7 +16,7 @@ class Branch extends Model
         'city', 'state',
         'zip_code', 'phone', 'email', 'cnpj',
         'ie', 'crt',
-        'municipio_ibge', 'regime_tributario', 'serie',
+        'municipio_ibge', 'regime_tributario', 'serie', 'im',
         'is_active', 'is_main', 'notes',
         'state_id', 'city_id',
     ];

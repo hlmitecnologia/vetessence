@@ -132,6 +132,12 @@
                         <input type="text" name="serie" class="form-control" value="{{ old('serie', $branch->serie ?? '1') }}" maxlength="3">
                     </div>
                 </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="im">Inscrição Municipal</label>
+                        <input type="text" name="im" class="form-control" value="{{ old('im', $branch->im) }}" maxlength="20" placeholder="I.M.">
+                    </div>
+                </div>
             </div>
             <div class="form-group mt-3">
                 <label for="notes">Observações</label>

@@ -121,6 +121,7 @@ class WebmaniaProvider implements NfseProvider
                     'cnpj' => $branch->cnpj,
                     'municipio_ibge' => $branch->municipio_ibge,
                     'regime_tributario' => $branch->regime_tributario,
+                    'im' => $branch->im ?? '',
                     'serie' => $branch->serie ?? '1',
                     'rps_tipo' => '1',
                     'tomador' => [

@@ -35,6 +35,7 @@
             <div class="col-md-3"><strong>CNPJ:</strong><p>{{ $branch->cnpj ?? '-' }}</p></div>
         </div>
         <div class="row mt-2">
+            <div class="col-md-4"><strong>Inscrição Municipal:</strong><p>{{ $branch->im ?? '-' }}</p></div>
             <div class="col-md-4"><strong>Principal:</strong><p>@if($branch->is_main) <span class="badge badge-primary">Sim</span> @else <span class="badge badge-secondary">Não</span> @endif</p></div>
             <div class="col-md-4"><strong>Ativa:</strong><p>@if($branch->is_active) <span class="badge badge-success">Sim</span> @else <span class="badge badge-secondary">Não</span> @endif</p></div>
             <div class="col-md-4"><strong>Funcionários:</strong><p>{{ $branch->users->count() }}</p></div>
