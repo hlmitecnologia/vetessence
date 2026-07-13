@@ -103,6 +103,12 @@ class WebmaniaProvider implements NfseProvider
         ];
     }
 
+    protected function formatPhone(?string $phone): string
+    {
+        $clean = preg_replace('/\D/', '', $phone ?? '');
+        return strlen($clean) >= 8 ? $clean : '0000000000';
+    }
+
     protected function buildPayload(NfseConfig $config, Invoice $invoice): array
     {
         $tutor = $invoice->tutor;
@@ -121,7 +127,7 @@ class WebmaniaProvider implements NfseProvider
                         'cpf_cnpj' => preg_replace('/\D/', '', $tutor->cpf ?? $tutor->cnpj ?? ''),
                         'nome' => $tutor->name,
                         'email' => $tutor->email ?? '',
-                        'telefone' => preg_replace('/\D/', '', $tutor->phone ?? ''),
+                        'telefone' => $this->formatPhone($tutor->phone ?? $branch->phone ?? ''),
                         'logradouro' => $tutor->address ?? '',
                         'numero' => $tutor->number ?? 'S/N',
                         'bairro' => $tutor->neighborhood ?? '',
