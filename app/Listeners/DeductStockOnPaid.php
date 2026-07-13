@@ -28,11 +28,8 @@ class DeductStockOnPaid
                     'user_id' => $item->invoice->user_id,
                     'type' => 'out',
                     'quantity' => $item->quantity,
-                    'unit_price' => $item->unit_price,
-                    'total' => $item->total,
-                    'description' => "Venda - Fatura #{$item->invoice_id}",
-                    'reference_type' => 'invoice',
-                    'reference_id' => $item->invoice_id,
+                    'balance_after' => $item->product->stock,
+                    'notes' => "Venda - Fatura #{$item->invoice_id}",
                 ]);
             });
         }
