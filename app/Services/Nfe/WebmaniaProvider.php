@@ -13,20 +13,15 @@ class WebmaniaProvider implements NfeProvider
 
     public function __construct()
     {
-        $this->baseUrl = config('nfe.webmania.base_url', 'https://api.webmania.com.br/v1');
+        $this->baseUrl = config('nfe.webmania.base_url', 'https://webmania.com.br/api/1');
     }
 
     public function emitir(NfeConfig $config, Invoice $invoice): NfeResult
     {
         $payload = $this->buildPayload($config, $invoice);
 
-        $response = Http::withHeaders([
-            'X-App-Id' => $config->webmania_app_id,
-            'X-App-Secret' => $config->webmania_app_secret,
-            'X-Consumer-Key' => $config->webmania_consumer_key,
-            'X-Consumer-Secret' => $config->webmania_consumer_secret,
-            'Content-Type' => 'application/json',
-        ])->post("{$this->baseUrl}/nfe/emitir", $payload);
+        $response = Http::withHeaders($this->headers($config))
+            ->post("{$this->baseUrl}/nfe/emissao/", $payload);
 
         $body = $response->json();
 
@@ -47,14 +42,36 @@ class WebmaniaProvider implements NfeProvider
         );
     }
 
+    public function emitirTransferencia(NfeConfig $config, array $data): NfeResult
+    {
+        $payload = $this->buildTransferPayload($config, $data);
+
+        $response = Http::withHeaders($this->headers($config))
+            ->post("{$this->baseUrl}/nfe/emissao/", $payload);
+
+        $body = $response->json();
+
+        if (!$response->successful()) {
+            return NfeResult::error(
+                $body['error'] ?? $body['erro'] ?? 'Erro ao emitir NF-e de transferência via Webmania',
+                $body
+            );
+        }
+
+        return NfeResult::success(
+            nfeNumber: $body['numero'] ?? $body['nfe'] ?? '',
+            nfeKey: $body['chave'] ?? $body['chave_nfe'] ?? '',
+            xmlUrl: $body['xml'] ?? '',
+            pdfUrl: $body['pdf'] ?? '',
+            danfeUrl: $body['danfe'] ?? '',
+            rawResponse: $body,
+        );
+    }
+
     public function consultar(NfeConfig $config, string $nfeNumber): NfeResult
     {
-        $response = Http::withHeaders([
-            'X-App-Id' => $config->webmania_app_id,
-            'X-App-Secret' => $config->webmania_app_secret,
-            'X-Consumer-Key' => $config->webmania_consumer_key,
-            'X-Consumer-Secret' => $config->webmania_consumer_secret,
-        ])->get("{$this->baseUrl}/nfe/{$nfeNumber}");
+        $response = Http::withHeaders($this->headers($config))
+            ->get("{$this->baseUrl}/nfe/{$nfeNumber}/");
 
         $body = $response->json();
 
@@ -77,20 +94,16 @@ class WebmaniaProvider implements NfeProvider
 
     public function cancelar(NfeConfig $config, string $nfeNumber, string $motivo): NfeResult
     {
-        $response = Http::withHeaders([
-            'X-App-Id' => $config->webmania_app_id,
-            'X-App-Secret' => $config->webmania_app_secret,
-            'X-Consumer-Key' => $config->webmania_consumer_key,
-            'X-Consumer-Secret' => $config->webmania_consumer_secret,
-        ])->post("{$this->baseUrl}/nfe/{$nfeNumber}/cancelar", [
-            'motivo' => $motivo,
-        ]);
+        $response = Http::withHeaders($this->headers($config))
+            ->post("{$this->baseUrl}/nfe/{$nfeNumber}/cancelar/", [
+                'motivo' => $motivo,
+            ]);
 
         $body = $response->json();
 
         if (!$response->successful()) {
             return NfeResult::error(
-                $body['error'] ?? $body['erro'] ?? 'Erro ao cancelar NF-e via Webmania',
+                $body['error'] ?? 'Erro ao cancelar NF-e via Webmania',
                 $body
             );
         }
@@ -99,6 +112,17 @@ class WebmaniaProvider implements NfeProvider
             nfeNumber: $nfeNumber,
             rawResponse: $body,
         );
+    }
+
+    protected function headers(NfeConfig $config): array
+    {
+        return [
+            'X-Consumer-Key' => $config->webmania_consumer_key,
+            'X-Consumer-Secret' => $config->webmania_consumer_secret,
+            'X-Access-Token' => $config->webmania_access_token,
+            'X-Access-Token-Secret' => $config->webmania_access_token_secret,
+            'Content-Type' => 'application/json',
+        ];
     }
 
     protected function buildPayload(NfeConfig $config, Invoice $invoice): array
@@ -130,7 +154,7 @@ class WebmaniaProvider implements NfeProvider
             'crt' => $branch->crt,
             'municipio_ibge' => $branch->municipio_ibge,
             'serie' => $branch->serie ?? '1',
-            'ambiente' => $config->ambiente,
+            'ambiente' => $config->ambiente === 'producao' ? 1 : 2,
             'natureza_operacao' => 'Venda de mercadoria',
             'cliente' => [
                 'cpf_cnpj' => preg_replace('/\D/', '', $tutor->cpf ?? $tutor->cnpj ?? ''),
@@ -145,6 +169,49 @@ class WebmaniaProvider implements NfeProvider
                 'cep' => preg_replace('/\D/', '', $tutor->zipcode ?? ''),
             ],
             'produtos' => $produtos,
+        ];
+    }
+
+    protected function buildTransferPayload(NfeConfig $config, array $data): array
+    {
+        $fromBranch = $data['from_branch'];
+        $toBranch = $data['to_branch'];
+        $product = $data['product'];
+
+        return [
+            'cnpj' => $fromBranch->cnpj,
+            'ie' => $fromBranch->ie,
+            'crt' => $fromBranch->crt,
+            'municipio_ibge' => $fromBranch->municipio_ibge,
+            'serie' => $fromBranch->serie ?? '1',
+            'ambiente' => $config->ambiente === 'producao' ? 1 : 2,
+            'natureza_operacao' => 'Transferência entre filiais',
+            'finalidade' => '1',
+            'cliente' => [
+                'cpf_cnpj' => preg_replace('/\D/', '', $toBranch->cnpj ?? ''),
+                'nome' => $toBranch->name,
+                'ie' => $toBranch->ie,
+                'endereco' => $toBranch->address ?? '',
+                'numero' => $toBranch->number ?? 'S/N',
+                'bairro' => $toBranch->neighborhood ?? '',
+                'cidade' => $toBranch->city ?? '',
+                'uf' => $toBranch->state ?? '',
+                'cep' => preg_replace('/\D/', '', $toBranch->zipcode ?? ''),
+            ],
+            'produtos' => [
+                [
+                    'nome' => $product->name,
+                    'ncm' => $product->ncm ?? '99999999',
+                    'cest' => $product->cest,
+                    'cfop' => $product->cfop ?? '5949',
+                    'quantidade' => (float) $data['quantity'],
+                    'unidade' => $product->unit ?? 'UN',
+                    'valor_unitario' => (float) $product->cost_price,
+                    'valor_total' => (float) ($data['quantity'] * $product->cost_price),
+                    'cst' => $product->cst ?? '00',
+                    'csosn' => $product->csosn,
+                ],
+            ],
         ];
     }
 }

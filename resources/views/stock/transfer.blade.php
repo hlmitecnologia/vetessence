@@ -39,6 +39,16 @@
                     <textarea name="notes" class="wysiwyg form-control @error('notes') is-invalid @enderror" rows="2"></textarea>
                     @error('notes')<span class="invalid-feedback">{{ $message }}</span>@enderror
                 </div>
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" name="emitir_nfe" value="1" class="custom-control-input" id="emitir_nfe" {{ old('emitir_nfe') ? 'checked' : '' }}>
+                        <label class="custom-control-label" for="emitir_nfe">
+                            <i class="fas fa-file-invoice text-primary mr-1"></i>
+                            Emitir NF-e de transferência
+                        </label>
+                        <small class="form-text text-muted">Requer configuração de NF-e ativa com provedor Webmania.</small>
+                    </div>
+                </div>
             </div>
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary">Transferir</button>

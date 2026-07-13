@@ -80,22 +80,10 @@
                     {{-- WEBMANIA --}}
                     <div class="provider-fields" data-provider="webmania" data-group="nfe">
                         <h6 class="text-primary mt-3"><i class="fas fa-globe mr-1"></i>Credenciais Webmania®</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>App ID *</label>
-                                    <input type="text" name="webmania_app_id" class="form-control @error('webmania_app_id') is-invalid @enderror" value="{{ old('webmania_app_id', $config->webmania_app_id ?? '') }}">
-                                    @error('webmania_app_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>App Secret *</label>
-                                    <input type="password" name="webmania_app_secret" class="form-control @error('webmania_app_secret') is-invalid @enderror" value="{{ old('webmania_app_secret', $config->webmania_app_secret ?? '') }}">
-                                    @error('webmania_app_secret') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-                        </div>
+                        <p class="text-muted small">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            As credenciais são obtidas no painel Webmania → Minha Conta → API.
+                        </p>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -109,6 +97,22 @@
                                     <label>Consumer Secret *</label>
                                     <input type="password" name="webmania_consumer_secret" class="form-control @error('webmania_consumer_secret') is-invalid @enderror" value="{{ old('webmania_consumer_secret', $config->webmania_consumer_secret ?? '') }}">
                                     @error('webmania_consumer_secret') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Access Token *</label>
+                                    <input type="text" name="webmania_access_token" class="form-control @error('webmania_access_token') is-invalid @enderror" value="{{ old('webmania_access_token', $config->webmania_access_token ?? '') }}">
+                                    @error('webmania_access_token') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Access Token Secret *</label>
+                                    <input type="password" name="webmania_access_token_secret" class="form-control @error('webmania_access_token_secret') is-invalid @enderror" value="{{ old('webmania_access_token_secret', $config->webmania_access_token_secret ?? '') }}">
+                                    @error('webmania_access_token_secret') <span class="invalid-feedback">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                         </div>

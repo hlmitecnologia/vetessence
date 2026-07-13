@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\StockMovement;
 use App\Models\Branch;
+use App\Services\Nfe\NfeService;
 use App\Services\StockForecastService;
 use Illuminate\Http\Request;
 
@@ -149,7 +150,7 @@ class StockController extends Controller
         return view('stock.transfer', compact('products', 'branches'));
     }
 
-    public function transfer(Request $request)
+    public function transfer(Request $request, NfeService $nfeService)
     {
         $data = $request->validate([
             'product_id' => 'required|exists:products,id',
@@ -157,9 +158,12 @@ class StockController extends Controller
             'from_branch_id' => 'required|exists:branches,id',
             'to_branch_id' => 'required|exists:branches,id|different:from_branch_id',
             'notes' => 'nullable|string',
+            'emitir_nfe' => 'nullable|boolean',
         ]);
 
         $product = Product::findOrFail($data['product_id']);
+        $fromBranch = Branch::findOrFail($data['from_branch_id']);
+        $toBranch = Branch::findOrFail($data['to_branch_id']);
         $currentStock = $product->stock;
 
         StockMovement::create([
@@ -181,6 +185,21 @@ class StockController extends Controller
             'notes'        => "Recebido da filial #{$data['from_branch_id']}. {$data['notes']}",
             'balance_after' => $currentStock,
         ]);
+
+        if (!empty($data['emitir_nfe'])) {
+            $result = $nfeService->emitirTransferencia(
+                $product,
+                $fromBranch,
+                $toBranch,
+                (float) $data['quantity'],
+                auth()->user(),
+            );
+
+            if (!$result->success) {
+                return redirect()->route('stock.movements')
+                    ->with('warning', "Transferência realizada, mas falha ao emitir NF-e: {$result->errorMessage}");
+            }
+        }
 
         return redirect()->route('stock.movements')
             ->with('success', 'Transferência realizada com sucesso.');

@@ -42,6 +42,11 @@ class FocusNfeProvider implements NfeProvider
         );
     }
 
+    public function emitirTransferencia(NfeConfig $config, array $data): NfeResult
+    {
+        return NfeResult::error('FocusNFe não suporta emissão de NF-e de transferência.');
+    }
+
     public function consultar(NfeConfig $config, string $nfeNumber): NfeResult
     {
         $response = Http::withBasicAuth($config->focusnfe_token, '')

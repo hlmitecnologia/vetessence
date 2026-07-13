@@ -21,11 +21,11 @@ class WebmaniaProviderTest extends ModuleTestCase
     public function test_emitir_success()
     {
         Http::fake([
-            'api.webmania.com.br/v1/nfse/emitir' => Http::response([
+            'api.webmania.com.br/2/nfse/emissao/' => Http::response([
                 'nfse' => '123456',
                 'codigo' => 'COD123',
-                'xml' => 'https://fake.api/nfse/123456.xml',
-                'pdf' => 'https://fake.api/nfse/123456.pdf',
+                'xml' => 'https://webmania.com.br/xml/nfse-123456.xml',
+                'pdf' => 'https://webmania.com.br/pdf/nfse-123456.pdf',
                 'rps' => 'RPS001',
                 'codigo_verificacao' => 'ABCD-1234',
             ], 200),
@@ -44,7 +44,7 @@ class WebmaniaProviderTest extends ModuleTestCase
     public function test_emitir_api_error()
     {
         Http::fake([
-            'api.webmania.com.br/v1/nfse/emitir' => Http::response([
+            'api.webmania.com.br/2/nfse/emissao/' => Http::response([
                 'error' => 'CNPJ inválido',
             ], 422),
         ]);
@@ -61,7 +61,7 @@ class WebmaniaProviderTest extends ModuleTestCase
     public function test_emitir_server_error()
     {
         Http::fake([
-            'api.webmania.com.br/v1/nfse/emitir' => Http::response(null, 500),
+            'api.webmania.com.br/2/nfse/emissao/' => Http::response(null, 500),
         ]);
 
         $config = NfseConfig::factory()->create();
@@ -75,11 +75,11 @@ class WebmaniaProviderTest extends ModuleTestCase
     public function test_consultar_success()
     {
         Http::fake([
-            'api.webmania.com.br/v1/nfse/*' => Http::response([
+            'api.webmania.com.br/2/nfse/123456/' => Http::response([
                 'nfse' => '123456',
                 'codigo' => 'COD123',
-                'xml' => 'https://fake.api/nfse/123456.xml',
-                'pdf' => 'https://fake.api/nfse/123456.pdf',
+                'xml' => 'https://webmania.com.br/xml/nfse-123456.xml',
+                'pdf' => 'https://webmania.com.br/pdf/nfse-123456.pdf',
             ], 200),
         ]);
 
@@ -94,7 +94,7 @@ class WebmaniaProviderTest extends ModuleTestCase
     public function test_consultar_not_found()
     {
         Http::fake([
-            'api.webmania.com.br/v1/nfse/*' => Http::response([
+            'api.webmania.com.br/2/nfse/000000/' => Http::response([
                 'error' => 'NFSe não encontrada',
             ], 404),
         ]);
@@ -109,7 +109,7 @@ class WebmaniaProviderTest extends ModuleTestCase
     public function test_cancelar_success()
     {
         Http::fake([
-            'api.webmania.com.br/v1/nfse/*/cancelar' => Http::response([
+            'api.webmania.com.br/2/nfse/123456/cancelar/' => Http::response([
                 'status' => 'cancelled',
             ], 200),
         ]);
@@ -125,7 +125,7 @@ class WebmaniaProviderTest extends ModuleTestCase
     public function test_cancelar_error()
     {
         Http::fake([
-            'api.webmania.com.br/v1/nfse/*/cancelar' => Http::response([
+            'api.webmania.com.br/2/nfse/123456/cancelar/' => Http::response([
                 'error' => 'Prazo de cancelamento excedido',
             ], 422),
         ]);
@@ -135,5 +135,19 @@ class WebmaniaProviderTest extends ModuleTestCase
         $result = $this->provider->cancelar($config, '123456', 'Teste');
 
         $this->assertFalse($result->success);
+    }
+
+    public function test_headers_uses_bearer_token(): void
+    {
+        $config = NfseConfig::factory()->create([
+            'webmania_access_token' => 'my-bearer-token',
+        ]);
+
+        $refMethod = (new \ReflectionClass(WebmaniaProvider::class))->getMethod('headers');
+        $refMethod->setAccessible(true);
+
+        $headers = $refMethod->invoke($this->provider, $config);
+
+        $this->assertEquals('Bearer my-bearer-token', $headers['Authorization']);
     }
 }
