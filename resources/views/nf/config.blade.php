@@ -6,6 +6,8 @@
 @push('styles')
 <style>
 .provider-fields { display:none; }
+.provider-fields[data-group="nfse"][data-provider="{{ old('provider', $nfseConfig->provider ?? 'webmania') }}"] { display:block; }
+.provider-fields[data-group="nfe"][data-provider="{{ old('provider', $nfeConfig->provider ?? 'focusnfe') }}"] { display:block; }
 </style>
 @endpush
 
