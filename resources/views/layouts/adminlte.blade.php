@@ -497,8 +497,8 @@
                         @endcan
 
                         <!-- FINANCEIRO -->
-                        @if(Gate::allows('financeiro') || Gate::allows('gateway-pagamento') || Gate::allows('nfse.view') || Gate::allows('bank-reconciliation.view'))
-                        <li class="nav-item has-treeview {{ request()->routeIs('invoices.*') || request()->routeIs('reports.*') || request()->routeIs('payment-gateways.*') || request()->routeIs('nfse.*') || request()->routeIs('bank-reconciliation.*') || request()->routeIs('bank-accounts.*') ? 'menu-open' : '' }}">
+                        @if(Gate::allows('financeiro') || Gate::allows('gateway-pagamento') || Gate::allows('nfse.view') || Gate::allows('nfe.view') || Gate::allows('bank-reconciliation.view'))
+                        <li class="nav-item has-treeview {{ request()->routeIs('invoices.*') || request()->routeIs('reports.*') || request()->routeIs('payment-gateways.*') || request()->routeIs('nfse.*') || request()->routeIs('nfe.*') || request()->routeIs('nf.config') || request()->routeIs('bank-reconciliation.*') || request()->routeIs('bank-accounts.*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-dollar-sign"></i>
                                 <p>Financeiro <i class="right fas fa-angle-left"></i></p>
@@ -528,15 +528,23 @@
                                 <li class="nav-item">
                                     <a href="{{ route('nfse.index') }}" class="nav-link {{ request()->routeIs('nfse.index') || request()->routeIs('nfse.show') ? 'active' : '' }}">
                                         <i class="fas fa-file-invoice nav-icon"></i>
-                                        <p>NFSe</p>
+                                        <p>NFS-e</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('nfe.view')
+                                <li class="nav-item">
+                                    <a href="{{ route('nfe.index') }}" class="nav-link {{ request()->routeIs('nfe.index') || request()->routeIs('nfe.show') ? 'active' : '' }}">
+                                        <i class="fas fa-box nav-icon"></i>
+                                        <p>NF-e</p>
                                     </a>
                                 </li>
                                 @endcan
                                 @can('nfse-config.edit')
                                 <li class="nav-item">
-                                    <a href="{{ route('nfse.config') }}" class="nav-link {{ request()->routeIs('nfse.config') ? 'active' : '' }}">
+                                    <a href="{{ route('nf.config') }}" class="nav-link {{ request()->routeIs('nf.config') ? 'active' : '' }}">
                                         <i class="fas fa-cog nav-icon"></i>
-                                        <p>Config. NFSe</p>
+                                        <p>Config. NF</p>
                                     </a>
                                 </li>
                                 @endcan
@@ -646,7 +654,7 @@
                         <!-- ADMINISTRAÇÃO -->
                         @can('admin')
                         <li class="nav-header"><i class="fas fa-cog"></i> ADMINISTRAÇÃO</li>
-                        <li class="nav-item has-treeview {{ request()->routeIs('users.*') || request()->routeIs('roles.*') || request()->routeIs('services.*') || request()->routeIs('categories.*') || request()->routeIs('consent-templates.*') || request()->routeIs('communication-templates.*') || request()->routeIs('communication-queues.*') || request()->routeIs('branches.*') || request()->routeIs('departments.*') || request()->routeIs('positions.*') || request()->routeIs('employees.*') || request()->routeIs('configuracoes.branding.*') || request()->routeIs('configuracoes.notificacoes.*') || request()->routeIs('breed-defaults.*') || request()->routeIs('zoonotic-diseases.*') || request()->routeIs('llm.config') ? 'menu-open' : '' }}">
+                        <li class="nav-item has-treeview {{ request()->routeIs('users.*') || request()->routeIs('roles.*') || request()->routeIs('services.*') || request()->routeIs('categories.*') || request()->routeIs('consent-templates.*') || request()->routeIs('communication-templates.*') || request()->routeIs('communication-queues.*') || request()->routeIs('branches.*') || request()->routeIs('departments.*') || request()->routeIs('positions.*') || request()->routeIs('employees.*') || request()->routeIs('configuracoes.branding.*') || request()->routeIs('configuracoes.notificacoes.*') || request()->routeIs('breed-defaults.*') || request()->routeIs('zoonotic-diseases.*') || request()->routeIs('llm.config') || request()->routeIs('nf.config') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-shield-alt"></i>
                                 <p>Configurações <i class="right fas fa-angle-left"></i></p>
@@ -769,6 +777,14 @@
                                     <a href="{{ route('llm.config') }}" class="nav-link {{ request()->routeIs('llm.config') ? 'active' : '' }}">
                                         <i class="fas fa-brain nav-icon"></i>
                                         <p>IA Diagnóstica</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('nfe-config.edit')
+                                <li class="nav-item">
+                                    <a href="{{ route('nf.config') }}" class="nav-link {{ request()->routeIs('nf.config') ? 'active' : '' }}">
+                                        <i class="fas fa-file-invoice-dollar nav-icon"></i>
+                                        <p>Config. NF</p>
                                     </a>
                                 </li>
                                 @endcan
