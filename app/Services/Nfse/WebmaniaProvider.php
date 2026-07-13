@@ -130,9 +130,9 @@ class WebmaniaProvider implements NfseProvider
                         'cep' => preg_replace('/\D/', '', $tutor->zipcode ?? ''),
                     ],
                     'servico' => [
-                        'descricao' => $invoice->description ?? "Serviços veterinários - Fatura #{$invoice->id}",
+                        'discriminacao' => $invoice->description ?? "Serviços veterinários - Fatura #{$invoice->id}",
                         'valor_servicos' => (float) $invoice->total,
-                        'iss_retido' => false,
+                        'iss_retido' => 2,
                     ],
                 ],
             ],
