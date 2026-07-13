@@ -109,13 +109,13 @@ class WebmaniaProvider implements NfseProvider
         $branch = $invoice->branch;
 
         return [
+            'ambiente' => $config->ambiente === 'producao' ? 1 : 2,
             'rps' => [
                 [
                     'cnpj' => $branch->cnpj,
                     'municipio_ibge' => $branch->municipio_ibge,
                     'regime_tributario' => $branch->regime_tributario,
                     'serie' => $branch->serie ?? '1',
-                    'ambiente' => $config->ambiente === 'producao' ? 1 : 2,
                     'rps_tipo' => '1',
                     'tomador' => [
                         'cpf_cnpj' => preg_replace('/\D/', '', $tutor->cpf ?? $tutor->cnpj ?? ''),
