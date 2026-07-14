@@ -64,6 +64,14 @@
                     </div>
                     @endif
                 </div>
+
+                <hr>
+                <h5>Log da API</h5>
+                @if($nfeInvoice->provider_response)
+                    <pre style="max-height: 400px; overflow-y: auto; background: #f4f6f9; padding: 10px; border-radius: 4px; font-size: 12px;">{{ json_encode($nfeInvoice->provider_response, JSON_PRETTY_PRINT) }}</pre>
+                @else
+                    <p class="text-muted">Nenhum log disponível.</p>
+                @endif
             </div>
             <div class="card-footer">
                 <a href="{{ route('nfe.index') }}" class="btn btn-default"><i class="fas fa-arrow-left"></i> Voltar</a>
