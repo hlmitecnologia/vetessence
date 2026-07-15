@@ -13,31 +13,31 @@ class NfeIoProvider implements NfeProvider
 
     public function __construct()
     {
-        $this->baseUrl = config('nfe.nfeio.base_url', 'https://api.nfe.io');
+        $this->baseUrl = config('nfe.nfeio.base_url', 'https://api.nfse.io');
     }
 
     public function emitir(NfeConfig $config, Invoice $invoice): NfeResult
     {
         $payload = $this->buildPayload($config, $invoice);
 
-        $response = Http::withHeaders(['X-Api-Key' => $config->nfeio_api_key])
-            ->post("{$this->baseUrl}/v1/nfe", $payload);
+        $response = Http::withHeaders($this->headers($config))
+            ->post("{$this->baseUrl}/v2/companies/{$config->nfeio_company_id}/productinvoices", $payload);
 
         $body = $response->json();
 
         if (!$response->successful()) {
-            return NfeResult::error(
-                $body['message'] ?? $body['error'] ?? 'Erro ao emitir NF-e via NFE.io',
-                $body
-            );
+            $error = $body['errors'][0]['message'] ?? $body['message'] ?? $body['error'] ?? 'Erro ao emitir NF-e via NFE.io';
+            return NfeResult::error($error, $body);
         }
 
+        $invoiceData = $body['productInvoice'] ?? $body;
+
         return NfeResult::success(
-            nfeNumber: $body['numero'] ?? $body['nfe'] ?? '',
-            nfeKey: $body['chave'] ?? $body['chave_nfe'] ?? '',
-            xmlUrl: $body['xml'] ?? '',
-            pdfUrl: $body['pdf'] ?? '',
-            danfeUrl: $body['danfe'] ?? '',
+            nfeNumber: (string) ($invoiceData['number'] ?? $body['number'] ?? ''),
+            nfeKey: $invoiceData['accessKey'] ?? $invoiceData['chave'] ?? '',
+            xmlUrl: '',
+            pdfUrl: '',
+            danfeUrl: '',
             rawResponse: $body,
         );
     }
@@ -49,48 +49,54 @@ class NfeIoProvider implements NfeProvider
 
     public function consultar(NfeConfig $config, string $nfeNumber): NfeResult
     {
-        $response = Http::withHeaders(['X-Api-Key' => $config->nfeio_api_key])
-            ->get("{$this->baseUrl}/v1/nfe/{$nfeNumber}");
+        $response = Http::withHeaders($this->headers($config))
+            ->get("{$this->baseUrl}/v2/companies/{$config->nfeio_company_id}/productinvoices/{$nfeNumber}");
 
         $body = $response->json();
 
         if (!$response->successful()) {
-            return NfeResult::error(
-                $body['message'] ?? $body['error'] ?? 'Erro ao consultar NF-e via NFE.io',
-                $body
-            );
+            $error = $body['errors'][0]['message'] ?? $body['message'] ?? $body['error'] ?? 'Erro ao consultar NF-e via NFE.io';
+            return NfeResult::error($error, $body);
         }
 
+        $invoiceData = $body['productInvoice'] ?? $body;
+
         return NfeResult::success(
-            nfeNumber: $body['numero'] ?? '',
-            nfeKey: $body['chave'] ?? '',
-            xmlUrl: $body['xml'] ?? '',
-            pdfUrl: $body['pdf'] ?? '',
-            danfeUrl: $body['danfe'] ?? '',
+            nfeNumber: (string) ($invoiceData['number'] ?? ''),
+            nfeKey: $invoiceData['accessKey'] ?? '',
+            xmlUrl: '',
+            pdfUrl: '',
+            danfeUrl: '',
             rawResponse: $body,
         );
     }
 
     public function cancelar(NfeConfig $config, string $nfeNumber, string $motivo, ?string $nfeKey = null): NfeResult
     {
-        $response = Http::withHeaders(['X-Api-Key' => $config->nfeio_api_key])
-            ->post("{$this->baseUrl}/v1/nfe/{$nfeNumber}/cancelar", [
-                'motivo' => $motivo,
-            ]);
+        $query = $motivo ? ['reason' => $motivo] : [];
+
+        $response = Http::withHeaders($this->headers($config))
+            ->delete("{$this->baseUrl}/v2/companies/{$config->nfeio_company_id}/productinvoices/{$nfeNumber}", $query);
 
         $body = $response->json();
 
         if (!$response->successful()) {
-            return NfeResult::error(
-                $body['message'] ?? $body['error'] ?? 'Erro ao cancelar NF-e via NFE.io',
-                $body
-            );
+            $error = $body['errors'][0]['message'] ?? $body['message'] ?? $body['error'] ?? 'Erro ao cancelar NF-e via NFE.io';
+            return NfeResult::error($error, $body);
         }
 
         return NfeResult::success(
             nfeNumber: $nfeNumber,
             rawResponse: $body,
         );
+    }
+
+    protected function headers(NfeConfig $config): array
+    {
+        return [
+            'Authorization' => 'Basic ' . $config->nfeio_api_key,
+            'Content-Type' => 'application/json',
+        ];
     }
 
     protected function buildPayload(NfeConfig $config, Invoice $invoice): array
@@ -103,38 +109,40 @@ class NfeIoProvider implements NfeProvider
             $product = $item->product;
 
             return [
-                'nome' => $item->description,
+                'code' => (string) ($product?->id ?? $item->id),
+                'description' => $item->description,
                 'ncm' => $product?->ncm ?? '99999999',
                 'cfop' => $product?->cfop ?? '5102',
-                'quantidade' => (float) $item->quantity,
-                'unidade' => $product?->unit ?? 'UN',
-                'valor_unitario' => (float) $item->unit_price,
-                'valor_total' => (float) $item->total,
-                'cst' => $product?->cst ?? '00',
-                'icms_origem' => $product?->icms_origin ?? 0,
-                'peso_kg' => (float) ($product?->weight_kg ?? 0),
+                'quantity' => (float) $item->quantity,
+                'unitAmount' => (float) $item->unit_price,
+                'totalAmount' => (float) $item->total,
             ];
         })->toArray();
 
+        $buyerCpfCnpj = preg_replace('/\D/', '', $tutor->cpf ?? $tutor->cnpj ?? '');
+
         return [
-            'cnpj_emitente' => $branch->cnpj,
-            'ie_emitente' => $branch->ie,
-            'crt_emitente' => $branch->crt,
-            'codigo_ibge_municipio' => $branch->municipio_ibge,
-            'serie' => $branch->serie ?? '1',
-            'ambiente' => $config->ambiente,
-            'natureza_operacao' => 'Venda de mercadoria',
-            'cpf_cnpj_destinatario' => preg_replace('/\D/', '', $tutor->cpf ?? $tutor->cnpj ?? ''),
-            'nome_destinatario' => $tutor->name,
-            'email_destinatario' => $tutor->email ?? '',
-            'telefone_destinatario' => preg_replace('/\D/', '', $tutor->phone ?? ''),
-            'logradouro_destinatario' => $tutor->address ?? '',
-            'numero_destinatario' => $tutor->number ?? 'S/N',
-            'bairro_destinatario' => $tutor->neighborhood ?? '',
-            'cidade_destinatario' => $tutor->city ?? '',
-            'uf_destinatario' => $tutor->state ?? '',
-            'cep_destinatario' => preg_replace('/\D/', '', $tutor->zipcode ?? ''),
-            'itens' => $produtos,
+            'operationNature' => 'Venda de mercadoria',
+            'operationType' => 'Outgoing',
+            'buyer' => [
+                'federalTaxNumber' => (int) $buyerCpfCnpj,
+                'name' => $tutor->name,
+                'email' => $tutor->email ?? '',
+                'address' => [
+                    'country' => 'BRA',
+                    'street' => $tutor->address ?? '',
+                    'number' => $tutor->number ?? 'S/N',
+                    'additionalInformation' => $tutor->complement ?? '',
+                    'district' => $tutor->neighborhood ?? '',
+                    'city' => [
+                        'code' => $tutor->city_ibge ?? '',
+                        'name' => $tutor->city ?? '',
+                    ],
+                    'state' => $tutor->state ?? '',
+                    'postalCode' => preg_replace('/\D/', '', $tutor->zipcode ?? ''),
+                ],
+            ],
+            'items' => $produtos,
         ];
     }
 }

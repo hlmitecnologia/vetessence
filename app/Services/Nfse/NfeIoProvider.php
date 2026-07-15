@@ -20,24 +20,24 @@ class NfeIoProvider implements NfseProvider
         $payload = $this->buildPayload($config, $invoice);
 
         $response = Http::withHeaders($this->headers($config))
-            ->post("{$this->baseUrl}/v1/nfse", $payload);
+            ->post("{$this->baseUrl}/v1/companies/{$config->nfeio_company_id}/serviceinvoices", $payload);
 
         $body = $response->json();
 
         if (!$response->successful()) {
-            return NfseResult::error(
-                $body['erro'] ?? $body['error'] ?? 'Erro ao emitir NFSe via NFE.io',
-                $body
-            );
+            $error = $body['errors'][0]['message'] ?? $body['erro'] ?? $body['error'] ?? 'Erro ao emitir NFSe via NFE.io';
+            return NfseResult::error($error, $body);
         }
 
+        $invoiceData = $body['serviceInvoice'] ?? $body;
+
         return NfseResult::success(
-            nfseNumber: $body['nfse'] ?? $body['numero'] ?? '',
-            nfseCode: $body['codigo'] ?? $body['codigo_verificacao'] ?? '',
-            xmlUrl: $body['xml'] ?? '',
-            pdfUrl: $body['pdf'] ?? '',
-            rpsNumber: $body['rps'] ?? $body['numero_rps'] ?? '',
-            verificationCode: $body['codigo_verificacao'] ?? '',
+            nfseNumber: (string) ($invoiceData['number'] ?? $body['nfse'] ?? $body['numero'] ?? ''),
+            nfseCode: $invoiceData['verificationCode'] ?? $body['codigo'] ?? $body['codigo_verificacao'] ?? '',
+            xmlUrl: '',
+            pdfUrl: '',
+            rpsNumber: $invoiceData['rpsNumber'] ?? $body['rps'] ?? $body['numero_rps'] ?? '',
+            verificationCode: $invoiceData['verificationCode'] ?? $body['codigo_verificacao'] ?? '',
             rawResponse: $body,
         );
     }
@@ -45,24 +45,24 @@ class NfeIoProvider implements NfseProvider
     public function consultar(NfseConfig $config, string $nfseNumber): NfseResult
     {
         $response = Http::withHeaders($this->headers($config))
-            ->get("{$this->baseUrl}/v1/nfse/{$nfseNumber}");
+            ->get("{$this->baseUrl}/v1/companies/{$config->nfeio_company_id}/serviceinvoices/{$nfseNumber}");
 
         $body = $response->json();
 
         if (!$response->successful()) {
-            return NfseResult::error(
-                $body['erro'] ?? $body['error'] ?? 'Erro ao consultar NFSe via NFE.io',
-                $body
-            );
+            $error = $body['errors'][0]['message'] ?? $body['erro'] ?? $body['error'] ?? 'Erro ao consultar NFSe via NFE.io';
+            return NfseResult::error($error, $body);
         }
 
+        $invoiceData = $body['serviceInvoice'] ?? $body;
+
         return NfseResult::success(
-            nfseNumber: $body['nfse'] ?? '',
-            nfseCode: $body['codigo'] ?? '',
-            xmlUrl: $body['xml'] ?? '',
-            pdfUrl: $body['pdf'] ?? '',
-            rpsNumber: $body['rps'] ?? '',
-            verificationCode: $body['codigo_verificacao'] ?? '',
+            nfseNumber: (string) ($invoiceData['number'] ?? ''),
+            nfseCode: $invoiceData['verificationCode'] ?? '',
+            xmlUrl: '',
+            pdfUrl: '',
+            rpsNumber: $invoiceData['rpsNumber'] ?? '',
+            verificationCode: $invoiceData['verificationCode'] ?? '',
             rawResponse: $body,
         );
     }
@@ -70,17 +70,13 @@ class NfeIoProvider implements NfseProvider
     public function cancelar(NfseConfig $config, string $nfseNumber, string $motivo, ?string $uuid = null): NfseResult
     {
         $response = Http::withHeaders($this->headers($config))
-            ->post("{$this->baseUrl}/v1/nfse/{$nfseNumber}/cancelar", [
-                'motivo' => $motivo,
-            ]);
+            ->delete("{$this->baseUrl}/v1/companies/{$config->nfeio_company_id}/serviceinvoices/{$nfseNumber}");
 
         $body = $response->json();
 
         if (!$response->successful()) {
-            return NfseResult::error(
-                $body['erro'] ?? $body['error'] ?? 'Erro ao cancelar NFSe via NFE.io',
-                $body
-            );
+            $error = $body['errors'][0]['message'] ?? $body['erro'] ?? $body['error'] ?? 'Erro ao cancelar NFSe via NFE.io';
+            return NfseResult::error($error, $body);
         }
 
         return NfseResult::success(
@@ -92,7 +88,7 @@ class NfeIoProvider implements NfseProvider
     protected function headers(NfseConfig $config): array
     {
         return [
-            'X-Api-Key' => $config->nfeio_api_key,
+            'Authorization' => 'Basic ' . $config->nfeio_api_key,
             'Content-Type' => 'application/json',
         ];
     }
@@ -102,30 +98,30 @@ class NfeIoProvider implements NfseProvider
         $tutor = $invoice->tutor;
         $branch = $invoice->branch;
 
+        $borrowerCpfCnpj = preg_replace('/\D/', '', $tutor->cpf ?? $tutor->cnpj ?? '');
+
         return [
-            'cnpj' => $branch->cnpj,
-            'municipio_ibge' => $branch->municipio_ibge,
-            'regime_tributario' => $branch->regime_tributario,
-            'serie' => $branch->serie,
-            'ambiente' => $config->ambiente,
-            'rps_tipo' => '1',
-            'tomador' => [
-                'cpf_cnpj' => preg_replace('/\D/', '', $tutor->cpf ?? $tutor->cnpj ?? ''),
-                'nome' => $tutor->name,
+            'borrower' => [
+                'federalTaxNumber' => (int) $borrowerCpfCnpj,
+                'name' => $tutor->name,
                 'email' => $tutor->email ?? '',
-                'telefone' => preg_replace('/\D/', '', $tutor->phone ?? ''),
-                'logradouro' => $tutor->address ?? '',
-                'numero' => $tutor->number ?? 'S/N',
-                'bairro' => $tutor->neighborhood ?? '',
-                'cidade' => $tutor->city ?? '',
-                'uf' => $tutor->state ?? '',
-                'cep' => preg_replace('/\D/', '', $tutor->zipcode ?? ''),
+                'address' => [
+                    'country' => 'BRA',
+                    'street' => $tutor->address ?? '',
+                    'number' => $tutor->number ?? 'S/N',
+                    'additionalInformation' => $tutor->complement ?? '',
+                    'district' => $tutor->neighborhood ?? '',
+                    'city' => [
+                        'code' => $tutor->city_ibge ?? '',
+                        'name' => $tutor->city ?? '',
+                    ],
+                    'state' => $tutor->state ?? '',
+                    'postalCode' => preg_replace('/\D/', '', $tutor->zipcode ?? ''),
+                ],
             ],
-            'servico' => [
-                'descricao' => $invoice->description ?? "Serviços veterinários - Fatura #{$invoice->id}",
-                'valor' => (float) $invoice->total,
-                'iss_retido' => false,
-            ],
+            'cityServiceCode' => $branch->city_service_code ?? $branch->municipio_ibge ?? '',
+            'description' => $invoice->description ?? "Serviços veterinários - Fatura #{$invoice->id}",
+            'servicesAmount' => (float) $invoice->total,
         ];
     }
 }

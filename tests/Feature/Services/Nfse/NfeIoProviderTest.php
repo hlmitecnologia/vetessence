@@ -21,15 +21,18 @@ class NfeIoProviderTest extends ModuleTestCase
     public function test_emitir_success()
     {
         Http::fake([
-            'api.nfe.io/v1/nfse' => Http::response([
-                'nfse' => '123456',
-                'codigo' => 'COD123',
-                'xml' => 'https://fake.api/nfse/123456.xml',
-                'pdf' => 'https://fake.api/nfse/123456.pdf',
+            'api.nfe.io/v1/companies/company-123/serviceinvoices' => Http::response([
+                'serviceInvoice' => [
+                    'number' => 123456,
+                    'verificationCode' => 'COD123',
+                ],
             ], 201),
         ]);
 
-        $config = NfseConfig::factory()->create(['nfeio_api_key' => 'test-api-key']);
+        $config = NfseConfig::factory()->create([
+            'nfeio_api_key' => 'test-api-key',
+            'nfeio_company_id' => 'company-123',
+        ]);
         $invoice = Invoice::factory()->create();
 
         $result = $this->provider->emitir($config, $invoice);
@@ -41,12 +44,15 @@ class NfeIoProviderTest extends ModuleTestCase
     public function test_emitir_api_error()
     {
         Http::fake([
-            'api.nfe.io/v1/nfse' => Http::response([
-                'erro' => 'CNPJ inválido',
+            'api.nfe.io/v1/companies/company-123/serviceinvoices' => Http::response([
+                'errors' => [['message' => 'CNPJ inválido']],
             ], 422),
         ]);
 
-        $config = NfseConfig::factory()->create(['nfeio_api_key' => 'test-api-key']);
+        $config = NfseConfig::factory()->create([
+            'nfeio_api_key' => 'test-api-key',
+            'nfeio_company_id' => 'company-123',
+        ]);
         $invoice = Invoice::factory()->create();
 
         $result = $this->provider->emitir($config, $invoice);
@@ -58,13 +64,18 @@ class NfeIoProviderTest extends ModuleTestCase
     public function test_consultar_success()
     {
         Http::fake([
-            'api.nfe.io/v1/nfse/123456' => Http::response([
-                'nfse' => '123456',
-                'codigo' => 'COD123',
+            'api.nfe.io/v1/companies/company-123/serviceinvoices/123456' => Http::response([
+                'serviceInvoice' => [
+                    'number' => 123456,
+                    'verificationCode' => 'COD123',
+                ],
             ], 200),
         ]);
 
-        $config = NfseConfig::factory()->create(['nfeio_api_key' => 'test-api-key']);
+        $config = NfseConfig::factory()->create([
+            'nfeio_api_key' => 'test-api-key',
+            'nfeio_company_id' => 'company-123',
+        ]);
 
         $result = $this->provider->consultar($config, '123456');
 
@@ -75,12 +86,15 @@ class NfeIoProviderTest extends ModuleTestCase
     public function test_consultar_not_found()
     {
         Http::fake([
-            'api.nfe.io/v1/nfse/000000' => Http::response([
-                'erro' => 'NFSe não encontrada',
+            'api.nfe.io/v1/companies/company-123/serviceinvoices/000000' => Http::response([
+                'errors' => [['message' => 'NFSe não encontrada']],
             ], 404),
         ]);
 
-        $config = NfseConfig::factory()->create(['nfeio_api_key' => 'test-api-key']);
+        $config = NfseConfig::factory()->create([
+            'nfeio_api_key' => 'test-api-key',
+            'nfeio_company_id' => 'company-123',
+        ]);
 
         $result = $this->provider->consultar($config, '000000');
 
@@ -90,12 +104,18 @@ class NfeIoProviderTest extends ModuleTestCase
     public function test_cancelar_success()
     {
         Http::fake([
-            'api.nfe.io/v1/nfse/123456/cancelar' => Http::response([
-                'status' => 'cancelled',
+            'api.nfe.io/v1/companies/company-123/serviceinvoices/123456' => Http::response([
+                'serviceInvoice' => [
+                    'number' => 123456,
+                    'flowStatus' => 'Cancelled',
+                ],
             ], 200),
         ]);
 
-        $config = NfseConfig::factory()->create(['nfeio_api_key' => 'test-api-key']);
+        $config = NfseConfig::factory()->create([
+            'nfeio_api_key' => 'test-api-key',
+            'nfeio_company_id' => 'company-123',
+        ]);
 
         $result = $this->provider->cancelar($config, '123456', 'Cancelamento a pedido');
 
@@ -105,12 +125,15 @@ class NfeIoProviderTest extends ModuleTestCase
     public function test_cancelar_error()
     {
         Http::fake([
-            'api.nfe.io/v1/nfse/123456/cancelar' => Http::response([
-                'erro' => 'Prazo excedido',
+            'api.nfe.io/v1/companies/company-123/serviceinvoices/123456' => Http::response([
+                'errors' => [['message' => 'Prazo excedido']],
             ], 422),
         ]);
 
-        $config = NfseConfig::factory()->create(['nfeio_api_key' => 'test-api-key']);
+        $config = NfseConfig::factory()->create([
+            'nfeio_api_key' => 'test-api-key',
+            'nfeio_company_id' => 'company-123',
+        ]);
 
         $result = $this->provider->cancelar($config, '123456', 'Teste');
 

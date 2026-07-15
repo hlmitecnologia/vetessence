@@ -24,6 +24,7 @@ class NfeIoProviderTest extends ModuleTestCase
     {
         $config = \Mockery::mock(NfeConfig::class);
         $config->shouldReceive('getAttribute')->with('nfeio_api_key')->andReturn('test-api-key');
+        $config->shouldReceive('getAttribute')->with('nfeio_company_id')->andReturn('company-123');
         $config->shouldReceive('getAttribute')->with('ambiente')->andReturn('homologacao');
 
         $invoice = \Mockery::mock(Invoice::class);
@@ -34,32 +35,29 @@ class NfeIoProviderTest extends ModuleTestCase
 
         $refBaseUrl = (new \ReflectionClass(NfeIoProvider::class))->getProperty('baseUrl');
         $refBaseUrl->setAccessible(true);
-        $refBaseUrl->setValue($provider, config('nfe.nfeio.base_url', 'https://api.nfe.io'));
+        $refBaseUrl->setValue($provider, config('nfe.nfeio.base_url', 'https://api.nfse.io'));
 
         Http::fake([
-            'https://api.nfe.io/v1/nfe' => Http::response([
-                'numero' => 'NFE-001',
-                'chave' => '12345678901234567890123456789012345678901234',
-                'xml' => 'https://nfe.io/xml/nfe-001.xml',
-                'pdf' => 'https://nfe.io/pdf/nfe-001.pdf',
-                'danfe' => 'https://nfe.io/danfe/nfe-001.pdf',
+            'https://api.nfse.io/v2/companies/company-123/productinvoices' => Http::response([
+                'productInvoice' => [
+                    'number' => 1,
+                    'accessKey' => '12345678901234567890123456789012345678901234',
+                ],
             ], 201),
         ]);
 
         $result = $provider->emitir($config, $invoice);
 
         $this->assertTrue($result->success);
-        $this->assertEquals('NFE-001', $result->nfeNumber);
+        $this->assertEquals('1', $result->nfeNumber);
         $this->assertEquals('12345678901234567890123456789012345678901234', $result->nfeKey);
-        $this->assertEquals('https://nfe.io/xml/nfe-001.xml', $result->xmlUrl);
-        $this->assertEquals('https://nfe.io/pdf/nfe-001.pdf', $result->pdfUrl);
-        $this->assertEquals('https://nfe.io/danfe/nfe-001.pdf', $result->danfeUrl);
     }
 
     public function test_emitir_failure(): void
     {
         $config = \Mockery::mock(NfeConfig::class);
         $config->shouldReceive('getAttribute')->with('nfeio_api_key')->andReturn('test-api-key');
+        $config->shouldReceive('getAttribute')->with('nfeio_company_id')->andReturn('company-123');
         $config->shouldReceive('getAttribute')->with('ambiente')->andReturn('homologacao');
 
         $invoice = \Mockery::mock(Invoice::class);
@@ -70,11 +68,11 @@ class NfeIoProviderTest extends ModuleTestCase
 
         $refBaseUrl = (new \ReflectionClass(NfeIoProvider::class))->getProperty('baseUrl');
         $refBaseUrl->setAccessible(true);
-        $refBaseUrl->setValue($provider, config('nfe.nfeio.base_url', 'https://api.nfe.io'));
+        $refBaseUrl->setValue($provider, config('nfe.nfeio.base_url', 'https://api.nfse.io'));
 
         Http::fake([
-            'https://api.nfe.io/v1/nfe' => Http::response([
-                'message' => 'CNPJ do emitente inválido',
+            'https://api.nfse.io/v2/companies/company-123/productinvoices' => Http::response([
+                'errors' => [['message' => 'CNPJ do emitente inválido']],
             ], 422),
         ]);
 
@@ -88,20 +86,22 @@ class NfeIoProviderTest extends ModuleTestCase
     {
         $config = \Mockery::mock(NfeConfig::class);
         $config->shouldReceive('getAttribute')->with('nfeio_api_key')->andReturn('test-api-key');
+        $config->shouldReceive('getAttribute')->with('nfeio_company_id')->andReturn('company-123');
 
         Http::fake([
-            'https://api.nfe.io/v1/nfe/NFE-001' => Http::response([
-                'numero' => 'NFE-001',
-                'chave' => '12345678901234567890123456789012345678901234',
-                'xml' => 'https://nfe.io/xml/nfe-001.xml',
-                'status' => 'autorizado',
+            'https://api.nfse.io/v2/companies/company-123/productinvoices/invoice-001' => Http::response([
+                'productInvoice' => [
+                    'number' => 1,
+                    'accessKey' => '12345678901234567890123456789012345678901234',
+                    'flowStatus' => 'Issued',
+                ],
             ], 200),
         ]);
 
-        $result = $this->provider->consultar($config, 'NFE-001');
+        $result = $this->provider->consultar($config, 'invoice-001');
 
         $this->assertTrue($result->success);
-        $this->assertEquals('NFE-001', $result->nfeNumber);
+        $this->assertEquals('1', $result->nfeNumber);
         $this->assertEquals('12345678901234567890123456789012345678901234', $result->nfeKey);
     }
 
@@ -109,10 +109,11 @@ class NfeIoProviderTest extends ModuleTestCase
     {
         $config = \Mockery::mock(NfeConfig::class);
         $config->shouldReceive('getAttribute')->with('nfeio_api_key')->andReturn('test-api-key');
+        $config->shouldReceive('getAttribute')->with('nfeio_company_id')->andReturn('company-123');
 
         Http::fake([
-            'https://api.nfe.io/v1/nfe/INVALID' => Http::response([
-                'message' => 'NF-e não encontrada',
+            'https://api.nfse.io/v2/companies/company-123/productinvoices/INVALID' => Http::response([
+                'errors' => [['message' => 'NF-e não encontrada']],
             ], 404),
         ]);
 
@@ -126,10 +127,14 @@ class NfeIoProviderTest extends ModuleTestCase
     {
         $config = \Mockery::mock(NfeConfig::class);
         $config->shouldReceive('getAttribute')->with('nfeio_api_key')->andReturn('test-api-key');
+        $config->shouldReceive('getAttribute')->with('nfeio_company_id')->andReturn('company-123');
 
         Http::fake([
-            'https://api.nfe.io/v1/nfe/NFE-001/cancelar' => Http::response([
-                'status' => 'cancelado',
+            'https://api.nfse.io/v2/companies/company-123/productinvoices/NFE-001' => Http::response([
+                'productInvoice' => [
+                    'number' => 1,
+                    'flowStatus' => 'Cancelled',
+                ],
             ], 200),
         ]);
 
@@ -143,10 +148,11 @@ class NfeIoProviderTest extends ModuleTestCase
     {
         $config = \Mockery::mock(NfeConfig::class);
         $config->shouldReceive('getAttribute')->with('nfeio_api_key')->andReturn('test-api-key');
+        $config->shouldReceive('getAttribute')->with('nfeio_company_id')->andReturn('company-123');
 
         Http::fake([
-            'https://api.nfe.io/v1/nfe/NFE-001/cancelar' => Http::response([
-                'message' => 'NF-e já cancelada',
+            'https://api.nfse.io/v2/companies/company-123/productinvoices/NFE-001' => Http::response([
+                'errors' => [['message' => 'NF-e já cancelada']],
             ], 400),
         ]);
 

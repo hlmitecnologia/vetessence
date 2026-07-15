@@ -44,4 +44,31 @@ class NfseConfigControllerTest extends ModuleTestCase
         $response = $this->put(route('nfse.config.update'), []);
         $response->assertSessionHasErrors(['provider', 'ambiente']);
     }
+
+    public function test_update_with_nfeio()
+    {
+        $response = $this->put(route('nfse.config.update'), [
+            'provider' => 'nfeio',
+            'ambiente' => 'homologacao',
+            'nfeio_api_key' => 'nfeio-api-key-789',
+            'nfeio_company_id' => 'company-456',
+        ]);
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('nfse_configs', [
+            'provider' => 'nfeio',
+            'ambiente' => 'homologacao',
+            'is_active' => true,
+        ]);
+    }
+
+    public function test_update_nfeio_validates_company_id()
+    {
+        $response = $this->put(route('nfse.config.update'), [
+            'provider' => 'nfeio',
+            'ambiente' => 'homologacao',
+            'nfeio_api_key' => 'key',
+        ]);
+        $response->assertSessionHasErrors(['nfeio_company_id']);
+    }
 }

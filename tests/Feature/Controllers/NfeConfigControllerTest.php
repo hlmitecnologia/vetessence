@@ -54,6 +54,7 @@ class NfeConfigControllerTest extends ModuleTestCase
             'provider' => 'nfeio',
             'ambiente' => 'producao',
             'nfeio_api_key' => 'nfeio-api-key-456',
+            'nfeio_company_id' => 'company-123',
         ]);
         $response->assertRedirect();
         $this->assertDatabaseHas('nfe_configs', [

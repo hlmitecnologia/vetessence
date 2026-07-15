@@ -107,10 +107,25 @@
                     {{-- NFE.IO --}}
                     <div class="provider-fields" data-provider="nfeio" data-group="nfse">
                         <h6 class="text-primary mt-3"><i class="fas fa-file-invoice mr-1"></i>Credenciais NFE.io</h6>
-                        <div class="form-group">
-                            <label>API Key *</label>
-                            <input type="text" name="nfeio_api_key" class="form-control @error('nfeio_api_key') is-invalid @enderror" value="{{ old('nfeio_api_key', $nfseConfig->nfeio_api_key ?? '') }}" placeholder="Chave da API">
-                            @error('nfeio_api_key') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        <p class="text-muted small">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            A API NFE.io utiliza o header <code>Authorization: Basic {api_key}</code>. O Company ID é o identificador da empresa cadastrada na plataforma NFE.io.
+                        </p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>API Key *</label>
+                                    <input type="text" name="nfeio_api_key" class="form-control @error('nfeio_api_key') is-invalid @enderror" value="{{ old('nfeio_api_key', $nfseConfig->nfeio_api_key ?? '') }}" placeholder="Chave da API">
+                                    @error('nfeio_api_key') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Company ID *</label>
+                                    <input type="text" name="nfeio_company_id" class="form-control @error('nfeio_company_id') is-invalid @enderror" value="{{ old('nfeio_company_id', $nfseConfig->nfeio_company_id ?? '') }}" placeholder="ID da empresa na NFE.io">
+                                    @error('nfeio_company_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -173,10 +188,25 @@
                     {{-- NFE.IO --}}
                     <div class="provider-fields" data-provider="nfeio" data-group="nfe">
                         <h6 class="text-primary mt-3"><i class="fas fa-file-invoice mr-1"></i>Credenciais NFE.io</h6>
-                        <div class="form-group">
-                            <label>API Key *</label>
-                            <input type="text" name="nfeio_api_key" class="form-control @error('nfeio_api_key') is-invalid @enderror" value="{{ old('nfeio_api_key', $nfeConfig->nfeio_api_key ?? '') }}" placeholder="Chave da API">
-                            @error('nfeio_api_key') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        <p class="text-muted small">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            A API NFE.io utiliza o header <code>Authorization: Basic {api_key}</code>. O Company ID é o identificador da empresa cadastrada na plataforma NFE.io.
+                        </p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>API Key *</label>
+                                    <input type="text" name="nfeio_api_key" class="form-control @error('nfeio_api_key') is-invalid @enderror" value="{{ old('nfeio_api_key', $nfeConfig->nfeio_api_key ?? '') }}" placeholder="Chave da API">
+                                    @error('nfeio_api_key') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Company ID *</label>
+                                    <input type="text" name="nfeio_company_id" class="form-control @error('nfeio_company_id') is-invalid @enderror" value="{{ old('nfeio_company_id', $nfeConfig->nfeio_company_id ?? '') }}" placeholder="ID da empresa na NFE.io">
+                                    @error('nfeio_company_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
                         </div>
                     </div>
 

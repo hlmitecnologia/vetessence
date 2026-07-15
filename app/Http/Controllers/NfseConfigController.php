@@ -41,6 +41,7 @@ class NfseConfigController extends Controller
             ],
             'nfeio' => [
                 'nfeio_api_key' => 'required|string',
+                'nfeio_company_id' => 'required|string',
             ],
             default => [],
         };

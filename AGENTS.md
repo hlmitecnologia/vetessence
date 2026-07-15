@@ -64,6 +64,30 @@ php artisan tinker
 ```
 Requer chaves de homologação Webmania para validar fluxo completo.
 
+### PROJETO NFE.IO
+
+Para retomar a integração NFE.io (NFe e NFS-e), chame por **PROJETO NFE.IO**.
+
+**Feito nesta sessão:**
+- **NFE.io Provider NFe (v2 Product Invoices)**: reescrito para API `https://api.nfse.io/v2/companies/{companyId}/productinvoices` com auth `Authorization: Basic {base64(apiKey)}`; endpoints emitir/consultar/cancelar
+- **NFE.io Provider NFS-e (v1 Service Invoices)**: reescrito para API `https://api.nfe.io/v1/companies/{companyId}/serviceinvoices` com auth `Authorization: Basic {base64(apiKey)}`; endpoints emitir/consultar/cancelar
+- **Migration**: `add_nfeio_company_id_to_nf_configs` adiciona `nfeio_company_id` em `nfe_configs` e `nfse_configs`
+- **Models**: fillable `nfeio_company_id` em `NfeConfig` e `NfseConfig`
+- **Controllers**: validação `nfeio_company_id` em `NfeConfigController` e `NfseConfigController`
+- **View**: campo `company_id` adicionado no form de config NF (ambos NFe e NFS-e)
+- **Config**: `config/nfe.php` com `base_url` apontando para `https://api.nfse.io`
+- **Tests**: 12/12 passando (Unit NFe + Feature NFS-e)
+- **Banco**: `.env` e `.env.testing` com `DB_DATABASE=vetessence` (MySQL 192.168.0.150)
+
+**Próximo passo:**
+```bash
+php artisan tinker
+# Configurar credenciais na tela /nf/config e testar:
+>>> $config = App\Models\NfeConfig::first();
+>>> $nfseConfig = App\Models\NfseConfig::first();
+```
+Requer chave de API NFE.io + company_id para validar fluxo completo.
+
 ### Recent
 - **Manuais atualizados**: 7 documentos revisados (151 lines added, 27 removed) para refletir integração real de pagamentos, campos RH, layout do portal, plantões, estoque
 - **Repositório público**: MIT license, README, CONTRIBUTING, SECURITY, CODEOWNERS, issue templates, CI workflow, .env.example

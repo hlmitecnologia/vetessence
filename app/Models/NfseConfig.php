@@ -18,7 +18,7 @@ class NfseConfig extends Model
         'focusnfe_token',
         'spedy_api_key',
         'spedy_api_secret',
-        'nfeio_api_key',
+        'nfeio_api_key', 'nfeio_company_id',
         'is_active',
     ];
 
