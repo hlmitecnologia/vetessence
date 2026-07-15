@@ -33,6 +33,7 @@
             </p></div>
             <div class="col-md-3"><strong>Cidade/UF:</strong><p>{{ $bCity ?? '-' }}{{ $bState ? ' - ' . $bState : '' }}</p></div>
             <div class="col-md-3"><strong>CNPJ:</strong><p>{{ $branch->cnpj ?? '-' }}</p></div>
+            <div class="col-md-3"><strong>Inscrição Estadual:</strong><p>{{ $branch->ie ?? '-' }}</p></div>
         </div>
         <div class="row mt-2">
             <div class="col-md-4"><strong>Inscrição Municipal:</strong><p>{{ $branch->im ?? '-' }}</p></div>

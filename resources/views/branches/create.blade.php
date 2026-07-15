@@ -91,6 +91,13 @@
                         @error('cnpj')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="ie">Inscrição Estadual *</label>
+                        <input type="text" name="ie" class="form-control @error('ie') is-invalid @enderror" value="{{ old('ie') }}" required>
+                        @error('ie')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-4">
