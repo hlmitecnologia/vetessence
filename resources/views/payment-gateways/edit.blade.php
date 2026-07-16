@@ -268,7 +268,11 @@
         var selected = select.value;
         var fields = document.querySelectorAll('.provider-fields[data-group="gateway"]');
         for (var i = 0; i < fields.length; i++) {
-            fields[i].style.display = fields[i].dataset.provider === selected ? 'block' : 'none';
+            var visible = fields[i].dataset.provider === selected;
+            fields[i].style.display = visible ? 'block' : 'none';
+            fields[i].querySelectorAll('input, textarea, select').forEach(function(el) {
+                el.disabled = !visible;
+            });
         }
     }
     document.addEventListener('DOMContentLoaded', function() {
