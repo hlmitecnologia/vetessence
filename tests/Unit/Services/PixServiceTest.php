@@ -73,6 +73,6 @@ class PixServiceTest extends TestCase
         $service = app(PixService::class);
         $payload = $service->buildPayload(99.90);
 
-        $this->assertStringContainsString('5499.90', $payload);
+        $this->assertStringContainsString('540599.90', $payload);
     }
 }

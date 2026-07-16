@@ -1,7 +1,8 @@
 <div class="bg-blue-50 border border-blue-200 rounded-xl p-8 text-center">
     <h3 class="text-lg font-bold text-blue-800 mb-4">Pagamento via PIX</h3>
-    <div class="mb-4">
-        {!! $invoice->pix_code !!}
+    <div class="mb-4 flex justify-center">
+        <img src="{{ $invoice->getQRCodeBase64() }}" alt="{{ $invoice->pix_code }}"
+            class="w-48 h-48" style="image-rendering: pixelated;">
     </div>
     <button onclick="copyPix()"
         class="portal-btn bg-blue-600 hover:bg-blue-700 text-white font-semibold">

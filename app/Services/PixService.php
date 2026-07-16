@@ -71,67 +71,49 @@ class PixService
 
     public function buildPayload($value, $txid = '')
     {
-        $payload = $this->buildMerchantAccountInformation($txid);
-        $payload .= $this->buildMerchantCategoryCode();
-        $payload .= $this->buildTransactionCurrency();
-        $payload .= $this->buildCountryCode();
-        $payload .= $this->buildMerchantName();
-        $payload .= $this->buildCity();
-        
+        $payload = $this->buildMerchantAccountInformation();
+        $payload .= $this->tlv('52', '04', $this->getMerchantCategoryCode());
+        $payload .= $this->tlv('53', '03', $this->getTransactionCurrency());
+        $payload .= $this->tlv('58', '02', $this->getCountryCode());
+        $payload .= $this->tlv('59', strlen(substr($this->merchantName, 0, 25)), substr($this->merchantName, 0, 25));
+        $payload .= $this->tlv('60', strlen(substr($this->city, 0, 15)), substr($this->city, 0, 15));
+
         if ($value > 0) {
-            $payload .= $this->buildTransactionAmount($value);
+            $amount = number_format($value, 2, '.', '');
+            $payload .= $this->tlv('54', strlen($amount), $amount);
         }
-        
-        return $this->buildCompletePayload($payload);
-    }
 
-    protected function buildMerchantAccountInformation($txid)
-    {
-        $mai = $this->gi . '01' . $this->pixKey;
-        
-        if (!empty($this->url)) {
-            $mai .= '02' . $this->url;
-        }
-        
         if (!empty($txid)) {
-            $txid = str_pad(substr($txid, 0, 25), 25, ' ', STR_PAD_RIGHT);
-            $mai .= '05' . $txid;
+            $txidClean = substr($txid, 0, 25);
+            $payload .= $this->tlv('62', strlen($txidClean) + 4, '05' . $this->tlvLen(strlen($txidClean)) . $txidClean);
         }
-        
-        return '00' . str_pad($mai, strlen($mai), ' ', STR_PAD_RIGHT);
+
+        return '000201' . $payload . '6304';
     }
 
-    protected function buildMerchantCategoryCode()
+    protected function buildMerchantAccountInformation()
     {
-        return '52' . $this->getMerchantCategoryCode();
+        $mai = $this->tlv('00', strlen($this->gi), $this->gi);
+        $mai .= $this->tlv('01', strlen($this->pixKey), $this->pixKey);
+
+        if (!empty($this->url)) {
+            $mai .= $this->tlv('02', strlen($this->url), $this->url);
+        }
+
+        return $this->tlv('26', strlen($mai), $mai);
     }
 
-    protected function buildTransactionCurrency()
+    protected function tlv(string $tag, int $len, string $value): string
     {
-        return '53' . $this->getTransactionCurrency();
+        return $tag . $this->tlvLen($len) . $value;
     }
 
-    protected function buildCountryCode()
+    protected function tlvLen(int $len): string
     {
-        return '58' . $this->getCountryCode();
-    }
-
-    protected function buildMerchantName()
-    {
-        $name = str_pad(substr($this->merchantName, 0, 25), 25, ' ', STR_PAD_RIGHT);
-        return '59' . $name;
-    }
-
-    protected function buildCity()
-    {
-        $city = str_pad(substr($this->city, 0, 15), 15, ' ', STR_PAD_RIGHT);
-        return '60' . $city;
-    }
-
-    protected function buildTransactionAmount($value)
-    {
-        $amount = number_format($value, 2, '.', '');
-        return '54' . $amount;
+        if ($len < 10) {
+            return '0' . $len;
+        }
+        return (string) $len;
     }
 
     protected function buildCompletePayload($payload)
@@ -141,21 +123,21 @@ class PixService
 
     public function getCRC16($payload)
     {
-        $payload .= '6304';
         $crc = 0xFFFF;
         
         for ($i = 0; $i < strlen($payload); $i++) {
-            $crc ^= ord($payload[$i]);
-            for ($j = 8; $j != 0; $j--) {
-                if (($crc & 1) != 0) {
-                    $crc = ($crc >> 1) ^ 0x1021;
+            $crc ^= ord($payload[$i]) << 8;
+            for ($j = 0; $j < 8; $j++) {
+                if ($crc & 0x8000) {
+                    $crc = ($crc << 1) ^ 0x1021;
                 } else {
-                    $crc = $crc >> 1;
+                    $crc = $crc << 1;
                 }
+                $crc &= 0xFFFF;
             }
         }
         
-        return strtoupper(dechex($crc));
+        return strtoupper(str_pad(dechex($crc), 4, '0', STR_PAD_LEFT));
     }
 
     public function generatePayload($value, $txid = '')
