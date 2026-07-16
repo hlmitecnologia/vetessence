@@ -197,7 +197,8 @@
                 </div>
                 <div class="form-group">
                     <label>URL (opcional — para PIX dinâmico)</label>
-                    <input type="url" name="config[url]" class="form-control" value="{{ old('config.url') }}" placeholder="https://">
+                    <input type="url" name="config[url]" class="form-control @error('config.url') is-invalid @enderror" value="{{ old('config.url') }}" placeholder="https://">
+                    @error('config.url')<span class="invalid-feedback">{{ $message }}</span>@enderror
                 </div>
             </div>
 
