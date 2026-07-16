@@ -42,7 +42,7 @@ class PaymentGatewayController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active', false);
-        $validated['is_sandbox'] = $request->boolean('is_sandbox', true);
+        $validated['is_sandbox'] = $request->boolean('is_sandbox');
 
         if ($request->has('config') && is_array($request->config)) {
             $validated['config'] = array_merge([
@@ -93,7 +93,7 @@ class PaymentGatewayController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active', false);
-        $validated['is_sandbox'] = $request->boolean('is_sandbox', true);
+        $validated['is_sandbox'] = $request->boolean('is_sandbox');
 
         if ($request->has('config') && is_array($request->config)) {
             $validated['config'] = array_merge([
