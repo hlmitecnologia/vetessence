@@ -74,7 +74,16 @@ O **VetEssence** é um sistema ERP completo para clínicas veterinárias, constr
 
 ### Financeiro
 - **Faturas** — Faturamento de serviços/produtos com controle de pagamentos
-- **Auto-Faturamento** — Geração automática de fatura ao concluir consulta
+- **Auto-Faturamento** — Geração automática de fatura ao:
+  - Concluir consulta (AppointmentCompleted)
+  - Finalizar check-out de hospedagem (Boarding)
+  - Disponibilizar resultado de exame laboratorial (status `ready`)
+  - Concluir exame de imagem (status `completed`)
+  - Realizar alta de internação (status `discharged`)
+- **Convênios** — Gestão de convênios e planos de saúde com:
+  - Assinaturas por tutor (múltiplos pets cobertos)
+  - Regras de cobertura configuráveis (por tipo de item e/ou serviço específico, com % de cobertura, valor máximo, pré-autorização e limite anual)
+  - Desconto automático aplicado em faturas de consultas, hospedagens, exames e internações
 - **NFSe / NFC-e** — Nota Fiscal de Serviços Eletrônica e Nota Fiscal de Consumidor Eletrônica via **Webmania** ou **NFE.io**, emissão manual ou automática
 - **Pagamentos** — Multi-forma (dinheiro, cartão, PIX via gateway), parcelamentos. **Gateway atualmente disponível: PIX**. Mercado Pago, PagSeguro, Stripe e Stone estão previstos para próximas versões.
 - **Conciliação Bancária** — Importação de extrato OFX/QIF/CSV, correspondência automática

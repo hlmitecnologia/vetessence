@@ -3735,3 +3735,32 @@ Plano completo e progresso migrados para arquivos dedicados para manter o contex
 | Total testes Dusk | ~75 |
 | Fases de implementação | 16 |
 | Progresso atual | 0 / 16 fases concluídas |
+
+---
+
+## Sessão 2026-07-16 — Convênios Reform + Auto-Faturamento
+
+### Concluído
+- **Convênios reform**: migrations `rework_convenios` (cria `convenio_subscriptions`, `convenio_covered_pets`, `convenio_coverage_rules` com data migration de `convenio_pet`), `add_boarding_and_convenio_to_invoices`, `add_convenio_discount_to_invoices`
+- **Models**: `ConvenioSubscription`, `ConvenioCoveredPet`, `ConvenioCoverageRule`
+- **Models atualizados**: `Convenio` → subscriptions, coverageRules; `Tutor` → convenioSubscriptions, activeConvenioSubscriptionForPet; `Invoice` → boarding_id, convenio_subscription_id, convenio_discount; `Boarding` → kennel_id fillable, invoice, scopePendingInvoice
+- **Bug fixes**: `Boarding::checkedOutBy()` segundo arg, `BoardingKennel::activeBoardings()` status, `Tutor::convenioPets()` removido
+- **`ConvenioService`**: findActiveSubscription + applyDiscount com coverage rules (service_id → item_type fallback)
+- **Auto-faturamento consultas**: `GenerateInvoiceFromAppointment` + `MedicalRecordController::generateInvoice` com desconto convênio
+- **Auto-faturamento hospedagem**: `BoardingController::checkout` gera invoice (diárias + banho/tosa)
+- **Auto-faturamento exames**: `LabOrderController::update` (status `ready`), `ImagingExamController::update` (status `completed`)
+- **Auto-faturamento internação**: `HospitalizationController::update` (status `discharged`)
+- **Trait `AutoInvoicesEntity`**: lógica compartilhada
+- **Livewire `TutorConvenioForm`** integrado na tela do tutor
+- **Livewire `ConvenioCoverageRules`** integrado na tela de detalhes do convênio
+- **23 testes** (models, service, boarding checkout, auto-invoice lab/imaging/hosp)
+- **README** atualizado; **PLAN.md** preservado + este apêndice
+- **PIX fix**: `!str_starts_with(pix_code, '00020126')` + PHP-FPM restart
+- **PDV/gateways suspensos**
+
+### Pendente (próximas)
+- Claims por subscription + relatório descontos
+- Validação limite anual coverage rules
+- Workflow pré-autorização
+- Gateway PDV (Mercado Pago, PagSeguro, Stripe, Stone)
+- i18n, PWA, chat push

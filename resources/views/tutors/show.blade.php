@@ -102,6 +102,56 @@
 
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-handshake mr-2"></i>Convênios</h5>
+                <button onclick="openConvenioModal()" class="btn btn-sm btn-primary">
+                    <i class="fas fa-plus mr-1"></i> Novo Convênio
+                </button>
+            </div>
+            <div class="card-body p-0">
+                @php $subs = $tutor->convenioSubscriptions()->with('convenio', 'coveredPets.pet')->get(); @endphp
+                @if($subs->count() > 0)
+                <table class="table table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Convênio</th>
+                            <th>Desconto</th>
+                            <th>Pets</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($subs as $sub)
+                        <tr>
+                            <td>{{ $sub->convenio->name }} @if($sub->policy_number)<br><small class="text-muted">Apólice: {{ $sub->policy_number }}</small>@endif</td>
+                            <td>{{ $sub->discount_percent }}%</td>
+                            <td>
+                                @foreach($sub->coveredPets as $cp)
+                                    <a href="{{ route('pets.show', $cp->pet) }}" class="badge badge-info">{{ $cp->pet->name }}</a>
+                                @endforeach
+                            </td>
+                            <td>
+                                <span class="badge {{ $sub->is_active ? 'badge-success' : 'badge-secondary' }}">
+                                    {{ $sub->is_active ? 'Ativo' : 'Inativo' }}
+                                </span>
+                            </td>
+                            <td>
+                                <button onclick="editSubscription({{ $sub->id }})" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                @else
+                <p class="text-muted text-center mb-0 py-4">Nenhum convênio vinculado.</p>
+                @endif
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="fas fa-file-invoice mr-2"></i>Faturas</h5>
                 <a href="{{ route('invoices.create') }}?tutor_id={{ $tutor->id }}" class="btn btn-sm btn-primary">
                     <i class="fas fa-plus mr-1"></i> Nova Fatura
@@ -174,14 +224,29 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="convenioSubscriptionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Vincular Convênio</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                @livewire('tutor-convenio-form', key('tutor-convenio-form-show'))
+            </div>
+        </div>
+    </div>
+</div>
 @endpush
 
 @push('scripts')
 <script>
 document.addEventListener('livewire:initialized', function() {
-    Livewire.on('close-modal', function() { $('#tutorModal, #petModal').modal('hide'); });
+    Livewire.on('close-modal', function() { $('#tutorModal, #petModal, #convenioSubscriptionModal').modal('hide'); });
     Livewire.on('tutor-saved', function() { location.reload(); });
     Livewire.on('pet-saved', function() { location.reload(); });
+    Livewire.on('subscription-saved', function() { location.reload(); });
 });
 function openEditModal(id) {
     Livewire.dispatch('editTutor', { id: id });
@@ -192,6 +257,14 @@ function openNewPetModal() {
     Livewire.dispatch('createPetForTutor', { tutorId: {{ $tutor->id }} });
     document.getElementById('petModalTitle').textContent = 'Novo Pet';
     $('#petModal').modal('show');
+}
+function openConvenioModal() {
+    Livewire.dispatch('resetForm', null, 'tutor-convenio-form-show');
+    $('#convenioSubscriptionModal').modal('show');
+}
+function editSubscription(id) {
+    Livewire.dispatch('editSubscription', subscriptionId: id, component: 'tutor-convenio-form-show');
+    $('#convenioSubscriptionModal').modal('show');
 }
 </script>
 @endpush

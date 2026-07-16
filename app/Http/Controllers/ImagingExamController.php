@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 
 class ImagingExamController extends Controller
 {
+    use Traits\AutoInvoicesEntity;
+
     public function __construct()
     {
         $this->middleware('can:imagem');
@@ -100,7 +102,17 @@ class ImagingExamController extends Controller
             'exam_date' => 'required|date',
         ]);
 
+        $wasStatus = $imagingExam->status;
         $imagingExam->update($validated);
+
+        if ($wasStatus !== 'completed' && $imagingExam->status === 'completed') {
+            $imagingExam->load('pet');
+            $this->autoInvoice(
+                $imagingExam,
+                'imagem',
+                "Exame de imagem #{$imagingExam->exam_number}"
+            );
+        }
 
         return redirect()->route('imaging-exams.index')->with('success', 'Exame de imagem atualizado!');
     }

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class LaboratoryOrderController extends Controller
 {
+    use Traits\AutoInvoicesEntity;
+
     public function __construct()
     {
         $this->middleware('can:laboratorio');
@@ -109,7 +111,17 @@ class LaboratoryOrderController extends Controller
             ? $request->validate(['result_date' => 'required|date'])['result_date']
             : ($request->result_date ?? null);
 
+        $wasStatus = $laboratoryOrder->status;
         $laboratoryOrder->update($validated);
+
+        if ($wasStatus !== 'ready' && $laboratoryOrder->status === 'ready') {
+            $laboratoryOrder->load('pet');
+            $this->autoInvoice(
+                $laboratoryOrder,
+                'exame',
+                "Exame laboratorial #{$laboratoryOrder->order_number}"
+            );
+        }
 
         return redirect()->route('laboratory-orders.index')->with('success', 'Pedido laboratorial atualizado!');
     }

@@ -1,7 +1,7 @@
 @extends('layouts.adminlte', ['title' => $convenio->name])
 
 @section('content')
-<div class="row justify-content-center">
+<div class="row">
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
@@ -42,6 +42,9 @@
             <a href="{{ route('convenios.index') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left mr-1"></i>Voltar</a>
             <a href="{{ route('convenios.edit', $convenio) }}" class="btn btn-primary"><i class="fas fa-edit mr-1"></i>Editar</a>
         </div>
+    </div>
+    <div class="col-md-6">
+        @livewire('convenio-coverage-rules', ['convenio' => $convenio], key('coverage-rules-' . $convenio->id))
     </div>
 </div>
 @endsection

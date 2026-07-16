@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 
 class HospitalizationController extends Controller
 {
+    use Traits\AutoInvoicesEntity;
+
     public function __construct()
     {
         $this->middleware('can:hospitalizacao');
@@ -97,7 +99,17 @@ class HospitalizationController extends Controller
             'discharge_instructions' => 'nullable|string',
         ]);
 
+        $wasStatus = $hospitalization->status;
         $hospitalization->update($validated);
+
+        if ($wasStatus !== 'discharged' && $hospitalization->status === 'discharged') {
+            $hospitalization->load('pet');
+            $this->autoInvoice(
+                $hospitalization,
+                'internacao',
+                "Internação #{$hospitalization->id}"
+            );
+        }
 
         return redirect()->route('hospitalizations.index')->with('success', 'Internação atualizada com sucesso!');
     }
