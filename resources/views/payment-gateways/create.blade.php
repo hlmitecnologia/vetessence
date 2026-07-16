@@ -53,11 +53,13 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <div class="custom-control custom-checkbox mt-4">
+                            <input type="hidden" name="is_active" value="0">
                             <input type="checkbox" name="is_active" id="is_active" class="custom-control-input" value="1" {{ old('is_active') ? 'checked' : '' }}>
                             <label class="custom-control-label" for="is_active">Ativo (desativa outros do mesmo canal)</label>
                         </div>
                         <div class="custom-control custom-checkbox">
-                            <input type="checkbox" name="is_sandbox" id="is_sandbox" class="custom-control-input" value="1" {{ old('is_sandbox', '1') ? 'checked' : '' }}>
+                            <input type="hidden" name="is_sandbox" value="0">
+                            <input type="checkbox" name="is_sandbox" id="is_sandbox" class="custom-control-input" value="1" {{ old('is_sandbox') ? 'checked' : '' }}>
                             <label class="custom-control-label" for="is_sandbox">Modo Sandbox (homologação)</label>
                         </div>
                     </div>
