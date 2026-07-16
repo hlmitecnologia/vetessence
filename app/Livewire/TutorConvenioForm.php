@@ -44,7 +44,8 @@ class TutorConvenioForm extends Component
 
     public function load($subscriptionId)
     {
-        $this->subscription = ConvenioSubscription::findOrFail($subscriptionId);
+        $this->subscription = ConvenioSubscription::with('convenio')->findOrFail($subscriptionId);
+        $this->tutor = $this->subscription->tutor;
         $this->convenio_id = $this->subscription->convenio_id;
         $this->policy_number = $this->subscription->policy_number;
         $this->discount_percent = $this->subscription->discount_percent;

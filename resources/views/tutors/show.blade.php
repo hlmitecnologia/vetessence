@@ -233,7 +233,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                @livewire('tutor-convenio-form', key('tutor-convenio-form-show'))
+                @livewire('tutor-convenio-form', ['tutor' => $tutor], key('tutor-convenio-form-show'))
             </div>
         </div>
     </div>
