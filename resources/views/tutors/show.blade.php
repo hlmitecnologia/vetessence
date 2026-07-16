@@ -259,11 +259,11 @@ function openNewPetModal() {
     $('#petModal').modal('show');
 }
 function openConvenioModal() {
-    Livewire.dispatch('resetForm', null, 'tutor-convenio-form-show');
+    Livewire.dispatchTo('tutor-convenio-form', 'resetForm');
     $('#convenioSubscriptionModal').modal('show');
 }
 function editSubscription(id) {
-    Livewire.dispatch('editSubscription', subscriptionId: id, component: 'tutor-convenio-form-show');
+    Livewire.dispatchTo('tutor-convenio-form', 'editSubscription', { subscriptionId: id });
     $('#convenioSubscriptionModal').modal('show');
 }
 </script>
