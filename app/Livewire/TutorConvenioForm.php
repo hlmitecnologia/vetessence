@@ -21,7 +21,10 @@ class TutorConvenioForm extends Component
     public $is_active = true;
     public $selectedPets = [];
 
-    protected $listeners = ['editSubscription' => 'load'];
+    protected $listeners = [
+        'editSubscription' => 'load',
+        'resetForm' => 'resetForm',
+    ];
 
     protected function rules()
     {

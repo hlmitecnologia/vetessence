@@ -247,6 +247,9 @@ document.addEventListener('livewire:initialized', function() {
     Livewire.on('tutor-saved', function() { location.reload(); });
     Livewire.on('pet-saved', function() { location.reload(); });
     Livewire.on('subscription-saved', function() { location.reload(); });
+    $('#convenioSubscriptionModal').on('hidden.bs.modal', function() {
+        Livewire.dispatchTo('tutor-convenio-form', 'resetForm');
+    });
 });
 function openEditModal(id) {
     Livewire.dispatch('editTutor', { id: id });
