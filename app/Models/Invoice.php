@@ -84,7 +84,7 @@ class Invoice extends Model
 
     public function generatePixCode(): array
     {
-        if (!$this->pix_code) {
+        if (!$this->pix_code || !$this->pix_expiration || $this->pix_expiration->isPast()) {
             $txid = str_replace(['-', ' '], '', $this->invoice_number);
             $pixService = app(\App\Services\PixService::class);
             $qrcode = $pixService->generateQRCode((float) $this->total, $txid);
