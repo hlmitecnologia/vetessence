@@ -32,7 +32,7 @@ class PaymentGatewayController extends Controller
             'channel' => 'required|in:portal,pdv,both',
             'is_active' => 'boolean',
             'is_sandbox' => 'boolean',
-            'public_key' => 'nullable|string',
+            'public_key' => 'nullable|string|required_if:provider,pix',
             'secret_key' => 'nullable|string',
             'webhook_secret' => 'nullable|string',
             'config' => 'nullable',
@@ -43,6 +43,10 @@ class PaymentGatewayController extends Controller
 
         $validated['is_active'] = $request->boolean('is_active', false);
         $validated['is_sandbox'] = $request->boolean('is_sandbox');
+
+        if (empty($validated['branch_id'])) {
+            $validated['branch_id'] = null;
+        }
 
         if ($request->has('config') && is_array($request->config)) {
             $validated['config'] = array_merge([
@@ -83,7 +87,7 @@ class PaymentGatewayController extends Controller
             'channel' => 'required|in:portal,pdv,both',
             'is_active' => 'boolean',
             'is_sandbox' => 'boolean',
-            'public_key' => 'nullable|string',
+            'public_key' => 'nullable|string|required_if:provider,pix',
             'secret_key' => 'nullable|string',
             'webhook_secret' => 'nullable|string',
             'config' => 'nullable',
@@ -94,6 +98,10 @@ class PaymentGatewayController extends Controller
 
         $validated['is_active'] = $request->boolean('is_active', false);
         $validated['is_sandbox'] = $request->boolean('is_sandbox');
+
+        if (empty($validated['branch_id'])) {
+            $validated['branch_id'] = null;
+        }
 
         if ($request->has('config') && is_array($request->config)) {
             $validated['config'] = array_merge([
