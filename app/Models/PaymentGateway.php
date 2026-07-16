@@ -9,7 +9,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PaymentGateway extends Model
 {
-    use HasFactory, BranchScoped;
+    use HasFactory, BranchScoped {
+        BranchScoped::bootBranchScoped as private bootBranchScopedTrait;
+    }
+
+    protected static function bootBranchScoped(): void
+    {
+        static::addGlobalScope(new \App\Scopes\BranchScope);
+    }
 
     protected $fillable = [
         'name', 'provider', 'channel', 'is_active', 'is_sandbox',
@@ -44,6 +51,11 @@ class PaymentGateway extends Model
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->withoutBranch()->where($field ?? $this->getRouteKeyName(), $value)->first();
     }
 
     public function isPortal(): bool

@@ -30,7 +30,16 @@
                     <span class="badge badge-success">Ambos</span>
                 @endif
             </p></div>
-            <div class="col-md-8">
+            <div class="col-md-4"><strong>Chave PIX:</strong><p>{{ $paymentGateway->public_key ?: '-' }}</p></div>
+            <div class="col-md-4"><strong>Unidade:</strong><p>{{ $paymentGateway->branch_id ? $paymentGateway->branch->name : 'Todas as unidades' }}</p></div>
+        </div>
+        @if($paymentGateway->config['url'] ?? false)
+        <div class="row">
+            <div class="col-md-12"><strong>URL (PIX dinâmico):</strong><p><code>{{ $paymentGateway->config['url'] }}</code></p></div>
+        </div>
+        @endif
+        <div class="row mt-2">
+            <div class="col-md-12">
                 <strong>Webhook URL (configurar no provedor):</strong>
                 <p><code id="webhook-url">{{ url('/api/payments/webhook/' . $paymentGateway->id) }}</code>
                     <button type="button" class="btn btn-xs btn-default" onclick="copyWebhookUrl()"><i class="fas fa-copy"></i></button>

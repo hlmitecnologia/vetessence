@@ -14,7 +14,7 @@ class PaymentGatewayController extends Controller
     }
     public function index()
     {
-        $gateways = PaymentGateway::orderBy('name')->get();
+        $gateways = PaymentGateway::withoutBranch()->orderBy('name')->get();
         return view('payment-gateways.index', compact('gateways'));
     }
 
@@ -117,7 +117,7 @@ class PaymentGatewayController extends Controller
 
     protected function deactivateOtherGateways(string $channel, ?int $exceptId = null)
     {
-        $query = PaymentGateway::where('is_active', true);
+        $query = PaymentGateway::withoutBranch()->where('is_active', true);
 
         if ($exceptId) {
             $query->where('id', '!=', $exceptId);

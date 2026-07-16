@@ -19,7 +19,7 @@ class PixService
 
     public function __construct(?PaymentGateway $gateway = null)
     {
-        $gateway = $gateway ?? PaymentGateway::where('provider', 'pix')->where('is_active', true)->first();
+        $gateway = $gateway ?? PaymentGateway::withoutBranch()->where('provider', 'pix')->where('is_active', true)->first();
 
         $this->gi = 'br.gov.bcb.pix';
 
