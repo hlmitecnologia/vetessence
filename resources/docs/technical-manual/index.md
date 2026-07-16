@@ -269,83 +269,62 @@ Suporte a Mailgun, SES, Postmark via `config/services.php`.
 
 ### Pagamentos
 
-#### PIX
-| Chave | Variável .env | Padrão | Descrição |
-|-------|---------------|--------|-----------|
-| `pix.pix_key` | `PIX_KEY` | `admin@vetessence.com` | Chave PIX (CPF, CNPJ, e-mail, telefone ou aleatória) |
-| `pix.gi` | `PIX_GI` | `br.gov.bcb.pix` | GUI (identificador do arranjo de pagamentos) |
-| `pix.merchant_name` | `PIX_MERCHANT_NAME` | `VETESSENCE CLINICA VETERINARIA` | Nome do recebedor (ate 25 caracteres) |
-| `pix.city` | `PIX_CITY` | `SAO PAULO` | Cidade do recebedor |
-| `pix.url` | `PIX_URL` | — | URL opcional para payload dinâmico |
-
-**Service**: `App\Services\PixService` — gera payload EMV + QR Code
-**Testes**: `tests/Unit/Services/PixServiceTest.php` (9 testes)
-
 #### Gateway de Pagamento
 
-**Arquitetura:** Multi-provedor com Interface + Factory Pattern + Service Layer.
+**Status:** Apenas **PIX** está ativo no momento. Mercado Pago, PagSeguro, Stripe e Stone foram implementados e estão previstos para serem reativados em versões futuras.
+
+**Arquitetura:** Multi-provedor com Interface + Factory Pattern + Service Layer (preparada para os provedores futuros).
 
 | Camada | Arquivo | Descrição |
 |--------|---------|-----------|
 | Interface | `app/Services/Payment/Contracts/PaymentGatewayProvider.php` | Contrato com `charge()`, `checkout()`, `verifyWebhook()`, `supportedChannels()` |
 | Factory | `app/Services/Payment/PaymentGatewayProviderFactory.php` | Mapeia `provider` string → classe concreta |
-| Service | `app/Services/PaymentService.php` | Orquestra `charge`/`checkout`/`processWebhook` com fallstack |
+| Service | `app/Services/Payment/PaymentService.php` | Orquestra `charge`/`checkout`/`processWebhook` com fallstack |
 | Controller | `app/Http/Controllers/Api/PaymentWebhookController.php` | Endpoint `/api/payments/webhook/{gateway}` (sempre 200) |
 
-**Providers implementados:**
+**Provider ativo:**
 
-| Provider | Classe | SDK | API Real |
-|----------|--------|-----|----------|
-| Mercado Pago | `MercadoPagoProvider` | `mercadopago/dx-php` | `PaymentClient::get()` |
-| PagSeguro | `PagSeguroProvider` | `pagseguro/pagseguro-php-sdk` | `Search\Code::search()` |
-| Stripe | `StripeProvider` | `stripe/stripe-php` | `Session::retrieve()` / `PaymentIntent::retrieve()` |
-| Stone | `StoneProvider` | HTTP direto (OAuth) | `https://api.stone.co` |
-| PIX Estático | `PixStaticProvider` | Interno (PixService) | Gera QR Code do payload EMV |
+| Provider | Classe | Descrição |
+|----------|--------|-----------|
+| PIX | `PixStaticProvider` + `PixService` | Gera payload EMV BR Code + QR Code via `endroid/qr-code` |
 
-**Fluxo de Cobrança (PDV):**
-```
-InvoiceController@charge → PaymentService@charge
-  → PaymentGatewayProviderFactory::make($provider)
-  → Provider::charge($invoice, $gateway)
-    → Se hasCredentials(): chama API real do provedor
-    → Se não: fallstack simulado
-  → Salva gateway_transaction_id, gateway_status na invoice
-```
+**Providers previstos (código existente, aguardando reativação):**
 
-**Fluxo de Checkout (Portal):**
-```
-Portal\InvoiceController@checkout → PaymentService@checkout
-  → Provider::checkout($invoice, $gateway)
-  → Retorna URL de redirecionamento ou QR Code PIX
-```
+| Provider | Classe | SDK |
+|----------|--------|-----|
+| Mercado Pago | `MercadoPagoProvider` | `mercadopago/dx-php` |
+| PagSeguro | `PagSeguroProvider` | `pagseguro/pagseguro-php-sdk` |
+| Stripe | `StripeProvider` | `stripe/stripe-php` |
+| Stone | `StoneProvider` | HTTP direto (OAuth) |
 
-**Webhook:**
-```
-POST /api/payments/webhook/{gateway} (público, sempre 200)
-  → PaymentService@processWebhook
-    → Provider::verifyWebhook($request) — valida payload
-    → Provider::verifyWebhook consulta API real (nunca confia só no webhook)
-    → Atualiza invoice (gateway_status, gateway_paid_at)
-    → Dispara InvoicePaid event
-```
+**Serviço PIX:**
+
+| Chave | Variável .env | Padrão | Descrição |
+|-------|---------------|--------|-----------|
+| `pix.pix_key` | `PIX_KEY` | `admin@vetessence.com` | Chave PIX (CPF, CNPJ, e-mail, telefone ou aleatória) — substituída pelo `public_key` do gateway quando configurado |
+| `pix.gi` | `PIX_GI` | `br.gov.bcb.pix` | GUI (identificador do arranjo de pagamentos) |
+| `pix.merchant_name` | `PIX_MERCHANT_NAME` | `VETESSENCE CLINICA VETERINARIA` | Nome do recebedor (até 25 caracteres) |
+| `pix.city` | `PIX_CITY` | `SAO PAULO` | Cidade do recebedor |
+| `pix.url` | `PIX_URL` | — | URL opcional para payload dinâmico |
+
+**Geração do Payload PIX:**
+- `PixService::buildMerchantAccountInformation()` — constrói Merchant Account Information (tag 26) com subcampos GUI (`00`) e chave PIX (`01`)
+- `PixService::buildPayload()` — monta o payload EMV completo com TLV: `000201` + MAI + MCC + moeda + país + nome + cidade + valor + txid + CRC
+- `PixService::generateQRCode()` — gera o QR Code PNG via `endroid/qr-code`
+
+**Testes:** `tests/Unit/Services/PixServiceTest.php` (9 testes)
 
 **Tabela `payment_gateways` (colunas principais):**
 
 | Campo | Descrição |
 |-------|-----------|
-| `provider` | Nome do provedor (mercadopago, pagseguro, stripe, stone, pix) |
+| `provider` | Nome do provedor (atualmente apenas `pix`) |
 | `channel` | Canal: `portal`, `pdv` ou `both` |
-| `public_key` | Chave pública/API |
-| `secret_key` | Chave secreta (não serializada) |
-| `webhook_secret` | Segredo para validar callbacks |
-| `webhook_url` | URL de callback |
-| `is_sandbox` | Modo de teste (sandbox com credenciais → API real de testes) |
-| `settings` | JSON com configurações adicionais específicas do provedor |
+| `public_key` | Chave PIX (CPF, CNPJ, e-mail, telefone ou EVP) |
+| `branch_id` | Unidade específica ou null (todas as unidades) |
+| `config` | JSON com configurações adicionais (ex: `url` para PIX dinâmico) |
 
-**Sandbox:** Com credenciais → chama API real do provedor no ambiente de testes. Sem credenciais → fallback simulado (retorna pagamento aprovado).
-
-![Fluxo do Gateway de Pagamento](../diagrams/32-fluxo-pagamento-gateway.svg)
-*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*
+![Fluxo de Pagamento PIX](../diagrams/32-fluxo-pagamento-gateway.svg)
 
 ### APIs Externas
 

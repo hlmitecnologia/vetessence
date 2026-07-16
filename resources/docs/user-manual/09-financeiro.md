@@ -145,20 +145,17 @@ Cada item da fatura possui um **tipo** que define o comportamento fiscal e de es
 ## Nota Fiscal de Serviços (NFSe)
 
 ### Provedores Suportados
-O sistema suporta **5 provedores** de NFSe, selecionáveis na configuração:
+O sistema suporta **2 provedores** de NFSe, selecionáveis na configuração:
 
 | Provedor | Credenciais |
 |----------|-------------|
-| **Webmania®** | App ID, App Secret, Consumer Key, Consumer Secret |
-| **FocusNFe** | Token de API |
-| **Spedy** | API Key, API Secret |
-| **Tecnospeed** | Token |
-| **NFE.io** | API Key |
+| **Webmania®** | Consumer Key, Consumer Secret, Access Token, Access Token Secret |
+| **NFE.io** | API Key, Company ID |
 
 ### Configuração do Provedor
 
-1. Acesse **Financeiro > NFSe > Configurações**
-2. Selecione o **provedor** desejado
+1. Acesse **Financeiro > Config. NF** (ou **Conf. Sistema > Config. NF** pelo menu)
+2. Em **NFS-e**, selecione o **provedor** desejado
 3. Escolha o **ambiente**: Homologação (testes) ou Produção
 4. Preencha as **credenciais** do provedor escolhido
 5. Ative a configuração
@@ -216,19 +213,18 @@ O sistema suporta **5 provedores** de NFSe, selecionáveis na configuração:
 ## Nota Fiscal Eletrônica de Produtos (NF-e)
 
 ### Provedores Suportados
-O sistema suporta **3 provedores** de NF-e, que utilizam as mesmas credenciais do NFSe quando o provedor atende ambos:
+O sistema suporta **2 provedores** de NF-e, que utilizam as mesmas credenciais do NFSe quando o provedor atende ambos:
 
 | Provedor | Credenciais |
 |----------|-------------|
-| **FocusNFe** | Token de API (mesmo do NFSe) |
-| **NFE.io** | API Key (mesmo do NFSe) |
-| **Webmania®** | App ID, App Secret, Consumer Key, Consumer Secret (mesmo do NFSe) |
+| **Webmania®** | Consumer Key, Consumer Secret, Access Token, Access Token Secret |
+| **NFE.io** | API Key, Company ID |
 
 ### Configuração do Provedor
 
-1. Acesse **Financeiro > NF-e > Configurações**
-2. Selecione o **provedor** desejado
-3. Preencha as **credenciais** (separadas das de NFSe)
+1. Acesse **Financeiro > Config. NF** (ou **Conf. Sistema > Config. NF** pelo menu)
+2. Em **NF-e**, selecione o **provedor** desejado
+3. Preencha as **credenciais** (separadas das de NFS-e)
 4. Ative a configuração
 
 > **Dados fiscais para NF-e**: NCM, CFOP, CST/CSOSN, alíquotas de ICMS/IPI/PIS/COFINS e peso são configurados no **cadastro do produto** (Estoque > Produtos). Inscrição Estadual (IE) e CRT são configurados no **cadastro da filial**.

@@ -66,68 +66,40 @@ As integrações abaixo são configuradas via painel admin.
 
 ### Gateway de Pagamento
 
-O sistema possui integração real com **5 provedores** de pagamento, configuráveis por canal (PDV ou Portal).
-
-#### Canais
-| Canal | Descrição |
-|-------|-----------|
-| **PDV** | Pagamento presencial na clínica (maquininha, PIX QR Code) |
-| **Portal** | Checkout online no Portal do Tutor |
-| **Ambos** | Gateway disponível nos dois canais |
+O gateway atualmente disponível é o **PIX**. Mercado Pago, PagSeguro, Stripe e Stone estão previstos para próximas versões.
 
 #### Configuração
 1. Acesse **Financeiro > Gateways de Pagamento**
 2. Clique em **Novo**
 3. Configure:
-   - **Provedor**: Mercado Pago, PagSeguro, Stripe, Stone, PIX
-   - **Canal**: PDV, Portal ou Ambos
-   - **Chave pública**
-   - **Chave secreta**
-   - **Webhook secret** (para validação de notificações)
-   - **Configurações adicionais** (JSON, específicas por provedor)
-   - **Modo de teste** (sandbox)
-4. Apenas um gateway pode estar ativo por vez por canal
-5. As credenciais do PIX (chave PIX, nome do recebedor, cidade) são obtidas dos dados da filial (cadastro da unidade)
+   - **Provedor**: PIX (único disponível no momento)
+   - **Canal**: Portal, PDV ou Ambos
+   - **Chave PIX** (CPF, CNPJ, e-mail, telefone ou chave aleatória)
+   - **Unidade**: Todas as unidades ou uma específica
+4. Marque **Ativo** para habilitar
+5. O nome do recebedor e a cidade são obtidos da configuração do sistema
 
 #### Funcionamento
-- **Sandbox sem credenciais**: fallback simulado (retorna pagamento como aprovado)
-- **Sandbox com credenciais**: chama API real do provedor no ambiente de testes
-- **Produção**: chama API real do provedor
+A chave PIX cadastrada é usada para gerar o payload EMV BR Code, exibido como QR Code na fatura para o tutor pagar via app do banco. O pagamento é confirmado manualmente no sistema.
 
-#### Webhook
-Cada gateway gera uma URL de webhook única (`/api/payments/webhook/{gateway_id}`). O provedor envia notificações de pagamento para essa URL, e o sistema:
-1. Valida o payload conforme o provedor
-2. Consulta o status real da transação na API do provedor
-3. Atualiza a fatura e dispara o evento `InvoicePaid`
+> O PIX não utiliza webhook. O pagamento é registrado manualmente na tela da fatura.
 
-> O webhook **sempre retorna HTTP 200** (exigência dos provedores). O processamento é assíncrono.
+![Fluxo de Pagamento PIX](../diagrams/32-fluxo-pagamento-gateway.svg)
 
-![Fluxo do Gateway de Pagamento](../diagrams/32-fluxo-pagamento-gateway.svg)
-*Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*
-
-#### Cobrança no PDV
+#### Geração do QR Code
 1. Acesse uma fatura em aberto
-2. Clique em **Cobrar**
-3. O sistema redireciona para o gateway ativo do canal PDV
-4. O pagamento é processado e a fatura é atualizada automaticamente
+2. Clique em **Gerar QR Code**
+3. O tutor escaneia com o app do banco e efetua o pagamento
+4. Na clínica, registre o pagamento manualmente em **Registrar Pagamento**
 
-#### Checkout no Portal
-1. O tutor acessa **Faturas** no Portal do Tutor
-2. Clica em **Pagar Online**
-3. É redirecionado ao checkout do gateway ativo do canal Portal
-4. Após o pagamento, o webhook atualiza a fatura
-
-### NFSe — Configuração do Provedor
-1. Acesse **Financeiro > NFSe > Configurações**
+### NFSe / NFC-e — Configuração do Provedor
+1. Acesse **Financeiro > Config. NF** (ou **Financeiro > NFSe > Configurações** / **Financeiro > NFC-e > Configurações**)
 2. Configure o provedor de nota fiscal:
-   - **Provedor**: Webmania®, FocusNFe, Spedy, Tecnospeed, NFE.io
+   - **Provedor**: Webmania® ou NFE.io
    - **Ambiente**: Homologação (testes) ou Produção
 3. Preencha as credenciais conforme o provedor escolhido:
-   - **Webmania®**: App ID, App Secret, Consumer Key, Consumer Secret
-   - **FocusNFe**: Token de API
-   - **Spedy**: API Key, API Secret
-   - **Tecnospeed**: Token
-   - **NFE.io**: API Key
+   - **Webmania®**: Consumer Key, Consumer Secret, Access Token, Access Token Secret
+   - **NFE.io**: API Key, Company ID
 4. Ative a configuração
 
 > **Dados fiscais por filial**: CNPJ, código IBGE do município, regime tributário e série da nota são configurados no **cadastro da filial** (Configurações > Unidades), não na tela de NFSe.
@@ -156,8 +128,8 @@ Cada gateway gera uma URL de webhook única (`/api/payments/webhook/{gateway_id}
 
 > **Observações**: A sugestão é manual (não automática). O prompt é construído com dados do paciente (espécie, raça, idade, sexo), sinais vitais, queixa principal, anamnese e exame físico. A temperatura baixa (0.3) mantém as sugestões profissionais e determinísticas.
 
-### NFSe (Webmania®, FocusNFe, Spedy, Tecnospeed, NFE.io)
-- **Arquitetura**: Adapter Pattern — múltiplos provedores com interface única
+### NFSe / NFC-e (Webmania®, NFE.io)
+- **Arquitetura**: Adapter Pattern — interface única para múltiplos provedores
 - **Fluxo**: Fatura paga → emissão automática ou manual → XML/PDF disponíveis
 - **Permissões**: `nfse.view`, `nfse.emit`, `nfse.cancel`, `nfse-config.edit`
 

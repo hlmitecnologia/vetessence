@@ -1,59 +1,38 @@
 @startuml
 !include _common.puml
 
-title Fluxo de Pagamento via Gateway
+title Fluxo de Pagamento PIX
 
 |Admin|
 start
-:Configurar Gateway;
-:Definir Canal (PDV/Portal/Ambos);
-:Provedor + Credenciais;
+:Configurar Gateway PIX;
+:Definir Chave PIX + Unidade;
 :Ativar;
 
 |Sistema|
-:Gateway Ativo;
+:Gateway PIX Ativo;
 
-|Tutor|
-:Painel do Tutor;
-:Seleciona Fatura;
-:Clique em Pagar Online;
+:Tutor / Recepcionista|
+:Acessa Fatura em Aberto;
+:Clique em Gerar QR Code;
 
 |Sistema|
-if (Canal = Portal?) then ([sim])
-  :PaymentService@checkout;
-  if (Tem Gateway PIX?) then ([sim])
-    :Exibir QR Code PIX;
-  else ([não])
-    :Redirecionar para Checkout;
-  endif
-  |Provedor Externo|
-  :Processar Pagamento;
-  |Sistema|
-  :Webhook Recebido;
-  :Provider::verifyWebhook();
-  :Consulta API Real do Provedor;
-  if (Pagamento Confirmado?) then ([sim])
-    :Atualizar Invoice;
-    :Disparar InvoicePaid;
-  else ([não])
-    :Registrar Falha;
-  endif
-else ([não])
-  |Veterinário / Recepcionista|
-  :Acessa Fatura no PDV;
-  :Clique em Cobrar;
-  |Sistema|
-  :PaymentService@charge;
-  if (Tem Credenciais?) then ([sim])
-    :Provider::charge() API Real;
-  else ([não])
-    :Fallback Simulado;
-  endif
-  :Salvar gateway_transaction_id;
-  :Atualizar Status;
-  |Veterinário / Recepcionista|
-  :Pagamento Concluído;
-endif
+:PixService::generateQRCode();
+:Gerar Payload EMV + QR Code;
+:Exibir QR Code na Tela;
+
+|Tutor|
+:Escanear QR Code;
+:Confirmar Pagamento no App;
+
+|Recepcionista|
+:Registrar Pagamento Manualmente;
+:Selecionar Forma (PIX);
+:Confirmar;
+
+|Sistema|
+:Atualizar Fatura (status = paid);
+:Disparar InvoicePaid;
 
 stop
 @enduml
