@@ -22,14 +22,15 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="provider">Provedor *</label>
+                        {{-- Demais provedores ocultados temporariamente (reativar quando voltar) --}}
                         <select name="provider" class="form-control provider-select @error('provider') is-invalid @enderror" data-group="gateway" required>
                             <option value="">Selecione</option>
-                            <option value="mercadopago" {{ old('provider') == 'mercadopago' ? 'selected' : '' }}>Mercado Pago</option>
-                            <option value="pagseguro" {{ old('provider') == 'pagseguro' ? 'selected' : '' }}>PagSeguro</option>
-                            <option value="stone" {{ old('provider') == 'stone' ? 'selected' : '' }}>Stone</option>
-                            <option value="stripe" {{ old('provider') == 'stripe' ? 'selected' : '' }}>Stripe</option>
                             <option value="pix" {{ old('provider') == 'pix' ? 'selected' : '' }}>PIX</option>
-                            <option value="other" {{ old('provider') == 'other' ? 'selected' : '' }}>Outro</option>
+                            <option value="mercadopago" style="display:none;" {{ old('provider') == 'mercadopago' ? 'selected' : '' }}>Mercado Pago</option>
+                            <option value="pagseguro" style="display:none;" {{ old('provider') == 'pagseguro' ? 'selected' : '' }}>PagSeguro</option>
+                            <option value="stone" style="display:none;" {{ old('provider') == 'stone' ? 'selected' : '' }}>Stone</option>
+                            <option value="stripe" style="display:none;" {{ old('provider') == 'stripe' ? 'selected' : '' }}>Stripe</option>
+                            <option value="other" style="display:none;" {{ old('provider') == 'other' ? 'selected' : '' }}>Outro</option>
                         </select>
                         @error('provider')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
@@ -78,110 +79,6 @@
                 </div>
             </div>
 
-            {{-- MERCADO PAGO --}}
-            <div class="provider-fields" data-provider="mercadopago" data-group="gateway" style="display:none;">
-                <h6 class="text-primary mt-3"><i class="fas fa-credit-card mr-1"></i>Mercado Pago</h6>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    <strong>Webhook:</strong> Configure no painel Mercado Pago &gt; Webhooks &gt; URL:
-                    <code>{{ url('/api/payments/webhook/ID') }}</code> (substitua ID após salvar)
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Access Token (Produção)</label>
-                            <input type="text" name="public_key" class="form-control" value="{{ old('public_key') }}" placeholder="APP_USR-...">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Access Token (Sandbox)</label>
-                            <input type="text" name="secret_key" class="form-control" value="{{ old('secret_key') }}" placeholder="APP_USR-... (sandbox)">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- PAGSEGURO --}}
-            <div class="provider-fields" data-provider="pagseguro" data-group="gateway" style="display:none;">
-                <h6 class="text-primary mt-3"><i class="fas fa-shield-alt mr-1"></i>PagSeguro</h6>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    <strong>Webhook:</strong> Configure no painel PagSeguro &gt; Notificações &gt; URL:
-                    <code>{{ url('/api/payments/webhook/ID') }}</code> (substitua ID após salvar)
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>E-mail da conta</label>
-                            <input type="email" name="public_key" class="form-control" value="{{ old('public_key') }}" placeholder="email@exemplo.com">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Token</label>
-                            <input type="text" name="secret_key" class="form-control" value="{{ old('secret_key') }}" placeholder="Token PagSeguro">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- STONE --}}
-            <div class="provider-fields" data-provider="stone" data-group="gateway" style="display:none;">
-                <h6 class="text-primary mt-3"><i class="fas fa-building mr-1"></i>Stone</h6>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    <strong>Webhook:</strong> Configure no painel Stone Hub &gt; Webhooks &gt; URL:
-                    <code>{{ url('/api/payments/webhook/ID') }}</code> (substitua ID após salvar)
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Merchant ID (Chave Pública)</label>
-                            <input type="text" name="public_key" class="form-control" value="{{ old('public_key') }}" placeholder="Merchant ID Stone">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>API Key (Chave Secreta)</label>
-                            <input type="text" name="secret_key" class="form-control" value="{{ old('secret_key') }}" placeholder="API Key Stone">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- STRIPE --}}
-            <div class="provider-fields" data-provider="stripe" data-group="gateway" style="display:none;">
-                <h6 class="text-primary mt-3"><i class="fab fa-stripe mr-1"></i>Stripe</h6>
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Stripe não suporta PDV com maquininha no Brasil. Use apenas para <strong>Portal</strong>.
-                </div>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    <strong>Webhook:</strong> Configure no painel Stripe &gt; Webhooks &gt; URL:
-                    <code>{{ url('/api/payments/webhook/ID') }}</code> (substitua ID após salvar)
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Publishable Key</label>
-                            <input type="text" name="public_key" class="form-control" value="{{ old('public_key') }}" placeholder="pk_live_...">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Secret Key</label>
-                            <input type="text" name="secret_key" class="form-control" value="{{ old('secret_key') }}" placeholder="sk_live_...">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Webhook Secret</label>
-                    <input type="text" name="webhook_secret" class="form-control" value="{{ old('webhook_secret') }}" placeholder="whsec_...">
-                </div>
-            </div>
-
             {{-- PIX --}}
             <div class="provider-fields" data-provider="pix" data-group="gateway" style="display:none;">
                 <h6 class="text-primary mt-3"><i class="fas fa-qrcode mr-1"></i>PIX</h6>
@@ -206,37 +103,7 @@
             </div>
 
             {{-- OUTRO (genérico) --}}
-            <div class="provider-fields" data-provider="other" data-group="gateway" style="display:none;">
-                <h6 class="text-muted mt-3"><i class="fas fa-plug mr-1"></i>Outro Provedor</h6>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    <strong>Webhook:</strong> Configure no provedor a URL:
-                    <code>{{ url('/api/payments/webhook/ID') }}</code> (substitua ID após salvar)
-                </div>
-                <div class="form-group">
-                    <label>Chave Pública</label>
-                    <textarea name="public_key" rows="2" class="wysiwyg form-control @error('public_key') is-invalid @enderror">{{ old('public_key') }}</textarea>
-                    @error('public_key')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                </div>
-                <div class="form-group">
-                    <label>Chave Secreta</label>
-                    <textarea name="secret_key" rows="2" class="wysiwyg form-control @error('secret_key') is-invalid @enderror">{{ old('secret_key') }}</textarea>
-                    @error('secret_key')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                </div>
-                <div class="form-group">
-                    <label>Segredo do Webhook</label>
-                    <input type="text" name="webhook_secret" class="form-control" value="{{ old('webhook_secret') }}">
-                </div>
-                <div class="form-group">
-                    <label>URL do Webhook</label>
-                    <input type="url" name="webhook_url" class="form-control" value="{{ old('webhook_url') }}" placeholder="{{ url('/api/v1/payment/webhook') }}">
-                </div>
-                <div class="form-group">
-                    <label>Configuração Adicional (JSON)</label>
-                    <textarea name="config" rows="3" class="wysiwyg form-control @error('config') is-invalid @enderror" placeholder='{"key": "value"}'></textarea>
-                    @error('config')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                </div>
-            </div>
+            {{-- Suspenso temporariamente @if(false) ... @endif --}}
 
             <div class="form-group">
                 <label for="branch_id">Unidade</label>

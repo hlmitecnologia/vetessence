@@ -109,28 +109,9 @@
             </div>
         </div>
 
-        @if($hasPdvGateway)
-        <div class="card card-primary">
-            <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-credit-card"></i> Pagamento via PDV</h3>
-            </div>
-            <div class="card-body text-center" id="pdv-card-body">
-                <div id="pdv-initial">
-                    <p class="text-muted">Inicie o pagamento na maquininha ou gere o QR Code PIX.</p>
-                    <button onclick="startPdvCharge()" id="pdv-charge-btn" class="btn btn-primary btn-lg btn-block">
-                        <i class="fas fa-credit-card"></i> Pagar via PDV
-                    </button>
-                </div>
-                <div id="pdv-qrcode" class="d-none">
-                    <img id="pdv-qrcode-image" src="" alt="QR Code PIX" class="mb-3" style="max-width: 200px;">
-                    <p class="text-muted">Valor: <strong>R$ {{ number_format($invoice->total, 2, ',', '.') }}</strong></p>
-                    <div class="bg-light p-2 rounded text-left" style="font-size: 10px; word-break: break-all;" id="pdv-pix-payload"></div>
-                    <button onclick="copyPdvPix()" class="btn btn-default btn-sm mt-2"><i class="fas fa-copy"></i> Copiar código</button>
-                </div>
-                <div id="pdv-feedback" class="mt-3 d-none"></div>
-            </div>
-        </div>
-        @endif
+        {{-- PDV suspenso temporariamente
+        @if($hasPdvGateway) ... @endif
+        --}}
 
         <div class="card">
             <div class="card-header">
