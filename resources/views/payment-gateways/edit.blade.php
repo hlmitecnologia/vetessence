@@ -194,7 +194,8 @@
                 </p>
                 <div class="form-group">
                     <label>Chave PIX</label>
-                    <input type="text" name="public_key" class="form-control" value="{{ old('public_key', $paymentGateway->public_key) }}" placeholder="CPF, CNPJ, e-mail, telefone ou EVP">
+                    <input type="text" name="public_key" class="form-control @error('public_key') is-invalid @enderror" value="{{ old('public_key', $paymentGateway->public_key) }}" placeholder="CPF, CNPJ, e-mail, telefone ou EVP">
+                    @error('public_key')<span class="invalid-feedback">{{ $message }}</span>@enderror
                 </div>
                 <div class="form-group">
                     <label>URL (opcional — para PIX dinâmico)</label>
