@@ -215,6 +215,14 @@ class MedicalRecordController extends Controller
             'total' => $unitPrice,
         ]);
 
+        // Aplicar desconto de convênio se houver
+        $convenioService = app(\App\Services\ConvenioService::class);
+        $subscription = $convenioService->findActiveSubscription($tutor, $medicalRecord->pet);
+        if ($subscription) {
+            $invoice->refresh();
+            $convenioService->applyDiscount($invoice, $subscription);
+        }
+
         $msg = $unitPrice > 0
             ? ($existingInvoice
                 ? "Atendimento adicionado à fatura {$invoice->invoice_number}!"

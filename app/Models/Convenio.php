@@ -30,4 +30,14 @@ class Convenio extends Model
     {
         return $this->hasMany(ConvenioPet::class);
     }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(ConvenioSubscription::class);
+    }
+
+    public function coverageRules(): HasMany
+    {
+        return $this->hasMany(ConvenioCoverageRule::class);
+    }
 }

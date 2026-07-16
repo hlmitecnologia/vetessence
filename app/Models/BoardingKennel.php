@@ -23,6 +23,6 @@ class BoardingKennel extends Model
 
     public function activeBoardings()
     {
-        return $this->boardings()->whereIn('status', ['checked_in', 'extended']);
+        return $this->boardings()->whereIn('status', ['checked_in']);
     }
 }

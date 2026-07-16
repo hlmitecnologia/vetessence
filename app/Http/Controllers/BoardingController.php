@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Boarding;
 use App\Models\BoardingDailyTask;
 use App\Models\BoardingKennel;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use App\Models\Pet;
 use Illuminate\Http\Request;
+use App\Services\ConvenioService;
 
 class BoardingController extends Controller
 {
@@ -140,6 +143,64 @@ class BoardingController extends Controller
             'checked_out_by' => auth()->id(),
             'notes' => $validated['notes'] ?? $boarding->notes,
         ]);
+
+        $boarding->load('pet.tutors');
+
+        $tutor = $boarding->pet->tutors()
+            ->wherePivot('is_primary', true)
+            ->first() ?? $boarding->pet->tutors()->first();
+
+        if ($tutor && $validated['total_amount'] > 0) {
+            $invoice = Invoice::create([
+                'invoice_number' => Invoice::generateNumber(),
+                'pet_id' => $boarding->pet_id,
+                'tutor_id' => $tutor->id,
+                'user_id' => auth()->id(),
+                'branch_id' => $boarding->branch_id,
+                'boarding_id' => $boarding->id,
+                'status' => 'pending',
+                'total' => $validated['total_amount'],
+                'subtotal' => $validated['total_amount'],
+                'due_date' => now(),
+            ]);
+
+            $days = $boarding->daysBoarded();
+            $desc = $boarding->type === 'grooming' ? 'Banho/Tosa' : 'Hospedagem';
+
+            InvoiceItem::create([
+                'invoice_id' => $invoice->id,
+                'description' => "{$desc} — {$days} diária(s)",
+                'quantity' => $days,
+                'unit_price' => $boarding->daily_rate,
+                'total' => $boarding->daily_rate * $days,
+                'item_type' => 'service',
+            ]);
+
+            if (($boarding->grooming_fee ?? 0) > 0) {
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'description' => 'Taxa de Banho/Tosa',
+                    'quantity' => 1,
+                    'unit_price' => $boarding->grooming_fee,
+                    'total' => $boarding->grooming_fee,
+                    'item_type' => 'service',
+                ]);
+            }
+
+            // Aplicar desconto de convênio
+            $convenioService = app(ConvenioService::class);
+            $subscription = $convenioService->findActiveSubscription($tutor, $boarding->pet);
+            if ($subscription) {
+                $invoice->refresh();
+                $convenioService->applyDiscount($invoice, $subscription);
+            }
+
+            $invoice->refresh();
+            $boarding->update(['total_amount' => $invoice->total]);
+
+            return redirect()->route('invoices.show', $invoice)
+                ->with('success', 'Check-out realizado! Fatura gerada: ' . $invoice->invoice_number);
+        }
 
         return redirect()->route('boardings.show', $boarding)
             ->with('success', 'Check-out realizado com sucesso!');

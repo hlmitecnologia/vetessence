@@ -143,5 +143,17 @@ class GenerateInvoiceFromAppointment
                 $invoice->increment('total', $itemTotal);
             }
         }
+
+        // Aplicar desconto de convênio se houver subscription ativa
+        $this->applyConvenioDiscount($invoice, $tutor, $pet);
+    }
+
+    private function applyConvenioDiscount(Invoice $invoice, Tutor $tutor, Pet $pet): void
+    {
+        $convenioService = app(\App\Services\ConvenioService::class);
+        $subscription = $convenioService->findActiveSubscription($tutor, $pet);
+        if ($subscription) {
+            $convenioService->applyDiscount($invoice, $subscription);
+        }
     }
 }

@@ -21,6 +21,7 @@ class Invoice extends Model
         'pix_expiration', 'convenio_discount', 'notes', 'user_id', 'branch_id',
         'nfse_status', 'nfse_invoice_id', 'nfe_status', 'nfe_invoice_id', 'medical_record_id',
         'gateway_id', 'gateway_transaction_id', 'gateway_status', 'gateway_paid_at',
+        'boarding_id', 'convenio_subscription_id',
     ];
 
     protected $casts = [
@@ -71,6 +72,16 @@ class Invoice extends Model
     public function medicalRecord(): BelongsTo
     {
         return $this->belongsTo(MedicalRecord::class);
+    }
+
+    public function boarding(): BelongsTo
+    {
+        return $this->belongsTo(Boarding::class, 'boarding_id');
+    }
+
+    public function convenioSubscription(): BelongsTo
+    {
+        return $this->belongsTo(ConvenioSubscription::class, 'convenio_subscription_id');
     }
 
     public static function generateNumber(): string

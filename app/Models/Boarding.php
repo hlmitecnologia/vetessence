@@ -13,7 +13,7 @@ class Boarding extends Model
     use HasFactory, BranchScoped;
 
     protected $fillable = [
-        'pet_id', 'type', 'check_in_at', 'expected_check_out',
+        'pet_id', 'kennel_id', 'type', 'check_in_at', 'expected_check_out',
         'check_out_at', 'status', 'daily_rate', 'grooming_fee',
         'total_amount', 'reason', 'feeding_instructions',
         'medication_instructions', 'pickup_contact', 'notes',
@@ -31,7 +31,7 @@ class Boarding extends Model
 
     public function pet(): BelongsTo { return $this->belongsTo(Pet::class); }
     public function createdBy(): BelongsTo { return $this->belongsTo(User::class, 'created_by'); }
-    public function checkedOutBy(): BelongsTo { return $this->belongsTo(User::class, 'checked_out_by', 'branch_id'); }
+    public function checkedOutBy(): BelongsTo { return $this->belongsTo(User::class, 'checked_out_by'); }
     public function dailyTasks(): HasMany { return $this->hasMany(BoardingDailyTask::class); }
 
     public function scopeActive($query)
@@ -47,6 +47,17 @@ class Boarding extends Model
 
     public function calculateTotal(): void
     {
-        $this->total_amount = ($this->daily_rate * $this->daysBoarded()) + $this->grooming_fee;
+        $this->total_amount = ($this->daily_rate * $this->daysBoarded()) + ($this->grooming_fee ?? 0);
+    }
+
+    public function invoice(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Invoice::class, 'boarding_id');
+    }
+
+    public function scopePendingInvoice($query)
+    {
+        return $query->where('status', 'checked_out')
+            ->whereDoesntHave('invoice');
     }
 }

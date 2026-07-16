@@ -84,9 +84,20 @@ class Tutor extends Authenticatable
         return $this->hasMany(Invoice::class);
     }
 
-    public function convenioPets(): HasMany
+    public function convenioSubscriptions(): HasMany
     {
-        return $this->hasMany(ConvenioPet::class);
+        return $this->hasMany(ConvenioSubscription::class);
+    }
+
+    public function activeConvenioSubscriptionForPet(Pet $pet): ?ConvenioSubscription
+    {
+        return $this->convenioSubscriptions()
+            ->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', now());
+            })
+            ->whereHas('coveredPets', fn($q) => $q->where('pet_id', $pet->id))
+            ->first();
     }
 
     public function createdAtBranch(): BelongsTo
