@@ -19,7 +19,7 @@
                     <th>Ativo</th>
                     <th>Sandbox</th>
                     <th>Data</th>
-                    <th style="width: 120px;">Ações</th>
+                    <th style="width: 160px;">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,6 +42,13 @@
                     <td>
                         <a href="{{ route('payment-gateways.show', $gateway) }}" class="btn btn-action btn-info"><i class="fas fa-eye"></i></a>
                         <a href="{{ route('payment-gateways.edit', $gateway) }}" class="btn btn-action btn-primary"><i class="fas fa-edit"></i></a>
+                        <form action="{{ route('payment-gateways.destroy', $gateway) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" data-confirm="Excluir gateway?" class="btn btn-action btn-danger" title="Excluir">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 @endforeach

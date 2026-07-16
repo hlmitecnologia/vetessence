@@ -142,6 +142,10 @@ class PaymentGatewayController extends Controller
 
     public function destroy(PaymentGateway $paymentGateway)
     {
+        if ($paymentGateway->invoices()->exists()) {
+            return back()->with('error', 'Não é possível excluir gateway com pagamentos registrados.');
+        }
+
         $paymentGateway->delete();
         return redirect()->route('payment-gateways.index')->with('success', 'Gateway excluído.');
     }
