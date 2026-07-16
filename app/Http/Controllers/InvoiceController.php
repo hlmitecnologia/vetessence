@@ -46,7 +46,9 @@ class InvoiceController extends Controller
             $query->whereDate('due_date', '<=', $request->date_to);
         }
 
-        $invoices = $query->orderBy('created_at', 'desc')->get();
+        $invoices = $query->orderByRaw("FIELD(status, 'pending', 'overdue', 'cancelled', 'paid')")
+            ->orderBy('invoice_number', 'desc')
+            ->get();
 
         $hasNfseConfig = NfseConfig::where('is_active', true)->exists();
         $hasNfeConfig = NfeConfig::where('is_active', true)->exists();
