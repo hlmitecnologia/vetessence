@@ -24,11 +24,11 @@ class NfeIoProvider implements NfeProvider
             ->post("{$this->baseUrl}/v2/companies/{$config->nfeio_company_id}/productinvoices", $payload);
 
         $body = $response->json();
-        $raw = is_array($body) ? $body : null;
+        $raw = is_array($body) ? $body : (is_string($body) ? ['message' => $body] : null);
         $body = is_array($body) ? $body : [];
 
         if (!$response->successful()) {
-            $error = $body['errors'][0]['message'] ?? $body['message'] ?? $body['error'] ?? 'Erro ao emitir NF-e via NFE.io';
+            $error = $body['errors'][0]['message'] ?? $body['message'] ?? $body['error'] ?? ($raw['message'] ?? 'Erro ao emitir NF-e via NFE.io');
             return NfeResult::error($error, $raw);
         }
 
@@ -52,11 +52,11 @@ class NfeIoProvider implements NfeProvider
             ->post("{$this->baseUrl}/v2/companies/{$config->nfeio_company_id}/consumerinvoices", $payload);
 
         $body = $response->json();
-        $raw = is_array($body) ? $body : null;
+        $raw = is_array($body) ? $body : (is_string($body) ? ['message' => $body] : null);
         $body = is_array($body) ? $body : [];
 
         if (!$response->successful()) {
-            $error = $body['errors'][0]['message'] ?? $body['message'] ?? $body['error'] ?? 'Erro ao emitir NFC-e via NFE.io';
+            $error = $body['errors'][0]['message'] ?? $body['message'] ?? $body['error'] ?? ($raw['message'] ?? 'Erro ao emitir NFC-e via NFE.io');
             return NfeResult::error($error, $raw);
         }
 
@@ -83,11 +83,11 @@ class NfeIoProvider implements NfeProvider
             ->get("{$this->baseUrl}/v2/companies/{$config->nfeio_company_id}/productinvoices/{$nfeNumber}");
 
         $body = $response->json();
-        $raw = is_array($body) ? $body : null;
+        $raw = is_array($body) ? $body : (is_string($body) ? ['message' => $body] : null);
         $body = is_array($body) ? $body : [];
 
         if (!$response->successful()) {
-            $error = $body['errors'][0]['message'] ?? $body['message'] ?? $body['error'] ?? 'Erro ao consultar NF-e via NFE.io';
+            $error = $body['errors'][0]['message'] ?? $body['message'] ?? $body['error'] ?? ($raw['message'] ?? 'Erro ao consultar NF-e via NFE.io');
             return NfeResult::error($error, $raw);
         }
 
@@ -111,11 +111,11 @@ class NfeIoProvider implements NfeProvider
             ->delete("{$this->baseUrl}/v2/companies/{$config->nfeio_company_id}/productinvoices/{$nfeNumber}", $query);
 
         $body = $response->json();
-        $raw = is_array($body) ? $body : null;
+        $raw = is_array($body) ? $body : (is_string($body) ? ['message' => $body] : null);
         $body = is_array($body) ? $body : [];
 
         if (!$response->successful()) {
-            $error = $body['errors'][0]['message'] ?? $body['message'] ?? $body['error'] ?? 'Erro ao cancelar NF-e via NFE.io';
+            $error = $body['errors'][0]['message'] ?? $body['message'] ?? $body['error'] ?? ($raw['message'] ?? 'Erro ao cancelar NF-e via NFE.io');
             return NfeResult::error($error, $raw);
         }
 
@@ -192,7 +192,7 @@ class NfeIoProvider implements NfeProvider
                     'district' => $tutor->neighborhood ?? '',
                     'city' => [
                         'code' => $tutor->city_ibge ?? $branch->municipio_ibge ?? '',
-                        'name' => $tutor->city ?? '',
+                        'name' => $tutor->city ?? $branch->city ?? '',
                     ],
                     'state' => $tutor->state ?? '',
                     'postalCode' => preg_replace('/\D/', '', $tutor->zipcode ?? ''),
