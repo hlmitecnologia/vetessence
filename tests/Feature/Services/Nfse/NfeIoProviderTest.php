@@ -68,7 +68,7 @@ class NfeIoProviderTest extends ModuleTestCase
 
         Http::assertSent(function ($request) {
             $body = $request->data();
-            return !isset($body['borrower']['phoneNumber']);
+            return isset($body['borrower']['phoneNumber']) && $body['borrower']['phoneNumber'] === '00000000';
         });
     }
 

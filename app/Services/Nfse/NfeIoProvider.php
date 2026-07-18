@@ -107,12 +107,17 @@ class NfeIoProvider implements NfseProvider
         ];
 
         $phoneDigits = preg_replace('/\D/', '', $tutor->phone ?? '');
+        if (strlen($phoneDigits) < 8) {
+            $phoneDigits = preg_replace('/\D/', '', $branch->phone ?? '');
+        }
+        $phoneNumber = strlen($phoneDigits) >= 8 ? $phoneDigits : str_pad($phoneDigits, 8, '0');
 
         if (!empty($borrowerCpfCnpj)) {
             $borrower = [
                 'federalTaxNumber' => (int) $borrowerCpfCnpj,
                 'name' => $tutor->name,
                 'email' => $tutor->email ?? '',
+                'phoneNumber' => $phoneNumber,
                 'address' => [
                     'country' => 'BRA',
                     'street' => $tutor->address ?? '',
@@ -127,10 +132,6 @@ class NfeIoProvider implements NfseProvider
                     'postalCode' => preg_replace('/\D/', '', $tutor->zipcode ?? ''),
                 ],
             ];
-
-            if (strlen($phoneDigits) >= 8) {
-                $borrower['phoneNumber'] = $phoneDigits;
-            }
 
             $payload['borrower'] = $borrower;
         }
