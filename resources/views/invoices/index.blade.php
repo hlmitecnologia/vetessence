@@ -29,7 +29,7 @@
             <tbody>
                 @foreach($invoices as $inv)
                 <tr>
-                    <td><strong>{{ $inv->invoice_number }}</strong></td>
+                    <td data-order="{{ $inv->invoice_number }}"><strong>{{ $inv->invoice_number }}</strong></td>
                     <td>{{ $inv->tutor->name ?? '-' }}</td>
                     <td>{{ $inv->pet->name ?? '-' }}</td>
                     <td>R$ {{ number_format($inv->total, 2, ',', '.') }}</td>
