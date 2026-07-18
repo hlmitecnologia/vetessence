@@ -207,6 +207,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('invoices/{invoice}/nfe-cancelar', 'App\Http\Controllers\NfeController@cancelar')->name('nfe.cancelar')->middleware('can:nfe.cancel');
 
     // NFC-e
+    Route::get('invoices/{invoice}/nfce-status/{nfceInvoiceId?}', 'App\Http\Controllers\InvoiceController@consultarNfceStatus')->name('nfce.consultar-status')->middleware('can:nfe.view');
     Route::get('nfce', 'App\Http\Controllers\NfceController@index')->name('nfce.index')->middleware('can:nfe.view');
     Route::get('nfce/{nfceInvoice}', 'App\Http\Controllers\NfceController@show')->name('nfce.show')->middleware('can:nfe.view');
     Route::get('nfce/{nfceInvoice}/xml', 'App\Http\Controllers\NfeController@downloadXml')->name('nfce.download-xml')->middleware('can:nfe.view');

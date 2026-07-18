@@ -156,12 +156,14 @@ class InvoiceController extends Controller
     {
         $invoice->load('items');
         $user = auth()->user();
+        $wantsJson = request()->expectsJson();
 
         if (!$user->can('nfse.emit') && !$user->can('nfe.emit')) {
             abort(403);
         }
 
         if ($invoice->status !== 'paid') {
+            if ($wantsJson) return response()->json(['success' => false, 'message' => 'A nota fiscal só pode ser emitida após o pagamento da fatura.']);
             return back()->with('warning', 'A nota fiscal só pode ser emitida após o pagamento da fatura.');
         }
 
@@ -176,7 +178,23 @@ class InvoiceController extends Controller
         }
 
         if (empty($results)) {
+            if ($wantsJson) return response()->json(['success' => false, 'message' => 'Nenhuma nota fiscal necessária para esta fatura.']);
             return back()->with('info', 'Nenhuma nota fiscal necessária para esta fatura.');
+        }
+
+        // Check if any result is async (issuing)
+        foreach ($results as $type => $result) {
+            if ($result instanceof \App\Services\Nfe\NfeResult && $result->success && $result->nfceInvoiceId) {
+                if ($wantsJson) {
+                    return response()->json([
+                        'issuing' => true,
+                        'nfceInvoiceId' => $result->nfceInvoiceId,
+                        'type' => $type,
+                        'message' => 'NFC-e enviada para SEFAZ. Aguardando autorização...',
+                    ]);
+                }
+                break;
+            }
         }
 
         $messages = [];
@@ -191,7 +209,63 @@ class InvoiceController extends Controller
         $hasError = collect($results)->contains(fn($r) => !$r->success);
         $flashType = $hasError ? 'warning' : 'success';
 
+        if ($wantsJson) {
+            return response()->json([
+                'success' => !$hasError,
+                'message' => implode(' | ', $messages),
+            ]);
+        }
+
         return back()->with($flashType, implode(' | ', $messages));
+    }
+
+    public function consultarNfceStatus(Invoice $invoice, \App\Services\Nfe\NfeService $nfeService, ?string $nfceInvoiceId = null)
+    {
+        $nfeInvoice = $invoice->nfeInvoice;
+
+        if ($nfeInvoice && $nfeInvoice->status === 'issued') {
+            return response()->json(['issued' => true]);
+        }
+
+        if ($nfeInvoice && $nfeInvoice->status === 'issuing' && $nfeInvoice->nfe_number) {
+            $config = $nfeService->getConfig();
+            if ($config && $config->provider === 'nfeio') {
+                $provider = app(\App\Services\Nfe\NfeIoProvider::class);
+                $apiInvoiceId = $nfceInvoiceId ?: $nfeInvoice->nfe_number;
+                $result = $provider->consultarNfce($config, $apiInvoiceId);
+
+                if ($result->success && $result->nfeNumber) {
+                    $nfeInvoice->fill([
+                        'nfe_number' => $result->nfeNumber,
+                        'nfe_key' => $result->nfeKey,
+                        'nfe_url_xml' => $result->xmlUrl,
+                        'nfe_url_pdf' => $result->pdfUrl,
+                        'danfe_url' => $result->danfeUrl,
+                        'status' => 'issued',
+                        'provider_response' => $result->rawResponse,
+                    ])->save();
+
+                    $invoice->update(['nfe_status' => 'issued']);
+
+                    \App\Models\CommunicationQueue::create([
+                        'branch_id' => $invoice->branch_id,
+                        'tutor_id' => $invoice->tutor_id,
+                        'pet_id' => $invoice->pet_id,
+                        'channel' => 'email',
+                        'destination' => $invoice->tutor->email ?? '',
+                        'message_content' => "NFC-e emitida: {$result->nfeNumber} - Fatura {$invoice->invoice_number}. Acesse o sistema para visualizar o XML e DANFE.",
+                        'status' => 'pending',
+                        'scheduled_at' => now(),
+                    ]);
+
+                    return response()->json(['issued' => true, 'number' => $result->nfeNumber]);
+                }
+
+                return response()->json(['issuing' => true, 'status' => $result->flowStatus ?? 'Processando...']);
+            }
+        }
+
+        return response()->json(['issued' => false, 'message' => 'NFC-e não encontrada ou não está sendo processada.']);
     }
 
     protected function emitirNfseSePossivel(Invoice $invoice, NfseService $nfseService): object

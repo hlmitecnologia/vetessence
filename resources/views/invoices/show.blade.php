@@ -149,12 +149,9 @@
 
         @canany(['nfse.emit', 'nfe.emit'])
         @if($invoice->status === 'paid' && ($invoice->items->where('item_type', 'service')->isNotEmpty() || $invoice->items->where('item_type', 'product')->isNotEmpty()))
-        <form action="{{ route('invoices.emitir-nota-fiscal', $invoice) }}" method="POST" class="mb-3" data-confirm="Emitir nota(s) fiscal(is) para esta fatura?">
-            @csrf
-            <button type="submit" class="btn btn-success btn-block">
-                <i class="fas fa-file-invoice"></i> Emitir Nota Fiscal
-            </button>
-        </form>
+        <button id="emitirNotaFiscalBtn" type="button" class="btn btn-success btn-block" onclick="emitirNotaFiscal(this)">
+            <i class="fas fa-file-invoice"></i> Emitir Nota Fiscal
+        </button>
         @endif
         @endcan
 
@@ -268,6 +265,29 @@
         </div>
     </div>
 </div>
+{{-- Loading overlay --}}
+<div id="nfce-loading-overlay" class="d-none" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;">
+    <div class="bg-white rounded p-4 text-center shadow-lg">
+        <div class="spinner-border text-success mb-3" role="status" style="width:3rem;height:3rem;">
+            <span class="sr-only">Emitindo...</span>
+        </div>
+        <h5 class="mb-1">Emitindo Nota Fiscal</h5>
+        <p id="nfce-loading-status" class="text-muted mb-0">Aguardando autorização da SEFAZ...</p>
+    </div>
+</div>
+
+@if($invoice->nfe_status === 'issuing' || $invoice->nfe_status === 'issued')
+{{-- Polling para NFC-e issuing --}}
+@if($invoice->nfe_status === 'issuing')
+<input type="hidden" id="nfce-invoice-id" value="{{ $invoice->nfeInvoice?->nfe_number ?? '' }}">
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    pollNfceStatus();
+});
+</script>
+@endif
+@endif
+
 @endsection
 
 @push('scripts')
@@ -358,6 +378,67 @@ function copyPdvPix() {
     navigator.clipboard.writeText(el.textContent.trim()).then(() => {
         alert('Código PIX copiado!');
     });
+}
+
+function emitirNotaFiscal(btn) {
+    const overlay = document.getElementById('nfce-loading-overlay');
+    overlay.classList.remove('d-none');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Emitindo...';
+
+    fetch('{{ route('invoices.emitir-nota-fiscal', $invoice) }}', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.issuing) {
+            document.getElementById('nfce-loading-status').textContent = 'NFC-e enviada para SEFAZ. Aguardando autorização...';
+            pollNfceStatus(data.nfceInvoiceId, overlay);
+        } else if (data.success) {
+            window.location.reload();
+        } else {
+            overlay.classList.add('d-none');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-file-invoice"></i> Emitir Nota Fiscal';
+            alert(data.message || 'Erro ao emitir nota fiscal.');
+        }
+    })
+    .catch(() => {
+        overlay.classList.add('d-none');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-file-invoice"></i> Emitir Nota Fiscal';
+        alert('Erro de comunicação com o servidor.');
+    });
+}
+
+function pollNfceStatus(invoiceId, overlay) {
+    if (!overlay) overlay = document.getElementById('nfce-loading-overlay');
+
+    function poll() {
+        fetch('{{ route('nfce.consultar-status', $invoice) }}' + (invoiceId ? '/' + invoiceId : ''), {
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.issued) {
+                document.getElementById('nfce-loading-status').textContent = 'NFC-e autorizada!';
+                setTimeout(() => { window.location.reload(); }, 1000);
+            } else if (data.issuing) {
+                document.getElementById('nfce-loading-status').textContent = data.status || 'Aguardando autorização da SEFAZ...';
+                setTimeout(poll, 3000);
+            } else {
+                overlay.classList.add('d-none');
+                alert(data.message || 'Erro ao consultar NFC-e.');
+            }
+        })
+        .catch(() => {
+            document.getElementById('nfce-loading-status').textContent = 'Erro de conexão. Tentando novamente...';
+            setTimeout(poll, 5000);
+        });
+    }
+
+    setTimeout(poll, 2000);
 }
 </script>
 @endpush
