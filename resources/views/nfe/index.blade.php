@@ -5,7 +5,7 @@
     <div class="card-header">
         <h3 class="card-title">NF-e Emitidas</h3>
         <div class="card-tools">
-            <a href="{{ route('nfe.config') }}" class="btn btn-info btn-sm">
+            <a href="{{ route('nf.config') }}" class="btn btn-info btn-sm">
                 <i class="fas fa-cog"></i> Configurar
             </a>
             <a href="{{ route('nfe.export-form') }}" class="btn btn-default btn-sm">
