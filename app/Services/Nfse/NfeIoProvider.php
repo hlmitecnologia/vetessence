@@ -22,7 +22,7 @@ class NfeIoProvider implements NfseProvider
         $response = Http::withHeaders($this->headers($config))
             ->post("{$this->baseUrl}/v1/companies/{$config->nfeio_company_id}/serviceinvoices", $payload);
 
-        $body = $response->json();
+        $body = $response->json() ?? [];
 
         if (!$response->successful()) {
             $error = $body['errors'][0]['message'] ?? $body['erro'] ?? $body['error'] ?? 'Erro ao emitir NFSe via NFE.io';
@@ -45,7 +45,7 @@ class NfeIoProvider implements NfseProvider
         $response = Http::withHeaders($this->headers($config))
             ->get("{$this->baseUrl}/v1/companies/{$config->nfeio_company_id}/serviceinvoices/{$nfseNumber}");
 
-        $body = $response->json();
+        $body = $response->json() ?? [];
 
         if (!$response->successful()) {
             $error = $body['errors'][0]['message'] ?? $body['erro'] ?? $body['error'] ?? 'Erro ao consultar NFSe via NFE.io';
@@ -68,7 +68,7 @@ class NfeIoProvider implements NfseProvider
         $response = Http::withHeaders($this->headers($config))
             ->delete("{$this->baseUrl}/v1/companies/{$config->nfeio_company_id}/serviceinvoices/{$nfseNumber}");
 
-        $body = $response->json();
+        $body = $response->json() ?? [];
 
         if (!$response->successful()) {
             $error = $body['errors'][0]['message'] ?? $body['erro'] ?? $body['error'] ?? 'Erro ao cancelar NFSe via NFE.io';
@@ -106,8 +106,10 @@ class NfeIoProvider implements NfseProvider
             'servicesAmount' => $valor,
         ];
 
+        $phoneDigits = preg_replace('/\D/', '', $tutor->phone ?? '');
+
         if (!empty($borrowerCpfCnpj)) {
-            $payload['borrower'] = [
+            $borrower = [
                 'federalTaxNumber' => (int) $borrowerCpfCnpj,
                 'name' => $tutor->name,
                 'email' => $tutor->email ?? '',
@@ -125,6 +127,12 @@ class NfeIoProvider implements NfseProvider
                     'postalCode' => preg_replace('/\D/', '', $tutor->zipcode ?? ''),
                 ],
             ];
+
+            if (strlen($phoneDigits) >= 10) {
+                $borrower['phoneNumber'] = $phoneDigits;
+            }
+
+            $payload['borrower'] = $borrower;
         }
 
         return $payload;

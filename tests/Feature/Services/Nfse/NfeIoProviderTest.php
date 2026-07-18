@@ -18,6 +18,60 @@ class NfeIoProviderTest extends ModuleTestCase
         $this->provider = new NfeIoProvider;
     }
 
+    public function test_buildPayload_includes_phoneNumber_when_tutor_has_phone()
+    {
+        Http::fake();
+
+        $config = NfseConfig::factory()->create([
+            'nfeio_api_key' => 'test-api-key',
+            'nfeio_company_id' => 'company-123',
+        ]);
+        $tutor = \App\Models\Tutor::factory()->create([
+            'phone' => '(11) 98765-0101',
+            'cpf' => '12345678901',
+            'name' => 'Test Tutor',
+            'email' => 'tutor@test.com',
+        ]);
+        $invoice = Invoice::factory()->create([
+            'tutor_id' => $tutor->id,
+            'total' => 100.00,
+        ]);
+
+        $result = $this->provider->emitir($config, $invoice);
+
+        Http::assertSent(function ($request) {
+            $body = $request->data();
+            return isset($body['borrower']['phoneNumber'])
+                && $body['borrower']['phoneNumber'] === '11987650101';
+        });
+    }
+
+    public function test_buildPayload_omits_phoneNumber_when_tutor_has_no_phone()
+    {
+        Http::fake();
+
+        $config = NfseConfig::factory()->create([
+            'nfeio_api_key' => 'test-api-key',
+            'nfeio_company_id' => 'company-123',
+        ]);
+        $tutor = \App\Models\Tutor::factory()->create([
+            'phone' => '',
+            'cpf' => '12345678901',
+            'name' => 'Test Tutor',
+        ]);
+        $invoice = Invoice::factory()->create([
+            'tutor_id' => $tutor->id,
+            'total' => 100.00,
+        ]);
+
+        $this->provider->emitir($config, $invoice);
+
+        Http::assertSent(function ($request) {
+            $body = $request->data();
+            return !isset($body['borrower']['phoneNumber']);
+        });
+    }
+
     public function test_emitir_success()
     {
         Http::fake([
