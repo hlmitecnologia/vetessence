@@ -22,7 +22,7 @@
                     <th>Vencimento</th>
                     <th>Status</th>
                     <th>NFSe</th>
-                    <th>NF-e</th>
+                    <th>NFC-e</th>
                     <th style="width: 180px;">Ações</th>
                 </tr>
             </thead>
@@ -80,36 +80,11 @@
                         @endif
                         @if(auth()->user()->can('nfse.emit') || auth()->user()->can('nfe.emit'))
                         @if($inv->status === 'paid' && ($inv->has_services > 0 || $inv->has_products > 0) && ($inv->nfse_status === 'none' || $inv->nfe_status === 'none'))
-                        <form action="{{ route('invoices.emitir-nota-fiscal', $inv) }}" method="POST" class="d-inline" data-confirm="Emitir nota(s) fiscal(is) para esta fatura?">
-                            @csrf
-                            <button type="submit" class="btn btn-action btn-success" title="Emitir Nota Fiscal">
-                                <i class="fas fa-file-invoice"></i>
-                            </button>
-                        </form>
+                        <button type="button" class="btn btn-action btn-success" title="Emitir Nota Fiscal" onclick="emitirNotaFiscalIndex({{ $inv->id }}, this)">
+                            <i class="fas fa-file-invoice"></i>
+                        </button>
                         @endif
                         @endif
-                        @can('nfse.cancel')
-                        @if($inv->nfse_status === 'issued' && $inv->nfseInvoice && $inv->nfseInvoice->issuance_date && $inv->nfseInvoice->issuance_date->diffInHours(now()) <= 24)
-                        <form action="{{ route('nfse.cancelar', $inv) }}" method="POST" class="d-inline" data-confirm="Cancelar NFSe? Informe o motivo no campo abaixo.">
-                            @csrf
-                            <input type="hidden" name="motivo" value="Cancelamento solicitado pelo usuário" required>
-                            <button type="submit" class="btn btn-action btn-danger" title="Cancelar NFSe">
-                                <i class="fas fa-ban"></i>
-                            </button>
-                        </form>
-                        @endif
-                        @endcan
-                        @can('nfe.cancel')
-                        @if($inv->nfe_status === 'issued' && $inv->nfeInvoice && $inv->nfeInvoice->issuance_date && $inv->nfeInvoice->issuance_date->diffInHours(now()) <= 24)
-                        <form action="{{ route('nfe.cancelar', $inv) }}" method="POST" class="d-inline" data-confirm="Cancelar NF-e? Informe o motivo no campo abaixo.">
-                            @csrf
-                            <input type="hidden" name="motivo" value="Cancelamento solicitado pelo usuário" required>
-                            <button type="submit" class="btn btn-action btn-danger" title="Cancelar NF-e">
-                                <i class="fas fa-ban"></i>
-                            </button>
-                        </form>
-                        @endif
-                        @endcan
                     </td>
                 </tr>
                 @endforeach
@@ -122,13 +97,122 @@
 </div>
 @endsection
 
+{{-- Loading overlay --}}
+<div id="nfce-loading-overlay" class="d-none" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;">
+    <div class="bg-white rounded p-4 text-center shadow-lg">
+        <div class="spinner-border text-success mb-3" role="status" style="width:3rem;height:3rem;">
+            <span class="sr-only">Emitindo...</span>
+        </div>
+        <h5 class="mb-1">Emitindo Nota Fiscal</h5>
+        <p id="nfce-loading-status" class="text-muted mb-0">Aguardando autorização da SEFAZ...</p>
+    </div>
+</div>
+
 @push('scripts')
 <script>
 $(function() {
     var table = $('table.table-bordered').first();
-    if (table.length && table.hasClass('dataTable')) {
-        table.DataTable().order([]).draw();
+    if (table.length) {
+        // Destroi o DataTable criado pelo auto-init (que ordena por coluna 0)
+        // e recria com order:[] para preservar a ordenação do servidor
+        if (table.hasClass('dataTable')) {
+            table.DataTable().destroy();
+        }
+        table.DataTable({
+            paging: true,
+            lengthChange: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            autoWidth: false,
+            order: [],
+            columns: Array.from({length: table.find('thead th').length}, function() { return {}; }),
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Todos']],
+            language: {
+                sEmptyTable: 'Nenhum registro encontrado',
+                sInfo: 'Mostrando de _START_ até _END_ de _TOTAL_ registros',
+                sInfoEmpty: 'Mostrando 0 até 0 de 0 registros',
+                sInfoFiltered: '(Filtrados de _MAX_ registros)',
+                sLengthMenu: '_MENU_ registros por página',
+                sLoadingRecords: 'Carregando...',
+                sProcessing: 'Processando...',
+                sSearch: 'Pesquisar:',
+                sSearchPlaceholder: 'Buscar...',
+                sZeroRecords: 'Nenhum registro encontrado',
+                oPaginate: {
+                    sNext: 'Próximo',
+                    sPrevious: 'Anterior',
+                    sFirst: 'Primeiro',
+                    sLast: 'Último'
+                },
+                oAria: {
+                    sSortAscending: ': Ordenar colunas de forma ascendente',
+                    sSortDescending: ': Ordenar colunas de forma descendente'
+                }
+            }
+        });
     }
 });
+
+function emitirNotaFiscalIndex(invoiceId, btn) {
+    var overlay = document.getElementById('nfce-loading-overlay');
+    overlay.classList.remove('d-none');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+    fetch('/invoices/' + invoiceId + '/emitir-nota-fiscal', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}', 'Accept': 'application/json' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.issuing) {
+            document.getElementById('nfce-loading-status').textContent = 'NFC-e enviada para SEFAZ. Aguardando autorização...';
+            pollNfceStatusIndex(invoiceId, data.nfceInvoiceId, overlay);
+        } else if (data.success) {
+            window.location.reload();
+        } else {
+            overlay.classList.add('d-none');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-file-invoice"></i>';
+            alert(data.message || 'Erro ao emitir nota fiscal.');
+        }
+    })
+    .catch(function() {
+        overlay.classList.add('d-none');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-file-invoice"></i>';
+        alert('Erro de comunicação com o servidor.');
+    });
+}
+
+function pollNfceStatusIndex(invoiceId, apiInvoiceId, overlay) {
+    if (!overlay) overlay = document.getElementById('nfce-loading-overlay');
+
+    function poll() {
+        fetch('/invoices/' + invoiceId + '/nfce-status/' + (apiInvoiceId || ''), {
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.issued) {
+                document.getElementById('nfce-loading-status').textContent = 'NFC-e autorizada!';
+                setTimeout(function() { window.location.reload(); }, 1000);
+            } else if (data.issuing) {
+                document.getElementById('nfce-loading-status').textContent = data.status || 'Aguardando autorização da SEFAZ...';
+                setTimeout(poll, 3000);
+            } else {
+                overlay.classList.add('d-none');
+                alert(data.message || 'Erro ao consultar NFC-e.');
+            }
+        })
+        .catch(function() {
+            document.getElementById('nfce-loading-status').textContent = 'Erro de conexão. Tentando novamente...';
+            setTimeout(poll, 5000);
+        });
+    }
+
+    setTimeout(poll, 2000);
+}
 </script>
 @endpush
