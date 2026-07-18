@@ -29,7 +29,7 @@
             <tbody>
                 @foreach($invoices as $inv)
                 <tr>
-                    <td data-order="{{ $inv->invoice_number }}"><strong>{{ $inv->invoice_number }}</strong></td>
+                    <td><strong>{{ $inv->invoice_number }}</strong></td>
                     <td>{{ $inv->tutor->name ?? '-' }}</td>
                     <td>{{ $inv->pet->name ?? '-' }}</td>
                     <td>R$ {{ number_format($inv->total, 2, ',', '.') }}</td>
@@ -121,3 +121,14 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+$(function() {
+    var table = $('table.table-bordered').first();
+    if (table.length && table.hasClass('dataTable')) {
+        table.DataTable().order([]).draw();
+    }
+});
+</script>
+@endpush
