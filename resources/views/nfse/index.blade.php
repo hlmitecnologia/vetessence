@@ -46,7 +46,7 @@
                         <td>{{ $nfse->rps_number ?? '-' }}</td>
                         <td>
                             @if($nfse->invoice)
-                            <a href="{{ route('invoices.show', $nfse->invoice) }}">#{{ $nfse->invoice_id }}</a>
+                            <a href="{{ route('invoices.show', $nfse->invoice) }}">{{ $nfse->invoice->invoice_number ?? '#' . $nfse->invoice_id }}</a>
                             @else
                             -
                             @endif
