@@ -46,7 +46,7 @@ class NfeIoProviderTest extends ModuleTestCase
         });
     }
 
-    public function test_buildPayload_omits_phoneNumber_when_tutor_has_no_phone()
+    public function test_buildPayload_pads_phoneNumber_when_tutor_and_branch_have_no_phone()
     {
         Http::fake();
 
@@ -69,6 +69,37 @@ class NfeIoProviderTest extends ModuleTestCase
         Http::assertSent(function ($request) {
             $body = $request->data();
             return isset($body['borrower']['phoneNumber']) && $body['borrower']['phoneNumber'] === '00000000';
+        });
+    }
+
+    public function test_buildPayload_falls_back_to_branch_phone_when_tutor_phone_too_short()
+    {
+        Http::fake();
+
+        $branch = \App\Models\Branch::factory()->create([
+            'phone' => '(11) 3333-4444',
+        ]);
+        $config = NfseConfig::factory()->create([
+            'nfeio_api_key' => 'test-api-key',
+            'nfeio_company_id' => 'company-123',
+        ]);
+        $tutor = \App\Models\Tutor::factory()->create([
+            'phone' => '1234',
+            'cpf' => '12345678901',
+            'name' => 'Test Tutor',
+        ]);
+        $invoice = Invoice::factory()->create([
+            'tutor_id' => $tutor->id,
+            'branch_id' => $branch->id,
+            'total' => 100.00,
+        ]);
+
+        $this->provider->emitir($config, $invoice);
+
+        Http::assertSent(function ($request) {
+            $body = $request->data();
+            return isset($body['borrower']['phoneNumber'])
+                && $body['borrower']['phoneNumber'] === '1133334444';
         });
     }
 
