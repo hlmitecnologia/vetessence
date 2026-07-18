@@ -194,7 +194,7 @@ class NfeIoProvider implements NfeProvider
                         'code' => $tutor->city_ibge ?? $branch->municipio_ibge ?? '',
                         'name' => $tutor->city ?? $branch->city ?? '',
                     ],
-                    'state' => $tutor->state ?? '',
+                    'state' => strtoupper(substr($tutor->state ?? $branch->state ?? 'SP', 0, 2)),
                     'postalCode' => preg_replace('/\D/', '', $tutor->zipcode ?? ''),
                 ],
             ],
