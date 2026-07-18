@@ -22,11 +22,13 @@ class NfeIoProvider implements NfseProvider
         $response = Http::withHeaders($this->headers($config))
             ->post("{$this->baseUrl}/v1/companies/{$config->nfeio_company_id}/serviceinvoices", $payload);
 
-        $body = $response->json() ?? [];
+        $body = $response->json();
+        $raw = is_array($body) ? $body : null;
+        $body = is_array($body) ? $body : [];
 
         if (!$response->successful()) {
             $error = $body['errors'][0]['message'] ?? $body['erro'] ?? $body['error'] ?? 'Erro ao emitir NFSe via NFE.io';
-            return NfseResult::error($error, $body);
+            return NfseResult::error($error, $raw);
         }
 
         return NfseResult::success(
@@ -45,11 +47,13 @@ class NfeIoProvider implements NfseProvider
         $response = Http::withHeaders($this->headers($config))
             ->get("{$this->baseUrl}/v1/companies/{$config->nfeio_company_id}/serviceinvoices/{$nfseNumber}");
 
-        $body = $response->json() ?? [];
+        $body = $response->json();
+        $raw = is_array($body) ? $body : null;
+        $body = is_array($body) ? $body : [];
 
         if (!$response->successful()) {
             $error = $body['errors'][0]['message'] ?? $body['erro'] ?? $body['error'] ?? 'Erro ao consultar NFSe via NFE.io';
-            return NfseResult::error($error, $body);
+            return NfseResult::error($error, $raw);
         }
 
         return NfseResult::success(
@@ -68,11 +72,13 @@ class NfeIoProvider implements NfseProvider
         $response = Http::withHeaders($this->headers($config))
             ->delete("{$this->baseUrl}/v1/companies/{$config->nfeio_company_id}/serviceinvoices/{$nfseNumber}");
 
-        $body = $response->json() ?? [];
+        $body = $response->json();
+        $raw = is_array($body) ? $body : null;
+        $body = is_array($body) ? $body : [];
 
         if (!$response->successful()) {
             $error = $body['errors'][0]['message'] ?? $body['erro'] ?? $body['error'] ?? 'Erro ao cancelar NFSe via NFE.io';
-            return NfseResult::error($error, $body);
+            return NfseResult::error($error, $raw);
         }
 
         return NfseResult::success(
@@ -125,7 +131,7 @@ class NfeIoProvider implements NfseProvider
                     'additionalInformation' => $tutor->complement ?? '',
                     'district' => $tutor->neighborhood ?? '',
                     'city' => [
-                        'code' => $tutor->city_ibge ?? '',
+                        'code' => $tutor->city_ibge ?? $branch->municipio_ibge ?? '',
                         'name' => $tutor->city ?? '',
                     ],
                     'state' => $tutor->state ?? '',

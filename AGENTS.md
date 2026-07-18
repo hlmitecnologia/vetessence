@@ -88,11 +88,30 @@ php artisan tinker
 ```
 Requer chave de API NFE.io + company_id para validar fluxo completo.
 
-### Recent
-- **Manuais atualizados**: 7 documentos revisados (151 lines added, 27 removed) para refletir integração real de pagamentos, campos RH, layout do portal, plantões, estoque
-- **Repositório público**: MIT license, README, CONTRIBUTING, SECURITY, CODEOWNERS, issue templates, CI workflow, .env.example
-- **Favicon**: substituído pelo logo VetEssence (logowhatsapp.png → ICO)
-- **Branch protection**: PR obrigatório + code review + code owners em `main`
-- **PR workflow**: criação de branch → PR → merge via API (proteção removida/restaurada automaticamente)
-- **CI**: `.github/workflows/tests.yml` — PHP 8.4, MySQL 8.0, 2.045+ testes
-- **Release v1.0.0** criada com changelog completo
+### PROJETO NFE.IO (NFS-e OK, NF-e pendente)
+
+**NFS-e (Service Invoices) — FUNCIONANDO ✅**
+- Base URL: `https://api.nfe.io/v1/companies/{companyId}/serviceinvoices`
+- Auth: `Authorization: Basic <raw_api_key>` (sem base64 — SDK oficial confirma)
+- Company ID real: `7bf5d244cee3452389949fa50d1ceb7e` (environment: Development)
+- Emissão testada e aprovada: Status 202, `flowStatus: "WaitingCalculateTaxes"`
+- Persistência: `NfseInvoice` criado com `provider_response` completo, `nfse_status='issued'`
+- CPF válido obrigatório (check digits validados pela API): usado `52998224725`
+- `city.code` no borrower: fallback para `$branch->municipio_ibge` (já que `tutors` não tem `city_ibge`)
+- `phoneNumber` no borrower: sempre enviado (tutor → branch → padding 8 zeros)
+- `$response->json()` pode retornar string em vez de array → guard `is_array()` em ambos providers (NFe/NFSe)
+- Tests: 15/15 passando (NfeIoProviderTest)
+
+**NF-e (Product Invoices) — Parcial ⚠️**
+- Base URL correta: `https://api.nfse.io/v2/companies/{companyId}/productinvoices`
+- Payload v2 requer: `environment`, `buyer` (não `customer`), `items[].tax.icms`
+- ICMS para Simples Nacional: `csosn` (não `cst`)
+- Items precisam de `code` (1-60 chars), `ncm` (2-8 chars, sem pontos)
+- **Bloqueado**: NFE.io exige `stateTax` (Inscrição Estadual) configurada na empresa antes de emitir NF-e
+- Provider atualizado: `buildPayload()` envia `environment`, `orderNumber`, `buyer.phoneNumber`, `items[].tax.icms`
+- Pendente: configurar IE + certificado digital no painel NFE.io para testar emissão real
+
+**Próximo passo NF-e:**
+1. Fazer upload do certificado digital no painel NFSe.io (empresa `7bf5d244cee3452389949fa50d1ceb7e`)
+2. Configurar Inscrição Estadual (state tax) no painel
+3. Testar emissão via tinker
