@@ -99,6 +99,8 @@ class NfeIoProvider implements NfseProvider
         $branch = $invoice->branch;
 
         $borrowerCpfCnpj = preg_replace('/\D/', '', $tutor->cpf ?? $tutor->cnpj ?? '');
+        $valor = (float) $invoice->total;
+        $descricao = $invoice->description ?? "Serviços veterinários - Fatura #{$invoice->id}";
 
         return [
             'borrower' => [
@@ -120,8 +122,17 @@ class NfeIoProvider implements NfseProvider
                 ],
             ],
             'cityServiceCode' => $branch->city_service_code ?? $branch->municipio_ibge ?? '',
-            'description' => $invoice->description ?? "Serviços veterinários - Fatura #{$invoice->id}",
-            'servicesAmount' => (float) $invoice->total,
+            'description' => $descricao,
+            'servicesAmount' => $valor,
+            'rps' => [
+                [
+                    'servico' => [
+                        'valor_servicos' => $valor,
+                        'iss_retido' => false,
+                        'discriminacao' => $descricao,
+                    ],
+                ],
+            ],
         ];
     }
 }
