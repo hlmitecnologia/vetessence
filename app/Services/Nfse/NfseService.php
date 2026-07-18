@@ -32,10 +32,11 @@ class NfseService
         $provider = $this->resolveProvider($config);
         $result = $provider->emitir($config, $invoice);
 
+        $nfseInvoice = NfseInvoice::firstOrNew(['invoice_id' => $invoice->id]);
+        $nfseInvoice->branch_id = $invoice->branch_id;
+
         if ($result->success) {
-            $nfseInvoice = NfseInvoice::create([
-                'branch_id' => $invoice->branch_id,
-                'invoice_id' => $invoice->id,
+            $nfseInvoice->fill([
                 'nfse_number' => $result->nfseNumber,
                 'nfse_code' => $result->nfseCode,
                 'nfse_url_xml' => $result->xmlUrl,
@@ -45,7 +46,8 @@ class NfseService
                 'issuance_date' => now(),
                 'verification_code' => $result->verificationCode,
                 'provider_response' => json_encode($result->rawResponse),
-            ]);
+                'error_message' => null,
+            ])->save();
 
             $invoice->update([
                 'nfse_status' => 'issued',
@@ -53,6 +55,12 @@ class NfseService
             ]);
 
             $this->notifyTutor($invoice, $nfseInvoice);
+        } else {
+            $nfseInvoice->fill([
+                'status' => 'failed',
+                'provider_response' => json_encode($result->rawResponse),
+                'error_message' => $result->errorMessage,
+            ])->save();
         }
 
         return $result;

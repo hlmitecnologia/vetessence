@@ -128,7 +128,7 @@ class NfeIoProvider implements NfseProvider
                 ],
             ];
 
-            if (strlen($phoneDigits) >= 10) {
+            if (strlen($phoneDigits) >= 8) {
                 $borrower['phoneNumber'] = $phoneDigits;
             }
 

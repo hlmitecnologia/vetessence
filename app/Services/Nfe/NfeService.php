@@ -32,10 +32,11 @@ class NfeService
         $provider = $this->resolveProvider($config);
         $result = $provider->emitir($config, $invoice);
 
+        $nfeInvoice = NfeInvoice::firstOrNew(['invoice_id' => $invoice->id]);
+        $nfeInvoice->branch_id = $invoice->branch_id;
+
         if ($result->success) {
-            $nfeInvoice = NfeInvoice::create([
-                'branch_id' => $invoice->branch_id,
-                'invoice_id' => $invoice->id,
+            $nfeInvoice->fill([
                 'nfe_number' => $result->nfeNumber,
                 'nfe_key' => $result->nfeKey,
                 'nfe_url_xml' => $result->xmlUrl,
@@ -44,7 +45,8 @@ class NfeService
                 'status' => 'issued',
                 'issuance_date' => now(),
                 'provider_response' => $result->rawResponse,
-            ]);
+                'error_message' => null,
+            ])->save();
 
             $invoice->update([
                 'nfe_status' => 'issued',
@@ -52,6 +54,12 @@ class NfeService
             ]);
 
             $this->notifyTutor($invoice, $nfeInvoice);
+        } else {
+            $nfeInvoice->fill([
+                'status' => 'failed',
+                'provider_response' => $result->rawResponse,
+                'error_message' => $result->errorMessage,
+            ])->save();
         }
 
         return $result;
