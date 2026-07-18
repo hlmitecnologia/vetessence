@@ -172,7 +172,7 @@
                     <li class="nav-item">
                         <a href="{{ route('medical-records.show', $record) }}" class="nav-link">
                             <i class="fas fa-file-medical mr-2"></i> {{ $record->pet->name ?? 'Pet' }}
-                            <span class="float-right text-muted text-sm">{{ Str::limit($record->diagnosis, 20) }}</span>
+                            <span class="float-right text-muted text-sm">{{ Str::limit(strip_tags($record->diagnosis), 20) }}</span>
                         </a>
                     </li>
                     @empty

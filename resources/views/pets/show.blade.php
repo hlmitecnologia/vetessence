@@ -117,7 +117,7 @@
                         </div>
                         <div class="flex-fill">
                             <div class="font-weight-bold">{{ $record->date->format('d/m/Y') }}</div>
-                            <small class="text-muted">{{ Str::limit($record->diagnosis, 50) ?: 'Sem diagnóstico' }}</small>
+                            <small class="text-muted">{{ Str::limit(strip_tags($record->diagnosis), 50) ?: 'Sem diagnóstico' }}</small>
                         </div>
                         <small class="text-muted">{{ $record->vet->name ?? '-' }}</small>
                     </a>

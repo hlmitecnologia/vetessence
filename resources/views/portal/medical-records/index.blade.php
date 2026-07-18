@@ -18,7 +18,7 @@
         <h3 class="text-lg font-bold text-gray-800">{{ $r->pet->name ?? '-' }}</h3>
         <span class="text-base text-gray-500">{{ $r->created_at->format('d/m/Y H:i') }}</span>
     </div>
-    <p class="text-base text-gray-600 mt-2">{{ Str::limit($r->diagnosis ?? $r->chief_complaint ?? 'Sem diagnóstico', 200) }}</p>
+    <p class="text-base text-gray-600 mt-2">{{ Str::limit(strip_tags($r->diagnosis ?? $r->chief_complaint ?? ''), 200) ?: 'Sem diagnóstico' }}</p>
     <p class="text-sm text-gray-400 mt-2">{{ $r->vet->name ?? 'Veterinário' }}</p>
 </div>
 @empty

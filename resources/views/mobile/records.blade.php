@@ -13,7 +13,7 @@
                 <strong>{{ $r->pet->name ?? '-' }}</strong>
                 <small class="text-muted">{{ $r->created_at->format('d/m H:i') }}</small>
             </div>
-            <small class="text-muted">{{ $r->vet->name ?? '-' }} | {{ Str::limit($r->diagnosis ?? $r->chief_complaint ?? '', 80) }}</small>
+            <small class="text-muted">{{ $r->vet->name ?? '-' }} | {{ Str::limit(strip_tags($r->diagnosis ?? $r->chief_complaint ?? ''), 80) }}</small>
             <a href="{{ route('medical-records.show', $r) }}" class="btn btn-sm btn-outline-success mt-2">Ver Prontuário</a>
         </div>
     @empty
