@@ -16,6 +16,11 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Configuração NF-e</h3>
+                @php
+                    $nfeProviderNames = ['focusnfe' => 'FocusNFe', 'nfeio' => 'NFE.io', 'webmania' => 'Webmania®'];
+                    $nfeProvider = $nfeProviderNames[$config->provider ?? 'focusnfe'] ?? $config->provider ?? 'FocusNFe';
+                @endphp
+                <span class="badge badge-success float-right mt-1">Ativo: {{ $nfeProvider }}</span>
             </div>
             <form action="{{ route('nfe.config.update') }}" method="POST">
                 @csrf

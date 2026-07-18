@@ -29,15 +29,13 @@ class NfeIoProvider implements NfseProvider
             return NfseResult::error($error, $body);
         }
 
-        $invoiceData = $body['serviceInvoice'] ?? $body;
-
         return NfseResult::success(
-            nfseNumber: (string) ($invoiceData['number'] ?? $body['nfse'] ?? $body['numero'] ?? ''),
-            nfseCode: $invoiceData['verificationCode'] ?? $body['codigo'] ?? $body['codigo_verificacao'] ?? '',
+            nfseNumber: (string) ($body['id'] ?? ''),
+            nfseCode: (string) ($body['number'] ?? ''),
             xmlUrl: '',
             pdfUrl: '',
-            rpsNumber: $invoiceData['rpsNumber'] ?? $body['rps'] ?? $body['numero_rps'] ?? '',
-            verificationCode: $invoiceData['verificationCode'] ?? $body['codigo_verificacao'] ?? '',
+            rpsNumber: (string) ($body['rpsNumber'] ?? ''),
+            verificationCode: $body['checkCode'] ?? '',
             rawResponse: $body,
         );
     }
@@ -54,15 +52,13 @@ class NfeIoProvider implements NfseProvider
             return NfseResult::error($error, $body);
         }
 
-        $invoiceData = $body['serviceInvoice'] ?? $body;
-
         return NfseResult::success(
-            nfseNumber: (string) ($invoiceData['number'] ?? ''),
-            nfseCode: $invoiceData['verificationCode'] ?? '',
+            nfseNumber: (string) ($body['id'] ?? ''),
+            nfseCode: (string) ($body['number'] ?? ''),
             xmlUrl: '',
             pdfUrl: '',
-            rpsNumber: $invoiceData['rpsNumber'] ?? '',
-            verificationCode: $invoiceData['verificationCode'] ?? '',
+            rpsNumber: (string) ($body['rpsNumber'] ?? ''),
+            verificationCode: $body['checkCode'] ?? '',
             rawResponse: $body,
         );
     }
@@ -80,7 +76,9 @@ class NfeIoProvider implements NfseProvider
         }
 
         return NfseResult::success(
-            nfseNumber: $nfseNumber,
+            nfseNumber: (string) ($body['id'] ?? $nfseNumber),
+            nfseCode: (string) ($body['number'] ?? ''),
+            verificationCode: $body['checkCode'] ?? '',
             rawResponse: $body,
         );
     }
@@ -102,8 +100,14 @@ class NfeIoProvider implements NfseProvider
         $valor = (float) $invoice->total;
         $descricao = $invoice->description ?? "Serviços veterinários - Fatura #{$invoice->id}";
 
-        return [
-            'borrower' => [
+        $payload = [
+            'cityServiceCode' => $branch->city_service_code ?? $branch->municipio_ibge ?? '',
+            'description' => $descricao,
+            'servicesAmount' => $valor,
+        ];
+
+        if (!empty($borrowerCpfCnpj)) {
+            $payload['borrower'] = [
                 'federalTaxNumber' => (int) $borrowerCpfCnpj,
                 'name' => $tutor->name,
                 'email' => $tutor->email ?? '',
@@ -120,19 +124,9 @@ class NfeIoProvider implements NfseProvider
                     'state' => $tutor->state ?? '',
                     'postalCode' => preg_replace('/\D/', '', $tutor->zipcode ?? ''),
                 ],
-            ],
-            'cityServiceCode' => $branch->city_service_code ?? $branch->municipio_ibge ?? '',
-            'description' => $descricao,
-            'servicesAmount' => $valor,
-            'rps' => [
-                [
-                    'servico' => [
-                        'valor_servicos' => $valor,
-                        'iss_retido' => false,
-                        'discriminacao' => $descricao,
-                    ],
-                ],
-            ],
-        ];
+            ];
+        }
+
+        return $payload;
     }
 }

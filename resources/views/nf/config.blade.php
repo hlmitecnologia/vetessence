@@ -1,5 +1,11 @@
 @php
     $title = 'Configuração NF';
+    $providerNames = [
+        'webmania' => 'Webmania®',
+        'focusnfe' => 'FocusNFe',
+        'spedy' => 'Spedy',
+        'nfeio' => 'NFE.io',
+    ];
 @endphp
 @extends('layouts.adminlte')
 
@@ -25,6 +31,8 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-file-invoice"></i> NFS-e (Serviços)</h3>
+                @php $nfseProvider = $providerNames[$nfseConfig->provider ?? 'webmania'] ?? $nfseConfig->provider ?? 'Webmania®'; @endphp
+                <span class="badge badge-success float-right mt-1">Ativo: {{ $nfseProvider }}</span>
             </div>
             <form action="{{ route('nfse.config.update') }}" method="POST">
                 @csrf
@@ -142,6 +150,8 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-box"></i> NF-e / NFC-e (Produtos)</h3>
+                @php $nfeProvider = $providerNames[$nfeConfig->provider ?? 'focusnfe'] ?? $nfeConfig->provider ?? 'FocusNFe'; @endphp
+                <span class="badge badge-success float-right mt-1">Ativo: {{ $nfeProvider }}</span>
             </div>
             <form action="{{ route('nfe.config.update') }}" method="POST">
                 @csrf

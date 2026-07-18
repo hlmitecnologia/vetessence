@@ -22,10 +22,11 @@ class NfeIoProviderTest extends ModuleTestCase
     {
         Http::fake([
             'api.nfe.io/v1/companies/company-123/serviceinvoices' => Http::response([
-                'serviceInvoice' => [
-                    'number' => 123456,
-                    'verificationCode' => 'COD123',
-                ],
+                'id' => 'nfse-uuid-123',
+                'number' => 123456,
+                'checkCode' => 'COD123',
+                'rpsNumber' => 789,
+                'flowStatus' => 'Issued',
             ], 201),
         ]);
 
@@ -38,7 +39,10 @@ class NfeIoProviderTest extends ModuleTestCase
         $result = $this->provider->emitir($config, $invoice);
 
         $this->assertTrue($result->success);
-        $this->assertEquals('123456', $result->nfseNumber);
+        $this->assertEquals('nfse-uuid-123', $result->nfseNumber);
+        $this->assertEquals('123456', $result->nfseCode);
+        $this->assertEquals('COD123', $result->verificationCode);
+        $this->assertEquals('789', $result->rpsNumber);
     }
 
     public function test_emitir_api_error()
@@ -64,11 +68,11 @@ class NfeIoProviderTest extends ModuleTestCase
     public function test_consultar_success()
     {
         Http::fake([
-            'api.nfe.io/v1/companies/company-123/serviceinvoices/123456' => Http::response([
-                'serviceInvoice' => [
-                    'number' => 123456,
-                    'verificationCode' => 'COD123',
-                ],
+            'api.nfe.io/v1/companies/company-123/serviceinvoices/nfse-uuid-123' => Http::response([
+                'id' => 'nfse-uuid-123',
+                'number' => 123456,
+                'checkCode' => 'COD123',
+                'rpsNumber' => 789,
             ], 200),
         ]);
 
@@ -77,16 +81,17 @@ class NfeIoProviderTest extends ModuleTestCase
             'nfeio_company_id' => 'company-123',
         ]);
 
-        $result = $this->provider->consultar($config, '123456');
+        $result = $this->provider->consultar($config, 'nfse-uuid-123');
 
         $this->assertTrue($result->success);
-        $this->assertEquals('123456', $result->nfseNumber);
+        $this->assertEquals('nfse-uuid-123', $result->nfseNumber);
+        $this->assertEquals('123456', $result->nfseCode);
     }
 
     public function test_consultar_not_found()
     {
         Http::fake([
-            'api.nfe.io/v1/companies/company-123/serviceinvoices/000000' => Http::response([
+            'api.nfe.io/v1/companies/company-123/serviceinvoices/unknown-uuid' => Http::response([
                 'errors' => [['message' => 'NFSe não encontrada']],
             ], 404),
         ]);
@@ -96,7 +101,7 @@ class NfeIoProviderTest extends ModuleTestCase
             'nfeio_company_id' => 'company-123',
         ]);
 
-        $result = $this->provider->consultar($config, '000000');
+        $result = $this->provider->consultar($config, 'unknown-uuid');
 
         $this->assertFalse($result->success);
     }
@@ -104,11 +109,10 @@ class NfeIoProviderTest extends ModuleTestCase
     public function test_cancelar_success()
     {
         Http::fake([
-            'api.nfe.io/v1/companies/company-123/serviceinvoices/123456' => Http::response([
-                'serviceInvoice' => [
-                    'number' => 123456,
-                    'flowStatus' => 'Cancelled',
-                ],
+            'api.nfe.io/v1/companies/company-123/serviceinvoices/nfse-uuid-123' => Http::response([
+                'id' => 'nfse-uuid-123',
+                'number' => 123456,
+                'flowStatus' => 'Cancelled',
             ], 200),
         ]);
 
@@ -117,15 +121,16 @@ class NfeIoProviderTest extends ModuleTestCase
             'nfeio_company_id' => 'company-123',
         ]);
 
-        $result = $this->provider->cancelar($config, '123456', 'Cancelamento a pedido');
+        $result = $this->provider->cancelar($config, 'nfse-uuid-123', 'Cancelamento a pedido');
 
         $this->assertTrue($result->success);
+        $this->assertEquals('nfse-uuid-123', $result->nfseNumber);
     }
 
     public function test_cancelar_error()
     {
         Http::fake([
-            'api.nfe.io/v1/companies/company-123/serviceinvoices/123456' => Http::response([
+            'api.nfe.io/v1/companies/company-123/serviceinvoices/nfse-uuid-123' => Http::response([
                 'errors' => [['message' => 'Prazo excedido']],
             ], 422),
         ]);
@@ -135,7 +140,7 @@ class NfeIoProviderTest extends ModuleTestCase
             'nfeio_company_id' => 'company-123',
         ]);
 
-        $result = $this->provider->cancelar($config, '123456', 'Teste');
+        $result = $this->provider->cancelar($config, 'nfse-uuid-123', 'Teste');
 
         $this->assertFalse($result->success);
     }
