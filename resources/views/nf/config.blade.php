@@ -117,7 +117,7 @@
                         <h6 class="text-primary mt-3"><i class="fas fa-file-invoice mr-1"></i>Credenciais NFE.io</h6>
                         <p class="text-muted small">
                             <i class="fas fa-info-circle mr-1"></i>
-                            A API NFE.io utiliza o header <code>Authorization: Basic {api_key}</code>. O Company ID é o identificador da empresa cadastrada na plataforma NFE.io.
+                            A API NFE.io utiliza o header <code>Authorization: {api_key}</code> (diretamente, sem prefixo Basic). O Company ID é o identificador da empresa cadastrada na plataforma NFE.io.
                         </p>
                         <div class="row">
                             <div class="col-md-6">
@@ -200,7 +200,7 @@
                         <h6 class="text-primary mt-3"><i class="fas fa-file-invoice mr-1"></i>Credenciais NFE.io</h6>
                         <p class="text-muted small">
                             <i class="fas fa-info-circle mr-1"></i>
-                            A API NFE.io utiliza o header <code>Authorization: Basic {api_key}</code>. O Company ID é o identificador da empresa cadastrada na plataforma NFE.io.
+                            A API NFE.io utiliza o header <code>Authorization: {api_key}</code> (diretamente, sem prefixo Basic). O Company ID é o identificador da empresa cadastrada na plataforma NFE.io.
                         </p>
                         <div class="row">
                             <div class="col-md-6">
