@@ -222,22 +222,22 @@ class InvoiceController extends Controller
         $hasProductItems = $invoice->items->where('item_type', 'product')->isNotEmpty();
 
         if (!$hasProductItems) {
-            return (object) ['success' => true, 'message' => 'Nenhum produto para emitir NF-e.'];
+            return (object) ['success' => true, 'message' => 'Nenhum produto para emitir NFC-e.'];
         }
 
         if ($invoice->nfe_status !== 'none') {
-            return (object) ['success' => true, 'message' => 'NF-e já emitida anteriormente.'];
+            return (object) ['success' => true, 'message' => 'NFC-e já emitida anteriormente.'];
         }
 
         if (!NfeConfig::where('is_active', true)->exists()) {
-            return NfeResult::error('NF-e não configurada. Configure o provedor de emissão em NF-e > Configurações.');
+            return NfeResult::error('NFC-e não configurada. Configure o provedor de emissão em NF-e / NFC-e > Configurações.');
         }
 
         if (!$invoice->branch || !$invoice->branch->cnpj) {
             return NfeResult::error('Dados fiscais da unidade incompletos. Configure o CNPJ no cadastro da unidade.');
         }
 
-        return $nfeService->emitir($invoice);
+        return $nfeService->emitirNfce($invoice);
     }
 
     public function generatePix(Invoice $invoice)

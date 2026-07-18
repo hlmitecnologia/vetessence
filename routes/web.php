@@ -206,6 +206,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('invoices/{invoice}/nfe-emitir', 'App\Http\Controllers\NfeController@emitir')->name('nfe.emitir')->middleware('can:nfe.emit');
     Route::post('invoices/{invoice}/nfe-cancelar', 'App\Http\Controllers\NfeController@cancelar')->name('nfe.cancelar')->middleware('can:nfe.cancel');
 
+    // NFC-e
+    Route::get('nfce', 'App\Http\Controllers\NfceController@index')->name('nfce.index')->middleware('can:nfe.view');
+    Route::get('nfce/{nfceInvoice}', 'App\Http\Controllers\NfceController@show')->name('nfce.show')->middleware('can:nfe.view');
+    Route::get('nfce/{nfceInvoice}/xml', 'App\Http\Controllers\NfeController@downloadXml')->name('nfce.download-xml')->middleware('can:nfe.view');
+    Route::get('nfce/{nfceInvoice}/pdf', 'App\Http\Controllers\NfeController@downloadPdf')->name('nfce.download-pdf')->middleware('can:nfe.view');
+    Route::get('nfce/{nfceInvoice}/danfe', 'App\Http\Controllers\NfeController@downloadDanfe')->name('nfce.download-danfe')->middleware('can:nfe.view');
+
     // Config NF (unificada)
     Route::get('nf/config', 'App\Http\Controllers\NfConfigController@edit')->name('nf.config')->middleware('can:nfe-config.edit');
 

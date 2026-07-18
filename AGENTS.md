@@ -88,7 +88,7 @@ php artisan tinker
 ```
 Requer chave de API NFE.io + company_id para validar fluxo completo.
 
-### PROJETO NFE.IO (NFS-e OK, NF-e pendente)
+### PROJETO NFE.IO (NFS-e OK, NFC-e OK, NF-e pendente)
 
 **NFS-e (Service Invoices) — FUNCIONANDO ✅**
 - Base URL: `https://api.nfe.io/v1/companies/{companyId}/serviceinvoices`
@@ -102,14 +102,25 @@ Requer chave de API NFE.io + company_id para validar fluxo completo.
 - `$response->json()` pode retornar string em vez de array → guard `is_array()` em ambos providers (NFe/NFSe)
 - Tests: 15/15 passando (NfeIoProviderTest)
 
+**NFC-e (Consumer Invoices) — IMPLEMENTADO ⚡**
+- Após pagamento da fatura, itens produto geram NFC-e (não mais NF-e)
+- Provider `emitirNfce()` adicionado à interface `NfeProvider` + implementações:
+  - **Webmania**: mesmo endpoint `/nfe/emissao/` com `modelo: '65'`
+  - **NFE.io**: endpoint `/v2/companies/{id}/consumerinvoices`
+  - **FocusNFe**: endpoint `/v2/nfc?ref={ref}`
+- `NfeService::emitirNfce()` com persistência em `NfeInvoice` (tipo='nfce')
+- `NfeInvoice.tipo` adicionado (migration: `add_tipo_to_nfe_invoices`)
+- Lista NFC-e em `/nfce` com controller + views próprios
+- Sidebar: menu "NFC-e" abaixo de Financeiro (entre NFS-e e NF-e)
+- Invoice show: card "NFC-e" (era "NF-e"), botão "Emitir Nota Fiscal" corrigido
+- NF-e fica apenas para transferência entre unidades (NfeTransfer)
+
 **NF-e (Product Invoices) — Parcial ⚠️**
-- Base URL correta: `https://api.nfse.io/v2/companies/{companyId}/productinvoices`
-- Payload v2 requer: `environment`, `buyer` (não `customer`), `items[].tax.icms`
+- Base URL: `https://api.nfse.io/v2/companies/{companyId}/productinvoices`
+- Payload v2: `environment`, `buyer`, `items[].tax.icms`
 - ICMS para Simples Nacional: `csosn` (não `cst`)
-- Items precisam de `code` (1-60 chars), `ncm` (2-8 chars, sem pontos)
-- **Bloqueado**: NFE.io exige `stateTax` (Inscrição Estadual) configurada na empresa antes de emitir NF-e
-- Provider atualizado: `buildPayload()` envia `environment`, `orderNumber`, `buyer.phoneNumber`, `items[].tax.icms`
-- Pendente: configurar IE + certificado digital no painel NFE.io para testar emissão real
+- **Bloqueado**: NFE.io exige `stateTax` (Inscrição Estadual) + certificado digital
+- `/nfe` lista apenas registros `tipo='nfe'` (NfeTransfer futuramente)
 
 **Próximo passo NF-e:**
 1. Fazer upload do certificado digital no painel NFSe.io (empresa `7bf5d244cee3452389949fa50d1ceb7e`)

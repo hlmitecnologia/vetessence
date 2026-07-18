@@ -17,7 +17,7 @@ class NfeController extends Controller
 
     public function index(Request $request)
     {
-        $query = NfeInvoice::with(['branch', 'invoice']);
+        $query = NfeInvoice::where('tipo', 'nfe')->with(['branch', 'invoice']);
 
         if ($request->status) {
             $query->where('status', $request->status);
@@ -44,13 +44,13 @@ class NfeController extends Controller
 
     public function emitir(Invoice $invoice)
     {
-        $result = $this->nfeService->emitir($invoice);
+        $result = $this->nfeService->emitirNfce($invoice);
 
         if (!$result->success) {
             return back()->with('error', $result->errorMessage);
         }
 
-        return back()->with('success', "NF-e emitida! Nº {$result->nfeNumber}");
+        return back()->with('success', "NFC-e emitida! Nº {$result->nfeNumber}");
     }
 
     public function cancelar(Request $request, Invoice $invoice)

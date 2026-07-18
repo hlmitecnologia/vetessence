@@ -54,7 +54,7 @@ class NfseConfigController extends Controller
         );
 
         return redirect()
-            ->route('nfse.config')
+            ->route('nf.config')
             ->with('success', 'Configuração NFS-e salva!');
     }
 }

@@ -534,6 +534,12 @@
                                 @endcan
                                 @can('nfe.view')
                                 <li class="nav-item">
+                                    <a href="{{ route('nfce.index') }}" class="nav-link {{ request()->routeIs('nfce.index') || request()->routeIs('nfce.show') ? 'active' : '' }}">
+                                        <i class="fas fa-receipt nav-icon"></i>
+                                        <p>NFC-e</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="{{ route('nfe.index') }}" class="nav-link {{ request()->routeIs('nfe.index') || request()->routeIs('nfe.show') ? 'active' : '' }}">
                                         <i class="fas fa-box nav-icon"></i>
                                         <p>NF-e</p>

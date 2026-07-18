@@ -44,6 +44,34 @@ class NfeIoProvider implements NfeProvider
         );
     }
 
+    public function emitirNfce(NfeConfig $config, Invoice $invoice): NfeResult
+    {
+        $payload = $this->buildPayload($config, $invoice);
+
+        $response = Http::withHeaders($this->headers($config))
+            ->post("{$this->baseUrl}/v2/companies/{$config->nfeio_company_id}/consumerinvoices", $payload);
+
+        $body = $response->json();
+        $raw = is_array($body) ? $body : null;
+        $body = is_array($body) ? $body : [];
+
+        if (!$response->successful()) {
+            $error = $body['errors'][0]['message'] ?? $body['message'] ?? $body['error'] ?? 'Erro ao emitir NFC-e via NFE.io';
+            return NfeResult::error($error, $raw);
+        }
+
+        $invoiceData = $body['consumerInvoice'] ?? $body;
+
+        return NfeResult::success(
+            nfeNumber: (string) ($invoiceData['number'] ?? $body['number'] ?? ''),
+            nfeKey: $invoiceData['accessKey'] ?? $invoiceData['chave'] ?? '',
+            xmlUrl: '',
+            pdfUrl: '',
+            danfeUrl: '',
+            rawResponse: $raw,
+        );
+    }
+
     public function emitirTransferencia(NfeConfig $config, array $data): NfeResult
     {
         return NfeResult::error('NFE.io não suporta emissão de NF-e de transferência.');

@@ -42,6 +42,32 @@ class FocusNfeProvider implements NfeProvider
         );
     }
 
+    public function emitirNfce(NfeConfig $config, Invoice $invoice): NfeResult
+    {
+        $payload = $this->buildPayload($config, $invoice);
+
+        $response = Http::withBasicAuth($config->focusnfe_token, '')
+            ->post("{$this->baseUrl}/v2/nfc?ref={$invoice->id}", $payload);
+
+        $body = $response->json();
+
+        if (!$response->successful()) {
+            return NfeResult::error(
+                $body['erro'] ?? $body['error'] ?? 'Erro ao emitir NFC-e via FocusNFe',
+                $body
+            );
+        }
+
+        return NfeResult::success(
+            nfeNumber: $body['numero'] ?? $body['nfe'] ?? '',
+            nfeKey: $body['chave'] ?? $body['chave_nfe'] ?? '',
+            xmlUrl: $body['xml'] ?? '',
+            pdfUrl: $body['pdf'] ?? '',
+            danfeUrl: $body['danfe'] ?? '',
+            rawResponse: $body,
+        );
+    }
+
     public function emitirTransferencia(NfeConfig $config, array $data): NfeResult
     {
         return NfeResult::error('FocusNFe não suporta emissão de NF-e de transferência.');

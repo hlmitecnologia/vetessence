@@ -29,10 +29,10 @@ class EmitirNfeOnPaid
             return;
         }
 
-        $result = $this->nfeService->emitir($invoice);
+        $result = $this->nfeService->emitirNfce($invoice);
 
         if (!$result->success) {
-            Log::warning("Falha ao emitir NF-e automática para fatura #{$invoice->id}: {$result->errorMessage}");
+            Log::warning("Falha ao emitir NFC-e automática para fatura #{$invoice->id}: {$result->errorMessage}");
 
             NotificationLog::create([
                 'tutor_id' => $invoice->tutor_id,
@@ -40,7 +40,7 @@ class EmitirNfeOnPaid
                 'channel' => 'system',
                 'status' => 'failed',
                 'sent_at' => now(),
-                'message' => "Falha ao emitir NF-e automática para fatura {$invoice->invoice_number}",
+                'message' => "Falha ao emitir NFC-e automática para fatura {$invoice->invoice_number}",
                 'error_message' => $result->errorMessage,
                 'branch_id' => $invoice->branch_id,
             ]);

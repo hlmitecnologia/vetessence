@@ -11,7 +11,7 @@ class NfeInvoice extends Model
     use HasFactory;
 
     protected $fillable = [
-        'branch_id', 'invoice_id',
+        'branch_id', 'invoice_id', 'tipo',
         'nfe_number', 'nfe_key', 'status',
         'issuance_date', 'cancelled_at',
         'nfe_url_xml', 'nfe_url_pdf', 'danfe_url',

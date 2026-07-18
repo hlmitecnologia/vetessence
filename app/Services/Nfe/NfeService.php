@@ -37,6 +37,7 @@ class NfeService
 
         if ($result->success) {
             $nfeInvoice->fill([
+                'tipo' => 'nfe',
                 'nfe_number' => $result->nfeNumber,
                 'nfe_key' => $result->nfeKey,
                 'nfe_url_xml' => $result->xmlUrl,
@@ -56,6 +57,61 @@ class NfeService
             $this->notifyTutor($invoice, $nfeInvoice);
         } else {
             $nfeInvoice->fill([
+                'tipo' => 'nfe',
+                'status' => 'failed',
+                'provider_response' => $result->rawResponse,
+                'error_message' => $result->errorMessage,
+            ])->save();
+        }
+
+        return $result;
+    }
+
+    public function emitirNfce(Invoice $invoice): NfeResult
+    {
+        $config = $this->getConfig();
+
+        if (!$config) {
+            return NfeResult::error('NFC-e não configurada para o sistema.');
+        }
+
+        if (!$invoice->branch || !$invoice->branch->cnpj) {
+            return NfeResult::error('Dados fiscais da unidade incompletos. Configure o CNPJ no cadastro da unidade.');
+        }
+
+        if ($invoice->nfe_status === 'issued') {
+            return NfeResult::error('Esta fatura já possui uma NFC-e emitida.');
+        }
+
+        $provider = $this->resolveProvider($config);
+        $result = $provider->emitirNfce($config, $invoice);
+
+        $nfeInvoice = NfeInvoice::firstOrNew(['invoice_id' => $invoice->id]);
+        $nfeInvoice->branch_id = $invoice->branch_id;
+
+        if ($result->success) {
+            $nfeInvoice->fill([
+                'tipo' => 'nfce',
+                'nfe_number' => $result->nfeNumber,
+                'nfe_key' => $result->nfeKey,
+                'nfe_url_xml' => $result->xmlUrl,
+                'nfe_url_pdf' => $result->pdfUrl,
+                'danfe_url' => $result->danfeUrl,
+                'status' => 'issued',
+                'issuance_date' => now(),
+                'provider_response' => $result->rawResponse,
+                'error_message' => null,
+            ])->save();
+
+            $invoice->update([
+                'nfe_status' => 'issued',
+                'nfe_invoice_id' => $nfeInvoice->id,
+            ]);
+
+            $this->notifyTutorNfce($invoice, $nfeInvoice);
+        } else {
+            $nfeInvoice->fill([
+                'tipo' => 'nfce',
                 'status' => 'failed',
                 'provider_response' => $result->rawResponse,
                 'error_message' => $result->errorMessage,
@@ -169,6 +225,24 @@ class NfeService
             'channel' => 'email',
             'destination' => $invoice->tutor->email,
             'message_content' => "NF-e emitida: {$nfeInvoice->nfe_number} - Fatura {$invoice->invoice_number}. Acesse o sistema para visualizar o XML e DANFE.",
+            'status' => 'pending',
+            'scheduled_at' => now(),
+        ]);
+    }
+
+    protected function notifyTutorNfce(Invoice $invoice, NfeInvoice $nfeInvoice): void
+    {
+        if (!$invoice->tutor || !$invoice->tutor->email) {
+            return;
+        }
+
+        CommunicationQueue::create([
+            'branch_id' => $invoice->branch_id,
+            'tutor_id' => $invoice->tutor_id,
+            'pet_id' => $invoice->pet_id,
+            'channel' => 'email',
+            'destination' => $invoice->tutor->email,
+            'message_content' => "NFC-e emitida: {$nfeInvoice->nfe_number} - Fatura {$invoice->invoice_number}. Acesse o sistema para visualizar o XML e DANFE.",
             'status' => 'pending',
             'scheduled_at' => now(),
         ]);

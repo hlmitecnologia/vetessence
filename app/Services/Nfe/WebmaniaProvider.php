@@ -42,6 +42,33 @@ class WebmaniaProvider implements NfeProvider
         );
     }
 
+    public function emitirNfce(NfeConfig $config, Invoice $invoice): NfeResult
+    {
+        $payload = $this->buildPayload($config, $invoice);
+        $payload['modelo'] = '65';
+
+        $response = Http::withHeaders($this->headers($config))
+            ->post("{$this->baseUrl}/nfe/emissao/", $payload);
+
+        $body = $response->json();
+
+        if (!$response->successful()) {
+            return NfeResult::error(
+                $body['error'] ?? $body['erro'] ?? 'Erro ao emitir NFC-e via Webmania',
+                $body
+            );
+        }
+
+        return NfeResult::success(
+            nfeNumber: $body['numero'] ?? $body['nfe'] ?? '',
+            nfeKey: $body['chave'] ?? $body['chave_nfe'] ?? '',
+            xmlUrl: $body['xml'] ?? '',
+            pdfUrl: $body['pdf'] ?? '',
+            danfeUrl: $body['danfe'] ?? '',
+            rawResponse: $body,
+        );
+    }
+
     public function emitirTransferencia(NfeConfig $config, array $data): NfeResult
     {
         $payload = $this->buildTransferPayload($config, $data);
