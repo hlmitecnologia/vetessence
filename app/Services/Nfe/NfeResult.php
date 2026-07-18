@@ -13,6 +13,8 @@ class NfeResult
         public readonly ?string $danfeUrl = null,
         public readonly ?array $rawResponse = null,
         public readonly ?string $errorMessage = null,
+        public readonly ?string $nfceInvoiceId = null,
+        public readonly ?string $flowStatus = null,
     ) {}
 
     public static function success(
@@ -22,6 +24,8 @@ class NfeResult
         string $pdfUrl = '',
         string $danfeUrl = '',
         array $rawResponse = [],
+        string $nfceInvoiceId = '',
+        string $flowStatus = '',
     ): self {
         return new self(
             success: true,
@@ -30,6 +34,21 @@ class NfeResult
             xmlUrl: $xmlUrl,
             pdfUrl: $pdfUrl,
             danfeUrl: $danfeUrl,
+            rawResponse: $rawResponse,
+            nfceInvoiceId: $nfceInvoiceId ?: null,
+            flowStatus: $flowStatus ?: null,
+        );
+    }
+
+    public static function issuing(
+        string $nfceInvoiceId,
+        string $flowStatus = '',
+        array $rawResponse = [],
+    ): self {
+        return new self(
+            success: true,
+            nfceInvoiceId: $nfceInvoiceId,
+            flowStatus: $flowStatus ?: null,
             rawResponse: $rawResponse,
         );
     }

@@ -90,25 +90,45 @@ class NfeService
         $nfeInvoice->branch_id = $invoice->branch_id;
 
         if ($result->success) {
-            $nfeInvoice->fill([
-                'tipo' => 'nfce',
-                'nfe_number' => $result->nfeNumber,
-                'nfe_key' => $result->nfeKey,
-                'nfe_url_xml' => $result->xmlUrl,
-                'nfe_url_pdf' => $result->pdfUrl,
-                'danfe_url' => $result->danfeUrl,
-                'status' => 'issued',
-                'issuance_date' => now(),
-                'provider_response' => $result->rawResponse,
-                'error_message' => null,
-            ])->save();
+            if ($result->nfeNumber) {
+                // SEFAZ já autorizou — issued
+                $nfeInvoice->fill([
+                    'tipo' => 'nfce',
+                    'nfe_number' => $result->nfeNumber,
+                    'nfe_key' => $result->nfeKey,
+                    'nfe_url_xml' => $result->xmlUrl,
+                    'nfe_url_pdf' => $result->pdfUrl,
+                    'danfe_url' => $result->danfeUrl,
+                    'status' => 'issued',
+                    'issuance_date' => now(),
+                    'provider_response' => $result->rawResponse,
+                    'error_message' => null,
+                ])->save();
 
-            $invoice->update([
-                'nfe_status' => 'issued',
-                'nfe_invoice_id' => $nfeInvoice->id,
-            ]);
+                $invoice->update([
+                    'nfe_status' => 'issued',
+                    'nfe_invoice_id' => $nfeInvoice->id,
+                ]);
 
-            $this->notifyTutorNfce($invoice, $nfeInvoice);
+                $this->notifyTutorNfce($invoice, $nfeInvoice);
+            } else {
+                // Emissão assíncrona — issuing
+                $apiInvoiceId = $result->nfceInvoiceId ?? ($result->rawResponse['id'] ?? '');
+                $nfeInvoice->fill([
+                    'tipo' => 'nfce',
+                    'nfe_number' => $apiInvoiceId,
+                    'nfe_key' => null,
+                    'status' => 'issuing',
+                    'issuance_date' => now(),
+                    'provider_response' => $result->rawResponse,
+                    'error_message' => null,
+                ])->save();
+
+                $invoice->update([
+                    'nfe_status' => 'issuing',
+                    'nfe_invoice_id' => $nfeInvoice->id,
+                ]);
+            }
         } else {
             $nfeInvoice->fill([
                 'tipo' => 'nfce',

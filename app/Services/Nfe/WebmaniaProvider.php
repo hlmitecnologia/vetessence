@@ -144,6 +144,11 @@ class WebmaniaProvider implements NfeProvider
         );
     }
 
+    public function consultarNfce(NfeConfig $config, string $nfceInvoiceId): NfeResult
+    {
+        return NfeResult::error('Webmania não suporta consulta de NFC-e por ID.');
+    }
+
     protected function headers(NfeConfig $config): array
     {
         return [

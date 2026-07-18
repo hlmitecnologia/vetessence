@@ -61,13 +61,58 @@ class NfeIoProvider implements NfeProvider
         }
 
         $invoiceData = $body['consumerInvoice'] ?? $body;
+        $hasNumber = !empty($invoiceData['number']);
 
-        return NfeResult::success(
-            nfeNumber: (string) ($invoiceData['number'] ?? $body['number'] ?? ''),
-            nfeKey: $invoiceData['accessKey'] ?? $invoiceData['chave'] ?? '',
-            xmlUrl: '',
-            pdfUrl: '',
-            danfeUrl: '',
+        if ($hasNumber) {
+            return NfeResult::success(
+                nfeNumber: (string) $invoiceData['number'],
+                nfeKey: $invoiceData['accessKey'] ?? $invoiceData['chave'] ?? '',
+                xmlUrl: $invoiceData['xmlUrl'] ?? '',
+                pdfUrl: $invoiceData['danfeUrl'] ?? '',
+                danfeUrl: $invoiceData['danfeUrl'] ?? '',
+                rawResponse: $raw,
+            );
+        }
+
+        // Async emission — SEFAZ ainda processando
+        return NfeResult::issuing(
+            nfceInvoiceId: $invoiceData['id'] ?? '',
+            flowStatus: $invoiceData['flowStatus'] ?? '',
+            rawResponse: $raw,
+        );
+    }
+
+    public function consultarNfce(NfeConfig $config, string $nfceInvoiceId): NfeResult
+    {
+        $response = Http::withHeaders($this->headers($config))
+            ->get("{$this->baseUrl}/v2/companies/{$config->nfeio_company_id}/consumerinvoices/{$nfceInvoiceId}");
+
+        $body = $response->json();
+        $raw = is_array($body) ? $body : (is_string($body) ? ['message' => $body] : null);
+        $body = is_array($body) ? $body : [];
+
+        if (!$response->successful()) {
+            $error = $body['errors'][0]['message'] ?? $body['message'] ?? $body['error'] ?? ($raw['message'] ?? 'Erro ao consultar NFC-e via NFE.io');
+            return NfeResult::error($error, $raw);
+        }
+
+        $invoiceData = $body['consumerInvoice'] ?? $body;
+        $hasNumber = !empty($invoiceData['number']);
+
+        if ($hasNumber) {
+            return NfeResult::success(
+                nfeNumber: (string) $invoiceData['number'],
+                nfeKey: $invoiceData['accessKey'] ?? $invoiceData['chave'] ?? '',
+                xmlUrl: $invoiceData['xmlUrl'] ?? '',
+                pdfUrl: $invoiceData['danfeUrl'] ?? '',
+                danfeUrl: $invoiceData['danfeUrl'] ?? '',
+                rawResponse: $raw,
+            );
+        }
+
+        return NfeResult::issuing(
+            nfceInvoiceId: $invoiceData['id'] ?? $nfceInvoiceId,
+            flowStatus: $invoiceData['flowStatus'] ?? '',
             rawResponse: $raw,
         );
     }

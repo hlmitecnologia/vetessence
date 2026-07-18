@@ -117,6 +117,11 @@ class FocusNfeProvider implements NfeProvider
         );
     }
 
+    public function consultarNfce(NfeConfig $config, string $nfceInvoiceId): NfeResult
+    {
+        return NfeResult::error('FocusNFe não suporta consulta de NFC-e por ID.');
+    }
+
     protected function buildPayload(NfeConfig $config, Invoice $invoice): array
     {
         $tutor = $invoice->tutor;
