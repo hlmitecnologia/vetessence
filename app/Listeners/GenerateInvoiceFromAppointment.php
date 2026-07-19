@@ -5,7 +5,9 @@ namespace App\Listeners;
 use App\Events\AppointmentCompleted;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\Pet;
 use App\Models\ServiceTypeMap;
+use App\Models\Tutor;
 
 class GenerateInvoiceFromAppointment
 {

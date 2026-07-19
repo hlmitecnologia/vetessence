@@ -34,7 +34,7 @@ class EmitirNfeOnPaidTest extends ModuleTestCase
 
         $nfeService = \Mockery::mock(NfeService::class);
         $nfeService->shouldReceive('getConfig')->andReturn(NfeConfig::first());
-        $nfeService->shouldReceive('emitir')->once()->with($invoice)->andReturn(NfeResult::success('NFE-001'));
+        $nfeService->shouldReceive('emitirNfce')->once()->with($invoice)->andReturn(NfeResult::success('NFE-001'));
 
         $listener = new EmitirNfeOnPaid($nfeService);
         $listener->handle(new InvoicePaid($invoice));
@@ -55,7 +55,7 @@ class EmitirNfeOnPaidTest extends ModuleTestCase
         ]);
 
         $nfeService = \Mockery::mock(NfeService::class);
-        $nfeService->shouldNotReceive('emitir');
+        $nfeService->shouldNotReceive('emitirNfce');
 
         $listener = new EmitirNfeOnPaid($nfeService);
         $listener->handle(new InvoicePaid($invoice));
@@ -79,7 +79,7 @@ class EmitirNfeOnPaidTest extends ModuleTestCase
 
         $nfeService = \Mockery::mock(NfeService::class);
         $nfeService->shouldReceive('getConfig')->andReturn(NfeConfig::first());
-        $nfeService->shouldReceive('emitir')->once()->with($invoice)->andReturn(NfeResult::error('Erro ao emitir'));
+        $nfeService->shouldReceive('emitirNfce')->once()->with($invoice)->andReturn(NfeResult::error('Erro ao emitir'));
 
         $listener = new EmitirNfeOnPaid($nfeService);
         $listener->handle(new InvoicePaid($invoice));
@@ -106,7 +106,7 @@ class EmitirNfeOnPaidTest extends ModuleTestCase
 
         $nfeService = \Mockery::mock(NfeService::class);
         $nfeService->shouldReceive('getConfig')->andReturn(null);
-        $nfeService->shouldNotReceive('emitir');
+        $nfeService->shouldNotReceive('emitirNfce');
 
         $listener = new EmitirNfeOnPaid($nfeService);
         $listener->handle(new InvoicePaid($invoice));

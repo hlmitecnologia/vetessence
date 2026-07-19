@@ -18,8 +18,19 @@
 - **Auto-update melhorias**: comando Artisan `php artisan system:update` com backup + git pull + migrate; backup automático (mysqldump) antes de aplicar no controller; rate limit de 30 min entre atualizações; view exibe contagem regressiva e desabilita botão
 - **Comunicação liberada para todos os perfis**: migration `grant_communication_permissions_to_all_roles` concede `staff-notes.view/create` e `chat.view/create` para Financeiro, Super Financeiro, Estoque, Recursos Humanos e Tutor; código com middleware `can:` e `@can`/`@role` nos sidebars mantido intacto.
 
-### Known Issues
-- `AutoInvoiceTest` pre‑existing order‑dependent failure (passes in isolation)
+### Fixes aplicados (nesta sessão)
+- **NfeConfigFactory**: criada (faltava)
+- **NfseServiceTest**: `resolveProvider` tests usam factory instance diretamente em vez de `NfseConfig::first()` (evita data pollution)
+- **GenerateInvoiceFromAppointment**: adicionados `use App\Models\Tutor` e `use App\Models\Pet` (type hints quebrados)
+- **NfeConfigControllerTest**: campo `webmania_app_id/secret` removido (não existem mais); adicionados `webmania_access_token/secret`
+- **StockController**: `notes` field com null coalescing em transferências (evita "Undefined array key")
+- **NfeService (NFSe)**: adicionado `tecnospeed` ao match de providers
+- **NfseConfig model**: adicionado `tecnospeed_token` ao `$fillable`
+- **AutoInvoiceTest**: usuário recebe permissão `appointments.view` para passar middleware `can:atendimentos`
+- **Data pollution**: testes que sofriam com dados residuais agora desativam configs pré-existentes ou escopam queries por IDs criados (StockTransferNfeTest, NfseConfigTest, NfseServiceTest)
+
+### Known Issues (ainda presentes)
+- 27 falhas pré-existentes (não relacionadas às alterações recentes) — UniqueConstraintViolationException em State/City/ZoonoticDiscipline/PurchaseOrder, scopes em Branch/CommissionLog/PurchaseOrder/TreatmentPlan/VaccineProtocol/ZoonoticDiscipline, SyncSpatieRolesTest, BankTransactionTest, LlmServiceTest, StockDeductionServiceTest, StockForecastServiceTest
 - `NFSeGateTest` pre‑existing permission conflict (`nfse.view` already exists)
 - Data import commands (DbImport*) and DemoSeed intentionally not tested (one-shot scripts)
 

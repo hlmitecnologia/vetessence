@@ -109,7 +109,7 @@ class WebmaniaProviderTest extends ModuleTestCase
     public function test_cancelar_success()
     {
         Http::fake([
-            'api.webmania.com.br/2/nfse/123456/cancelar/' => Http::response([
+            'api.webmania.com.br/2/nfse/cancelar' => Http::response([
                 'status' => 'cancelled',
             ], 200),
         ]);
@@ -125,7 +125,7 @@ class WebmaniaProviderTest extends ModuleTestCase
     public function test_cancelar_error()
     {
         Http::fake([
-            'api.webmania.com.br/2/nfse/123456/cancelar/' => Http::response([
+            'api.webmania.com.br/2/nfse/cancelar' => Http::response([
                 'error' => 'Prazo de cancelamento excedido',
             ], 422),
         ]);

@@ -70,7 +70,7 @@ class NfeControllerTest extends ModuleTestCase
         ]);
 
         $this->mock(NfeService::class)
-            ->shouldReceive('emitir')
+            ->shouldReceive('emitirNfce')
             ->once()
             ->andReturn(NfeResult::success(
                 nfeNumber: 'NFE-123456',
@@ -91,7 +91,7 @@ class NfeControllerTest extends ModuleTestCase
         $invoice = Invoice::factory()->create(['nfe_status' => 'none']);
 
         $this->mock(NfeService::class)
-            ->shouldReceive('emitir')
+            ->shouldReceive('emitirNfce')
             ->once()
             ->andReturn(NfeResult::error('Erro ao emitir NF-e.'));
 

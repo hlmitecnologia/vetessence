@@ -22,6 +22,7 @@ class AutoInvoiceTest extends TestCase
         Event::fake();
 
         $user = User::factory()->create();
+        $user->givePermissionTo('appointments.view');
         $pet = Pet::factory()->create();
         $tutor = Tutor::factory()->create();
         $pet->tutors()->attach($tutor->id, ['is_primary' => true]);
@@ -48,6 +49,7 @@ class AutoInvoiceTest extends TestCase
     public function test_invoice_created_when_appointment_completed()
     {
         $user = User::factory()->create();
+        $user->givePermissionTo('appointments.view');
         $pet = Pet::factory()->create();
         $tutor = Tutor::factory()->create();
         $pet->tutors()->attach($tutor->id, ['is_primary' => true]);
@@ -105,6 +107,7 @@ class AutoInvoiceTest extends TestCase
     public function test_invoice_status_is_pending()
     {
         $user = User::factory()->create();
+        $user->givePermissionTo('appointments.view');
         $pet = Pet::factory()->create();
         $tutor = Tutor::factory()->create();
         $pet->tutors()->attach($tutor->id, ['is_primary' => true]);

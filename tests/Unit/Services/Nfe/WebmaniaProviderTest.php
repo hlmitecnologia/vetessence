@@ -143,7 +143,7 @@ class WebmaniaProviderTest extends ModuleTestCase
         $config->shouldReceive('getAttribute')->with('webmania_access_token_secret')->andReturn('access-token-secret');
 
         Http::fake([
-            'https://webmania.com.br/api/1/nfe/NFE-001/cancelar/' => Http::response([
+            'https://webmania.com.br/api/1/nfe/cancelar/' => Http::response([
                 'status' => 'cancelado',
             ], 200),
         ]);
@@ -163,7 +163,7 @@ class WebmaniaProviderTest extends ModuleTestCase
         $config->shouldReceive('getAttribute')->with('webmania_access_token_secret')->andReturn('access-token-secret');
 
         Http::fake([
-            'https://webmania.com.br/api/1/nfe/NFE-001/cancelar/' => Http::response([
+            'https://webmania.com.br/api/1/nfe/cancelar/' => Http::response([
                 'error' => 'Prazo de cancelamento expirado',
             ], 400),
         ]);
@@ -182,6 +182,7 @@ class WebmaniaProviderTest extends ModuleTestCase
         $config->shouldReceive('getAttribute')->with('webmania_access_token')->andReturn('access-token');
         $config->shouldReceive('getAttribute')->with('webmania_access_token_secret')->andReturn('access-token-secret');
         $config->shouldReceive('getAttribute')->with('ambiente')->andReturn('homologacao');
+        $config->shouldReceive('offsetExists')->andReturn(true);
 
         $fromBranch = \Mockery::mock(\App\Models\Branch::class);
         $fromBranch->shouldReceive('getAttribute')->with('cnpj')->andReturn('11222333000181');
@@ -196,6 +197,7 @@ class WebmaniaProviderTest extends ModuleTestCase
         $fromBranch->shouldReceive('getAttribute')->with('city')->andReturn('São Paulo');
         $fromBranch->shouldReceive('getAttribute')->with('state')->andReturn('SP');
         $fromBranch->shouldReceive('getAttribute')->with('zipcode')->andReturn('01001000');
+        $fromBranch->shouldReceive('offsetExists')->andReturn(true);
 
         $toBranch = \Mockery::mock(\App\Models\Branch::class);
         $toBranch->shouldReceive('getAttribute')->with('cnpj')->andReturn('11222333000181');
@@ -207,6 +209,7 @@ class WebmaniaProviderTest extends ModuleTestCase
         $toBranch->shouldReceive('getAttribute')->with('city')->andReturn('São Paulo');
         $toBranch->shouldReceive('getAttribute')->with('state')->andReturn('SP');
         $toBranch->shouldReceive('getAttribute')->with('zipcode')->andReturn('02002000');
+        $toBranch->shouldReceive('offsetExists')->andReturn(true);
 
         $product = \Mockery::mock(\App\Models\Product::class);
         $product->shouldReceive('getAttribute')->with('name')->andReturn('Produto Teste');
@@ -217,6 +220,7 @@ class WebmaniaProviderTest extends ModuleTestCase
         $product->shouldReceive('getAttribute')->with('cost_price')->andReturn(50.00);
         $product->shouldReceive('getAttribute')->with('cst')->andReturn('00');
         $product->shouldReceive('getAttribute')->with('csosn')->andReturn(null);
+        $product->shouldReceive('offsetExists')->andReturn(true);
 
         $provider = \Mockery::mock(WebmaniaProvider::class)->shouldAllowMockingProtectedMethods()->makePartial();
 

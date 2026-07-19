@@ -48,15 +48,17 @@ class StockDeductionServiceTest extends ModuleTestCase
 
     public function test_deduct_returns_early_when_no_product_id()
     {
+        $countBefore = \DB::table('stock_movements')->count();
         $vaccination = Vaccination::factory()->create();
 
         app(StockDeductionService::class)->deductFromVaccination($vaccination);
 
-        $this->assertDatabaseCount('stock_movements', 0);
+        $this->assertEquals($countBefore, \DB::table('stock_movements')->count());
     }
 
     public function test_deduct_returns_early_when_product_not_found()
     {
+        $countBefore = \DB::table('stock_movements')->count();
         $product = Product::factory()->create();
         $vaccination = Vaccination::factory()->create();
         $vaccination->setAttribute('product_id', $product->id);
@@ -65,6 +67,6 @@ class StockDeductionServiceTest extends ModuleTestCase
 
         app(StockDeductionService::class)->deductFromVaccination($vaccination);
 
-        $this->assertDatabaseCount('stock_movements', 0);
+        $this->assertEquals($countBefore, \DB::table('stock_movements')->count());
     }
 }

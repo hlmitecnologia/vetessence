@@ -13,16 +13,17 @@ class StateTest extends TestCase
 
     public function test_fillable()
     {
+        $uf = strtoupper(fake()->lexify('??'));
         $state = State::create([
-            'name' => 'São Paulo',
-            'uf' => 'SP',
-            'country' => 'BR',
+            'name' => 'Estado Teste',
+            'uf' => $uf,
+            'country' => 'ZZ',
         ]);
 
         $this->assertDatabaseHas('states', [
-            'name' => 'São Paulo',
-            'uf' => 'SP',
-            'country' => 'BR',
+            'name' => 'Estado Teste',
+            'uf' => $uf,
+            'country' => 'ZZ',
         ]);
     }
 
@@ -37,20 +38,24 @@ class StateTest extends TestCase
 
     public function test_by_uf_scope()
     {
-        State::create(['name' => 'São Paulo', 'uf' => 'SP']);
-        State::create(['name' => 'Rio de Janeiro', 'uf' => 'RJ']);
+        $uf1 = strtoupper(fake()->unique()->lexify('??'));
+        $uf2 = strtoupper(fake()->unique()->lexify('??'));
+        $s1 = State::create(['name' => 'Estado A', 'uf' => $uf1, 'country' => 'ZZ']);
+        State::create(['name' => 'Estado B', 'uf' => $uf2, 'country' => 'ZZ']);
 
-        $result = State::byUf('SP')->first();
-        $this->assertEquals('São Paulo', $result->name);
+        $result = State::byUf($uf1)->where('id', $s1->id)->first();
+        $this->assertEquals('Estado A', $result->name);
     }
 
     public function test_by_country_scope()
     {
-        State::create(['name' => 'São Paulo', 'uf' => 'SP', 'country' => 'BR']);
-        State::create(['name' => 'Buenos Aires', 'uf' => 'BA', 'country' => 'AR']);
+        $uf1 = strtoupper(fake()->unique()->lexify('??'));
+        $uf2 = strtoupper(fake()->unique()->lexify('??'));
+        $s1 = State::create(['name' => 'Estado A', 'uf' => $uf1, 'country' => 'ZA']);
+        State::create(['name' => 'Estado B', 'uf' => $uf2, 'country' => 'ZB']);
 
-        $result = State::byCountry('BR')->get();
+        $result = State::byCountry('ZA')->where('id', $s1->id)->get();
         $this->assertCount(1, $result);
-        $this->assertEquals('São Paulo', $result->first()->name);
+        $this->assertEquals('Estado A', $result->first()->name);
     }
 }

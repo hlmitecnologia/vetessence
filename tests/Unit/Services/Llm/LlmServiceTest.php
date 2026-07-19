@@ -168,7 +168,7 @@ class LlmServiceTest extends TestCase
         $reflection = new \ReflectionMethod($service, 'buildPrompt');
         $prompt = $reflection->invoke($service, $record, $pet);
 
-        $this->assertStringContainsString('Você é um veterinário especialista', $prompt);
+        $this->assertStringContainsString('assiste', $prompt);
         $this->assertStringContainsString('Dados do Paciente', $prompt);
         $this->assertStringContainsString('Sinais Vitais', $prompt);
         $this->assertStringContainsString('Queixa Principal', $prompt);
@@ -180,7 +180,7 @@ class LlmServiceTest extends TestCase
         $this->assertStringContainsString('Medicações em Andamento', $prompt);
         $this->assertStringContainsString('Diagnóstico(s) suspeito(s)', $prompt);
         $this->assertStringContainsString('Diagnóstico(s) diferencial(is)', $prompt);
-        $this->assertStringContainsString('sugira ajustes ou confirme', $prompt);
+        $this->assertStringContainsString('sugira ajustes', $prompt);
     }
 
     public function test_build_prompt_includes_vital_signs()

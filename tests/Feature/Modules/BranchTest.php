@@ -27,6 +27,9 @@ class BranchTest extends ModuleTestCase
             'city' => 'São Paulo',
             'state' => 'SP',
             'phone' => '1133333333',
+            'cnpj' => '12345678000199',
+            'ie' => '123456789',
+            'im' => '987654321',
             'is_main' => true,
             'is_active' => true,
         ]);
@@ -39,6 +42,7 @@ class BranchTest extends ModuleTestCase
         Branch::factory()->create(['is_main' => true]);
         $this->post(route('branches.store'), [
             'name' => 'Unidade Nova', 'is_main' => true, 'is_active' => true,
+            'cnpj' => '98765432000199', 'ie' => '987654321', 'im' => '123456789',
         ]);
         $this->assertEquals(1, Branch::where('is_main', true)->count());
     }

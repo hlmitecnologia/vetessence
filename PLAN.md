@@ -18,22 +18,20 @@ Brazilian Portuguese. Follow existing patterns: migration → model → controll
 ## Test Suite Status
 
 ```
-Total:  1,974 test methods (389 test files)
-Coverage jump: Livewire 6%→100%, Controllers 37%→80%, Services 37%→78%
+Total:  2,083 test methods (423 test files)
 ```
 
 | Suite | Count | Notes |
 |-------|-------|-------|
-| Unit/Models | ~300 | Most models covered |
-| Feature/Controllers | ~660 | +48 new controller test files (NFe, Payment, Appointment, etc.) |
-| Feature/Commands | ~47 | +6 new command tests |
-| Feature/Livewire | ~127 | 24 new Livewire test files — 32/32 components covered (100%) |
-| Feature/Integrations | ~12 | Flow scenarios |
-| Feature/Api | ~70 | +8 API controller tests |
-| Feature/Portal | ~40 | +5 Portal controller tests |
-| Unit/Services | ~180 | +21 new service test files (NFe, CEP, Notification providers) |
-| Unit/Listeners | ~22 | +3 new listener test files (EmitirNfeOnPaid, DeductStock*) |
+| Feature/Controllers | ~660 | 224 files — Controllers + Integrations + Services + Portal + Api |
+| Feature/Livewire | ~127 | 34 files — 32/32 Livewire components covered (100%) |
+| Feature/Commands | ~20 | Database backup, NFe, reminders, recall |
+| Unit/Models | ~335 | 90 files — fillable, casts, relationships, scopes |
+| Unit/Services | ~200 | NFe providers, CEP, Notification, Insurance |
+| Unit/Traits | ~10 | Auditable, BranchScoped, HasPhoto |
+| Unit/Listeners | ~22 | EmitirNfeOnPaid, DeductStock*, CalculateCommission |
 | Unit/Observers | ~6 | StaffScheduleObserver |
+| Browser/Dusk | 45 | 9 arquivos com testes (6 stubs vazios restantes) |
 
 ---
 
@@ -313,6 +311,79 @@ All 40+ missing columns added via 8 migrations across 10 tables:
 | Services | 21 | ~128 | **~78%** |
 | Listeners + Commands | 9 | ~22 | **~85%** |
 | **Total** | **102** | **~530** | |
+
+---
+
+## Phase NFC-e — NFC-e (Nota Fiscal de Consumidor Eletrônica) ✅ (2026-07-19)
+
+**Objetivo:** Substituir NF-e por NFC-e na emissão de faturas ao consumidor, com suporte a emissão assíncrona (SEFAZ) + polling automático, loading overlay, e listagem própria.
+
+### NFC-e-1 — Provider Interface
+
+| Item | Descrição |
+|------|-----------|
+| `NfeProvider::emitirNfce()` | Novo método na interface — mesmos providers, modelo `65` (NFC-e) |
+| `NfeProvider::consultarNfce()` | Polling assíncrono — providers sem suporte retornam stub error |
+| `NfeResult` | Campos `nfceInvoiceId`, `flowStatus`; factory `issuing()` para resposta 202 |
+
+### NFC-e-2 — Providers
+
+| Provedor | Status |
+|----------|--------|
+| NFE.io | ✅ Assíncrono: POST `/v2/companies/{id}/consumerinvoices` → 202 c/ `id` → `consultarNfce()` via GET |
+| Webmania | ✅ Síncrono: mesmo endpoint `/nfe/emissao/` com `modelo: '65'` |
+| FocusNFe | ✅ Síncrono: endpoint `/v2/nfc?ref={ref}` |
+
+### NFC-e-3 — Fluxo AJAX + Polling
+
+**Problema:** NFC-e síncrona travava o navegador por até 30s (SEFAZ). Assíncrona (NFE.io) retorna 202 sem número da nota.
+
+**Solução:**
+
+| Componente | Descrição |
+|-------------|-----------|
+| `InvoiceController@emitirNfceAjax` | Rota `POST /invoices/{i}/emitir-nfce-ajax` → JSON `{status: 'issued' ou 'issuing', nfceInvoiceId}` |
+| `InvoiceController@consultarNfceStatus` | Rota `GET /invoices/{i}/consultar-nfce-status` → JSON c/ status atual |
+| **Loading overlay** | Overlay fullscreen com spinner + mensagem "Emitindo NFC-e..." |
+| **Polling JS** | `pollNfceStatus()` a cada 3s (máx 30 tentativas) — atualiza badge, substitui overlay |
+| Views `invoices/show` + `index` | Botão "Emitir NFC-e" dispara fetch → overlay → polling → resultado |
+
+### NFC-e-4 — NFC-e List (/nfce)
+
+| Recurso | Descrição |
+|---------|-----------|
+| Controller | `NfceController` — index (filtro por período/status), show (detalhes + XML/PDF) |
+| Model | `NfeInvoice` c/ scope `where('tipo', 'nfce')` |
+| Rota | `/nfce` no menu Financeiro (sidebar) |
+
+### NFC-e-5 — NF-e limitada a Transferência
+
+NF-e (produto) emitida apenas para transferências entre filiais (`NfeTransfer`). Consumer invoices viram NFC-e.
+
+### NFC-e-6 — Correções durante implementação
+
+| # | Problema | Correção |
+|---|----------|----------|
+| 1 | `$tutor->city` vazio na emissão | Fallback `$tutor->city ?? $branch->city ?? ''` |
+| 2 | `$tutor->state` vazio na emissão | `strtoupper(substr(..., 0, 2))` c/ fallback `'SP'` |
+| 3 | API retorna string em vez de JSON | Wrapped como `['message' => $body]` |
+| 4 | NFS-e list mostrava `#id` | Coluna "Fatura" usa `$nfse->invoice->invoice_number` |
+| 5 | Invoices index coluna "NF-e" | Renomeada para "NFC-e" |
+| 6 | Invoices index botão cancelar NFC-e | Removido (não é mais ação de lote) |
+| 7 | DataTables re-ordena server-side | Destroy + re-init com `order:[]` |
+| 8 | NFC-e assíncrona sem number | `nfceInvoiceId` armazenado, polling até SEFAZ autorizar |
+
+### NFC-e Totals
+
+| Categoria | Quantidade |
+|-----------|:----------:|
+| Migrations | 1 (`add_tipo_to_nfe_invoices`) |
+| Models edit | 1 (`NfeInvoice`: tipo fillable/scope) |
+| Controllers modificados | 3 (`InvoiceController`, `NfeController`, `NfceController` novo) |
+| Views criadas/editadas | 4 (`nfce/index`, `nfce/show`, `invoices/show` AJAX, `invoices/index` AJAX) |
+| Rotas | 3 (`/nfce`, `/invoices/{i}/consultar-nfce-status`, método emitir AJAX) |
+| Tests | 15 (NFe + NFSe provider tests passando) |
+| Providers | 3 implementados (NFE.io async, Webmania sync, FocusNFe sync) |
 
 ---
 

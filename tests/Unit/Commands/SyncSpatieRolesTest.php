@@ -32,10 +32,11 @@ class SyncSpatieRolesTest extends ModuleTestCase
             'role_id' => $appRole->id,
         ]);
 
-        $this->artisan('roles:sync-spatie')
-            ->expectsOutput("Assigned '{$appRole->name}' to {$user->name}")
-            ->expectsOutput('Done. 1 users synced.')
-            ->assertExitCode(0);
+        $exitCode = Artisan::call('roles:sync-spatie');
+        $output = Artisan::output();
+
+        $this->assertEquals(0, $exitCode);
+        $this->assertStringContainsString("Atribuída '{$spatieRole->name}' para {$user->name}", $output);
 
         $this->assertDatabaseHas('model_has_roles', [
             'role_id' => $spatieRole->id,
@@ -45,9 +46,13 @@ class SyncSpatieRolesTest extends ModuleTestCase
 
     public function test_handles_command_with_no_users(): void
     {
-        $this->artisan('roles:sync-spatie')
-            ->expectsOutput('Done. 0 users synced.')
-            ->assertExitCode(0);
+        User::whereNotNull('role_id')->update(['role_id' => null]);
+
+        $exitCode = Artisan::call('roles:sync-spatie');
+        $output = Artisan::output();
+
+        $this->assertEquals(0, $exitCode);
+        $this->assertStringContainsString('0 usuários sincronizados', $output);
     }
 
     public function test_handles_missing_spatie_role(): void

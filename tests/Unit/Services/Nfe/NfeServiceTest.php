@@ -153,6 +153,7 @@ class NfeServiceTest extends ModuleTestCase
 
         $nfeInvoice = \Mockery::mock(\stdClass::class);
         $nfeInvoice->nfe_number = 'NFE-001';
+        $nfeInvoice->nfe_key = 'some-key';
         $nfeInvoice->status = 'issued';
         $nfeInvoice->shouldReceive('update')->once()->andReturn(true);
 

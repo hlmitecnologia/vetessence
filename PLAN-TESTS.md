@@ -2,6 +2,7 @@
 
 > **Referenciado por:** `PLAN.md → Phase ZH`
 > **Progresso:** [TESTS-PROGRESS.md](TESTS-PROGRESS.md)
+> **Última atualização:** 2026-07-19
 
 ---
 
@@ -11,7 +12,7 @@
 
 ## Escopo
 
-~520 métodos de controller (94 arquivos), 26 módulos + Portal do Tutor + API Mobile, testados como **69 fluxos end-to-end**, cobrindo **12 perfis de usuário**.
+~520 métodos de controller (94 arquivos), 26 módulos + Portal do Tutor + API Mobile, testados como **76 fluxos end-to-end**, cobrindo **12 perfis de usuário**.
 
 ---
 
@@ -20,20 +21,21 @@
 | Fase | Descrição | Testes | Status |
 |------|-----------|:------:|:------:|
 | 1 | Setup Dusk + Factory + Helpers | — | ✅ |
-| 2 | Testes de Permissão (sidebar + acesso negado) | 3 | ✅ |
+| 2 | Testes de Permissão (sidebar + acesso negado) | 4 | ✅ |
 | 3 | Fluxos Super Admin/Admin | 7 | ✅ |
 | 4 | Fluxos Veterinário parte 1 (prontuário, prescrição, fatura, plano, vacina, cirurgia) | 6 | ✅ |
-| 5 | Fluxos Veterinário parte 2 (internação, exames, dietas, consentimento, odonto, CVI, óbito) | 8 | ✅ |
+| 5 | Fluxos Veterinário parte 2 (internação, exames, dietas, consentimento, odonto, CVI, óbito) | 7 | ✅ |
 | 6 | Fluxos Veterinário parte 3 (triagem, emergência, calculadora, peso) | 4 | ✅ |
 | 7 | Fluxos Recepcionista (tutor, pet, timeline, agenda, hospedagem, banho, chat) | 8 | ✅ |
 | 8 | Fluxos Financeiro parte 1 (fatura, event chain, pagamentos, gateway) | 5 | ✅ |
-| 9 | Fluxos Financeiro parte 2 (NFSe, NF-e, comissão, conciliação, serviços) | 5 | ✅ (1 sem UI) |
-| 10 | Fluxos Financeiro parte 3 (roteamento NF, relatórios, claims) | 3 | Pendente |
+| 9 | Fluxos Financeiro parte 2 (NFSe, comissão, conciliação, serviços, auto-faturamento) | 5 | ✅ (1 sem UI) |
+| 10 | Fluxos Financeiro parte 3 (roteamento NF, relatórios, claims) | 3 | Pendente (stub vazio) |
 | 11 | Fluxos Estoque (produto, movimentações, pedido compra, estoque inteligente, substâncias, pacotes) | 9 | ✅ |
-| 12 | Fluxos Tutor Portal (autenticação, agendamento, pagamento, visualizações, chat, vacinas) | 6 | Pendente |
-| 13 | Fluxos RH (departamento, cargo, funcionário, escala, plantão, folga) | 1 | Pendente |
-| 14 | Fluxos Auditor | 1 | Pendente |
-| 15 | Testes API Mobile + Webhooks | 3 | Pendente |
+| 11b | NFC-e + Config NF (emissão AJAX + polling, /nfce, /nf/config, NF-e transferência) | 4 | Pendente |
+| 12 | Fluxos Tutor Portal (autenticação, agendamento, pagamento, visualizações, chat, vacinas) | 6 | Pendente (stub vazio) |
+| 13 | Fluxos RH (departamento, cargo, funcionário, escala, plantão, folga) | 1 | Pendente (stub vazio) |
+| 14 | Fluxos Auditor | 1 | Pendente (stub vazio) |
+| 15 | Testes API Mobile + Webhooks | 3 | Pendente (stub vazio) |
 | 16 | CI + Ajustes finos | — | Pendente |
 
 ---
@@ -97,7 +99,7 @@
 | 36 | **Pagamento Portal** — Tutor paga → Webhook → Fatura atualizada | Portal\InvoiceController@checkout, PaymentWebhookController | 5 |
 | 37 | **Gateway de Pagamento** — Configurar MP/PagSeguro/Stripe/PIX → Canal → Ativar | PaymentGatewayController | 5 |
 | 38 | **NFSe completa** — Configurar → Emitir → XML/PDF → Cancelar → Exportar | NfseController, NfseConfigController | 7 |
-| 39 | **NF-e completa** — Configurar → Emitir → DANFE → Cancelar | NfeController, NfeConfigController | 6 |
+| 39 | **NFC-e completa** — Configurar → Emitir fatura (AJAX + loading overlay) → Poll status → Confirmar → NFC-e listing (/nfce) | NfeController, NfceController, InvoiceController | 7 |
 | 40 | **Comissão** — Configurar taxa → Gerar → Financeiro paga | CommissionController | 5 |
 | 41 | **Conciliação bancária** — Importar OFX → Sugerir → Conciliar → Desfazer | BankReconciliationController, BankAccountController | 6 |
 | 42 | **Serviços + Mapeamento** — Criar serviço → Preço → Mapear tipo→serviço | ServiceController | 5 |
@@ -113,6 +115,7 @@
 | 47 | **Produto completo** — Cadastrar → SKU → Barras → Lotes → Preços → NCM/CFOP | ProductController | 7 |
 | 48 | **Movimentações** — Entrada → Saída → Ajuste → Perda → Devolução → Saldo | StockController | 7 |
 | 49 | **Transferência entre filiais** — Produto/qtd → Origem/destino → Auditoria | StockController@transfer | 5 |
+| 49b | **NF-e de transferência** — Emitir NF-e na transferência → XML/DANFE | NfeService, StockController@transfer | 3 |
 | 50 | **Pedido de Compra completo** — Draft → Confirmar → Aprovar → Receber parcial → Total | PurchaseOrderController | 8 |
 | 51 | **Estoque Inteligente** — Dashboard → Sugestão reposição → Consumo médio | StockController@reorderSuggestions | 4 |
 | 52 | **Scanner código de barras** — Abrir → Câmera → Produto encontrado | (scanner view) | 3 |
@@ -159,20 +162,29 @@
 | 68 | **CRUD via API** — Tutor → Pet → Appointment → Vaccination → Invoice | Api\*Controller | 6 |
 | 69 | **Webhooks externos** — Pagamento → NFSe → Lab → Insurance (todos 200) | Api\PaymentWebhookController, NfseWebhookController, LabEquipmentController, InsuranceWebhookController | 4 |
 
+### Configuração NF
+
+| # | Fluxo | Controllers | Etapas |
+|---|-------|-------------|-------:|
+| 70 | **Config NF Unificada** — Acessar /nf/config → Configurar provedor NFe → Configurar provedor NFSe → Salvar → Verificar | NfConfigController, NfeConfigController, NfseConfigController | 6 |
+
 ---
 
 ## Resumo
 
 | Métrica | Valor |
 |---------|:-----:|
-| Fluxos end-to-end | 69 |
-| Fluxos implementados | 56 |
-| Etapas totais | ~330 |
-| Controllers envolvidos | ~80 |
+| Fluxos end-to-end | 76 |
+| Fluxos implementados (com testes) | 45 |
+| Fluxos pendentes (stub vazio) | 26 |
+| Fluxos sem UI (eventos internos) | 5 |
+| Etapas totais | ~360 |
+| Controllers envolvidos | ~85 |
 | Perfis de usuário | 12 |
 | Testes de permissão | 4 |
 | Testes de API + webhook | 0 (stubs) |
-| **Total testes Dusk** | **56** |
+| **Total testes Dusk (métodos)** | **45** (em 9 arquivos) |
+| **Arquivos Dusk vazios (stubs)** | **6** |
 | **Tempo execução (sequencial)** | **~25 min** |
 
 ---
@@ -183,18 +195,23 @@
 tests/
 ├── Browser/
 │   ├── Flows/
-│   │   ├── AdminFlowTest.php          # Fluxos 01–07
-│   │   ├── VeterinarioFlowTest.php    # Fluxos 08–24
-│   │   ├── RecepcionistaFlowTest.php  # Fluxos 25–32
-│   │   ├── FinanceiroFlowTest.php     # Fluxos 33–46
-│   │   ├── EstoqueFlowTest.php        # Fluxos 47–55
-│   │   ├── TutorPortalFlowTest.php    # Fluxos 56–61
-│   │   ├── RhFlowTest.php             # Fluxo 62
-│   │   └── AuditorFlowTest.php        # Fluxo 63
+│   │   ├── AdminFlowTest.php             # 7 tests — Fluxos 01–07 ✅
+│   │   ├── VeterinarioFlowTest.php       # 6 tests — Fluxo 08–13 ✅
+│   │   ├── VeterinarioFlowPart2Test.php  # 7 tests — Fluxo 14–20 ✅
+│   │   ├── VeterinarioFlowPart3Test.php  # 4 tests — Fluxo 21–24 ✅
+│   │   ├── ReceptionistFlowTest.php      # 8 tests — Fluxos 25–32 ✅
+│   │   ├── RecepcionistaFlowTest.php     # 0 tests (stub) ❌
+│   │   ├── FinanceiroFlowPart1Test.php   # 5 tests — Fluxos 33–37 ✅
+│   │   ├── FinanceiroFlowPart2Test.php   # 5 tests — Fluxos 38–43 ✅
+│   │   ├── FinanceiroFlowTest.php        # 0 tests (stub) — Fluxos 44–46 ❌
+│   │   ├── EstoqueFlowTest.php           # 9 tests — Fluxos 47–55 ✅
+│   │   ├── TutorPortalFlowTest.php       # 0 tests (stub) — Fluxos 56–61 ❌
+│   │   ├── RhFlowTest.php                # 0 tests (stub) — Fluxo 62 ❌
+│   │   └── AuditorFlowTest.php           # 0 tests (stub) — Fluxo 63 ❌
 │   ├── Permissions/
-│   │   └── SidebarPermissionTest.php  # Fluxos 64–66
+│   │   └── SidebarPermissionTest.php     # 4 tests — Fluxos 64–66 ✅
 │   └── Api/
-│       └── MobileApiFlowTest.php      # Fluxos 67–69
+│       └── MobileApiFlowTest.php         # 0 tests (stub) — Fluxos 67–69 ❌
 ```
 
 ---

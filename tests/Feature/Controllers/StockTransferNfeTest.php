@@ -58,6 +58,7 @@ class StockTransferNfeTest extends ModuleTestCase
             'municipio_ibge' => '3550308',
         ]);
 
+        NfeConfig::where('is_active', true)->update(['is_active' => false]);
         NfeConfig::factory()->create([
             'provider' => 'webmania',
             'ambiente' => 'homologacao',
@@ -113,6 +114,7 @@ class StockTransferNfeTest extends ModuleTestCase
             'municipio_ibge' => '3550308',
         ]);
 
+        NfeConfig::where('is_active', true)->update(['is_active' => false]);
         NfeConfig::factory()->create([
             'provider' => 'webmania',
             'ambiente' => 'homologacao',

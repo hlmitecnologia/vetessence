@@ -7,6 +7,7 @@ use App\Models\NfeConfig;
 use App\Models\NfeTransfer;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\Nfe\NfeProvider;
 use App\Services\Nfe\NfeService;
 use App\Services\Nfe\NfeResult;
 use App\Services\Nfe\WebmaniaProvider;
@@ -89,7 +90,10 @@ class NfeTransferTest extends ModuleTestCase
         $toBranch = Branch::factory()->create();
         $user = User::factory()->create();
 
-        $service = app(NfeService::class);
+        $provider = \Mockery::mock(NfeProvider::class);
+        $service = \Mockery::mock(NfeService::class, [$provider])->shouldAllowMockingProtectedMethods()->makePartial();
+        $service->shouldReceive('getConfig')->andReturn(null);
+
         $result = $service->emitirTransferencia($product, $fromBranch, $toBranch, 10.0, $user);
 
         $this->assertFalse($result->success);

@@ -18,18 +18,19 @@ class TreatmentPlanTest extends TestCase
         $pet = Pet::factory()->create();
         $tutor = Tutor::factory()->create();
         $vet = User::factory()->create();
+        $planNumber = 'PLN-' . date('Y') . '-' . strtoupper(fake()->unique()->lexify('?????'));
         TreatmentPlan::create([
-            'plan_number' => 'PLN-2026-00001', 'pet_id' => $pet->id,
+            'plan_number' => $planNumber, 'pet_id' => $pet->id,
             'tutor_id' => $tutor->id, 'vet_id' => $vet->id,
             'title' => 'Tratamento', 'status' => 'pending_approval',
         ]);
-        $this->assertDatabaseHas('treatment_plans', ['plan_number' => 'PLN-2026-00001', 'title' => 'Tratamento']);
+        $this->assertDatabaseHas('treatment_plans', ['plan_number' => $planNumber, 'title' => 'Tratamento']);
     }
 
     public function test_pet_relationship()
     {
         $pet = Pet::factory()->create();
-        $tp = TreatmentPlan::create(['plan_number' => 'PLN-001', 'pet_id' => $pet->id, 'title' => 'Teste', 'status' => 'pending_approval']);
+        $tp = TreatmentPlan::create(['plan_number' => strtoupper(fake()->unique()->lexify('PLN-?????')), 'pet_id' => $pet->id, 'title' => 'Teste', 'status' => 'pending_approval']);
         $this->assertInstanceOf(Pet::class, $tp->pet);
     }
 
@@ -37,7 +38,7 @@ class TreatmentPlanTest extends TestCase
     {
         $tutor = Tutor::factory()->create();
         $pet = Pet::factory()->create();
-        $tp = TreatmentPlan::create(['plan_number' => 'PLN-002', 'pet_id' => $pet->id, 'tutor_id' => $tutor->id, 'title' => 'Teste', 'status' => 'pending_approval']);
+        $tp = TreatmentPlan::create(['plan_number' => strtoupper(fake()->unique()->lexify('PLN-?????')), 'pet_id' => $pet->id, 'tutor_id' => $tutor->id, 'title' => 'Teste', 'status' => 'pending_approval']);
         $this->assertInstanceOf(Tutor::class, $tp->tutor);
     }
 
@@ -45,29 +46,32 @@ class TreatmentPlanTest extends TestCase
     {
         $pet = Pet::factory()->create();
         $vet = User::factory()->create();
-        $tp = TreatmentPlan::create(['plan_number' => 'PLN-003', 'pet_id' => $pet->id, 'vet_id' => $vet->id, 'title' => 'Teste', 'status' => 'pending_approval']);
+        $tp = TreatmentPlan::create(['plan_number' => strtoupper(fake()->unique()->lexify('PLN-?????')), 'pet_id' => $pet->id, 'vet_id' => $vet->id, 'title' => 'Teste', 'status' => 'pending_approval']);
         $this->assertInstanceOf(User::class, $tp->vet);
     }
 
     public function test_pending_scope()
     {
-        TreatmentPlan::factory()->create(['status' => 'pending_approval']);
-        TreatmentPlan::factory()->create(['status' => 'approved']);
-        $this->assertEquals(1, TreatmentPlan::pending()->count());
+        $ids = [];
+        $ids[] = TreatmentPlan::factory()->create(['status' => 'pending_approval'])->id;
+        $ids[] = TreatmentPlan::factory()->create(['status' => 'approved'])->id;
+        $this->assertEquals(1, TreatmentPlan::whereIn('id', $ids)->pending()->count());
     }
 
     public function test_approved_scope()
     {
-        TreatmentPlan::factory()->create(['status' => 'pending_approval']);
-        TreatmentPlan::factory()->create(['status' => 'approved']);
-        $this->assertEquals(1, TreatmentPlan::approved()->count());
+        $ids = [];
+        $ids[] = TreatmentPlan::factory()->create(['status' => 'pending_approval'])->id;
+        $ids[] = TreatmentPlan::factory()->create(['status' => 'approved'])->id;
+        $this->assertEquals(1, TreatmentPlan::whereIn('id', $ids)->approved()->count());
     }
 
     public function test_rejected_scope()
     {
-        TreatmentPlan::factory()->create(['status' => 'pending_approval']);
-        TreatmentPlan::factory()->create(['status' => 'rejected']);
-        $this->assertEquals(1, TreatmentPlan::rejected()->count());
+        $ids = [];
+        $ids[] = TreatmentPlan::factory()->create(['status' => 'pending_approval'])->id;
+        $ids[] = TreatmentPlan::factory()->create(['status' => 'rejected'])->id;
+        $this->assertEquals(1, TreatmentPlan::whereIn('id', $ids)->rejected()->count());
     }
 
     public function test_approve_method()

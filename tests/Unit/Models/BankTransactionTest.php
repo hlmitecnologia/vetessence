@@ -37,12 +37,14 @@ class BankTransactionTest extends TestCase
 
     public function test_scopes()
     {
-        BankTransaction::factory()->count(2)->create(['status' => 'pending']);
-        BankTransaction::factory()->create(['status' => 'reconciled']);
-        BankTransaction::factory()->create(['status' => 'unmatched']);
-        $this->assertCount(2, BankTransaction::pending()->get());
-        $this->assertCount(1, BankTransaction::reconciled()->get());
-        $this->assertCount(1, BankTransaction::unmatched()->get());
+        $ids = [];
+        $ids[] = BankTransaction::factory()->create(['status' => 'pending'])->id;
+        $ids[] = BankTransaction::factory()->create(['status' => 'pending'])->id;
+        $ids[] = BankTransaction::factory()->create(['status' => 'reconciled'])->id;
+        $ids[] = BankTransaction::factory()->create(['status' => 'unmatched'])->id;
+        $this->assertCount(2, BankTransaction::whereIn('id', $ids)->pending()->get());
+        $this->assertCount(1, BankTransaction::whereIn('id', $ids)->reconciled()->get());
+        $this->assertCount(1, BankTransaction::whereIn('id', $ids)->unmatched()->get());
     }
 
     public function test_amount_cast()

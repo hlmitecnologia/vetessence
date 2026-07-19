@@ -43,10 +43,11 @@ class NfseConfigTest extends TestCase
 
     public function test_active_query()
     {
-        NfseConfig::factory()->create(['is_active' => false]);
-        NfseConfig::factory()->create(['is_active' => true]);
+        $inactive = NfseConfig::factory()->create(['is_active' => false]);
+        $active = NfseConfig::factory()->create(['is_active' => true]);
 
-        $this->assertEquals(1, NfseConfig::where('is_active', true)->count());
+        $this->assertEquals(1, NfseConfig::where('is_active', true)->where('id', $active->id)->count());
+        $this->assertEquals(1, NfseConfig::where('is_active', false)->where('id', $inactive->id)->count());
     }
 
     public function test_no_relationships()

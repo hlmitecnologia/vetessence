@@ -17,8 +17,9 @@ class PurchaseOrderTest extends TestCase
     {
         $supplier = Supplier::factory()->create();
         $requester = User::factory()->create();
+        $orderNumber = 'PO-' . strtoupper(fake()->unique()->lexify('????')) . '/' . now()->year;
         $order = PurchaseOrder::create([
-            'order_number' => 'PO-0001/2026',
+            'order_number' => $orderNumber,
             'supplier_id' => $supplier->id,
             'status' => 'draft',
             'requested_by' => $requester->id,
@@ -27,7 +28,7 @@ class PurchaseOrderTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('purchase_orders', [
-            'order_number' => 'PO-0001/2026',
+            'order_number' => $orderNumber,
             'notes' => 'Urgente',
         ]);
     }
@@ -54,13 +55,14 @@ class PurchaseOrderTest extends TestCase
 
     public function test_scopes()
     {
-        PurchaseOrder::factory()->create(['status' => 'draft']);
-        PurchaseOrder::factory()->create(['status' => 'ordered']);
-        PurchaseOrder::factory()->create(['status' => 'received']);
+        $ids = [];
+        $ids[] = PurchaseOrder::factory()->create(['status' => 'draft'])->id;
+        $ids[] = PurchaseOrder::factory()->create(['status' => 'ordered'])->id;
+        $ids[] = PurchaseOrder::factory()->create(['status' => 'received'])->id;
 
-        $this->assertEquals(1, PurchaseOrder::draft()->count());
-        $this->assertEquals(1, PurchaseOrder::ordered()->count());
-        $this->assertEquals(2, PurchaseOrder::pending()->count());
+        $this->assertEquals(1, PurchaseOrder::whereIn('id', $ids)->draft()->count());
+        $this->assertEquals(1, PurchaseOrder::whereIn('id', $ids)->ordered()->count());
+        $this->assertEquals(2, PurchaseOrder::whereIn('id', $ids)->pending()->count());
     }
 
     public function test_generates_order_number()

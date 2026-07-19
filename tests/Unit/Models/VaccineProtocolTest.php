@@ -12,18 +12,20 @@ class VaccineProtocolTest extends TestCase
 
     public function test_for_species_scope()
     {
-        VaccineProtocol::factory()->create(['species' => 'canine']);
-        VaccineProtocol::factory()->create(['species' => 'feline']);
+        $ids = [];
+        $ids[] = VaccineProtocol::factory()->create(['species' => 'canine'])->id;
+        $ids[] = VaccineProtocol::factory()->create(['species' => 'feline'])->id;
 
-        $this->assertCount(1, VaccineProtocol::forSpecies('canine')->get());
+        $this->assertCount(1, VaccineProtocol::whereIn('id', $ids)->forSpecies('canine')->get());
     }
 
     public function test_core_scope()
     {
-        VaccineProtocol::factory()->create(['is_core' => true]);
-        VaccineProtocol::factory()->create(['is_core' => false]);
+        $ids = [];
+        $ids[] = VaccineProtocol::factory()->create(['is_core' => true])->id;
+        $ids[] = VaccineProtocol::factory()->create(['is_core' => false])->id;
 
-        $this->assertCount(1, VaccineProtocol::core()->get());
+        $this->assertCount(1, VaccineProtocol::whereIn('id', $ids)->core()->get());
     }
 
     public function test_active_default()

@@ -41,9 +41,11 @@ class CommissionLogTest extends TestCase
 
     public function test_scopes()
     {
-        CommissionLog::factory()->count(2)->create(['status' => 'pending']);
-        CommissionLog::factory()->create(['status' => 'paid']);
-        $this->assertCount(2, CommissionLog::pending()->get());
-        $this->assertCount(1, CommissionLog::paid()->get());
+        $ids = [];
+        $ids[] = CommissionLog::factory()->create(['status' => 'pending'])->id;
+        $ids[] = CommissionLog::factory()->create(['status' => 'pending'])->id;
+        $ids[] = CommissionLog::factory()->create(['status' => 'paid'])->id;
+        $this->assertCount(2, CommissionLog::whereIn('id', $ids)->pending()->get());
+        $this->assertCount(1, CommissionLog::whereIn('id', $ids)->paid()->get());
     }
 }

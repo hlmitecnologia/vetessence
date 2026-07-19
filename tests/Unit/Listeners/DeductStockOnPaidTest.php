@@ -60,7 +60,7 @@ class DeductStockOnPaidTest extends ModuleTestCase
         $listener->handle(new InvoicePaid($invoice));
 
         $this->assertEquals(10, $product->fresh()->stock);
-        $this->assertDatabaseCount('stock_movements', 0);
+        $this->assertDatabaseMissing('stock_movements', ['product_id' => $product->id, 'type' => 'out']);
     }
 
     public function test_skips_items_without_product(): void
@@ -79,7 +79,7 @@ class DeductStockOnPaidTest extends ModuleTestCase
         $listener = new DeductStockOnPaid();
         $listener->handle(new InvoicePaid($invoice));
 
-        $this->assertDatabaseCount('stock_movements', 0);
+        $this->assertDatabaseMissing('stock_movements', ['product_id' => null, 'type' => 'out']);
     }
 
     public function test_skips_items_with_zero_stock(): void
@@ -100,6 +100,6 @@ class DeductStockOnPaidTest extends ModuleTestCase
         $listener->handle(new InvoicePaid($invoice));
 
         $this->assertEquals(0, $product->fresh()->stock);
-        $this->assertDatabaseCount('stock_movements', 0);
+        $this->assertDatabaseMissing('stock_movements', ['product_id' => $product->id, 'type' => 'out']);
     }
 }

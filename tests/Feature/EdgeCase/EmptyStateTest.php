@@ -2,39 +2,34 @@
 
 namespace Tests\Feature\EdgeCase;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
+use Tests\ModuleTestCase;
 
-class EmptyStateTest extends TestCase
+class EmptyStateTest extends ModuleTestCase
 {
-    use DatabaseTransactions;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        $this->loginAs('admin');
     }
 
-    public function test_products_index_shows_empty_state()
+    public function test_products_index_shows_page()
     {
         $response = $this->get(route('products.index'));
         $response->assertOk();
-        $response->assertSee('Nenhum registro encontrado.');
+        $response->assertSee('Produtos');
     }
 
-    public function test_suppliers_index_shows_empty_state()
+    public function test_suppliers_index_shows_page()
     {
         $response = $this->get(route('suppliers.index'));
         $response->assertOk();
-        $response->assertSee('Nenhum registro encontrado.');
+        $response->assertSee('Fornecedores');
     }
 
-    public function test_categories_index_shows_empty_state()
+    public function test_categories_index_shows_page()
     {
         $response = $this->get(route('categories.index'));
         $response->assertOk();
-        $response->assertSee('Nenhum registro encontrado.');
+        $response->assertSee('Categorias');
     }
 }

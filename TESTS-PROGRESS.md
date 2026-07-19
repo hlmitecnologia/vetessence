@@ -1,7 +1,7 @@
 # Progresso — Testes End-to-End
 
 > **Plano completo:** [PLAN-TESTS.md](PLAN-TESTS.md)
-> **Última atualização:** 2026-07-06
+> **Última atualização:** 2026-07-19
 
 ---
 
@@ -132,7 +132,9 @@
 
 ---
 
-## Fase 10 — Financeiro parte 3 (Pendente)
+## Fase 10 — Financeiro parte 3 (Pendente — stub vazio)
+
+> `tests/Browser/Flows/FinanceiroFlowTest.php` existe mas não tem nenhum método `test*`.
 
 | # | Fluxo | Status |
 |:-:|-------|:------:|
@@ -158,7 +160,20 @@
 
 ---
 
-## Fase 12 — Tutor Portal (Pendente)
+## Fase 11b — NFC-e + Config NF (Nova — Pendente)
+
+| # | Fluxo | Status |
+|:-:|-------|:------:|
+| 39 | NFC-e completa (AJAX emit + polling) | ⏳ |
+| 49b | NF-e de transferência | ⏳ |
+| 70 | Config NF Unificada (/nf/config) | ⏳ |
+| 71 | NFC-e Listing (/nfce) | ⏳ |
+
+---
+
+## Fase 12 — Tutor Portal (Pendente — stub vazio)
+
+> `tests/Browser/Flows/TutorPortalFlowTest.php` existe mas não tem nenhum método `test*`.
 
 | # | Fluxo | Status |
 |:-:|-------|:------:|
@@ -171,7 +186,9 @@
 
 ---
 
-## Fase 13 — RH (Pendente)
+## Fase 13 — RH (Pendente — stub vazio)
+
+> `tests/Browser/Flows/RhFlowTest.php` existe mas não tem nenhum método `test*`.
 
 | # | Fluxo | Status |
 |:-:|-------|:------:|
@@ -179,7 +196,9 @@
 
 ---
 
-## Fase 14 — Auditor (Pendente)
+## Fase 14 — Auditor (Pendente — stub vazio)
+
+> `tests/Browser/Flows/AuditorFlowTest.php` existe mas não tem nenhum método `test*`.
 
 | # | Fluxo | Status |
 |:-:|-------|:------:|
@@ -187,7 +206,9 @@
 
 ---
 
-## Fase 15 — API + Webhooks (Pendente)
+## Fase 15 — API + Webhooks (Pendente — stub vazio)
+
+> `tests/Browser/Api/MobileApiFlowTest.php` existe mas não tem nenhum método `test*`.
 
 | # | Fluxo | Status |
 |:-:|-------|:------:|

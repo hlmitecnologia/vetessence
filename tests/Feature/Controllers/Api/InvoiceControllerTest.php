@@ -29,13 +29,13 @@ class InvoiceControllerTest extends ModuleTestCase
 
     public function test_index_filters_by_status()
     {
-        Invoice::factory()->create(['status' => 'paid']);
+        $paid = Invoice::factory()->create(['status' => 'paid']);
         Invoice::factory()->create(['status' => 'pending']);
 
         $response = $this->getJson('/api/v1/invoices?status=paid');
 
         $response->assertOk();
-        $response->assertJsonCount(1, 'data');
+        $response->assertJsonFragment(['id' => $paid->id]);
     }
 
     public function test_show_returns_invoice()

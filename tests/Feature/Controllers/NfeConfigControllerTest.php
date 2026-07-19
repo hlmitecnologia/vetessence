@@ -69,10 +69,10 @@ class NfeConfigControllerTest extends ModuleTestCase
         $response = $this->put(route('nfe.config.update'), [
             'provider' => 'webmania',
             'ambiente' => 'homologacao',
-            'webmania_app_id' => 'app-id',
-            'webmania_app_secret' => 'app-secret',
             'webmania_consumer_key' => 'consumer-key',
             'webmania_consumer_secret' => 'consumer-secret',
+            'webmania_access_token' => 'access-token',
+            'webmania_access_token_secret' => 'access-token-secret',
         ]);
         $response->assertRedirect();
         $this->assertDatabaseHas('nfe_configs', [
@@ -95,10 +95,10 @@ class NfeConfigControllerTest extends ModuleTestCase
             'ambiente' => 'homologacao',
         ]);
         $response->assertSessionHasErrors([
-            'webmania_app_id',
-            'webmania_app_secret',
             'webmania_consumer_key',
             'webmania_consumer_secret',
+            'webmania_access_token',
+            'webmania_access_token_secret',
         ]);
     }
 

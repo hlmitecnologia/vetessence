@@ -91,7 +91,7 @@ class StockController extends Controller
                 'type'         => 'transfer_out',
                 'branch_id'    => $data['from_branch_id'],
                 'user_id'      => auth()->id(),
-                'notes'        => "Transferido para filial #{$data['to_branch_id']}. {$data['notes']}",
+                'notes'        => "Transferido para filial #{$data['to_branch_id']}. " . ($data['notes'] ?? ''),
                 'balance_after' => $currentStock,
             ]);
 
@@ -101,7 +101,7 @@ class StockController extends Controller
                 'type'         => 'transfer_in',
                 'branch_id'    => $data['to_branch_id'],
                 'user_id'      => auth()->id(),
-                'notes'        => "Recebido da filial #{$data['from_branch_id']}. {$data['notes']}",
+                'notes'        => "Recebido da filial #{$data['from_branch_id']}. " . ($data['notes'] ?? ''),
                 'balance_after' => $currentStock,
             ]);
 
@@ -172,7 +172,7 @@ class StockController extends Controller
             'type'         => 'transfer_out',
             'branch_id'    => $data['from_branch_id'],
             'user_id'      => auth()->id(),
-            'notes'        => "Transferido para filial #{$data['to_branch_id']}. {$data['notes']}",
+            'notes'        => "Transferido para filial #{$data['to_branch_id']}. " . ($data['notes'] ?? ''),
             'balance_after' => $currentStock,
         ]);
 
@@ -182,7 +182,7 @@ class StockController extends Controller
             'type'         => 'transfer_in',
             'branch_id'    => $data['to_branch_id'],
             'user_id'      => auth()->id(),
-            'notes'        => "Recebido da filial #{$data['from_branch_id']}. {$data['notes']}",
+            'notes'        => "Recebido da filial #{$data['from_branch_id']}. " . ($data['notes'] ?? ''),
             'balance_after' => $currentStock,
         ]);
 

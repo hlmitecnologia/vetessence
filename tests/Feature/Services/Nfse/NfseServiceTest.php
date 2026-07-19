@@ -42,7 +42,13 @@ class NfseServiceTest extends ModuleTestCase
     public function test_emitir_without_config()
     {
         $provider = $this->createMock(NfseProvider::class);
-        $invoice = Invoice::factory()->create(['nfse_status' => 'none']);
+        $branch = Branch::factory()->create(['municipio_ibge' => '3550308']);
+        $invoice = Invoice::factory()->create([
+            'branch_id' => $branch->id,
+            'nfse_status' => 'none',
+        ]);
+
+        NfseConfig::where('is_active', true)->update(['is_active' => false]);
 
         $service = new NfseService($provider);
         $result = $service->emitir($invoice);
@@ -111,60 +117,54 @@ class NfseServiceTest extends ModuleTestCase
 
     public function test_resolve_provider_webmania()
     {
-        NfseConfig::factory()->create(['is_active' => true, 'provider' => 'webmania']);
+        $config = NfseConfig::factory()->create(['is_active' => true, 'provider' => 'webmania']);
         $service = new NfseService();
         $reflection = new \ReflectionMethod($service, 'resolveProvider');
-        $config = NfseConfig::first();
         $provider = $reflection->invoke($service, $config);
         $this->assertInstanceOf(WebmaniaProvider::class, $provider);
     }
 
     public function test_resolve_provider_focusnfe()
     {
-        NfseConfig::factory()->create(['is_active' => true, 'provider' => 'focusnfe']);
+        $config = NfseConfig::factory()->create(['is_active' => true, 'provider' => 'focusnfe']);
         $service = new NfseService();
         $reflection = new \ReflectionMethod($service, 'resolveProvider');
-        $config = NfseConfig::first();
         $provider = $reflection->invoke($service, $config);
         $this->assertInstanceOf(FocusNfeProvider::class, $provider);
     }
 
     public function test_resolve_provider_spedy()
     {
-        NfseConfig::factory()->create(['is_active' => true, 'provider' => 'spedy']);
+        $config = NfseConfig::factory()->create(['is_active' => true, 'provider' => 'spedy']);
         $service = new NfseService();
         $reflection = new \ReflectionMethod($service, 'resolveProvider');
-        $config = NfseConfig::first();
         $provider = $reflection->invoke($service, $config);
         $this->assertInstanceOf(SpedyProvider::class, $provider);
     }
 
     public function test_resolve_provider_tecnospeed()
     {
-        NfseConfig::factory()->create(['is_active' => true, 'provider' => 'tecnospeed']);
+        $config = NfseConfig::factory()->create(['is_active' => true, 'provider' => 'tecnospeed']);
         $service = new NfseService();
         $reflection = new \ReflectionMethod($service, 'resolveProvider');
-        $config = NfseConfig::first();
         $provider = $reflection->invoke($service, $config);
         $this->assertInstanceOf(TecnospeedProvider::class, $provider);
     }
 
     public function test_resolve_provider_nfeio()
     {
-        NfseConfig::factory()->create(['is_active' => true, 'provider' => 'nfeio']);
+        $config = NfseConfig::factory()->create(['is_active' => true, 'provider' => 'nfeio']);
         $service = new NfseService();
         $reflection = new \ReflectionMethod($service, 'resolveProvider');
-        $config = NfseConfig::first();
         $provider = $reflection->invoke($service, $config);
         $this->assertInstanceOf(NfeIoProvider::class, $provider);
     }
 
     public function test_resolve_provider_invalid()
     {
-        NfseConfig::factory()->create(['is_active' => true, 'provider' => 'invalid_provider']);
+        $config = NfseConfig::factory()->create(['is_active' => true, 'provider' => 'invalid_provider']);
         $service = new NfseService();
         $reflection = new \ReflectionMethod($service, 'resolveProvider');
-        $config = NfseConfig::first();
         $this->expectException(\InvalidArgumentException::class);
         $reflection->invoke($service, $config);
     }
