@@ -35,6 +35,6 @@ class LoginController extends Controller
         Auth::guard('tutor')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('portal.login');
+        return redirect()->route('login');
     }
 }
