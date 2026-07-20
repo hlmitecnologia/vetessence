@@ -10,7 +10,6 @@ use MercadoPago\Client\Payment\PaymentClient;
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\MercadoPagoConfig;
-use MercadoPago\RuntimeEnviroment;
 
 class MercadoPagoProvider implements PaymentGatewayProvider
 {
@@ -22,13 +21,7 @@ class MercadoPagoProvider implements PaymentGatewayProvider
 
     public function charge(Invoice $invoice): array
     {
-        $this->log('Iniciando cobrança PDV (maquininha)', $invoice);
-
-        if ($this->hasCredentials()) {
-            return $this->apiCharge($invoice);
-        }
-
-        return $this->simulatedCharge($invoice);
+        return $this->errorResponse('Mercado Pago não suporta cobrança PDV/maquininha. Use o canal Portal para checkout online.');
     }
 
     public function checkout(Invoice $invoice): array
@@ -62,7 +55,7 @@ class MercadoPagoProvider implements PaymentGatewayProvider
 
     public static function supportedChannels(): array
     {
-        return ['portal', 'pdv', 'both'];
+        return ['portal'];
     }
 
     protected function hasCredentials(): bool
@@ -79,76 +72,11 @@ class MercadoPagoProvider implements PaymentGatewayProvider
         MercadoPagoConfig::setAccessToken($this->gateway->secret_key);
         MercadoPagoConfig::setRuntimeEnviroment(
             $this->gateway->is_sandbox
-                ? RuntimeEnviroment::SANDOBOX
-                : RuntimeEnviroment::PRODUCTION
+                ? MercadoPagoConfig::LOCAL
+                : MercadoPagoConfig::SERVER
         );
         $this->useApi = true;
         return true;
-    }
-
-    protected function simulatedCharge(Invoice $invoice): array
-    {
-        $transactionId = 'MP-PDV-' . strtoupper(uniqid());
-
-        return [
-            'success' => true,
-            'transaction_id' => $transactionId,
-            'reference' => (string) $invoice->id,
-            'status' => 'pending',
-            'message' => '[SIMULADO] Cobrança iniciada na maquininha Mercado Pago Point. Aguardando pagamento...',
-            'redirect_url' => null,
-            'raw_response' => [
-                'id' => $transactionId,
-                'status' => 'pending',
-                'point_of_interaction' => ['type' => 'POINT'],
-                'simulated' => true,
-            ],
-        ];
-    }
-
-    protected function apiCharge(Invoice $invoice): array
-    {
-        if (!$this->setupMercadoPago()) {
-            return $this->errorResponse('Mercado Pago não configurado: access_token ausente.');
-        }
-
-        try {
-            $client = new PaymentClient();
-
-            $request = [
-                'transaction_amount' => (float) $invoice->total,
-                'description' => 'Fatura ' . $invoice->invoice_number,
-                'binary_mode' => true,
-                'external_reference' => (string) $invoice->id,
-                'notification_url' => $this->gateway->webhook_url,
-                'statement_descriptor' => 'VETESSENCE',
-                'payer' => [
-                    'email' => $invoice->tutor?->email ?? 'cliente@email.com',
-                ],
-                'point_of_interaction' => [
-                    'type' => 'POINT',
-                ],
-            ];
-
-            $payment = $client->create($request);
-
-            return [
-                'success' => true,
-                'transaction_id' => (string) $payment->id,
-                'reference' => (string) $invoice->id,
-                'status' => $this->mapStatus($payment->status),
-                'message' => 'Cobrança criada na maquininha Mercado Pago Point.',
-                'redirect_url' => null,
-                'raw_response' => json_decode(json_encode($payment), true),
-            ];
-        } catch (MPApiException $e) {
-            $content = $e->getApiResponse()->getContent();
-            Log::error('[MercadoPago] Erro na API ao criar cobrança PDV', ['response' => $content]);
-            return $this->errorResponse('Erro Mercado Pago: ' . ($content['message'] ?? 'erro desconhecido'));
-        } catch (\Exception $e) {
-            Log::error('[MercadoPago] Erro inesperado ao criar cobrança PDV', ['error' => $e->getMessage()]);
-            return $this->errorResponse('Erro inesperado: ' . $e->getMessage());
-        }
     }
 
     protected function simulatedCheckout(Invoice $invoice): array

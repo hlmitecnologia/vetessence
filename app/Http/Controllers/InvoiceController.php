@@ -137,19 +137,7 @@ class InvoiceController extends Controller
 
         $hasNfseConfig = NfseConfig::where('is_active', true)->exists();
         $hasNfeConfig = NfeConfig::where('is_active', true)->exists();
-        $hasPdvGateway = PaymentGateway::withoutBranch()->active()
-            ->whereIn('channel', ['pdv', 'both'])
-            ->whereNull('branch_id')
-            ->exists();
-
-        if (!$hasPdvGateway && $invoice->branch_id) {
-            $hasPdvGateway = PaymentGateway::withoutBranch()->active()
-                ->whereIn('channel', ['pdv', 'both'])
-                ->where('branch_id', $invoice->branch_id)
-                ->exists();
-        }
-
-        return view('invoices.show', compact('invoice', 'hasNfseConfig', 'hasNfeConfig', 'hasPdvGateway'));
+        return view('invoices.show', compact('invoice', 'hasNfseConfig', 'hasNfeConfig'));
     }
 
     public function emitirNotaFiscal(Invoice $invoice, NfseService $nfseService, NfeService $nfeService)

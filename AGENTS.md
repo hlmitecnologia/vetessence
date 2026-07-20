@@ -29,8 +29,20 @@
 - **Round 2 — todas as 24 falhas remanescentes corrigidas**: UniqueConstraint (State/Branch/PurchaseOrder/TreatmentPlan/ZoonoticDisease — `faker->unique()` em factories); scopes (BankTransaction/CommissionLog/PurchaseOrder/TreatmentPlan/VaccineProtocol/ZoonoticDisease — `whereIn('id', $ids)`); SyncSpatieRolesTest (output em português); LlmServiceTest (prompt atualizado); StockDeductionServiceTest/StockForecastServiceTest (assertions resilientes); EmptyStateTest + BranchTest Feature + PaymentGateway Feature (auth + campos obrigatórios)
 - **Tecnospeed removido**: provider, config, `NfseService::resolveProvider`, `NfseConfig::$fillable`, migration, teste, docs
 
+### MailerSend + WhatsApp + Mercado Pago (esta sessão)
+
+**Feito:**
+- **MailerSend provider**: `app/Services/Notification/Email/MailerSendProvider.php` implementando `EmailProvider` com SDK send + attachments
+- **Z-API fix**: URL corrigida para `https://api.z-api.io/instances/{instance}/token/{token}/send-text`; telefone sanitizado (digits only, DDI 55); `Authorization: Bearer` removido
+- **NotificationLog**: `VaccinationReminderController::send()` agora cria `NotificationLog` (tipo `vaccine_reminder`) — consultável em Conf. Sistema → Logs de Notificação
+- **Mercado Pago restrito a Portal**: PDV/maquininha removido; `charge()` retorna erro; `supportedChannels()` → `['portal']`; `RuntimeEnviroment` → `MercadoPagoConfig::SERVER`/`LOCAL`
+- **PDV removido**: `channel` validation restrito a `portal`; opções `pdv`/`both` removidas dos formulários; JS morto (`startPdvCharge`/`copyPdvPix`) removido de `invoices/show.blade.php`; `InvoiceController::show()` não passa mais `$hasPdvGateway`
+- **Retrocompatibilidade `both`**: `scopeByChannel('portal')` busca `portal` e `both`; `isPortal()` retorna true para `both`; `getActiveGatewayForChannel('portal')` no PaymentService também busca ambos; `Portal/InvoiceController` idem
+- **Stone inativo**: provider fica sem uso (era exclusivo PDV/maquininha)
+- **Testes corrigidos**: `PaymentServiceTest` faz `withoutBranch()->update(['is_active' => false])` antes de criar gateway (data pollution); 34 testes passando (PaymentGateway unit/feature/controller + Invoice/Portal)
+
 ### Suite Status
-- **674 passed, 1 skipped** (SoftDeleteTest — intencional), **0 failures** ✅
+- **674+ passed, 1 skipped** (SoftDeleteTest — intencional), **0 failures** ✅
 - Data import commands (DbImport*) and DemoSeed intentionally not tested (one-shot scripts)
 
 ### PROJETO TREINAMENTO

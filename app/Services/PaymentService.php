@@ -143,7 +143,12 @@ class PaymentService
                     $q->orWhere('branch_id', $branchId);
                 }
             })
-            ->whereIn('channel', $channel === 'portal' ? ['portal', 'both'] : ['pdv', 'both']);
+            ->where(function ($q) use ($channel) {
+                $q->where('channel', $channel);
+                if ($channel === 'portal') {
+                    $q->orWhere('channel', 'both');
+                }
+            });
 
         return $query->first();
     }

@@ -25,8 +25,8 @@
                         {{-- Demais provedores ocultados temporariamente (reativar quando voltar) --}}
                         <select name="provider" class="form-control provider-select @error('provider') is-invalid @enderror" data-group="gateway" required>
                             <option value="">Selecione</option>
+                            <option value="mercadopago" {{ old('provider', $paymentGateway->provider) == 'mercadopago' ? 'selected' : '' }}>Mercado Pago</option>
                             <option value="pix" {{ old('provider', $paymentGateway->provider) == 'pix' ? 'selected' : '' }}>PIX</option>
-                            <option value="mercadopago" style="display:none;" {{ old('provider', $paymentGateway->provider) == 'mercadopago' ? 'selected' : '' }}>Mercado Pago</option>
                             <option value="pagseguro" style="display:none;" {{ old('provider', $paymentGateway->provider) == 'pagseguro' ? 'selected' : '' }}>PagSeguro</option>
                             <option value="stone" style="display:none;" {{ old('provider', $paymentGateway->provider) == 'stone' ? 'selected' : '' }}>Stone</option>
                             <option value="stripe" style="display:none;" {{ old('provider', $paymentGateway->provider) == 'stripe' ? 'selected' : '' }}>Stripe</option>
@@ -41,10 +41,7 @@
                         <select name="channel" class="form-control @error('channel') is-invalid @enderror" required>
                             <option value="">Selecione</option>
                             <option value="portal" {{ old('channel', $paymentGateway->channel) == 'portal' ? 'selected' : '' }}>Portal (pagamento online pelo tutor)</option>
-                            <option value="pdv" {{ old('channel', $paymentGateway->channel) == 'pdv' ? 'selected' : '' }}>PDV (maquininha de cartão)</option>
-                            <option value="both" {{ old('channel', $paymentGateway->channel) == 'both' ? 'selected' : '' }}>Ambos</option>
                         </select>
-                        <small class="text-muted">Nem todos provedores suportam ambos os canais.</small>
                         @error('channel')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>
@@ -73,6 +70,31 @@
                             <div class="input-group-append">
                                 <button type="button" class="btn btn-default" onclick="copyWebhookUrl()" title="Copiar"><i class="fas fa-copy"></i></button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- MERCADO PAGO --}}
+            <div class="provider-fields" data-provider="mercadopago" data-group="gateway" style="display:none;">
+                <h6 class="text-primary mt-3"><i class="fab fa-mercadopago mr-1"></i>Mercado Pago</h6>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    O Access Token é obtido no painel Mercado Pago em <strong>Desenvolvedores &gt; Credenciais</strong>.
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Public Key</label>
+                            <input type="text" name="public_key" class="form-control @error('public_key') is-invalid @enderror" value="{{ old('public_key', $paymentGateway->public_key) }}" placeholder="APP_USR-xxxx-xxxx">
+                            @error('public_key')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Access Token (secret_key)</label>
+                            <input type="password" name="secret_key" class="form-control @error('secret_key') is-invalid @enderror" value="{{ old('secret_key', $paymentGateway->secret_key) }}" placeholder="APP_USR-xxxx-xxxx">
+                            @error('secret_key')<span class="invalid-feedback">{{ $message }}</span>@enderror
                         </div>
                     </div>
                 </div>

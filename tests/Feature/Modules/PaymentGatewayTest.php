@@ -24,7 +24,7 @@ class PaymentGatewayTest extends ModuleTestCase
         $response = $this->post(route('payment-gateways.store'), [
             'name' => 'Mercado Pago Produção',
             'provider' => 'mercadopago',
-            'channel' => 'both',
+            'channel' => 'portal',
             'is_active' => true,
             'is_sandbox' => false,
             'public_key' => 'pub_key_123',
@@ -36,9 +36,9 @@ class PaymentGatewayTest extends ModuleTestCase
 
     public function test_only_one_active()
     {
-        $old = PaymentGateway::factory()->create(['is_active' => true]);
+        $old = PaymentGateway::factory()->create(['is_active' => true, 'channel' => 'portal']);
         $this->post(route('payment-gateways.store'), [
-            'name' => 'Gateway 2', 'provider' => 'pix', 'channel' => 'both',
+            'name' => 'Gateway 2', 'provider' => 'pix', 'channel' => 'portal',
             'is_active' => true, 'is_sandbox' => true, 'public_key' => 'pk_test',
         ]);
         $this->assertDatabaseHas('payment_gateways', ['name' => 'Gateway 2', 'is_active' => true]);
@@ -47,8 +47,8 @@ class PaymentGatewayTest extends ModuleTestCase
 
     public function test_service_returns_gateway()
     {
-        PaymentGateway::factory()->create(['is_active' => true]);
+        PaymentGateway::factory()->create(['is_active' => true, 'channel' => 'portal']);
         $service = app(\App\Services\PaymentService::class);
-        $this->assertNotNull($service->getActiveGatewayForChannel('pdv'));
+        $this->assertNotNull($service->getActiveGatewayForChannel('portal'));
     }
 }

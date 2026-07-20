@@ -33,6 +33,7 @@ class PaymentGatewayControllerTest extends ModuleTestCase
         $response = $this->post(route('payment-gateways.store'), [
             'name' => 'Mercado Pago',
             'provider' => 'mercadopago',
+            'channel' => 'portal',
             'is_active' => true,
             'is_sandbox' => true,
             'public_key' => 'pk-test-123',
@@ -50,17 +51,20 @@ class PaymentGatewayControllerTest extends ModuleTestCase
     public function test_store_validates_required_fields()
     {
         $response = $this->post(route('payment-gateways.store'), []);
-        $response->assertSessionHasErrors(['name', 'provider']);
+        $response->assertSessionHasErrors(['name', 'provider', 'channel']);
     }
 
-    public function test_store_validates_config_json()
+    public function test_store_accepts_config_as_json_string()
     {
         $response = $this->post(route('payment-gateways.store'), [
-            'name' => 'Test',
+            'name' => 'Test Stripe',
             'provider' => 'stripe',
-            'config' => 'not-json',
+            'channel' => 'portal',
+            'config' => json_encode(['url' => 'https://api.stripe.com']),
+            'is_active' => true,
         ]);
-        $response->assertSessionHasErrors('config');
+        $response->assertRedirect(route('payment-gateways.index'));
+        $response->assertSessionHas('success');
     }
 
     public function test_show()
@@ -85,6 +89,8 @@ class PaymentGatewayControllerTest extends ModuleTestCase
         $response = $this->put(route('payment-gateways.update', $gateway), [
             'name' => 'Gateway Atualizado',
             'provider' => 'pix',
+            'channel' => 'portal',
+            'public_key' => 'pk_test_123',
             'is_active' => true,
             'is_sandbox' => false,
         ]);
@@ -99,12 +105,13 @@ class PaymentGatewayControllerTest extends ModuleTestCase
 
     public function test_update_deactivates_other_active_gateways()
     {
-        $active = PaymentGateway::factory()->create(['is_active' => true]);
-        $gateway = PaymentGateway::factory()->create(['is_active' => false]);
+        $active = PaymentGateway::factory()->create(['is_active' => true, 'channel' => 'portal']);
+        $gateway = PaymentGateway::factory()->create(['is_active' => false, 'channel' => 'portal']);
 
         $response = $this->put(route('payment-gateways.update', $gateway), [
             'name' => $gateway->name,
             'provider' => $gateway->provider,
+            'channel' => 'portal',
             'is_active' => true,
             'is_sandbox' => true,
         ]);

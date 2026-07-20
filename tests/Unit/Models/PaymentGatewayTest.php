@@ -15,7 +15,7 @@ class PaymentGatewayTest extends TestCase
         PaymentGateway::create([
             'name' => 'PagarMe',
             'provider' => 'pagarme',
-            'channel' => 'both',
+            'channel' => 'portal',
             'is_active' => true,
             'is_sandbox' => true,
             'public_key' => 'pk_test_123',
@@ -38,8 +38,8 @@ class PaymentGatewayTest extends TestCase
     public function test_active_scope()
     {
         $ids = [];
-        $ids[] = PaymentGateway::create(['name' => 'A', 'provider' => 'a', 'channel' => 'both', 'is_active' => true])->id;
-        $ids[] = PaymentGateway::create(['name' => 'B', 'provider' => 'b', 'channel' => 'both', 'is_active' => false])->id;
+        $ids[] = PaymentGateway::create(['name' => 'A', 'provider' => 'a', 'channel' => 'portal', 'is_active' => true])->id;
+        $ids[] = PaymentGateway::create(['name' => 'B', 'provider' => 'b', 'channel' => 'portal', 'is_active' => false])->id;
 
         $this->assertCount(1, PaymentGateway::whereIn('id', $ids)->active()->get());
     }
@@ -49,7 +49,7 @@ class PaymentGatewayTest extends TestCase
         $gateway = PaymentGateway::create([
             'name' => 'Teste',
             'provider' => 'teste',
-            'channel' => 'both',
+            'channel' => 'portal',
             'secret_key' => 'sk_secret',
             'webhook_secret' => 'wh_secret',
         ]);

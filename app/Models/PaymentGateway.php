@@ -43,9 +43,6 @@ class PaymentGateway extends Model
         if ($channel === 'portal') {
             return $query->whereIn('channel', ['portal', 'both']);
         }
-        if ($channel === 'pdv') {
-            return $query->whereIn('channel', ['pdv', 'both']);
-        }
         return $query->where('channel', $channel);
     }
 
@@ -71,6 +68,6 @@ class PaymentGateway extends Model
 
     public function isPdv(): bool
     {
-        return in_array($this->channel, ['pdv', 'both']);
+        return false;
     }
 }

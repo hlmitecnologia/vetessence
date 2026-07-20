@@ -21,7 +21,7 @@ class PaymentServiceTest extends ModuleTestCase
 
     public function test_get_active_gateway_returns_null_when_none_active()
     {
-        PaymentGateway::factory()->create(['channel' => 'pdv', 'is_active' => false, 'is_sandbox' => true]);
+        PaymentGateway::factory()->create(['channel' => 'portal', 'is_active' => false, 'is_sandbox' => true]);
 
         $result = $this->service->charge(Invoice::factory()->create([
             'tutor_id' => Tutor::factory()->create()->id,
@@ -32,10 +32,13 @@ class PaymentServiceTest extends ModuleTestCase
         $this->assertFalse($result['success']);
     }
 
-    public function test_charge_uses_active_gateway()
+    public function test_mercadopago_checkout_returns_redirect()
     {
-        $gateway = PaymentGateway::factory()->create([
-            'provider' => 'mercadopago', 'is_active' => true, 'is_sandbox' => true,
+        // Deactivate any pre-existing gateways to avoid data pollution
+        PaymentGateway::withoutBranch()->update(['is_active' => false]);
+
+        PaymentGateway::factory()->create([
+            'provider' => 'mercadopago', 'channel' => 'portal', 'is_active' => true, 'is_sandbox' => true,
         ]);
 
         $tutor = Tutor::factory()->create();
@@ -47,11 +50,11 @@ class PaymentServiceTest extends ModuleTestCase
             'status' => 'pending',
         ]);
 
-        $result = $this->service->charge($invoice);
+        $result = $this->service->checkout($invoice);
 
         $this->assertTrue($result['success']);
         $this->assertEquals('mercadopago', $result['gateway_provider']);
-        $this->assertTrue($result['is_sandbox']);
+        $this->assertStringContainsString('sandbox.mercadopago.com.br', $result['redirect_url']);
     }
 
     public function test_charge_fails_without_active_gateway()

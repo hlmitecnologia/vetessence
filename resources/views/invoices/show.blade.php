@@ -323,63 +323,6 @@ function copyPix() {
     });
 }
 
-function startPdvCharge() {
-    const btn = document.getElementById('pdv-charge-btn');
-    const initial = document.getElementById('pdv-initial');
-    const feedback = document.getElementById('pdv-feedback');
-    const qrcodeDiv = document.getElementById('pdv-qrcode');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
-    feedback.classList.add('d-none');
-    qrcodeDiv.classList.add('d-none');
-
-    fetch('{{ route('invoices.charge', $invoice) }}', {
-        method: 'POST',
-        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.success && data.raw_response && data.raw_response.qrcode_base64) {
-            document.getElementById('pdv-qrcode-image').src = data.raw_response.qrcode_base64;
-            document.getElementById('pdv-pix-payload').textContent = data.raw_response.payload;
-            initial.classList.add('d-none');
-            qrcodeDiv.classList.remove('d-none');
-            feedback.classList.remove('d-none');
-            feedback.innerHTML = '<div class="alert alert-success mb-0"><i class="fas fa-check-circle"></i> ' + data.message + '</div>';
-            if (data.is_sandbox) {
-                feedback.innerHTML += '<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-flask"></i> Modo <strong>Sandbox</strong>. Transação ID: ' + data.transaction_id + '</div>';
-            }
-        } else if (data.success) {
-            feedback.classList.remove('d-none');
-            feedback.innerHTML = '<div class="alert alert-info mb-0"><i class="fas fa-info-circle"></i> ' + data.message + '</div>';
-            if (data.is_sandbox) {
-                feedback.innerHTML += '<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-flask"></i> Modo <strong>Sandbox</strong>. Transação ID: ' + data.transaction_id + '</div>';
-            }
-            setTimeout(() => { window.location.reload(); }, 3000);
-        } else {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-credit-card"></i> Pagar via PDV';
-            feedback.classList.remove('d-none');
-            feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fas fa-exclamation-circle"></i> ' + data.message + '</div>';
-        }
-    })
-    .catch(err => {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-credit-card"></i> Pagar via PDV';
-        feedback.classList.remove('d-none');
-        feedback.innerHTML = '<div class="alert alert-danger mb-0"><i class="fas fa-exclamation-circle"></i> Erro ao comunicar com o gateway.</div>';
-        console.error(err);
-    });
-}
-
-let pdvPixPayload = '';
-function copyPdvPix() {
-    const el = document.getElementById('pdv-pix-payload');
-    navigator.clipboard.writeText(el.textContent.trim()).then(() => {
-        alert('Código PIX copiado!');
-    });
-}
-
 function emitirNotaFiscal(btn) {
     const overlay = document.getElementById('nfce-loading-overlay');
     overlay.classList.remove('d-none');
