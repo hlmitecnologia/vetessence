@@ -15,12 +15,11 @@ class VetAvailabilityService
     {
         $vets = User::where('is_active', true)
             ->where(fn($q) => $q->whereHas('role', fn($q) => $q->where('slug', 'veterinario'))->orWhere('is_veterinarian', true))
-            ->when($branchId, fn($q) => $q->where('branch_id', $branchId))
             ->orderBy('name')
             ->get();
 
-        return $vets->filter(function ($vet) use ($date) {
-            return $this->hasShiftOnDate($vet->id, $date)
+        return $vets->filter(function ($vet) use ($date, $branchId) {
+            return $this->hasShiftOnDate($vet->id, $date, $branchId)
                 && $this->hasAvailableSlots($vet->id, $date);
         })->values();
     }
@@ -70,12 +69,17 @@ class VetAvailabilityService
         return $slots;
     }
 
-    public function hasShiftOnDate(int $vetId, string $date): bool
+    public function hasShiftOnDate(int $vetId, string $date, ?int $branchId = null): bool
     {
-        return StaffSchedule::where('user_id', $vetId)
+        $query = StaffSchedule::where('user_id', $vetId)
             ->where('work_date', $date)
-            ->where('is_vet_shift', true)
-            ->exists();
+            ->where('is_vet_shift', true);
+
+        if ($branchId) {
+            $query->where('branch_id', $branchId);
+        }
+
+        return $query->exists();
     }
 
     public function hasAvailableSlots(int $vetId, string $date, int $defaultDuration = 30): bool
