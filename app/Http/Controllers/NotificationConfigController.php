@@ -21,7 +21,7 @@ class NotificationConfigController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'email_provider' => 'nullable|in:smtp,mailgun,ses,sendgrid',
+            'email_provider' => 'nullable|in:mailersend,smtp,mailgun,ses,sendgrid',
             'email_smtp_host' => 'nullable|string|max:255',
             'email_smtp_port' => 'nullable|string|max:10',
             'email_smtp_username' => 'nullable|string|max:255',
@@ -36,6 +36,7 @@ class NotificationConfigController extends Controller
             'email_ses_secret' => 'nullable|string|max:255',
             'email_ses_region' => 'nullable|string|max:50',
             'email_sendgrid_api_key' => 'nullable|string|max:255',
+            'email_mailersend_api_key' => 'nullable|string|max:255',
 
             'sms_provider' => 'nullable|in:twilio,zenvio,sns',
             'sms_twilio_account_sid' => 'nullable|string|max:255',

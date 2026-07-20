@@ -18,7 +18,8 @@ Brazilian Portuguese. Follow existing patterns: migration → model → controll
 ## Test Suite Status
 
 ```
-Total:  2,083 test methods (423 test files)
+Planejado: 2.083 test methods (423 test files)
+Atual:     675 tests (674 passed, 1 skipped — SoftDeleteTest) — sem Dusk (não disponível neste ambiente)
 ```
 
 | Suite | Count | Notes |
@@ -1542,14 +1543,13 @@ A dedução automática de estoque ao pagar a fatura substitui o fluxo manual. O
 
 ## Phase W — NFSe (Nota Fiscal de Serviços Eletrônica) ✅
 
-**Arquitetura:** Adapter Pattern — camada de abstração com 5 provedores. `NfseService` resolve o provider dinamicamente com base na config salva no banco. Suporte a **5 provedores:**
+**Arquitetura:** Adapter Pattern — camada de abstração com 4 provedores. `NfseService` resolve o provider dinamicamente com base na config salva no banco. Suporte a **4 provedores:**
 
 | Provedor | Classe | Credenciais |
 |----------|--------|-------------|
 | Webmania® | `WebmaniaProvider` | `webmania_app_id`, `webmania_app_secret`, `webmania_consumer_key`, `webmania_consumer_secret` |
 | FocusNFe | `FocusNfeProvider` | `focusnfe_token` |
 | Spedy | `SpedyProvider` | `spedy_api_key`, `spedy_api_secret` |
-| Tecnospeed | `TecnospeedProvider` | `tecnospeed_token` |
 | NFE.io | `NfeIoProvider` | `nfeio_api_key` |
 
 ### Dados Fiscais
@@ -1584,7 +1584,6 @@ A dedução automática de estoque ao pagar a fatura substitui o fluxo manual. O
 | `WebmaniaProvider` | `app/Services/Nfse/WebmaniaProvider.php` | API Webmania® |
 | `FocusNfeProvider` | `app/Services/Nfse/FocusNfeProvider.php` | API FocusNFe |
 | `SpedyProvider` | `app/Services/Nfse/SpedyProvider.php` | API Spedy |
-| `TecnospeedProvider` | `app/Services/Nfse/TecnospeedProvider.php` | API Tecnospeed |
 | `NfeIoProvider` | `app/Services/Nfse/NfeIoProvider.php` | API NFE.io |
 
 ### Controllers e Views
@@ -2614,7 +2613,7 @@ Adicionar link em **Configurações > Notificações** (após "Personalização"
 | 4 | `NfseControllerTest::test_cancelar_success` mesmo problema de `$config->branch_id` | 🔴 **Quebrado** | Mesma migration |
 | 5 | `NfseServiceTest` não testa `resolveProvider()` para 5 providers | 🟡 Parcial | Nunca foi implementado |
 | 6 | `NfseConfigTest` não testa ausência de relacionamentos/scopes | 🟡 Parcial | Nunca foi implementado |
-| 7 | 0 testes para 4 NFSe providers (FocusNFe, Spedy, Tecnospeed, NFE.io) | 🔴 **Ausente** | Phase W não incluiu testes |
+| 7 | 0 testes para 3 NFSe providers (FocusNFe, Spedy, NFE.io) | 🔴 **Ausente** | Phase W não incluiu testes |
 | 8 | 0 testes para `NotificationService` (orquestrador + 3 `resolve*Provider`) | 🔴 **Ausente** | Phase AA não incluiu testes |
 | 9 | 0 testes para 11 providers de notificação (4 email, 3 SMS, 4 WhatsApp) | 🔴 **Ausente** | Phase AA não incluiu testes |
 | 10 | 0 testes para `NotificationConfigController` | 🟡 Ausente | Phase AA não incluiu testes |
@@ -2639,7 +2638,6 @@ Provider interface contract (same adapter pattern):
 ```
 tests/Feature/Services/Nfse/FocusNfeProviderTest.php     → emitir, consultar, cancelar (Http fake)
 tests/Feature/Services/Nfse/SpedyProviderTest.php         → emitir, consultar, cancelar (Http fake)
-tests/Feature/Services/Nfse/TecnospeedProviderTest.php    → emitir, consultar, cancelar (Http fake)
 tests/Feature/Services/Nfse/NfeIoProviderTest.php         → emitir, consultar, cancelar (Http fake)
 ```
 
@@ -2648,7 +2646,7 @@ tests/Feature/Services/Nfse/NfeIoProviderTest.php         → emitir, consultar,
 - `test_consultar_success` — GET /v1/nfse/{id} → stub com status NFSe
 - `test_cancelar_success` — POST /v1/nfse/{id}/cancelar → stub 200
 
-**Total: ~12 tests**
+**Total: ~9 tests**
 
 ### AB3 — NfseService Enhancement Tests (editar existente)
 
@@ -2659,7 +2657,6 @@ Adicionar ao `tests/Feature/Services/Nfse/NfseServiceTest.php`:
 | `test_resolve_provider_webmania` | Config provider=webmania → resolve WebmaniaProvider |
 | `test_resolve_provider_focusnfe` | Config provider=focusnfe → resolve FocusNfeProvider |
 | `test_resolve_provider_spedy` | Config provider=spedy → resolve SpedyProvider |
-| `test_resolve_provider_tecnospeed` | Config provider=tecnospeed → resolve TecnospeedProvider |
 | `test_resolve_provider_nfeio` | Config provider=nfeio → resolve NfeIoProvider |
 | `test_resolve_provider_invalid` | Config provider=unknown → exception |
 | `test_notify_tutor_sends_email` | notifyTutor() com tutor com email → queue entry |

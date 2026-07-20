@@ -24,14 +24,13 @@
 - **GenerateInvoiceFromAppointment**: adicionados `use App\Models\Tutor` e `use App\Models\Pet` (type hints quebrados)
 - **NfeConfigControllerTest**: campo `webmania_app_id/secret` removido (não existem mais); adicionados `webmania_access_token/secret`
 - **StockController**: `notes` field com null coalescing em transferências (evita "Undefined array key")
-- **NfeService (NFSe)**: adicionado `tecnospeed` ao match de providers
-- **NfseConfig model**: adicionado `tecnospeed_token` ao `$fillable`
 - **AutoInvoiceTest**: usuário recebe permissão `appointments.view` para passar middleware `can:atendimentos`
 - **Data pollution**: testes que sofriam com dados residuais agora desativam configs pré-existentes ou escopam queries por IDs criados (StockTransferNfeTest, NfseConfigTest, NfseServiceTest)
+- **Round 2 — todas as 24 falhas remanescentes corrigidas**: UniqueConstraint (State/Branch/PurchaseOrder/TreatmentPlan/ZoonoticDisease — `faker->unique()` em factories); scopes (BankTransaction/CommissionLog/PurchaseOrder/TreatmentPlan/VaccineProtocol/ZoonoticDisease — `whereIn('id', $ids)`); SyncSpatieRolesTest (output em português); LlmServiceTest (prompt atualizado); StockDeductionServiceTest/StockForecastServiceTest (assertions resilientes); EmptyStateTest + BranchTest Feature + PaymentGateway Feature (auth + campos obrigatórios)
+- **Tecnospeed removido**: provider, config, `NfseService::resolveProvider`, `NfseConfig::$fillable`, migration, teste, docs
 
-### Known Issues (ainda presentes)
-- 27 falhas pré-existentes (não relacionadas às alterações recentes) — UniqueConstraintViolationException em State/City/ZoonoticDiscipline/PurchaseOrder, scopes em Branch/CommissionLog/PurchaseOrder/TreatmentPlan/VaccineProtocol/ZoonoticDiscipline, SyncSpatieRolesTest, BankTransactionTest, LlmServiceTest, StockDeductionServiceTest, StockForecastServiceTest
-- `NFSeGateTest` pre‑existing permission conflict (`nfse.view` already exists)
+### Suite Status
+- **674 passed, 1 skipped** (SoftDeleteTest — intencional), **0 failures** ✅
 - Data import commands (DbImport*) and DemoSeed intentionally not tested (one-shot scripts)
 
 ### PROJETO TREINAMENTO
@@ -58,7 +57,6 @@ Para retomar a integração Webmania (NFe/NFCe e NFSe), chame por **PROJETO WEBM
 - **NFSe WebmaniaProvider**: auth Bearer token v2.0; base URL `api.webmania.com.br`; endpoint `/2/nfse/emissao/`; payload com `rps[]`
 - **Migrations**: add `webmania_access_token` e `webmania_access_token_secret` em `nfe_configs`; add `webmania_access_token` em `nfse_configs`
 - **Telas de config**: campos `webmania_app_id/secret` removidos; `webmania_access_token` e `webmania_access_token_secret` adicionados (NFe); `webmania_access_token` único para NFSe
-- **Tecnospeed removido** do controller e service NFS-e
 - **NF-e de transferência**: migration `nfe_transfers`, model `NfeTransfer`, método `emitirTransferencia()` no `NfeService` + `WebmaniaProvider`, checkbox no form de transferência, implementação no `StockController::transfer()`
 - **Página de Configuração Unificada NF**: `NfConfigController`, view `resources/views/nf/config.blade.php` com ambas configs NFe e NFSe em cards lado a lado; rota `/nf/config`; link "Config. NF" no sidebar (menu Conf. Sistema)
 - **Sidebar NF**: links para "NFS-e" e "NF-e" adicionados no menu Faturamento; "Config. NF" no menu Conf. Sistema

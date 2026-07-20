@@ -11,7 +11,6 @@ use App\Services\Nfse\NfseResult;
 use App\Services\Nfse\NfseService;
 use App\Services\Nfse\NfseProvider;
 use App\Services\Nfse\SpedyProvider;
-use App\Services\Nfse\TecnospeedProvider;
 use App\Services\Nfse\WebmaniaProvider;
 use Tests\ModuleTestCase;
 
@@ -140,15 +139,6 @@ class NfseServiceTest extends ModuleTestCase
         $reflection = new \ReflectionMethod($service, 'resolveProvider');
         $provider = $reflection->invoke($service, $config);
         $this->assertInstanceOf(SpedyProvider::class, $provider);
-    }
-
-    public function test_resolve_provider_tecnospeed()
-    {
-        $config = NfseConfig::factory()->create(['is_active' => true, 'provider' => 'tecnospeed']);
-        $service = new NfseService();
-        $reflection = new \ReflectionMethod($service, 'resolveProvider');
-        $provider = $reflection->invoke($service, $config);
-        $this->assertInstanceOf(TecnospeedProvider::class, $provider);
     }
 
     public function test_resolve_provider_nfeio()

@@ -17,8 +17,11 @@
         "laravel/tinker": "^3.0",
         "league/commonmark": "^2.8",
         "livewire/livewire": "^3.0",
+        "mailersend/mailersend": "^0.39.0",
         "mercadopago/dx-php": "^3.10",
+        "nyholm/psr7": "^1.8",
         "pagseguro/pagseguro-php-sdk": "^4.2",
+        "php-http/guzzle7-adapter": "^1.1",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^7.0",
         "stripe/stripe-php": "^20.3"

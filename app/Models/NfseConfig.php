@@ -19,7 +19,6 @@ class NfseConfig extends Model
         'spedy_api_key',
         'spedy_api_secret',
         'nfeio_api_key', 'nfeio_company_id',
-        'tecnospeed_token',
         'is_active',
     ];
 

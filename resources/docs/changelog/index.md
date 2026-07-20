@@ -201,7 +201,7 @@
 - Delete com SweetAlert2 global
 
 #### NFSe — Nota Fiscal Eletrônica (Fase W)
-- 5 provedores: Webmania®, FocusNFe, Spedy, Tecnospeed, NFE.io
+- 5 provedores: Webmania®, FocusNFe, Spedy, NFE.io
 - Adapter Pattern com interface única
 - Emissão manual e automática ao faturar
 - Cancelamento (prazo 24h), exportação XML, PDF

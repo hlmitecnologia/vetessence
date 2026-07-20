@@ -5,6 +5,7 @@ namespace App\Services\Notification;
 use App\Services\Notification\Contracts\EmailProvider;
 use App\Services\Notification\Contracts\SmsProvider;
 use App\Services\Notification\Contracts\WhatsAppProvider;
+use App\Services\Notification\Email\MailerSendProvider;
 use App\Services\Notification\Email\MailgunProvider;
 use App\Services\Notification\Email\SendGridProvider;
 use App\Services\Notification\Email\SesProvider;
@@ -59,6 +60,10 @@ class NotificationService
         $provider = notification_config('email_provider', '');
 
         return match ($provider) {
+            'mailersend' => new MailerSendProvider([
+                'api_key' => notification_config('email_mailersend_api_key', ''),
+                'from_name' => notification_config('email_from_name', config('app.name')),
+            ]),
             'smtp' => new SmtpProvider([
                 'host' => notification_config('email_smtp_host', ''),
                 'port' => notification_config('email_smtp_port', '587'),

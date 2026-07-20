@@ -6,7 +6,7 @@
 @push('styles')
 <style>
 .provider-fields { display:none; }
-.provider-fields[data-provider="{{ old('provider', $config->provider ?? 'focusnfe') }}"] { display:block; }
+.provider-fields[data-provider="{{ old('provider', $config->provider ?? 'webmania') }}"] { display:block; }
 </style>
 @endpush
 
@@ -17,8 +17,8 @@
             <div class="card-header">
                 <h3 class="card-title">Configuração NF-e</h3>
                 @php
-                    $nfeProviderNames = ['focusnfe' => 'FocusNFe', 'nfeio' => 'NFE.io', 'webmania' => 'Webmania®'];
-                    $nfeProvider = $nfeProviderNames[$config->provider ?? 'focusnfe'] ?? $config->provider ?? 'FocusNFe';
+                    $nfeProviderNames = ['nfeio' => 'NFE.io', 'webmania' => 'Webmania®'];
+                    $nfeProvider = $nfeProviderNames[$config->provider ?? 'webmania'] ?? $config->provider ?? 'Webmania®';
                 @endphp
                 <span class="badge badge-success float-right mt-1">Ativo: {{ $nfeProvider }}</span>
             </div>
@@ -39,9 +39,8 @@
                             <div class="form-group">
                                 <label>Provedor *</label>
                                 <select name="provider" class="form-control provider-select @error('provider') is-invalid @enderror" data-group="nfe" required>
-                                    <option value="focusnfe" {{ old('provider', $config->provider ?? 'focusnfe') == 'focusnfe' ? 'selected' : '' }}>FocusNFe</option>
+                                    <option value="webmania" {{ old('provider', $config->provider ?? 'webmania') == 'webmania' ? 'selected' : '' }}>Webmania®</option>
                                     <option value="nfeio" {{ old('provider', $config->provider ?? '') == 'nfeio' ? 'selected' : '' }}>NFE.io</option>
-                                    <option value="webmania" {{ old('provider', $config->provider ?? '') == 'webmania' ? 'selected' : '' }}>Webmania®</option>
                                 </select>
                                 @error('provider') <span class="invalid-feedback">{{ $message }}</span> @enderror
                             </div>
@@ -56,20 +55,6 @@
                                 @error('ambiente') <span class="invalid-feedback">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                    </div>
-
-                    {{-- FOCUS NFE --}}
-                    <div class="provider-fields" data-provider="focusnfe" data-group="nfe">
-                        <h6 class="text-primary mt-3"><i class="fas fa-bolt mr-1"></i>Credenciais FocusNFe</h6>
-                        <div class="form-group">
-                            <label>API Token *</label>
-                            <input type="text" name="focusnfe_token" class="form-control @error('focusnfe_token') is-invalid @enderror" value="{{ old('focusnfe_token', $config->focusnfe_token ?? '') }}" placeholder="Token de API">
-                            @error('focusnfe_token') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                        </div>
-                        <p class="text-muted small mb-0">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            O token é enviado via HTTP Basic Auth (usuário: token, senha: vazio).
-                        </p>
                     </div>
 
                     {{-- NFE.IO --}}

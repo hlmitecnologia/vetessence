@@ -12,8 +12,14 @@ class StateFactory extends Factory
     {
         return [
             'name' => fake()->state(),
-            'uf' => strtoupper(fake()->lexify('??')),
+            'uf' => strtoupper(fake()->unique()->lexify('??')),
             'country' => 'BR',
         ];
+    }
+
+    public function resetUnique(): static
+    {
+        fake()->unique()->reset();
+        return $this;
     }
 }

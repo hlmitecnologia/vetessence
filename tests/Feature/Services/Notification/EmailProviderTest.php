@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Services\Notification;
 
+use App\Services\Notification\Email\MailerSendProvider;
 use App\Services\Notification\Email\MailgunProvider;
 use App\Services\Notification\Email\SendGridProvider;
 use App\Services\Notification\Email\SesProvider;
@@ -54,6 +55,30 @@ class EmailProviderTest extends TestCase
 
         $this->assertInstanceOf(NotificationResult::class, $result);
         $this->assertEquals('Amazon SES', $result->provider);
+    }
+
+    public function test_mailersend_send_success()
+    {
+        $provider = new MailerSendProvider([
+            'api_key' => 'mlsn.test',
+        ]);
+
+        $result = $provider->send('from@test.com', 'to@test.com', 'Subject', 'Body');
+
+        $this->assertInstanceOf(NotificationResult::class, $result);
+        $this->assertEquals('MailerSend', $result->provider);
+    }
+
+    public function test_mailersend_send_failure()
+    {
+        $provider = new MailerSendProvider([
+            'api_key' => '',
+        ]);
+
+        $result = $provider->send('from@test.com', 'to@test.com', 'Subject', 'Body');
+
+        $this->assertInstanceOf(NotificationResult::class, $result);
+        $this->assertFalse($result->success);
     }
 
     public function test_sendgrid_send_success()

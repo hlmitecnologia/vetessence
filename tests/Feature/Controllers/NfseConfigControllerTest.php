@@ -23,13 +23,11 @@ class NfseConfigControllerTest extends ModuleTestCase
 
     public function test_update()
     {
+        NfseConfig::query()->update(['is_active' => false]);
         $response = $this->put(route('nfse.config.update'), [
             'provider' => 'webmania',
             'ambiente' => 'homologacao',
-            'webmania_app_id' => 'app-id',
-            'webmania_app_secret' => 'app-secret',
-            'webmania_consumer_key' => 'consumer-key',
-            'webmania_consumer_secret' => 'consumer-secret',
+            'webmania_access_token' => 'access-token',
         ]);
         $response->assertRedirect();
         $this->assertDatabaseHas('nfse_configs', [

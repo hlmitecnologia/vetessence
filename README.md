@@ -142,7 +142,7 @@ O **VetEssence** é um sistema ERP completo para clínicas veterinárias, constr
 | Nota Fiscal (NFe/NFCe/NFSe) | Webmania, NFE.io |
 | Pagamentos | PIX (ativo); Mercado Pago, PagSeguro, Stripe, Stone previstos |
 | IA | OpenAI, Anthropic, Gemini, Grok, Ollama |
-| Testes | PHPUnit (2.083+ testes), Laravel Dusk (45 testes E2E em 9 fluxos) |
+| Testes | PHPUnit (675 testes, 0 falhas), Laravel Dusk (45 testes E2E em 9 fluxos) |
 
 ---
 
@@ -211,7 +211,7 @@ Entre em contato:
 ## Suite de Testes
 
 ```
-Tests: 2.083 total (423 arquivos)
+Tests: 675 total (1 skipped — SoftDeleteTest intencional)
 ├── Feature (Controllers + Integrations + Portal + Api): 660 (224 arquivos)
 ├── Livewire: 127 (34 arquivos)
 ├── Unit (Models + Services + Traits + Listeners): 573 (148 arquivos)

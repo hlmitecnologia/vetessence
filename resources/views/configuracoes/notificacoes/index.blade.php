@@ -52,10 +52,11 @@
                                     <label>Provedor de E-mail</label>
                                     <select name="email_provider" class="form-control provider-select" data-group="email">
                                         <option value="">-- Selecione --</option>
-                                        <option value="smtp" {{ notification_config('email_provider') === 'smtp' ? 'selected' : '' }}>SMTP</option>
+                                        <option value="mailersend" {{ notification_config('email_provider') === 'mailersend' ? 'selected' : '' }}>MailerSend</option>
                                         <option value="mailgun" {{ notification_config('email_provider') === 'mailgun' ? 'selected' : '' }}>Mailgun</option>
                                         <option value="ses" {{ notification_config('email_provider') === 'ses' ? 'selected' : '' }}>Amazon SES</option>
                                         <option value="sendgrid" {{ notification_config('email_provider') === 'sendgrid' ? 'selected' : '' }}>SendGrid</option>
+                                        <option value="smtp" {{ notification_config('email_provider') === 'smtp' ? 'selected' : '' }}>SMTP</option>
                                     </select>
                                 </div>
 
@@ -67,6 +68,19 @@
                                 <div class="form-group">
                                     <label>Nome do remetente</label>
                                     <input type="text" name="email_from_name" class="form-control" value="{{ notification_config('email_from_name', '') }}" placeholder="Clínica Veterinária">
+                                </div>
+
+                                {{-- MailerSend --}}
+                                <div class="provider-fields" data-provider="mailersend" data-group="email" style="display:none;">
+                                    <h6 class="text-primary mt-3"><i class="fas fa-paper-plane mr-1"></i>MailerSend</h6>
+                                    <p class="text-muted small">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Utilize a API Key gerada no painel MailerSend.
+                                    </p>
+                                    <div class="form-group">
+                                        <label>API Key</label>
+                                        <input type="password" name="email_mailersend_api_key" class="form-control" value="{{ notification_config('email_mailersend_api_key', '') }}" placeholder="mlsn.********">
+                                    </div>
                                 </div>
 
                                 {{-- SMTP --}}

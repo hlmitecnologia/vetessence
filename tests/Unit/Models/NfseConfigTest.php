@@ -69,7 +69,7 @@ class NfseConfigTest extends TestCase
     public function test_provider_constants_available()
     {
         $fillable = (new NfseConfig)->getFillable();
-        $providerFields = ['provider', 'focusnfe_token', 'spedy_api_key', 'spedy_api_secret', 'tecnospeed_token', 'nfeio_api_key'];
+        $providerFields = ['provider', 'focusnfe_token', 'spedy_api_key', 'spedy_api_secret', 'nfeio_api_key'];
         foreach ($providerFields as $field) {
             $this->assertContains($field, $fillable, "Field '$field' should be in NfseConfig fillable");
         }

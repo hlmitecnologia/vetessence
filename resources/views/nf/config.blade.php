@@ -2,8 +2,6 @@
     $title = 'Configuração NF';
     $providerNames = [
         'webmania' => 'Webmania®',
-        'focusnfe' => 'FocusNFe',
-        'spedy' => 'Spedy',
         'nfeio' => 'NFE.io',
     ];
 @endphp
@@ -13,7 +11,7 @@
 <style>
 .provider-fields { display:none; }
 .provider-fields[data-group="nfse"][data-provider="{{ old('provider', $nfseConfig->provider ?? 'webmania') }}"] { display:block; }
-.provider-fields[data-group="nfe"][data-provider="{{ old('provider', $nfeConfig->provider ?? 'focusnfe') }}"] { display:block; }
+.provider-fields[data-group="nfe"][data-provider="{{ old('provider', $nfeConfig->provider ?? 'webmania') }}"] { display:block; }
 </style>
 @endpush
 
@@ -44,8 +42,6 @@
                                 <label>Provedor *</label>
                                 <select name="provider" class="form-control provider-select @error('provider') is-invalid @enderror" data-group="nfse" required>
                                     <option value="webmania" {{ old('provider', $nfseConfig->provider ?? 'webmania') == 'webmania' ? 'selected' : '' }}>Webmania®</option>
-                                    <option value="focusnfe" {{ old('provider', $nfseConfig->provider ?? '') == 'focusnfe' ? 'selected' : '' }}>FocusNFe</option>
-                                    <option value="spedy" {{ old('provider', $nfseConfig->provider ?? '') == 'spedy' ? 'selected' : '' }}>Spedy</option>
                                     <option value="nfeio" {{ old('provider', $nfseConfig->provider ?? '') == 'nfeio' ? 'selected' : '' }}>NFE.io</option>
                                 </select>
                                 @error('provider') <span class="invalid-feedback">{{ $message }}</span> @enderror
@@ -74,41 +70,6 @@
                             <label>Access Token *</label>
                             <input type="text" name="webmania_access_token" class="form-control @error('webmania_access_token') is-invalid @enderror" value="{{ old('webmania_access_token', $nfseConfig->webmania_access_token ?? '') }}" placeholder="Bearer token da API v2.0">
                             @error('webmania_access_token') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                        </div>
-                    </div>
-
-                    {{-- FOCUS NFE --}}
-                    <div class="provider-fields" data-provider="focusnfe" data-group="nfse">
-                        <h6 class="text-primary mt-3"><i class="fas fa-bolt mr-1"></i>Credenciais FocusNFe</h6>
-                        <div class="form-group">
-                            <label>API Token *</label>
-                            <input type="text" name="focusnfe_token" class="form-control @error('focusnfe_token') is-invalid @enderror" value="{{ old('focusnfe_token', $nfseConfig->focusnfe_token ?? '') }}" placeholder="Token de API">
-                            @error('focusnfe_token') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                        </div>
-                        <p class="text-muted small mb-0">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            O token é enviado via HTTP Basic Auth (usuário: token, senha: vazio).
-                        </p>
-                    </div>
-
-                    {{-- SPEDY --}}
-                    <div class="provider-fields" data-provider="spedy" data-group="nfse">
-                        <h6 class="text-primary mt-3"><i class="fas fa-rocket mr-1"></i>Credenciais Spedy</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>API Key *</label>
-                                    <input type="text" name="spedy_api_key" class="form-control @error('spedy_api_key') is-invalid @enderror" value="{{ old('spedy_api_key', $nfseConfig->spedy_api_key ?? '') }}" placeholder="Chave da API">
-                                    @error('spedy_api_key') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>API Secret *</label>
-                                    <input type="password" name="spedy_api_secret" class="form-control @error('spedy_api_secret') is-invalid @enderror" value="{{ old('spedy_api_secret', $nfseConfig->spedy_api_secret ?? '') }}" placeholder="******">
-                                    @error('spedy_api_secret') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -150,7 +111,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-box"></i> NF-e / NFC-e (Produtos)</h3>
-                @php $nfeProvider = $providerNames[$nfeConfig->provider ?? 'focusnfe'] ?? $nfeConfig->provider ?? 'FocusNFe'; @endphp
+                @php $nfeProvider = $providerNames[$nfeConfig->provider ?? 'webmania'] ?? $nfeConfig->provider ?? 'Webmania®'; @endphp
                 <span class="badge badge-success float-right mt-1">Ativo: {{ $nfeProvider }}</span>
             </div>
             <form action="{{ route('nfe.config.update') }}" method="POST">
@@ -162,9 +123,8 @@
                             <div class="form-group">
                                 <label>Provedor *</label>
                                 <select name="provider" class="form-control provider-select @error('provider') is-invalid @enderror" data-group="nfe" required>
-                                    <option value="focusnfe" {{ old('provider', $nfeConfig->provider ?? 'focusnfe') == 'focusnfe' ? 'selected' : '' }}>FocusNFe</option>
+                                    <option value="webmania" {{ old('provider', $nfeConfig->provider ?? 'webmania') == 'webmania' ? 'selected' : '' }}>Webmania®</option>
                                     <option value="nfeio" {{ old('provider', $nfeConfig->provider ?? '') == 'nfeio' ? 'selected' : '' }}>NFE.io</option>
-                                    <option value="webmania" {{ old('provider', $nfeConfig->provider ?? '') == 'webmania' ? 'selected' : '' }}>Webmania®</option>
                                 </select>
                                 @error('provider') <span class="invalid-feedback">{{ $message }}</span> @enderror
                             </div>
@@ -179,20 +139,6 @@
                                 @error('ambiente') <span class="invalid-feedback">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                    </div>
-
-                    {{-- FOCUS NFE --}}
-                    <div class="provider-fields" data-provider="focusnfe" data-group="nfe">
-                        <h6 class="text-primary mt-3"><i class="fas fa-bolt mr-1"></i>Credenciais FocusNFe</h6>
-                        <div class="form-group">
-                            <label>API Token *</label>
-                            <input type="text" name="focusnfe_token" class="form-control @error('focusnfe_token') is-invalid @enderror" value="{{ old('focusnfe_token', $nfeConfig->focusnfe_token ?? '') }}" placeholder="Token de API">
-                            @error('focusnfe_token') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                        </div>
-                        <p class="text-muted small mb-0">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            O token é enviado via HTTP Basic Auth (usuário: token, senha: vazio).
-                        </p>
                     </div>
 
                     {{-- NFE.IO --}}
