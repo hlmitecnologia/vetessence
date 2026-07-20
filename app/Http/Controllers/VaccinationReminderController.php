@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\VaccinationReminder;
 use App\Models\Pet;
+use App\Services\Notification\NotificationChannel;
+use App\Services\Notification\NotificationService;
 use Illuminate\Http\Request;
 
 class VaccinationReminderController extends Controller
@@ -87,6 +89,68 @@ class VaccinationReminderController extends Controller
 
         return redirect()->route('vaccination-reminders.index')
             ->with('success', 'Lembrete de vacina atualizado!');
+    }
+
+    public function send(VaccinationReminder $vaccinationReminder)
+    {
+        $vaccinationReminder->load(['vaccination', 'pet.tutors']);
+
+        $tutor = $vaccinationReminder->pet->tutors->first();
+
+        if (!$tutor) {
+            return redirect()->route('vaccination-reminders.index')
+                ->with('error', 'Pet não possui tutor cadastrado.');
+        }
+
+        $channel = $vaccinationReminder->channel ?? 'email';
+        $destination = match ($channel) {
+            'whatsapp' => $tutor->phone,
+            'sms' => $tutor->phone,
+            default => $tutor->email,
+        };
+
+        if (!$destination) {
+            $vaccinationReminder->update([
+                'status' => 'failed',
+                'error_message' => "Tutor não possui {$channel} cadastrado.",
+            ]);
+
+            return redirect()->route('vaccination-reminders.index')
+                ->with('error', "Tutor não possui {$channel} cadastrado.");
+        }
+
+        $message = "Olá {$tutor->name},\n\n" .
+            "Lembrando que a vacina {$vaccinationReminder->vaccination->vaccine} do pet {$vaccinationReminder->pet->name} " .
+            "está agendada para o dia {$vaccinationReminder->scheduled_date->format('d/m/Y')}.\n\n" .
+            "Por favor, entre em contato para confirmar o atendimento.\n\n" .
+            "Att,\nVetEssence";
+
+        $service = app(NotificationService::class);
+        $result = $service->send(
+            NotificationChannel::from($channel),
+            $destination,
+            $message,
+            "Lembrete de Vacina - {$vaccinationReminder->pet->name}"
+        );
+
+        if ($result->success) {
+            $vaccinationReminder->update([
+                'status' => 'sent',
+                'sent_at' => now(),
+                'error_message' => null,
+            ]);
+
+            return redirect()->route('vaccination-reminders.index')
+                ->with('success', 'Lembrete enviado com sucesso!');
+        }
+
+        $vaccinationReminder->update([
+            'status' => 'failed',
+            'error_message' => $result->error ?? 'Erro desconhecido ao enviar.',
+        ]);
+
+        return redirect()->route('vaccination-reminders.index')
+            ->with('error', 'Erro ao enviar lembrete: ' . ($result->error ?? 'Erro desconhecido.'));
     }
 
     public function destroy(VaccinationReminder $vaccinationReminder)

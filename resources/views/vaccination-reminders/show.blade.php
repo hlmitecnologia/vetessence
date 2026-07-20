@@ -53,8 +53,10 @@
         @if($vaccinationReminder->error_message)
         <div class="row">
             <div class="col-md-12">
-                <strong>Erro:</strong>
-                <p class="text-danger">{{ $vaccinationReminder->error_message }}</p>
+                <div class="alert alert-danger">
+                    <strong><i class="fas fa-exclamation-triangle mr-1"></i>Erro no envio:</strong>
+                    <p class="mb-0 mt-1">{{ $vaccinationReminder->error_message }}</p>
+                </div>
             </div>
         </div>
         @endif

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Controllers;
 
 use App\Models\Pet;
+use App\Models\Tutor;
 use App\Models\Vaccination;
 use App\Models\VaccinationReminder;
 use Tests\ModuleTestCase;
@@ -52,7 +53,7 @@ class VaccinationReminderControllerTest extends ModuleTestCase
     public function test_create()
     {
         $response = $this->get(route('vaccination-reminders.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('vaccination-reminders.index'));
     }
 
     public function test_store()
@@ -88,7 +89,7 @@ class VaccinationReminderControllerTest extends ModuleTestCase
         $reminder = $this->createReminder();
 
         $response = $this->get(route('vaccination-reminders.edit', $reminder));
-        $response->assertOk();
+        $response->assertRedirect(route('vaccination-reminders.index'));
     }
 
     public function test_update()
@@ -108,6 +109,33 @@ class VaccinationReminderControllerTest extends ModuleTestCase
             'id' => $reminder->id,
             'channel' => 'whatsapp',
         ]);
+    }
+
+    public function test_send_fails_when_pet_has_no_tutor()
+    {
+        $reminder = $this->createReminder();
+
+        $response = $this->post(route('vaccination-reminders.send', $reminder));
+        $response->assertSessionHas('error');
+    }
+
+    public function test_send_fails_when_tutor_has_no_destination()
+    {
+        $tutor = Tutor::factory()->create(['email' => null]);
+        $pet = Pet::factory()->create();
+        $pet->tutors()->attach($tutor);
+        $vaccination = $this->createVaccination($pet);
+        $reminder = VaccinationReminder::create([
+            'vaccination_id' => $vaccination->id,
+            'pet_id' => $pet->id,
+            'scheduled_date' => now()->addDays(30)->format('Y-m-d'),
+            'status' => 'pending',
+            'channel' => 'email',
+        ]);
+
+        $response = $this->post(route('vaccination-reminders.send', $reminder));
+        $response->assertSessionHas('error');
+        $this->assertEquals('failed', $reminder->fresh()->status);
     }
 
     public function test_destroy()

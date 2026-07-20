@@ -70,6 +70,14 @@
                         <a href="{{ route('vaccination-reminders.show', $reminder) }}" class="btn btn-action btn-info" title="Visualizar">
                             <i class="fas fa-eye"></i>
                         </a>
+                        @if(in_array($reminder->status, ['pending', 'failed']))
+                        <form action="{{ route('vaccination-reminders.send', $reminder) }}" method="POST" style="display:inline">
+                            @csrf
+                            <button type="submit" class="btn btn-action btn-success" title="Enviar agora" onclick="return confirm('Enviar lembrete agora?')">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                        @endif
                         <button onclick="openEditModal({{ $reminder->id }})" class="btn btn-action btn-primary" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>

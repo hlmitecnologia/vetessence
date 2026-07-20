@@ -407,6 +407,8 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'vaccination-reminders.update',
         'destroy' => 'vaccination-reminders.destroy',
     ]);
+    Route::post('vaccination-reminders/{vaccinationReminder}/send', 'App\Http\Controllers\VaccinationReminderController@send')
+        ->name('vaccination-reminders.send');
 
     // Notification Logs
     Route::get('notification-logs', 'App\Http\Controllers\NotificationLogController@index')->name('notification-logs.index');
