@@ -33,6 +33,11 @@ class Invoice extends Model
         'total' => 'decimal:2',
     ];
 
+    public function gateway(): BelongsTo
+    {
+        return $this->belongsTo(PaymentGateway::class, 'gateway_id');
+    }
+
     public function tutor(): BelongsTo
     {
         return $this->belongsTo(Tutor::class);

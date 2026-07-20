@@ -19,7 +19,7 @@ class InvoiceController extends Controller
         return view('portal.invoices.index', compact('invoices'));
     }
 
-    public function show($id, \Illuminate\Http\Request $request)
+    public function show($id, \Illuminate\Http\Request $request, PaymentService $paymentService)
     {
         $invoice = Auth::guard('tutor')->user()->invoices()->findOrFail($id);
 
@@ -28,19 +28,13 @@ class InvoiceController extends Controller
             $invoice->refresh();
         }
 
-        if ($invoice->status === 'pending' && $request->has('collection_status')) {
-            if ($request->get('collection_status') === 'approved') {
-                $invoice->update([
-                    'status' => 'paid',
-                    'paid_at' => now(),
-                    'gateway_transaction_id' => $request->get('payment_id'),
-                    'gateway_status' => 'approved',
-                    'gateway_paid_at' => now(),
-                    'payment_method' => 'cartao_credito',
-                ]);
-                $invoice->refresh();
-                \App\Events\InvoicePaid::dispatch($invoice);
-            }
+        if ($invoice->status === 'pending' && $request->has('payment_id') && $invoice->gateway) {
+            $paymentService->processWebhook($invoice->gateway, [
+                'data' => ['id' => $request->get('payment_id')],
+                'action' => 'payment.updated',
+                'type' => 'payment',
+            ]);
+            $invoice->refresh();
         }
 
         $hasPortalGateway = PaymentGateway::withoutBranch()->active()
