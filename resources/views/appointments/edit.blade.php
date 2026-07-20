@@ -54,8 +54,9 @@
                             <div class="form-group">
                                 <label>Status *</label>
                                 <select name="status" required class="form-control">
+                                    @php $statusLabels = ['scheduled' => 'Agendado', 'confirmed' => 'Confirmado', 'in_progress' => 'Em Andamento', 'completed' => 'Finalizado', 'cancelled' => 'Cancelado', 'no_show' => 'Não Compareceu']; @endphp
                                     @foreach(['scheduled', 'confirmed', 'in_progress', 'completed', 'cancelled', 'no_show'] as $status)
-                                    <option value="{{ $status }}" {{ $appointment->status == $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
+                                    <option value="{{ $status }}" {{ $appointment->status == $status ? 'selected' : '' }}>{{ $statusLabels[$status] }}</option>
                                     @endforeach
                                 </select>
                             </div>
