@@ -28,6 +28,19 @@
                 @enderror
             </div>
             <div class="form-group">
+                <label for="branch_id">Unidade *</label>
+                <x-tom-select name="branch_id" id="branch_id" :value="old('branch_id', $staffSchedule->branch_id)" required>
+                    @foreach($branches as $branch)
+                        <option value="{{ $branch->id }}" {{ old('branch_id', $staffSchedule->branch_id) == $branch->id ? 'selected' : '' }}>
+                            {{ $branch->name }}
+                        </option>
+                    @endforeach
+                </x-tom-select>
+                @error('branch_id')
+                    <span class="invalid-feedback">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group">
                 <label for="work_date">Data *</label>
                 <input type="date" name="work_date" id="work_date" class="form-control @error('work_date') is-invalid @enderror" value="{{ old('work_date', $staffSchedule->work_date->format('Y-m-d')) }}" required>
                 @error('work_date')

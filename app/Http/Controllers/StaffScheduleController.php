@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\StaffSchedule;
 use App\Models\StaffTimeOff;
 use App\Models\User;
@@ -29,7 +30,8 @@ class StaffScheduleController extends Controller
             ->when(\App\Services\BranchContext::hasBranch(), fn($q) => $q->where('branch_id', \App\Services\BranchContext::get()))
             ->orderBy('name')
             ->get();
-        return view('staff-schedules.create', compact('users'));
+        $branches = Branch::orderBy('name')->get();
+        return view('staff-schedules.create', compact('users', 'branches'));
     }
 
     public function store(Request $request)
@@ -40,6 +42,7 @@ class StaffScheduleController extends Controller
             'start_time' => 'required',
             'end_time' => 'required|after:start_time',
             'shift_type' => 'required|string|max:50',
+            'branch_id' => 'required|exists:branches,id',
             'notes' => 'nullable|string',
             'is_on_call' => 'nullable|boolean',
             'on_call_type' => 'nullable|string|max:30',
@@ -49,9 +52,8 @@ class StaffScheduleController extends Controller
         $data['created_by'] = auth()->id();
         $data['is_on_call'] = $request->boolean('is_on_call');
         $data['is_vet_shift'] = $request->boolean('is_vet_shift');
-        $data['branch_id'] = \App\Services\BranchContext::hasBranch() ? \App\Services\BranchContext::get() : null;
 
-        $conflict = $this->detectConflict($data['user_id'], $data['work_date'], $data['start_time'], $data['end_time']);
+        $conflict = $this->detectConflict($data['user_id'], $data['work_date'], $data['start_time'], $data['end_time'], $data['branch_id']);
         if ($conflict) {
             return back()->with('error', 'Conflito de horário: ' . $conflict->user->name . ' já tem escala das ' .
                 $conflict->start_time . ' às ' . $conflict->end_time . '.')->withInput();
@@ -69,7 +71,8 @@ class StaffScheduleController extends Controller
             ->when(\App\Services\BranchContext::hasBranch(), fn($q) => $q->where('branch_id', \App\Services\BranchContext::get()))
             ->orderBy('name')
             ->get();
-        return view('staff-schedules.edit', compact('staffSchedule', 'users'));
+        $branches = Branch::orderBy('name')->get();
+        return view('staff-schedules.edit', compact('staffSchedule', 'users', 'branches'));
     }
 
     public function update(Request $request, StaffSchedule $staffSchedule)
@@ -80,6 +83,7 @@ class StaffScheduleController extends Controller
             'start_time' => 'required',
             'end_time' => 'required|after:start_time',
             'shift_type' => 'required|string|max:50',
+            'branch_id' => 'required|exists:branches,id',
             'notes' => 'nullable|string',
             'is_on_call' => 'nullable|boolean',
             'on_call_type' => 'nullable|string|max:30',
@@ -88,9 +92,8 @@ class StaffScheduleController extends Controller
 
         $data['is_on_call'] = $request->boolean('is_on_call');
         $data['is_vet_shift'] = $request->boolean('is_vet_shift');
-        $data['branch_id'] = \App\Services\BranchContext::hasBranch() ? \App\Services\BranchContext::get() : null;
 
-        $conflict = $this->detectConflict($data['user_id'], $data['work_date'], $data['start_time'], $data['end_time'], $staffSchedule->id);
+        $conflict = $this->detectConflict($data['user_id'], $data['work_date'], $data['start_time'], $data['end_time'], $data['branch_id'], $staffSchedule->id);
         if ($conflict) {
             return back()->with('error', 'Conflito de horário: ' . $conflict->user->name . ' já tem escala das ' .
                 $conflict->start_time . ' às ' . $conflict->end_time . '.')->withInput();
@@ -131,7 +134,7 @@ class StaffScheduleController extends Controller
         return view('staff-schedules.on-call-calendar', compact('schedules', 'month', 'start', 'end'));
     }
 
-    protected function detectConflict($userId, $workDate, $startTime, $endTime, $excludeId = null)
+    protected function detectConflict($userId, $workDate, $startTime, $endTime, $branchId, $excludeId = null)
     {
         $query = StaffSchedule::where('user_id', $userId)
             ->where('work_date', $workDate)
@@ -154,14 +157,13 @@ class StaffScheduleController extends Controller
             return $directConflict;
         }
 
-        return $this->detectDisplacementConflict($userId, $workDate, $startTime, $endTime, $excludeId);
+        return $this->detectDisplacementConflict($userId, $workDate, $startTime, $endTime, $branchId, $excludeId);
     }
 
-    protected function detectDisplacementConflict($userId, $workDate, $startTime, $endTime, $excludeId = null)
+    protected function detectDisplacementConflict($userId, $workDate, $startTime, $endTime, $branchId, $excludeId = null)
     {
         $startCarbon = \Carbon\Carbon::parse($workDate . ' ' . $startTime);
         $endCarbon = \Carbon\Carbon::parse($workDate . ' ' . $endTime);
-        $minGapMinutes = 120;
 
         $query = StaffSchedule::where('user_id', $userId)
             ->where('work_date', $workDate);
@@ -179,6 +181,10 @@ class StaffScheduleController extends Controller
             if ($startCarbon->between($existingStart, $existingEnd) || $endCarbon->between($existingStart, $existingEnd)) {
                 continue;
             }
+
+            $minGapMinutes = $schedule->branch_id && $branchId && $schedule->branch_id === $branchId
+                ? 480
+                : 60;
 
             $gapAfterStart = $startCarbon->diffInMinutes($existingEnd, false);
             $gapBeforeEnd = $endCarbon->diffInMinutes($existingStart, false);

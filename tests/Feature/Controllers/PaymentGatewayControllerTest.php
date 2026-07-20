@@ -110,12 +110,13 @@ class PaymentGatewayControllerTest extends ModuleTestCase
 
         $response = $this->put(route('payment-gateways.update', $gateway), [
             'name' => $gateway->name,
-            'provider' => $gateway->provider,
+            'provider' => 'mercadopago',
             'channel' => 'portal',
             'is_active' => true,
             'is_sandbox' => true,
         ]);
-        $response->assertRedirect();
+        $response->assertSessionHas('success');
+        $response->assertRedirect(route('payment-gateways.index'));
 
         $this->assertDatabaseHas('payment_gateways', [
             'id' => $active->id,
