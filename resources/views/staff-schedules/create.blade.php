@@ -81,6 +81,16 @@
             </div>
             <div class="form-group">
                 <div class="custom-control custom-checkbox">
+                    <input type="checkbox" name="is_vet_shift" id="is_vet_shift" value="1" class="custom-control-input" {{ old('is_vet_shift') ? 'checked' : '' }}>
+                    <label class="custom-control-label" for="is_vet_shift">Disponível para agendamento online</label>
+                </div>
+                <small class="form-text text-muted">Quando marcado, o veterinário aparecerá no portal do tutor para agendamento de consultas.</small>
+                @error('is_vet_shift')
+                    <span class="invalid-feedback">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="form-group">
+                <div class="custom-control custom-checkbox">
                     <input type="checkbox" name="is_on_call" id="is_on_call" value="1" class="custom-control-input" {{ old('is_on_call') ? 'checked' : '' }} onchange="document.getElementById('on_call_type_group').style.display = this.checked ? '' : 'none'">
                     <label class="custom-control-label" for="is_on_call">Plantão</label>
                 </div>
