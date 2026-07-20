@@ -147,13 +147,18 @@ class MercadoPagoProvider implements PaymentGatewayProvider
 
             $preference = $client->create($request);
 
+            $redirectUrl = $preference->init_point;
+            if ($this->gateway->is_sandbox && !empty($preference->sandbox_init_point)) {
+                $redirectUrl = $preference->sandbox_init_point;
+            }
+
             return [
                 'success' => true,
                 'transaction_id' => $preference->id,
                 'reference' => (string) $invoice->id,
                 'status' => 'pending',
                 'message' => 'Checkout Mercado Pago criado.',
-                'redirect_url' => $preference->init_point,
+                'redirect_url' => $redirectUrl,
                 'raw_response' => json_decode(json_encode($preference), true),
             ];
         } catch (MPApiException $e) {
