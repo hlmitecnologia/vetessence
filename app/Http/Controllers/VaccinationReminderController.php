@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\NotificationLog;
 use App\Models\VaccinationReminder;
 use App\Models\Pet;
 use App\Services\Notification\NotificationChannel;
@@ -115,6 +116,19 @@ class VaccinationReminderController extends Controller
                 'error_message' => "Tutor não possui {$channel} cadastrado.",
             ]);
 
+            NotificationLog::create([
+                'pet_id' => $vaccinationReminder->pet_id,
+                'tutor_id' => $tutor->id,
+                'type' => 'vaccine_reminder',
+                'channel' => $channel,
+                'destination' => $channel === 'email' ? $tutor->email : $tutor->phone,
+                'sent_at' => now(),
+                'status' => 'failed',
+                'message' => "Lembrete de vacina: {$vaccinationReminder->vaccination->vaccine} para {$vaccinationReminder->pet->name}",
+                'error_message' => "Tutor não possui {$channel} cadastrado.",
+                'branch_id' => $vaccinationReminder->pet->created_at_branch_id,
+            ]);
+
             return redirect()->route('vaccination-reminders.index')
                 ->with('error', "Tutor não possui {$channel} cadastrado.");
         }
@@ -140,6 +154,19 @@ class VaccinationReminderController extends Controller
                 'error_message' => null,
             ]);
 
+            NotificationLog::create([
+                'pet_id' => $vaccinationReminder->pet_id,
+                'tutor_id' => $tutor->id,
+                'type' => 'vaccine_reminder',
+                'channel' => $channel,
+                'destination' => $destination,
+                'sent_at' => now(),
+                'status' => 'sent',
+                'message' => "Lembrete de vacina enviado: {$vaccinationReminder->vaccination->vaccine} para {$vaccinationReminder->pet->name}",
+                'error_message' => null,
+                'branch_id' => $vaccinationReminder->pet->created_at_branch_id,
+            ]);
+
             return redirect()->route('vaccination-reminders.index')
                 ->with('success', 'Lembrete enviado com sucesso!');
         }
@@ -147,6 +174,19 @@ class VaccinationReminderController extends Controller
         $vaccinationReminder->update([
             'status' => 'failed',
             'error_message' => $result->error ?? 'Erro desconhecido ao enviar.',
+        ]);
+
+        NotificationLog::create([
+            'pet_id' => $vaccinationReminder->pet_id,
+            'tutor_id' => $tutor->id,
+            'type' => 'vaccine_reminder',
+            'channel' => $channel,
+            'destination' => $destination,
+            'sent_at' => now(),
+            'status' => 'failed',
+            'message' => "Lembrete de vacina: {$vaccinationReminder->vaccination->vaccine} para {$vaccinationReminder->pet->name}",
+            'error_message' => $result->error ?? 'Erro desconhecido ao enviar.',
+            'branch_id' => $vaccinationReminder->pet->created_at_branch_id,
         ]);
 
         return redirect()->route('vaccination-reminders.index')
