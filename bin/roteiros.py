@@ -30,7 +30,7 @@ def login(email, senha):
 
 def logout():
     return [
-        {"passo": 999, "acao": "navegar", "url": f"{BASE_URL}/logout",
+        {"passo": 999, "acao": "clicar", "seletor": "a[onclick*='logout-form']",
          "legenda": "Saindo do sistema…", "pausa": 2},
     ]
 
@@ -106,6 +106,10 @@ ROTEIRO_07_FARMACIA = {
     "arquivo": "07-farmacia",
     "credenciais": {"email": "super@vet.com", "senha": "super123"},
     "passos": [
+        # Cleanup obrigatório: remove dados de execuções anteriores
+        {"passo": 0, "acao": "shell",
+         "comando": "php artisan treinamento:cleanup --module=07-farmacia",
+         "legenda": "Limpando dados de execuções anteriores…", "pausa": 2},
         *login("super@vet.com", "super123"),
         # ── Categoria Produto (admin) ──
         {"passo": 5, "acao": "navegar", "url": f"{BASE_URL}/categories",

@@ -49,7 +49,14 @@
 
 Para retomar a criação dos vídeos de treinamento, chame por **PROJETO TREINAMENTO**.
 
-**Regra**: erros encontrados durante execução do roteiro devem interromper a gravação para correção no sistema (código ou engine). Apenas roteiros 100% bem-sucedidos geram vídeo final. Use os screenshots em `/tmp/treinamento_screenshots/` para diagnosticar. Bugs corrigidos ficam registrados nesta seção.
+**Regras:**
+- Erros encontrados durante execução do roteiro (Laravel exceptions, 405/500, validação no form) devem interromper a gravação para correção no sistema (código ou engine).
+- O engine `treinamento.py` detecta automaticamente páginas de erro Laravel/Symfony e aborta o roteiro com `RuntimeError`.
+- Apenas roteiros 100% bem-sucedidos (sem erros e sem warnings de opção não encontrada) geram vídeo final.
+- Se um roteiro é interrompido, os dados criados até aquele momento devem ser removidos antes de reexecutar, para evitar duplicidade e falsos positivos.
+- Cada roteiro deve começar com um passo `shell` que executa `php artisan treinamento:cleanup --module=<modulo>` para remover dados residuais.
+- Use os screenshots em `/tmp/treinamento_screenshots/` para diagnosticar bugs.
+- Bugs corrigidos ficam registrados nesta seção.
 
 **Feito:**
 - Fase 01 (`11-tutores-pets`): roteiro + vídeo validado em `~/Videos/VetEssence/11-tutores-pets_20260710_095540.mp4`
@@ -63,8 +70,10 @@ Para retomar a criação dos vídeos de treinamento, chame por **PROJETO TREINAM
   - `#` (Python comment) dentro de f-string JS → JS syntax error (trocado por `//`)
   - `el.clear()` em `<select>` → InvalidElementState (agora usa JS value + events)
   - `wire:model="species"` duplicado (drug-formulary + dosage-calculator) → `preencher_livewire` busca modal aberto primeiro
-- Vídeo `07-farmacia_20260721_084119.mp4` gravado e validado ✅
-
+  - `logout()` usava `GET /logout` → 405 Method Not Allowed (agora clica link "Sair" que faz POST via form oculto)
+  - Engine não detectava erros Laravel → adicionado `verificar_erro_laravel()` após cada ação
+- **Cleanup**: comando `php artisan treinamento:cleanup --module=07-farmacia` adiciona passo `shell` obrigatório no início do roteiro para remover dados residuais
+- Vídeo `07-farmacia_20260721_084119.mp4` gravado (obs: contém erro 405 do logout, será regravado)
 **Próximo passo:**
 ```bash
 python3 bin/treinamento.py --modulo 10-agendamento

@@ -312,6 +312,27 @@ def clicar_submit_modal(driver, modal_id):
     time.sleep(3)
 
 
+def verificar_erro_laravel(driver):
+    """Verifica se a página atual contém erro Laravel/Symfony e aborta."""
+    html = driver.page_source.lower()
+    indicadores = [
+        'whoops!',
+        'exception',
+        'method not allowed',
+        'symfony\\component\\httpkernel\\exception',
+        'laravel\\framework',
+        '/home/hector/workspace/vetessence/app/',
+        'in <b>',       # parte de stack trace formatada
+        '#0 </b>',      # stack trace linha
+    ]
+    for ind in indicadores:
+        if ind in html:
+            print(f"\n❌ ERRO LARAVEL DETECTADO! Indicador: '{ind}'")
+            print(f"   URL: {driver.current_url}")
+            driver.save_screenshot(str(Path("/tmp/treinamento_screenshots") / "ERRO_LARAVEL.png"))
+            raise RuntimeError(f"Laravel error detected: '{ind}' at {driver.current_url}")
+
+
 def esperar_elemento(driver, seletor, tempo=10):
     """Espera um elemento aparecer no DOM."""
     from selenium.webdriver.common.by import By
@@ -396,8 +417,16 @@ def executar_roteiro(driver, passos):
             elif acao == "esperar":
                 esperar_elemento(driver, passo["seletor"], passo.get("tempo", 10))
 
+            elif acao == "shell":
+                subprocess.run(passo["comando"], shell=True, check=False)
+                time.sleep(1)
+
             elif acao == "legenda":
                 pass
+
+            # Verifica erro Laravel após cada ação (exceto shell, q é local)
+            if acao != "shell":
+                verificar_erro_laravel(driver)
 
             screenshot = screenshots_dir / f"passo_{passo_num:03d}.png"
             driver.save_screenshot(str(screenshot))
