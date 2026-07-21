@@ -926,6 +926,7 @@
                 try {
                     new TomSelect(el, {
                         maxOptions: 200,
+                        openOnFocus: false,
                         onChange: function(value) {
                             var wireModel = el.dataset.wire;
                             if (wireModel && window.Livewire) {

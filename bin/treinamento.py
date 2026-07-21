@@ -129,7 +129,11 @@ def preencher_livewire(driver, wire_model, valor):
 
 
 def selecionar_tom_select(driver, wire_model, label_texto):
-    """Seleciona opção no TomSelect simulando clique do usuário (para o vídeo)."""
+    """Seleciona opção no TomSelect usando sua API JS interna.
+
+    Encontra o <select> original (data-wire ou name), acessa a instância
+    TomSelect via `select.tomselect`, abre o dropdown e seleciona a opção.
+    """
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
@@ -141,62 +145,43 @@ def selecionar_tom_select(driver, wire_model, label_texto):
     except Exception:
         pass
 
-    # Tudo via JS para robustez: encontra o <select> (data-wire ou name),
-    # sobe até o wrapper, clica no .ts-control, e depois clica na opção pelo texto.
-    driver.execute_script(f"""
-        (function() {{
-            var select = document.querySelector('select[data-wire="{wire_model}"]')
-                     || document.querySelector('select[name="{wire_model}"]');
-            if (!select) return 'no_select';
+    # Usa a API JS do TomSelect: abre o dropdown, encontra a opção pelo texto,
+    # e seleciona via setValue. Dispensa navegação no DOM do ts-wrapper.
+    resultado = driver.execute_script(f"""
+        var select = document.querySelector('select[data-wire="{wire_model}"]')
+                 || document.querySelector('select[name="{wire_model}"]');
+        if (!select) return 'no_select';
+        var ts = select.tomselect;
+        if (!ts) return 'no_tomselect';
 
-            // Sobe no DOM até achar o .ts-wrapper (container TomSelect)
-            var p = select;
-            var tsWrapper = null;
-            while (p) {{
-                if (p.querySelector && p.querySelector('.ts-wrapper')) {{
-                    tsWrapper = p;
-                    break;
-                }}
-                p = p.parentElement;
+        var val = null;
+        for (var key in ts.options) {{
+            var opt = ts.options[key];
+            if (opt.text.indexOf(arguments[0]) !== -1) {{
+                val = key;
+                break;
             }}
-            if (!tsWrapper) return 'no_wrapper';
+        }}
+        if (val === null) {{
+            var keys = Object.keys(ts.options);
+            if (keys.length > 0) {{ val = keys[0]; }}
+        }}
+        if (val === null) return 'no_option';
 
-            // Clica no .ts-control para abrir o dropdown
-            var control = tsWrapper.querySelector('.ts-control');
-            if (control) {{
-                control.click();
-                return 'clicked_control';
-            }}
-            return 'no_control';
-        }})();
-    """)
-    time.sleep(0.5)
+        ts.open();
+        ts.setValue(val);
+        ts.close();
+        ts.blur();
 
-    # Clica na opção pelo texto
-    driver.execute_script(f"""
-        (function() {{
-            var opt = document.querySelector(
-                '.ts-dropdown .option:not(.create)');
-            // Procura pela opção que contém o texto desejado
-            var all = document.querySelectorAll('.ts-dropdown .option');
-            for (var i = 0; i < all.length; i++) {{
-                if (all[i].textContent.indexOf(arguments[0]) !== -1) {{
-                    opt = all[i];
-                    break;
-                }}
-            }}
-            if (opt) {{
-                opt.click();
-                return 'ok';
-            }}
-            // Fallback: clica no primeiro .active
-            var active = document.querySelector('.ts-dropdown .active');
-            if (active) {{
-                active.click();
-                return 'fallback_active';
-            }}
-            return 'no_option';
-        }})();
+        // MutationObserver: fecha dropdown se Livewire reabrir após morph
+        var dd = ts.dropdown;
+        var obs = new MutationObserver(function() {{
+            if (ts.isOpen) {{ ts.close(); ts.blur(); }}
+        }});
+        obs.observe(dd, {{attributes: true, attributeFilter: ['style', 'class']}});
+        setTimeout(function() {{ obs.disconnect(); }}, 3000);
+
+        return 'ok';
     """, label_texto)
     time.sleep(1)
 
@@ -204,13 +189,13 @@ def selecionar_tom_select(driver, wire_model, label_texto):
     driver.execute_script(f"""
         (function() {{
             var select = document.querySelector('select[data-wire="{wire_model}"]');
-            if (!select) return;  // name-based, sem Livewire p/ sincronizar
-            var p = select;
+            if (!select) return;
+            var p = select.parentElement;
             while (p) {{
                 var wid = p.getAttribute ? p.getAttribute('wire:id') : null;
                 if (wid) {{
                     var c = Livewire.find(wid);
-                    if (c && c.get('{wire_model}') !== select.value) {{
+                    if (c) {{
                         c.set('{wire_model}', select.value);
                     }}
                     break;
@@ -355,7 +340,7 @@ def executar_roteiro(driver, passos):
 
     try:
         for passo in passos:
-            legenda = passo.get("legenda", "")
+            legenda = passo.get("legenda", passo.get("texto", ""))
             passo_num = passo["passo"]
             print(f"\n  [{passo_num}] {legenda}")
 
@@ -369,12 +354,37 @@ def executar_roteiro(driver, passos):
                 el = wait.until(EC.presence_of_element_located(
                     (By.CSS_SELECTOR, passo["seletor"])))
                 tag = driver.execute_script("return arguments[0].tagName;", el)
+                input_type = driver.execute_script(
+                    "return (arguments[0].tagName.toLowerCase()==='input' ? arguments[0].type : '');", el)
+                visible = el.is_displayed()
                 if tag.lower() == "select":
                     driver.execute_script(
                         "arguments[0].value = arguments[1]; "
                         "arguments[0].dispatchEvent(new Event('change', {bubbles: true}));"
-                        "arguments[0].dispatchEvent(new Event('input', {bubbles: true}));",
+                        "arguments[0].dispatchEvent(new Event('input', {bubbles: true}));"
+                        "arguments[0].onchange && arguments[0].onchange();",
                         el, passo["valor"])
+                elif input_type == "date":
+                    # Date input: locale quebra send_keys, usar JS
+                    driver.execute_script(
+                        "arguments[0].value = arguments[1]; "
+                        "arguments[0].dispatchEvent(new Event('change', {bubbles: true}));",
+                        el, passo["valor"])
+                elif not visible:
+                    # Campo oculto (wysiwyg, TinyMCE, etc.)
+                    # Seta tanto o textarea quanto o editor TinyMCE (se existir)
+                    driver.execute_script("""
+                        var el = arguments[0];
+                        var val = arguments[1];
+                        el.value = val;
+                        el.dispatchEvent(new Event('input', {bubbles: true}));
+                        el.dispatchEvent(new Event('change', {bubbles: true}));
+                        // Seta no TinyMCE se o editor existir
+                        if (el.id && typeof tinymce !== 'undefined') {
+                            var ed = tinymce.get(el.id);
+                            if (ed) ed.setContent(val);
+                        }
+                    """, el, passo["valor"])
                 else:
                     el.clear()
                     el.send_keys(passo["valor"])
@@ -389,9 +399,92 @@ def executar_roteiro(driver, passos):
             elif acao == "clicar":
                 el = wait.until(EC.presence_of_element_located(
                     (By.CSS_SELECTOR, passo["seletor"])))
+                url_before = driver.current_url
+                tag = driver.execute_script("return arguments[0].tagName.toLowerCase();", el)
+                is_button = tag in ('button', 'input')
+
+                if is_button:
+                    has_wire_click = driver.execute_script(
+                        "return arguments[0].hasAttribute ? arguments[0].hasAttribute('wire:click') : false;", el)
+                    btn_type = (driver.execute_script(
+                        "return (arguments[0].type || '').toLowerCase();", el) or '').lower()
+
+                    # Detecta se o botão está dentro de form Livewire (wire:submit)
+                    livewire_method = driver.execute_script("""
+                        var btn = arguments[0];
+                        // wire:click no próprio botão
+                        var wc = btn.getAttribute('wire:click');
+                        if (wc) return wc;
+                        // wire:submit.prevent="method" no form ancestral (só para submit button)
+                        var btn_type = (btn.type || '').toLowerCase();
+                        if (btn_type === 'submit' || (btn.tagName === 'BUTTON' && btn_type !== 'checkbox' && btn_type !== 'radio')) {
+                            var f = btn.form;
+                            while (f && f.tagName !== 'FORM') f = f.parentElement;
+                            if (f) {
+                                var ws = f.getAttribute('wire:submit') ||
+                                         f.getAttribute('wire:submit.prevent');
+                                if (ws) return ws.trim();
+                            }
+                        }
+                        return null;
+                    """, el)
+
+                    if livewire_method:
+                        driver.execute_script("arguments[0].scrollIntoView({behavior:'instant', block:'center'});", el)
+                        time.sleep(0.3)
+                        result = driver.execute_script("""
+                            var lw = arguments[0].closest('[wire\\\\:id]');
+                            if (!lw) return 'no_component';
+                            var cid = lw.getAttribute('wire:id');
+                            var comp = Livewire.find(cid);
+                            if (!comp) return 'no_comp';
+                            var method = arguments[1];
+                            return new Promise(function(resolve) {
+                                var p = comp.call(method);
+                                setTimeout(function() { resolve('timeout'); }, 10000);
+                                if (p && typeof p.then === 'function') {
+                                    p.then(function(r) { resolve('ok'); })
+                                     .catch(function(e) { resolve('error:' + String(e).substring(0,100)); });
+                                } else {
+                                    resolve('result:' + String(p));
+                                }
+                            });
+                        """, el, livewire_method)
+                        time.sleep(3)
+                        url_after = driver.current_url
+                        if url_before == url_after:
+                            print(f"    ⚠️ clicar: URL não mudou ({url_before[:60]})")
+                            print(f"    Livewire call result: {result}")
+                        else:
+                            print(f"    ✅ clicar: redirect {url_before} → {url_after[:60]}")
+                        continue
+
+                    # Botão em form HTML padrão: requestSubmit nativo
+                    is_form_submit = (tag == 'input' and btn_type in ('submit', '')) or \
+                                     (tag == 'button' and btn_type in ('submit', ''))
+                    if is_form_submit:
+                        form = driver.execute_script("return arguments[0].form;", el)
+                        if form:
+                            driver.execute_script("arguments[0].scrollIntoView({behavior:'instant', block:'center'});", el)
+                            time.sleep(0.3)
+                            driver.execute_script("arguments[0].requestSubmit();", form)
+                        try:
+                            WebDriverWait(driver, 5).until(
+                                lambda d: d.current_url != url_before)
+                        except:
+                            pass
+                        url_after = driver.current_url
+                        if url_before == url_after:
+                            print(f"    ⚠️ clicar: URL não mudou ({url_before[:60]})")
+                        else:
+                            print(f"    ✅ clicar: redirect {url_before} → {url_after[:60]}")
+                        continue
+
+                # Links, checkboxes, etc: scroll + JS click
                 driver.execute_script("arguments[0].scrollIntoView({behavior:'instant', block:'center'});", el)
-                time.sleep(0.5)
-                el.click()
+                time.sleep(0.3)
+                driver.execute_script("arguments[0].click();", el)
+                time.sleep(1)
 
             elif acao == "scroll":
                 driver.execute_script("""
@@ -454,6 +547,14 @@ def abrir_navegador():
                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     time.sleep(1)
 
+    # Remove session state do perfil isolado (evita cache que quebra forms)
+    profile_dir = Path("/tmp/selenium-chrome-profile")
+    if profile_dir.exists():
+        import shutil
+        shutil.rmtree(str(profile_dir))
+        print("  [chrome] Perfil limpo (rmtree)")
+        time.sleep(0.5)
+
     opts = Options()
     # Perfil isolado para não afetar o Chrome do usuário
     opts.add_argument("--user-data-dir=/tmp/selenium-chrome-profile")
@@ -467,7 +568,18 @@ def abrir_navegador():
     opts.add_argument("--disable-password-protection-service")
     opts.add_argument("--disable-autofill-keyboard-accessory-view")
     opts.add_argument("--disable-sync")
-    opts.add_argument("--disable-features=PasswordProtectionForFederatedLogins,LeakDetection,PasswordLeakDetection,PasswordCheck,PasswordManager,ChromePasswordManager,ChromePasswordManager2")
+    opts.add_argument("--disable-features=PasswordProtectionForFederatedLogins,LeakDetection,PasswordLeakDetection,PasswordCheck,PasswordManager,ChromePasswordManager,ChromePasswordManager2,PasswordStrengthIndicator,ParsingPassword,BufferPassword,PasswordImport,PasswordExport,PasswordManagerRedesign,PasswordManagerOnboarding,PasswordProtectionForAccountEmails,SafetyCheck,SafetyHub,SafetyCheckChild")
+    opts.add_argument("--password-store=basic")
+    opts.add_argument("--disable-prompt-on-repost")
+    opts.add_argument("--allow-running-insecure-content")
+    opts.add_argument("--unsafely-treat-insecure-origin-as-secure=http://127.0.0.1:8000")
+    opts.add_argument("--disable-blink-features=AutomationControlled")
+    opts.add_argument("--disable-client-side-phishing-detection")
+    opts.add_argument("--incognito")
+    opts.add_argument("--disable-sync-password")
+
+    # Basic password store — essencial para não exibir mensagem de senha vazada
+    os.environ["CHROME_PASSWORD_STORE"] = "basic"
     prefs = {
         "credentials_enable_service": False,
         "profile.password_manager_enabled": False,
@@ -476,6 +588,11 @@ def abrir_navegador():
         "autofill.credit_card_enabled": False,
         "profile.password_manager_leak_detection": False,
         "safebrowsing.enabled": False,
+        "safebrowsing.password_protection_show_dom_component": False,
+        "password_manager_leak_detection": False,
+        "profile.content_settings.exceptions.autofill": {},
+        "profile.password_model": False,
+        "profile.password_sharing_enabled": False,
     }
     opts.add_experimental_option("prefs", prefs)
 

@@ -39,9 +39,9 @@ class PetShopPackageController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|in:grooming,boarding,both',
-            'services' => 'required|array',
-            'services.*.service_id' => 'required|exists:services,id',
-            'services.*.qty' => 'required|integer|min:1',
+            'services' => 'nullable|array',
+            'services.*.service_id' => 'required_with:services|exists:services,id',
+            'services.*.qty' => 'required_with:services|integer|min:1',
             'total_price' => 'required|numeric|min:0',
             'original_price' => 'required|numeric|min:0',
             'validity_days' => 'required|integer|min:1',
@@ -49,7 +49,7 @@ class PetShopPackageController extends Controller
             'branch_id' => 'required|exists:branches,id',
         ]);
 
-        $data['services'] = json_encode($data['services']);
+        $data['services'] = json_encode($data['services'] ?? []);
         $data['is_active'] = $request->boolean('is_active', true);
 
         PetShopPackage::create($data);
@@ -64,9 +64,9 @@ class PetShopPackageController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|in:grooming,boarding,both',
-            'services' => 'required|array',
-            'services.*.service_id' => 'required|exists:services,id',
-            'services.*.qty' => 'required|integer|min:1',
+            'services' => 'nullable|array',
+            'services.*.service_id' => 'required_with:services|exists:services,id',
+            'services.*.qty' => 'required_with:services|integer|min:1',
             'total_price' => 'required|numeric|min:0',
             'original_price' => 'required|numeric|min:0',
             'validity_days' => 'required|integer|min:1',
@@ -74,7 +74,7 @@ class PetShopPackageController extends Controller
             'branch_id' => 'required|exists:branches,id',
         ]);
 
-        $data['services'] = json_encode($data['services']);
+        $data['services'] = json_encode($data['services'] ?? []);
         $data['is_active'] = $request->boolean('is_active', true);
 
         $petShopPackage->update($data);

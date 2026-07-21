@@ -58,27 +58,56 @@ Para retomar a criação dos vídeos de treinamento, chame por **PROJETO TREINAM
 - Use os screenshots em `/tmp/treinamento_screenshots/` para diagnosticar bugs.
 - Bugs corrigidos ficam registrados nesta seção.
 
-**Feito:**
-- Fase 01 (`11-tutores-pets`): roteiro + vídeo validado em `~/Videos/VetEssence/11-tutores-pets_20260710_095540.mp4`
-- Engine: `bin/treinamento.py` (Selenium + ffmpeg, helpers: `selecionar_tom_select`, `clicar_submit_modal` com scroll suave, `scroll_smoothly_modal`)
-- 5 roteiros definidos em `bin/roteiros.py`
+**Feito (vídeos gravados):**
+- `01-prontuarios` — Prontuários (53 passos)
+- `07-farmacia` — Farmácia (50 passos, 2 vídeos gerados)
+- `10-agendamento` — Agendamento (27 passos)
+- `11-tutores-pets` — Tutores + Pets (30 passos)
 
-**Nesta sessão:**
-- Roteiro `07-farmacia` implementado: 49 passos, login `super@vet.com`, cria categoria "Medicamentos" → fornecedor "FarMed Distribuidora" → produto "Dipirona 500mg" (c/ TomSelects de categ/fornec) → ajuste estoque 100 un → fármaco "Dipirona Sódica" → lista produtos → logout
-- Engine: `selecionar_tom_select` com fallback para `select[name=...]` (necessário p/ form de estoque)
-- **Bugs corrigidos durante execução do roteiro**:
-  - `#` (Python comment) dentro de f-string JS → JS syntax error (trocado por `//`)
-  - `el.clear()` em `<select>` → InvalidElementState (agora usa JS value + events)
-  - `wire:model="species"` duplicado (drug-formulary + dosage-calculator) → `preencher_livewire` busca modal aberto primeiro
-  - `logout()` usava `GET /logout` → 405 Method Not Allowed (agora clica link "Sair" que faz POST via form oculto)
-  - Engine não detectava erros Laravel → adicionado `verificar_erro_laravel()` após cada ação
-- **Cleanup**: comando `php artisan treinamento:cleanup --module=07-farmacia` adiciona passo `shell` obrigatório no início do roteiro para remover dados residuais
-- Vídeo `07-farmacia_20260721_084119.mp4` gravado (obs: contém erro 405 do logout, será regravado)
-**Próximo passo:**
+**Catálogo completo (13 roteiros, implementados nesta sessão):**
+| Chave | Nome | Passos | Perfil |
+|-------|------|--------|--------|
+| `01-prontuarios` | Prontuários | 53 | vet@vet.com |
+| `02-cirurgia-internacao` | Cirurgia e Internação | 42 | vet@vet.com |
+| `03-vacinas` | Vacinas | 30 | vet@vet.com |
+| `04-estoque-avancado` | Estoque Avançado | 37 | super@vet.com |
+| `05-portal-tutor` | Portal do Tutor | 30 | tutor@vet.com |
+| `06-exames-laboratorio` | Exames e Laboratório | 37 | vet@vet.com |
+| `07-farmacia` | Farmácia | 50 | super@vet.com |
+| `08-admin-config` | Admin e Configurações | 37 | super@vet.com |
+| `09-financeiro` | Financeiro | 65 | financeiro@vet.com |
+| `10-agendamento` | Agendamento | 27 | recep@vet.com |
+| `11-tutores-pets` | Tutores e Pets | 30 | recep@vet.com |
+| `12-comunicacao` | Comunicação | 34 | super@vet.com |
+| `13-agenda-equipe` | Agenda da Equipe | 34 | super@vet.com |
+
+**Cleanup**: comando `php artisan treinamento:cleanup --module=<chave>` implementado para os 13 módulos.
+
+**Engine**: `bin/treinamento.py` (Selenium + ffmpeg), helpers: `selecionar_tom_select`, `clicar_submit_modal` com scroll suave, `scroll_smoothly_modal`, `verificar_erro_laravel()`, ação `shell`, fallback name-based TomSelect.
+
+**Helper `portal_login()`**: navega para `/portal/login` em vez de `/login`.
+
+**Engine improvements (esta sessão):**
+- **Livewire v3 form submit**: botões `wire:click`/`wire:submit` agora chamam `Livewire.find(cid).call('method')` via Promise — substitui `ActionChains.click()` que não propagava submit event no Livewire v3
+- **TomSelect sync**: `comp.set()` é chamado sempre (não mais condicionado a `comp.get()`, que não existe no Livewire v3)
+- **Chrome password message**: mensagem de segurança de senha desativada permanentemente via `--password-store=basic`, `CHROME_PASSWORD_STORE=basic`, `--disable-features=SafetyCheck,SafetyHub,SafetyCheckChild,PasswordProtectionForAccountEmails` + prefs `credentials_enable_service: false`
+- **TomSelect fallback**: se label não encontrada, usa primeiro valor disponível
+- **Checkbox não dispara save**: detecção de `wire:submit` restrita a botões `type=submit`
+
+**Bugs corrigidos:**
+- `#` (Python comment) dentro de f-string JS → `//`
+- `el.clear()` em `<select>` → JS value + events
+- `wire:model="species"` duplicado → `preencher_livewire` busca modal aberto primeiro
+- `GET /logout` → 405 (agora clica link "Sair")
+- Engine não detectava erros Laravel → `verificar_erro_laravel()`
+- Date input `clear()+send_keys()` corrompia valor com locale pt-BR → JS `.value=`
+
+**Próximo passo (gravação):**
 ```bash
-python3 bin/treinamento.py --modulo 10-agendamento
-```
-
+python3 bin/treinamento.py --modulo 02-cirurgia-internacao
+python3 bin/treinamento.py --modulo 03-vacinas
+python3 bin/treinamento.py --modulo 04-estoque-avancado
+# ... e assim sucessivamente para os 13 módulos
 ```
 
 ### PROJETO WEBMANIA

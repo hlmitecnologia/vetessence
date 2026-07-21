@@ -104,7 +104,7 @@ class PetShopPackageControllerTest extends ModuleTestCase
     {
         $response = $this->post(route('pet-shop-packages.store'), []);
 
-        $response->assertSessionHasErrors(['name', 'type', 'services', 'total_price', 'original_price', 'validity_days', 'max_uses', 'branch_id']);
+        $response->assertSessionHasErrors(['name', 'type', 'total_price', 'original_price', 'validity_days', 'max_uses', 'branch_id']);
     }
 
     public function test_index_requires_authentication()
