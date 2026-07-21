@@ -226,14 +226,20 @@ As permissões seguem o padrão `modulo.acao` (ex: `appointments.create`, `produ
 
 ### Comunicação
 
-#### WhatsApp (Z-API)
-| Chave | Variável .env | Padrão | Descrição |
-|-------|---------------|--------|-----------|
-| `communication.whatsapp.url` | `WHATSAPP_API_URL` | `https://api.z-api.io/v1` | URL base da API Z-API |
-| `communication.whatsapp.token` | `WHATSAPP_API_TOKEN` | — | Token de autenticação Bearer |
-| `communication.whatsapp.instance` | `WHATSAPP_INSTANCE` | — | ID da instância Z-API |
+#### WhatsApp
+Configurado via painel admin em **Configurações > Notificações** (aba WhatsApp). Provedores disponíveis:
 
-**Provider**: `App\Services\Communication\WhatsAppProvider`
+| Provedor | Chave de Config | Campos |
+|----------|-----------------|--------|
+| **Z-API** | `whatsapp_zapi_url/token/instance` | URL da API, Token, Instância |
+| **Weni** | `whatsapp_weni_api_key/project_uuid/from_number` | API Key, Project UUID, Número |
+| **Cloud API (Meta)** | `whatsapp_cloudapi_access_token/phone_number_id` | Access Token, Phone Number ID |
+| **Twilio WhatsApp** | `whatsapp_twilio_account_sid/auth_token/from_number` | Account SID, Auth Token, Número |
+
+**Provider Z-API**: `App\Services\Notification\WhatsApp\ZapiProvider`
+**Provider Weni**: `App\Services\Notification\WhatsApp\WeniProvider`
+**Provider Cloud API**: `App\Services\Notification\WhatsApp\CloudApiProvider`
+**Provider Twilio**: `App\Services\Notification\WhatsApp\TwilioWhatsAppProvider`
 **Uso**: Comando `ProcessCommunicationQueue` envia mensagens para canal `whatsapp`
 
 #### SMS
@@ -245,35 +251,62 @@ As permissões seguem o padrão `modulo.acao` (ex: `appointments.create`, `produ
 **Provider**: `App\Services\Communication\SmsProvider`
 **Uso**: Comando `ProcessCommunicationQueue` envia mensagens para canal `sms`
 
-#### E-mail API
-| Chave | Variável .env | Padrão | Descrição |
-|-------|---------------|--------|-----------|
-| `email-api.url` | `EMAIL_API_URL` | `https://api.example.com/send` | URL base da API de e-mail |
-| `email-api.token` | `EMAIL_API_TOKEN` | — | Token de autenticação |
-| `email-api.timeout` | `EMAIL_API_TIMEOUT` | `15` | Timeout em segundos |
+#### E-mail
+Configurado via painel admin em **Configurações > Notificações** (aba E-mail). Os provedores disponíveis são:
 
-**Service**: `App\Services\EmailApiService`
+| Provedor | Chave de Config | Campos |
+|----------|-----------------|--------|
+| **MailerSend** | `email_mailersend_api_key` | API Key |
+| **SMTP** | `email_smtp_host/port/username/password/encryption` | Servidor, porta, usuário, senha, criptografia |
+| **Mailgun** | `email_mailgun_domain/secret/endpoint` | Domínio, Secret, endpoint |
+| **SES** | `email_ses_key/secret/region` | Access Key, Secret Key, região |
+| **SendGrid** | `email_sendgrid_api_key` | API Key |
+
+**Service**: `App\Services\Notification\NotificationService` (resolve via `notification_config()`)
 **Uso**: Comando `ProcessCommunicationQueue` envia mensagens para canal `email`
 
-#### SMTP (Laravel Mail)
-Variáveis padrão do Laravel: `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_ENCRYPTION`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME`.
-Suporte a Mailgun, SES, Postmark via `config/services.php`.
+### NFSe (Service Invoices)
 
-### NFSe (Webmania®)
-
-**Provider**: `App\Services\Nfse\WebmaniaProvider` (implementa `NfseProvider` interface)
 **Adapter**: `App\Services\Nfse\NfseService` — orquestra configuração → payload → emissão → persistência
-**Endpoints**: `POST /v1/nfse/emitir`, `GET /v1/nfse/{id}`, `POST /v1/nfse/{id}/cancelar`
-**Autenticação**: Headers `X-App-Id`, `X-App-Secret`, `X-Consumer-Key`, `X-Consumer-Secret`
-**Arquitetura**: Adapter Pattern — permite trocar Webmania® por outro provedor sem alterar regras de negócio
+**Arquitetura**: Adapter Pattern — interface `NfseProvider`, resolvida por `NfseService::resolveProvider()`
+
+**Provedores disponíveis:**
+
+| Provedor | Classe | Autenticação | Endpoints |
+|----------|--------|-------------|-----------|
+| **Webmania®** | `WebmaniaProvider` | Bearer token (`webmania_access_token`) | `POST /2/nfse/emissao/`, `GET /2/nfse/{id}/`, `PUT /2/nfse/cancelar` |
+| **FocusNFe** | `FocusNfeProvider` | Bearer token (`focus_api_token`) | `POST /v2/nfse?ref={ref}`, `GET /v2/nfse/{ref}`, `DELETE /v2/nfse/{ref}` |
+| **Spedy** | `SpedyProvider` | API Key (`spedy_api_key`) | `POST /v1/nfse`, `GET /v1/nfse/{id}`, `POST /v1/nfse/{id}/cancelar` |
+| **NFE.io** | `NfeIoProvider` | Basic Auth (`api_key` + `company_id`) | `POST /v1/companies/{id}/serviceinvoices`, `GET /v1/companies/{id}/serviceinvoices/{id}`, `DELETE /v1/companies/{id}/serviceinvoices/{id}` |
+
+### NFe / NFC-e (Product Invoices)
+
+**Adapter**: `App\Services\Nfe\NfeService` — orquestra configuração → payload → emissão → persistência
+**Arquitetura**: Adapter Pattern — interface `NfeProvider`, resolvida por `NfeService::resolveProvider()`
+
+**Modelos fiscais:**
+- **NFC-e** (modelo 65): Nota Fiscal ao Consumidor Eletrônica — emitida automaticamente ao pagar fatura com itens de produto
+- **NF-e** (modelo 55): Nota Fiscal Eletrônica — emitida apenas para transferências de estoque entre unidades
+
+**Provedores disponíveis:**
+
+| Provedor | Classe | Autenticação | Endpoints NFC-e | Endpoints NF-e |
+|----------|--------|-------------|-----------------|----------------|
+| **Webmania®** | `WebmaniaProvider` | Consumer-Key/Secret + Access-Token/Secret | `POST /api/1/nfe/emissao/` (modelo: 65) | `POST /api/1/nfe/emissao/`, `PUT /api/1/nfe/cancelar/` |
+| **FocusNFe** | `FocusNfeProvider` | Bearer token (`focus_api_token`) | `POST /v2/nfc?ref={ref}` | `POST /v2/nfe?ref={ref}`, `DELETE /v2/nfe/{ref}` |
+| **NFE.io** | `NfeIoProvider` | Basic Auth (`api_key` + `company_id`) | `POST /v2/companies/{id}/consumerinvoices` | `POST /v2/companies/{id}/productinvoices` |
+
+**Persistência:** `App\Models\NfeInvoice` com campo `tipo` (`nfe` ou `nfce`)
+**Listeners:** `EmitirNfeOnPaid` — emite NFC-e ao pagar; `StockController::transfer()` — emite NF-e em transferências
+**Permissões:** `nfe.view`, `nfe.emit`, `nfe.cancel`, `nfe-config.edit`
 
 ### Pagamentos
 
 #### Gateway de Pagamento
 
-**Status:** Apenas **PIX** está ativo no momento. Mercado Pago, PagSeguro, Stripe e Stone foram implementados e estão previstos para serem reativados em versões futuras.
+**Status:** **PIX** está sempre disponível. **Mercado Pago** ativo para pagamento online (portal do tutor). PagSeguro e Stripe previstos para versões futuras. **Stone** inativo (era exclusivo PDV/maquininha, removido).
 
-**Arquitetura:** Multi-provedor com Interface + Factory Pattern + Service Layer (preparada para os provedores futuros).
+**Arquitetura:** Multi-provedor com Interface + Factory Pattern + Service Layer.
 
 | Camada | Arquivo | Descrição |
 |--------|---------|-----------|
@@ -282,20 +315,20 @@ Suporte a Mailgun, SES, Postmark via `config/services.php`.
 | Service | `app/Services/Payment/PaymentService.php` | Orquestra `charge`/`checkout`/`processWebhook` com fallstack |
 | Controller | `app/Http/Controllers/Api/PaymentWebhookController.php` | Endpoint `/api/payments/webhook/{gateway}` (sempre 200) |
 
-**Provider ativo:**
+**Providers ativos:**
 
-| Provider | Classe | Descrição |
-|----------|--------|-----------|
-| PIX | `PixStaticProvider` + `PixService` | Gera payload EMV BR Code + QR Code via `endroid/qr-code` |
+| Provider | Classe | SDK | Canais |
+|----------|--------|-----|--------|
+| PIX | `PixStaticProvider` + `PixService` | `endroid/qr-code` | portal |
+| Mercado Pago | `MercadoPagoProvider` | `mercadopago/dx-php` | portal (checkout cartão, saldo) |
 
-**Providers previstos (código existente, aguardando reativação):**
+**Providers inativos (código existente):**
 
-| Provider | Classe | SDK |
-|----------|--------|-----|
-| Mercado Pago | `MercadoPagoProvider` | `mercadopago/dx-php` |
-| PagSeguro | `PagSeguroProvider` | `pagseguro/pagseguro-php-sdk` |
-| Stripe | `StripeProvider` | `stripe/stripe-php` |
-| Stone | `StoneProvider` | HTTP direto (OAuth) |
+| Provider | Classe | SDK | Motivo |
+|----------|--------|-----|--------|
+| PagSeguro | `PagSeguroProvider` | `pagseguro/pagseguro-php-sdk` | Previsto |
+| Stripe | `StripeProvider` | `stripe/stripe-php` | Previsto |
+| Stone | `StoneProvider` | HTTP direto (OAuth) | Removido (era PDV/maquininha) |
 
 **Serviço PIX:**
 
@@ -318,8 +351,8 @@ Suporte a Mailgun, SES, Postmark via `config/services.php`.
 
 | Campo | Descrição |
 |-------|-----------|
-| `provider` | Nome do provedor (atualmente apenas `pix`) |
-| `channel` | Canal: `portal`, `pdv` ou `both` |
+| `provider` | Nome do provedor (`pix` ou `mercadopago`) |
+| `channel` | Canal: `portal` (PDV removido; `both` mantido como retrocompatível — tratado como `portal`) |
 | `public_key` | Chave PIX (CPF, CNPJ, e-mail, telefone ou EVP) |
 | `branch_id` | Unidade específica ou null (todas as unidades) |
 | `config` | JSON com configurações adicionais (ex: `url` para PIX dinâmico) |
@@ -477,13 +510,12 @@ php artisan test --filter="PetControllerTest::test_index" --verbose
 | `PORTO_SEGURO_API_URL` | URL da API Porto Seguro |
 | `PORTO_SEGURO_API_KEY` | Chave da API Porto Seguro |
 | `GITHUB_TOKEN` | Token para auto-update |
-| `PIX_KEY` | Chave PIX |
+| `PIX_KEY` | Chave PIX (também configurável via painel) |
 | `PIX_MERCHANT_NAME` | Nome do recebedor PIX |
 | `PIX_CITY` | Cidade do recebedor PIX |
-| `WEBMANIA_APP_ID` | App ID Webmania NFSe |
-| `WEBMANIA_APP_SECRET` | App Secret Webmania NFSe |
-| `WEBMANIA_CONSUMER_KEY` | Consumer Key Webmania NFSe |
-| `WEBMANIA_CONSUMER_SECRET` | Consumer Secret Webmania NFSe |
+| `MERCADO_PAGO_ACCESS_TOKEN` | Access Token Mercado Pago |
+| `MERCADO_PAGO_PUBLIC_KEY` | Public Key Mercado Pago |
+| `NFEIO_API_KEY` | API Key NFE.io (NFe e NFSe) |
 | `SESSION_DRIVER` | Driver de sessão (file, database, redis) |
 | `QUEUE_CONNECTION` | Driver de fila (sync, database, redis) |
 

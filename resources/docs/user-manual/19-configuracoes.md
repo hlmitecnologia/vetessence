@@ -29,6 +29,7 @@ Acesse **Configurações > Notificações** para configurar os provedores de cad
 
 | Provedor | Campos |
 |----------|--------|
+| **MailerSend** | API Key (recomendado) |
 | **SMTP** | Servidor, porta, usuário, senha, criptografia (TLS/SSL), remetente, nome do remetente |
 | **Mailgun** | Domínio, API Key, endpoint (EUA/UE) |
 | **Amazon SES** | Access Key, Secret Key, região |
@@ -66,14 +67,14 @@ As integrações abaixo são configuradas via painel admin.
 
 ### Gateway de Pagamento
 
-O gateway atualmente disponível é o **PIX**. Mercado Pago, PagSeguro, Stripe e Stone estão previstos para próximas versões.
+O gateway **PIX** está sempre disponível. O **Mercado Pago** também pode ser ativado para pagamento online no portal do tutor (cartão de crédito e saldo). PagSeguro, Stripe e Stone estão previstos para próximas versões.
 
 #### Configuração
 1. Acesse **Financeiro > Gateways de Pagamento**
 2. Clique em **Novo**
 3. Configure:
-   - **Provedor**: PIX (único disponível no momento)
-   - **Canal**: Portal, PDV ou Ambos
+   - **Provedor**: PIX ou Mercado Pago
+   - **Canal**: Portal (PDV removido; Mercado Pago suporta apenas portal)
    - **Chave PIX** (CPF, CNPJ, e-mail, telefone ou chave aleatória)
    - **Unidade**: Todas as unidades ou uma específica
 4. Marque **Ativo** para habilitar
@@ -92,17 +93,22 @@ A chave PIX cadastrada é usada para gerar o payload EMV BR Code, exibido como Q
 3. O tutor escaneia com o app do banco e efetua o pagamento
 4. Na clínica, registre o pagamento manualmente em **Registrar Pagamento**
 
-### NFSe / NFC-e — Configuração do Provedor
-1. Acesse **Financeiro > Config. NF** (ou **Financeiro > NFSe > Configurações** / **Financeiro > NFC-e > Configurações**)
-2. Configure o provedor de nota fiscal:
-   - **Provedor**: Webmania® ou NFE.io
+### NFSe / NFC-e / NF-e — Configuração Unificada
+1. Acesse **Financeiro > Config. NF** (ou **Conf. Sistema > Config. NF** na sidebar)
+2. A tela exibe dois cards lado a lado:
+   - **NFS-e** (serviços): configurar provedor de nota fiscal de serviços
+   - **NF-e / NFC-e** (produtos): configurar provedor de nota fiscal de produtos
+3. Para cada card, configure:
+   - **Provedor**: Webmania® ou NFE.io (FocusNFe também disponível para NF-e/NFC-e)
    - **Ambiente**: Homologação (testes) ou Produção
-3. Preencha as credenciais conforme o provedor escolhido:
-   - **Webmania®**: Consumer Key, Consumer Secret, Access Token, Access Token Secret
+4. Preencha as credenciais conforme o provedor escolhido:
+   - **Webmania® NFSe**: Access Token (Bearer)
+   - **Webmania® NFe**: Consumer Key, Consumer Secret, Access Token, Access Token Secret
    - **NFE.io**: API Key, Company ID
-4. Ative a configuração
+   - **FocusNFe**: API Token
+5. Ative a configuração
 
-> **Dados fiscais por filial**: CNPJ, código IBGE do município, regime tributário e série da nota são configurados no **cadastro da filial** (Configurações > Unidades), não na tela de NFSe.
+> **Dados fiscais por filial**: CNPJ, código IBGE do município, regime tributário e série da nota são configurados no **cadastro da filial** (Configurações > Unidades), não na tela de Config. NF.
 
 ### IA Diagnóstica — Sugestão de Diagnóstico por IA
 1. Acesse **Configurações > IA Diagnóstica**
@@ -128,9 +134,10 @@ A chave PIX cadastrada é usada para gerar o payload EMV BR Code, exibido como Q
 
 > **Observações**: A sugestão é manual (não automática). O prompt é construído com dados do paciente (espécie, raça, idade, sexo), sinais vitais, queixa principal, anamnese e exame físico. A temperatura baixa (0.3) mantém as sugestões profissionais e determinísticas.
 
-### NFSe / NFC-e (Webmania®, NFE.io)
+### NFSe / NFC-e / NF-e (Webmania®, NFE.io, FocusNFe)
 - **Arquitetura**: Adapter Pattern — interface única para múltiplos provedores
-- **Fluxo**: Fatura paga → emissão automática ou manual → XML/PDF disponíveis
+- **Fluxo**: Fatura paga → NFC-e (itens produto) + NFSe (itens serviço) → XML/PDF disponíveis
+- **NF-e** (modelo 55): emitida apenas para transferências de estoque entre unidades
 - **Permissões**: `nfse.view`, `nfse.emit`, `nfse.cancel`, `nfse-config.edit`
 
 ### Convênios (Porto Seguro)
@@ -218,7 +225,7 @@ A chave PIX cadastrada é usada para gerar o payload EMV BR Code, exibido como Q
 ### Segurança
 - Permissão `system-update` (super-admin apenas)
 - Token armazenado na tabela `settings`
-- Sistema faz backup antes de atualizar (recomendado backup manual)
+- Sistema faz **backup automático** via mysqldump antes de aplicar a atualização (armazenado em `storage/app/backups/`)
 - Merge conflicts podem interromper o processo
 
 ### Requisitos

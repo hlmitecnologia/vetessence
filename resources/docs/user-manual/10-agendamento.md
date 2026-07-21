@@ -23,7 +23,10 @@
 3. Selecione **status**:
    - **Agendado**: Slot reservado
    - **Confirmado**: Tutor confirmou presença
-   - **Em andamento**: Atendimento iniciou
+   - **Em Andamento**: Atendimento iniciou
+   - **Finalizado**: Atendimento concluído
+   - **Cancelado**: Consulta cancelada
+   - **Não Compareceu**: Tutor não compareceu
 4. Clique em **Salvar**
 
 ### Agendamento Rápido

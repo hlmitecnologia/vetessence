@@ -1,27 +1,42 @@
 @startuml
 !include _common.puml
 
-title Fluxo de Faturamento, NFSe e Comissões
+title Fluxo de Faturamento, NFSe, NFC-e e Comissões
 
 |Veterinário|
 start
 :Fatura Gerada;
 :Adicionar Itens/Serviços;
-|Tutor|
-:Pagar (Dinheiro/Cartão/PIX);
+
+|Tutor / Recepcionista|
+:Pagar (Dinheiro/Cartão/PIX/MP);
 
 |Sistema|
 if (Pago?) then ([não])
   stop
 else ([sim])
   :InvoicePaid (evento);
-  if (NFSe Config?) then ([não])
+  if (Tem Itens Serviço?) then ([não])
   else ([sim])
-    :Emitir NFSe;
-    :Processar NFSe;
-    :Salvar XML + PDF;
-    |Tutor|
-    :Receber NFSe por E-mail;
+    if (NFSe Config?) then ([não])
+    else ([sim])
+      :Emitir NFSe;
+      :Processar NFSe;
+      :Salvar XML + PDF;
+      |Tutor|
+      :Receber NFSe por E-mail;
+    endif
+  endif
+  |Sistema|
+  if (Tem Itens Produto?) then ([não])
+  else ([sim])
+    if (NFC-e Config?) then ([não])
+    else ([sim])
+      :Emitir NFC-e (modelo 65);
+      :Processar NFC-e;
+      :Salvar XML + DANFE;
+      :Deduzir Estoque;
+    endif
   endif
   |Sistema|
   if (Comissão Config?) then ([não])

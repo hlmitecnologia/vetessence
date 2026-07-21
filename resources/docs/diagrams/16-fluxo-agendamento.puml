@@ -7,13 +7,25 @@ title Fluxo de Agendamento e Consulta
 start
 if (Origem?) then ([Portal])
   |Tutor|
-  :Acessa Portal Pet+Serviço+Horário;
+  :Acessa Portal;
+  :Selecionar Serviço + Unidade;
+  |Sistema|
+  :VetAvailabilityService::getAvailableVets();
+  :Filtrar por branch_id + is_vet_shift;
+  :Exibir Horários Disponíveis;
+  |Tutor|
+  :Escolher Veterinário + Horário;
+  :Confirmar Agendamento;
 else ([Recepção])
   |Recepcionista|
   :Calendário + Dados Tutor;
+  :Selecionar Unidade + Profissional;
+  :Agendar;
 endif
 
 |Sistema|
+:Status: Agendado;
+
 repeat
   :pending;
 
@@ -25,22 +37,32 @@ repeat
 repeat while ([não]) is (Aguardando)
 
 |Sistema|
-:confirmed;
+:Status: Confirmado;
 
 :Lembrete 24h;
 
 :Lembrete 2h;
 
 |Veterinário|
+:Iniciar Consulta;
+:Status: Em Andamento;
+
 :Consulta Realizada;
 
 if (Concluída?) then ([não])
   |Sistema|
+  :Status: Cancelado;
   :Reagenda;
   -->|Volta|
 else ([sim])
-  |Sistema|
-  :Auto-Faturamento;
+  if (Tutor Presente?) then ([sim])
+    |Sistema|
+    :Status: Finalizado;
+    :Auto-Faturamento;
+  else ([não])
+    |Sistema|
+    :Status: Não Compareceu;
+  endif
 endif
 
 stop

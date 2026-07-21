@@ -147,3 +147,22 @@ Requer chave de API NFE.io + company_id para validar fluxo completo.
 1. Fazer upload do certificado digital no painel NFSe.io (empresa `7bf5d244cee3452389949fa50d1ceb7e`)
 2. Configurar Inscrição Estadual (state tax) no painel
 3. Testar emissão via tinker
+
+### Documentação — Auditoria e Correções (esta sessão)
+
+**Auditoria**: 127 discrepâncias encontradas entre docs e código real.
+
+**Lote 1 (sessão anterior):**
+- `index.md` (user-manual): 26 módulos + seção tutor (PIX, não cartão/boleto)
+- `tutor-manual/index.md`, `09-faturas.md`, `12-duvidas-frequentes.md`, `04-agendamento.md`
+- `user-manual/09-financeiro.md`: NFC-e, NF-e transferência, 4 provedores NFSe, FocusNFe, diagrama de roteamento
+
+**Lote 2 (corrigido nesta sessão):**
+- `user-manual/index.md`: descrição módulo 09 (NFC-e + NF-e transferência), Acesso Rápido (NFC-e, Config NF), seção Matriz Perfis RACI (corrigido título duplicado)
+- `user-manual/08-estoque.md`: NFC-e no lugar de NF-e em venda; NF-e checkbox na transferência
+- `user-manual/10-agendamento.md`: status traduzidos (Em Andamento, Finalizado, Cancelado, Não Compareceu)
+- `user-manual/13-usuarios-e-permissoes.md`: perfil Técnico adicionado; Tutor corrigido (4 permissões, não 0)
+- `user-manual/17-notificacoes.md`: MailerSend adicionado; NotificationLog descrito; Vaccine Reminder logs
+- `user-manual/19-configuracoes.md`: MailerSend; Mercado Pago ativo (não "previsto"); PDV/channel removido; Config NF unificada (NFS-e + NFC-e/NF-e cards); backup automático; FocusNFe; Webmania NFSe Bearer auth
+- `technical-manual/index.md`: E-mail providers (MailerSend + notification_config); WhatsApp providers (ZAPI/Weni/CloudAPI/Twilio + config keys); NFSe (4 provedores com auth); NFe/NFC-e (3 provedores, modelos 55/65); Gateway (MP ativo, Stone inativo, canal portal-only, retrocompatibilidade both)
+- `changelog/index.md`: entrada 2026-07-21 com todas as mudanças do MP/PDV/StaffSchedule/Docs

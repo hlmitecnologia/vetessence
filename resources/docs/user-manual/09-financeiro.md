@@ -122,13 +122,13 @@ Cada item da fatura possui um **tipo** que define o comportamento fiscal e de es
 | Tipo | Descrição | Impacto Fiscal | Estoque |
 |------|-----------|----------------|---------|
 | **Serviço** | Consultas, cirurgias, exames, vacinas | Emite NFSe | Não deduz |
-| **Produto** | Medicamentos, rações, insumos | Emite NF-e | Deduz automaticamente ao pagar |
+| **Produto** | Medicamentos, rações, insumos | Emite NFC-e (modelo 65) | Deduz automaticamente ao pagar |
 | **Avulso** | Taxas, multas, genérico | Nenhum | Não deduz |
 
 - Uma fatura pode conter **itens mistos** (serviço + produto + avulso na mesma fatura)
 - Ao **pagar** a fatura, o sistema roteia automaticamente:
   - Itens do tipo **serviço** → emite **NFSe** (nota de serviço)
-  - Itens do tipo **produto** → deduz do estoque + emite **NF-e** (nota fiscal de produto)
+  - Itens do tipo **produto** → deduz do estoque + emite **NFC-e** (nota fiscal de consumo, modelo 65)
   - Itens do tipo **avulso** → sem documento fiscal
 
 ### Agrupamento de Atendimentos na Mesma Fatura
@@ -140,17 +140,19 @@ Cada item da fatura possui um **tipo** que define o comportamento fiscal e de es
 - **Visualização:** Na tela de detalhes da fatura, todos os atendimentos vinculados são listados com links para cada um
 - **Comissões:** Quando a fatura é paga, as comissões são calculadas para **cada veterinário** envolvido nos atendimentos agrupados
 - **NFSe:** A NFSe é emitida com o valor total da fatura (apenas itens de serviço)
-- **NF-e:** A NF-e é emitida com o valor total dos itens de produto
+- **NFC-e:** A NFC-e é emitida com o valor total dos itens de produto
 
 ## Nota Fiscal de Serviços (NFSe)
 
 ### Provedores Suportados
-O sistema suporta **2 provedores** de NFSe, selecionáveis na configuração:
+O sistema suporta provedores de NFSe, configuráveis na tela de Config. NF:
 
 | Provedor | Credenciais |
 |----------|-------------|
 | **Webmania®** | Consumer Key, Consumer Secret, Access Token, Access Token Secret |
 | **NFE.io** | API Key, Company ID |
+| **FocusNFe** | API Token (configurado via foco) |
+| **Spedy** | API Key (configurado via spedy) |
 
 ### Configuração do Provedor
 
@@ -210,15 +212,21 @@ O sistema suporta **2 provedores** de NFSe, selecionáveis na configuração:
 - Apenas admin, branch-admin e financeiro podem emitir notas
 - NFSe emitida em ambiente de produção não pode ser reemitida (apenas cancelada)
 
-## Nota Fiscal Eletrônica de Produtos (NF-e)
+## Nota Fiscal de Consumidor (NFC-e) / Nota Fiscal Eletrônica (NF-e)
 
-### Provedores Suportados
-O sistema suporta **2 provedores** de NF-e, que utilizam as mesmas credenciais do NFSe quando o provedor atende ambos:
+O sistema trabalha com dois modelos de nota fiscal para produtos:
+
+- **NFC-e (modelo 65)**: Emitida para vendas diretas ao consumidor final (itens produto em faturas de consultas). Gera DANFE simplificado.
+- **NF-e (modelo 55)**: Emitida apenas para **transferências de estoque entre unidades**. Gera XML completo com DANFE.
+
+### Provedores Suportados (NFC-e e NF-e)
+O sistema suporta provedores de NF-e/NFC-e, configuráveis na tela de Config. NF:
 
 | Provedor | Credenciais |
 |----------|-------------|
 | **Webmania®** | Consumer Key, Consumer Secret, Access Token, Access Token Secret |
 | **NFE.io** | API Key, Company ID |
+| **FocusNFe** | API Token (configurado via foco) |
 
 ### Configuração do Provedor
 
@@ -256,66 +264,78 @@ Cada filial precisa dos seguintes dados para emitir NF-e:
 | **IE ST** | IE Substituição Tributária (se houver) |
 | **CRT** | Código de Regime Tributário (1=Simples Nacional, 2=SN excesso, 3=Regime Normal) |
 
-### Emitir NF-e
+### Emitir NFC-e (Vendas ao Consumidor)
+
+**Onde acessar:** Faturas com itens produto → card **NFC-e** na tela de detalhes da fatura.
 
 **Manual:**
-1. Acesse **Financeiro > NF-e**
-2. Clique em **Emitir NF-e** na fatura desejada (disponível apenas para faturas com itens do tipo `produto`)
-3. O sistema monta a NF-e automaticamente com dados dos produtos + dados fiscais da filial
+1. Acesse a fatura com itens de produto
+2. No card **NFC-e**, clique em **Emitir Nota Fiscal**
+3. O sistema monta a NFC-e automaticamente com dados dos produtos + dados fiscais da filial
 4. Confirme a emissão
-5. Links para **XML**, **PDF** e **DANFE** da nota são gerados
+5. Links para **XML** e **DANFE** da nota são gerados
 
 **Automático:**
-- Quando uma fatura com itens de **produto** é **marcada como paga**, a NF-e é emitida automaticamente
+- Quando uma fatura com itens de **produto** é **marcada como paga**, a NFC-e é emitida automaticamente
 - Ao mesmo tempo, o estoque dos produtos é **deduzido automaticamente**
 - Comando `nfe:emit-pending` emite notas pendentes a cada 10 min
 
-### Roteamento Inteligente: NFSe vs NF-e
+### Emitir NF-e (Transferência entre Unidades)
+
+1. Acesse **Estoque > Transferências**
+2. Na tela de transferência, marque a opção **Emitir NF-e**
+3. Preencha os dados fiscais necessários
+4. Confirme a transferência — a NF-e modelo 55 é emitida
+
+> A NF-e para transferência utiliza o mesmo provedor configurado para NFC-e.
+
+### Roteamento Inteligente: NFSe vs NFC-e / NF-e
 
 Uma mesma fatura pode conter **serviços e produtos**. Ao pagar:
 
 ```
 Fatura paga
    ├── Itens do tipo "serviço"  →  NFSe (prefeitura)
-   ├── Itens do tipo "produto"  →  NF-e (SEFAZ) + dedução de estoque
+   ├── Itens do tipo "produto"  →  NFC-e (SEFAZ, modelo 65) + dedução de estoque
+   ├── Transferência entre filiais →  NF-e (SEFAZ, modelo 55)
    └── Itens do tipo "avulso"   →  sem documento fiscal
 ```
 
 Isso permite, por exemplo, faturar uma consulta (serviço) + medicamento (produto) em uma única cobrança, gerando os documentos fiscais corretos para cada tipo.
 
-### Visualizar NF-e
+### Visualizar NFC-e
 
-1. Acesse **Financeiro > NF-e**
+1. Acesse **Financeiro > NFC-e** (sidebar)
 2. Listagem com filtros por **período**, **status**, **filial**
-3. Colunas: número NF-e, chave de acesso (44 dígitos), fatura vinculada, data, status
-4. Ações: visualizar XML, baixar PDF, baixar DANFE, cancelar
+3. Colunas: número NFC-e, chave de acesso (44 dígitos), fatura vinculada, data, status
+4. Ações: visualizar XML, baixar DANFE, cancelar
 
-### Cancelar NF-e
+### Cancelar NFC-e / NF-e
 
-1. Acesse a NF-e emitida
+1. Acesse a nota emitida (NFC-e ou NF-e)
 2. Clique em **Cancelar** (prazo legal: até 24h da emissão)
 3. Informe o **motivo do cancelamento**
 4. O sistema comunica o cancelamento à SEFAZ
 
 ### Exportação Contábil
 
-1. Acesse **Financeiro > NF-e > Exportar**
+1. Acesse **Financeiro > NFC-e > Exportar** ou **Financeiro > NF-e > Exportar**
 2. Selecione **período** e **filial**
 3. Baixe **ZIP** com todos os XMLs do período
 
-### Permissões NF-e
+### Permissões NFC-e / NF-e
 
-- `nfe.view` — Visualizar notas emitidas
-- `nfe.emit` — Emitir novas NF-e
-- `nfe.cancel` — Cancelar NF-e
-- `nfe-config.edit` — Configurar provedor de NF-e
+- `nfe.view` — Visualizar notas emitidas (NFC-e e NF-e)
+- `nfe.emit` — Emitir novas notas (NFC-e e NF-e)
+- `nfe.cancel` — Cancelar notas
+- `nfe-config.edit` — Configurar provedor de NF-e/NFC-e
 
-### Regras NF-e
+### Regras NFC-e / NF-e
 - Prazo de cancelamento: até 24h após emissão
 - XML deve ser armazenado por no mínimo 5 anos
-- A NF-e só pode ser emitida se a filial tiver IE e CRT configurados
-- Produtos precisam de NCM e CFOP para emitir NF-e
-- NF-e emitida em produção não pode ser reemitida (apenas cancelada)
+- A NFC-e/NF-e só pode ser emitida se a filial tiver IE e CRT configurados
+- Produtos precisam de NCM e CFOP para emitir NFC-e/NF-e
+- Nota emitida em produção não pode ser reemitida (apenas cancelada)
 
 ## Comissões de Veterinários
 
@@ -412,7 +432,8 @@ Isso permite, por exemplo, faturar uma consulta (serviço) + medicamento (produt
 - NF-e só pode ser emitida se a filial tiver IE e CRT configurados
 - Produtos precisam de NCM e CFOP preenchidos para emitir NF-e
 - Ao pagar fatura com itens de produto, o estoque é deduzido automaticamente
-- Faturas com itens mistos (serviço + produto) emitem NFSe e NF-e simultaneamente
+- Faturas com itens mistos (serviço + produto) emitem NFSe e NFC-e simultaneamente
+- NFC-e é modelo 65 (consumo); NF-e é modelo 55 (apenas transferências entre unidades)
 
 ---
 

@@ -12,16 +12,38 @@ if (Tutor optou por notifs?) then ([não])
   stop
 endif
 
-:Hierarquia de Canais;
+:Definir Prioridade de Canal;
+
 split
-  :WhatsApp (Z-API);
+  :WhatsApp;
+  note right
+    Provedores:
+    - Z-API
+    - Weni
+    - Cloud API (Meta)
+    - Twilio
+  end note
 split again
   :SMS (fallback);
+  note right
+    Provedores:
+    - Twilio
+    - Zenvio
+    - Amazon SNS
+  end note
 split again
   :E-mail;
+  note right
+    Provedores:
+    - MailerSend
+    - SMTP
+    - Mailgun
+    - SES
+    - SendGrid
+  end note
 endsplit
 
-:Registrar Log de Entrega;
+:Registrar NotificationLog;
 
 if (Falhou?) then ([sim])
   :3 tentativas + desativar canal;

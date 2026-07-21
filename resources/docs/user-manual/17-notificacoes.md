@@ -40,6 +40,11 @@
 - **Exames**: Resultado disponível
 - **Tratamento**: Fim do ciclo de medicação
 
+### Lembretes de Vacina
+- **Envio automático**: O sistema envia lembretes de vacinação via WhatsApp/SMS/E-mail
+- **Logs**: Cada envio é registrado em **Configurações > Logs de Notificação** (tipo `vaccine_reminder`)
+- **Histórico**: Consulte o status e o conteúdo de cada notificação enviada
+
 ### Campanhas
 - **Promocional**: Ofertas e campanhas (opt-in)
 - **Recall**: Vacinação em massa
@@ -54,6 +59,7 @@ Acesse **Configurações > Notificações** para configurar os provedores de cad
 **Aba E-mail:**
 | Provedor | Campos |
 |----------|--------|
+| **MailerSend** | API Key (recomendado) |
 | **SMTP** | Servidor, porta, usuário, senha, criptografia, remetente |
 | **Mailgun** | Domínio, API Key, endpoint |
 | **Amazon SES** | Access Key, Secret Key, região |

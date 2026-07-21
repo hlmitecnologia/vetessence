@@ -1,5 +1,25 @@
 # Changelog
 
+## [Não versionado] — 2026-07-21
+
+### Adicionado
+- **Mercado Pago ativo no Portal**: SDK `mercadopago/dx-php` instalado; `charge()` para PDV retorna erro; `supportedChannels()` → `['portal']`; checkout usa `sandbox_init_point` quando sandbox
+- **Pagamento verificado por API**: retorno do checkout não confia em `collection_status=approved` da querystring — chama `PaymentService::processWebhook()` para consultar API MP e validar status real
+- **MailerSend provider**: `app/Services/Notification/Email/MailerSendProvider.php` implementando `EmailProvider` com SDK send + attachments
+- **Z-API corrigido**: URL `https://api.z-api.io/instances/{instance}/token/{token}/send-text`; telefone sanitizado (digits only, DDI 55); `Authorization: Bearer` removido
+- **NotificationLog**: `VaccinationReminderController::send()` registra envios tipo `vaccine_reminder` — consultável em Conf. Sistema → Logs de Notificação
+- **StaffSchedule**: campo `is_vet_shift` (booleano) adicionado ao formulário create/edit; `branch_id` obrigatório com detecção de conflito branch-aware
+- **VetAvailabilityService**: `getAvailableVets()` consulta `staff_schedules.branch_id` em vez de `users.branch_id`
+- **PDV/maquininha removido**: `channel` validation restrito a `portal`; opções `pdv`/`both` removidas dos formulários; JS morto removido
+- **Retrocompatibilidade `both`**: `scopeByChannel('portal')` busca `portal` e `both`; `isPortal()` true para `both`; `getActiveGatewayForChannel('portal')` busca ambos
+- **Invoice::gateway()**: relationship BelongsTo adicionada para `gateway_id`
+- **Portal logout**: redireciona para `route('login')` em vez de `route('portal.login')`
+- **Appointment status**: labels em português no edit view
+- **Documentação**: auditoria completa (127 discrepâncias encontradas); lote 1 corrigido (index, financeiro, tutor-manual); lote 2 corrigido (08-estoque, 10-agendamento, 13-usuarios, 17-notificacoes, 19-configuracoes, technical-manual/index, changelog)
+
+### Corrigido
+- Documentation: NFe/NFCe/NFSe nomenclatura corrigida; Webmania NFSe auth corrigida (Bearer token, não headers X-App); Tecnospeed removido; WhatsApp providers atualizados; Gateway providers atualizados (MP ativo, Stone inativo, canal portal-only)
+
 ## [Não versionado] — 2026-06-24
 
 ### Adicionado

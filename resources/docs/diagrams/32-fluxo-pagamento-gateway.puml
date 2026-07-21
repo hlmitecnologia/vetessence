@@ -1,34 +1,60 @@
 @startuml
 !include _common.puml
 
-title Fluxo de Pagamento PIX
+title Fluxo de Pagamento
 
 |Admin|
 start
-:Configurar Gateway PIX;
-:Definir Chave PIX + Unidade;
+:Configurar Gateway;
+if (Provedor?) then ([PIX])
+  :Definir Chave PIX + Unidade;
+else ([Mercado Pago])
+  :Definir Access Token + Public Key;
+endif
+:Selecionar Canal (Portal);
 :Ativar;
 
 |Sistema|
-:Gateway PIX Ativo;
+:Gateway Ativo (portal);
 
 :Tutor / Recepcionista|
-:Acessa Fatura em Aberto;
-:Clique em Gerar QR Code;
+if (Gateway?) then ([PIX])
+  :Acessa Fatura em Aberto;
+  :Clique em Gerar QR Code;
+else ([Mercado Pago])
+  :Acessa Fatura em Aberto;
+  :Clique em Pagar Online;
+endif
 
 |Sistema|
-:PixService::generateQRCode();
-:Gerar Payload EMV + QR Code;
-:Exibir QR Code na Tela;
+if (Gateway?) then ([PIX])
+  :PixService::generateQRCode();
+  :Gerar Payload EMV + QR Code;
+  :Exibir QR Code na Tela;
+else ([Mercado Pago])
+  :MercadoPagoProvider::checkout();
+  if (Sandbox?) then ([sim])
+    :Usar sandbox_init_point;
+  else ([não])
+    :Usar init_point;
+  endif
+  :Redirecionar ao Checkout MP;
+endif
 
 |Tutor|
-:Escanear QR Code;
-:Confirmar Pagamento no App;
-
-|Recepcionista|
-:Registrar Pagamento Manualmente;
-:Selecionar Forma (PIX);
-:Confirmar;
+if (Gateway?) then ([PIX])
+  :Escanear QR Code;
+  :Confirmar Pagamento no App;
+  |Recepcionista|
+  :Registrar Pagamento Manualmente;
+else ([Mercado Pago])
+  :Preencher Dados Cartão/Saldo;
+  :Confirmar Pagamento;
+  |Sistema|
+  :Receber Retorno (querystring);
+  :Consultar API MP via processWebhook();
+  :Validar Status Real do Pagamento;
+endif
 
 |Sistema|
 :Atualizar Fatura (status = paid);

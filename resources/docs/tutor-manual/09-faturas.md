@@ -32,43 +32,36 @@ Ao abrir uma fatura, você confere:
 
 ### Formas de Pagamento Disponíveis
 - **PIX**: Pagamento instantâneo (recomendado)
-- **Cartão de crédito**: Parcelamento disponível
-- **Cartão de débito**
-- **Boleto bancário** (pode levar até 3 dias úteis para confirmar)
 
-### Como Pagar
+### Como Pagar via PIX
 
 1. Acesse a fatura
 2. Clique em **Pagar Agora**
-3. Escolha a **forma de pagamento**
-4. Siga as instruções na tela:
-   - **PIX**: Copie o código ou escaneie o QR Code
-   - **Cartão**: Preencha os dados do cartão
-   - **Boleto**: Faça o download e pague no banco
+3. O sistema exibe o **QR Code PIX** na tela
+4. Abra o aplicativo do seu banco
+5. Escaneie o QR Code ou copie o código PIX
+6. Confirme o pagamento no app do banco
+7. Após o pagamento, avise a clínica para confirmar
 
-### Pagamento via PIX
-- Gere o QR Code na tela
-- Abra o aplicativo do seu banco
-- Escaneie o QR Code
-- Confirme o pagamento
-- A fatura é atualizada **automaticamente** em segundos
+### Pagamento via Mercado Pago (se disponível)
 
-## Pagamentos Recorrentes
+Caso a clínica tenha configurado o Mercado Pago:
 
-Se seu pet faz tratamento contínuo, a clínica pode gerar faturas recorrentes:
-- **Mensal**: Para planos de saúde ou medicamentos contínuos
-- **Por tratamento**: Parcelas de um tratamento mais longo
+1. Acesse a fatura
+2. Clique em **Pagar Online**
+3. Você é redirecionado ao ambiente seguro do Mercado Pago
+4. Finalize o pagamento (cartão ou saldo)
+5. Ao retornar à fatura, o status é atualizado automaticamente
 
 ## Dúvidas sobre Faturas?
 
 - Entre em contato com a clínica pelo **Chat**
-- Solicite um **boleto reemitido** se o atual venceu
 - Em caso de **erro no valor**, informe a clínica para correção
 - **Pagamento em atraso** pode gerar multa e juros
 
 ## Dicas
 
-- **Pague via PIX** para confirmação mais rápida
+- **Pague via PIX** para pagamento instantâneo
 - Ative as **notificações** para não perder o vencimento
 - Guarde os **comprovantes** de pagamento
 - Confira sempre o **valor** e a **descrição** antes de pagar

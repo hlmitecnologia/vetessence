@@ -56,10 +56,7 @@ Sim, solicite na recepção da clínica.
 ## Sobre Faturas
 
 **Quais formas de pagamento são aceitas?**
-PIX, cartão de crédito, cartão de débito e boleto bancário.
-
-**O boleto venceu. Ainda posso pagar?**
-Sim, mas pode haver multa e juros. Solicite a reemissão do boleto pelo chat.
+PIX (pagamento instantâneo). Se a clínica tiver Mercado Pago configurado, também é possível pagar com cartão online.
 
 **Como solicitar um reembolso?**
 Entre em contato com a clínica pelo chat para solicitar o estorno.

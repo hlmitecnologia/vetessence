@@ -13,7 +13,7 @@
 
 Ao escolher a data, o sistema exibe:
 
-- **Veterinários disponíveis** — apenas os que têm turno (`is_vet_shift = true`) e horários livres na data selecionada
+- **Veterinários disponíveis** — apenas os que têm turno (`is_vet_shift = true`) e horários livres na data e unidade selecionadas
 - **Slots livres** — para cada veterinário, são mostrados apenas os horários que não conflitam com consultas já agendadas nem com folgas aprovadas
 - **Datas com vaga** — no calendário, as datas que possuem ao menos um slot livre para o veterinário escolhido ficam destacadas
 

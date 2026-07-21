@@ -14,7 +14,7 @@ Guia prático para utilização do VetEssence no dia a dia da clínica.
 | 06 | [Internações](06-internacoes) | Evolução clínica, prescrição diária, resumo de alta, mapa de execução |
 | 07 | [Farmácia](07-farmacia) | Produtos, lotes, fornecedores, calculadora de dosagem, alerta vencimento |
 | 08 | [Estoque](08-estoque) | Movimentações, pedidos de compra, substâncias controladas, scanner, transferências |
-| 09 | [Financeiro](09-financeiro) | Faturas, NFSe, NF-e, comissões, conciliação bancária, auto-faturamento, fluxo de caixa, DRE |
+| 09 | [Financeiro](09-financeiro) | Faturas, NFSe, NFC-e, NF-e (transferências), comissões, conciliação bancária, auto-faturamento, fluxo de caixa, DRE |
 | 10 | [Agendamento](10-agendamento) | Calendário visual (FullCalendar), agendamento online, escala de veterinários e plantões, lembretes, cancelamento automático |
 | 11 | [Tutores e Pets](11-tutores-pets) | Cadastro, microchip/RG, timeline, óbito/cremação, múltiplos tutores, portal |
 | 12 | [Convênios](12-convenios) | Planos, tabela procedimentos, guias, claims, CVI, glosas |
@@ -44,6 +44,8 @@ Guia prático para utilização do VetEssence no dia a dia da clínica.
 - **Estoque**: Estoque > Produtos
 - **Financeiro**: Financeiro > Contas a Receber
 - **NFSe**: Financeiro > NFSe
+- **NFC-e**: Financeiro > NFC-e
+- **Config. NF**: Financeiro > Config. NF (ou Conf. Sistema > Config. NF)
 - **Portal do Tutor**: `/portal`
 
 ---
@@ -55,7 +57,7 @@ Guia prático para utilização do VetEssence no dia a dia da clínica.
 
 ---
 
-## Diagrama do Processo
+## Matriz de Perfis RACI
 
 ![Matriz de Perfis RACI](../diagrams/matriz-perfis.svg)
 *Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*

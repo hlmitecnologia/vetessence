@@ -80,7 +80,7 @@ Ao criar ou editar uma fatura, é possível adicionar itens do tipo **produto**:
 
 **Ao pagar a fatura:**
 - O estoque do produto é **deduzido automaticamente** (cria movimentação de saída)
-- Uma **NF-e** é emitida automaticamente (se o provedor estiver configurado)
+- Uma **NFC-e** (modelo 65) é emitida automaticamente (se o provedor estiver configurado)
 - O item aparece no relatório de comissões (se houver taxa configurada para produtos)
 
 ## Alerta de Estoque Baixo
@@ -171,10 +171,12 @@ Ao criar ou editar uma fatura, é possível adicionar itens do tipo **produto**:
    - **Quantidade**
    - **Filial de origem**
    - **Filial de destino**
-3. Clique em **Transferir**
-4. O sistema cria duas movimentações: saída na origem + entrada no destino
-5. Permissão específica: `stock.transfer`
-6. Transferências têm registro de auditoria completo
+3. Opcional: marque **Emitir NF-e** para gerar nota fiscal modelo 55 da transferência
+4. Clique em **Transferir**
+5. O sistema cria duas movimentações: saída na origem + entrada no destino
+6. Se marcado, emite NF-e (modelo 55) via provedor configurado
+7. Permissão específica: `stock.transfer`
+8. Transferências têm registro de auditoria completo
 
 ## Estoque Inteligente (Dashboard)
 

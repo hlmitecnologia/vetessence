@@ -47,12 +47,13 @@
 | **Admin** | Acesso total ao sistema | 284 (todas) |
 | **Branch Admin** | Administração por filial | 284 (filial) |
 | **Veterinário** | Acesso clínico completo | ~115 |
+| **Técnico** | Execução de tarefas clínicas (sem prescrição) | ~7 |
 | **Recepcionista** | Agenda, cadastros, caixa | ~32 |
 | **Financeiro** | Módulo financeiro | ~18 |
 | **Super Financeiro** | Financeiro global (multi-filial) | ~24 |
 | **Estoque** | Farmácia e estoque | ~30 |
 | **Recursos Humanos** | RH (departamentos, cargos, funcionários) | ~12 |
-| **Tutor** | Portal do tutor (sem permissões admin) | 0 |
+| **Tutor** | Portal do tutor | 4 |
 | **Auditor** | Apenas leitura (todos .view) | ~80 |
 
 ### Descrição das Funções
@@ -60,6 +61,7 @@
 - **Admin**: Acesso irrestrito ao sistema (mesmo escopo do super-admin)
 - **Branch Admin**: Gerencia filial específica, usuários da filial, relatórios locais
 - **Veterinário**: Prontuários, prescrições, exames, cirurgias, vacinas, chat, triagem
+- **Técnico**: Execução de tarefas (mapa de execução, internações), consulta de tutores/pets, notas de equipe
 - **Recepcionista**: Tutores, pets, agendamento, caixa, triagem (criar), chat
 - **Financeiro**: Contas, fluxo de caixa, convênios, NFSe (view+emit), comissões (view)
 - **Super Financeiro**: Financeiro global, NFSe (view+emit+cancel), corporate dashboard
