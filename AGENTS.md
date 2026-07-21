@@ -54,11 +54,14 @@ Para retomar a criação dos vídeos de treinamento, chame por **PROJETO TREINAM
 - Engine: `bin/treinamento.py` (Selenium + ffmpeg, helpers: `selecionar_tom_select`, `clicar_submit_modal` com scroll suave, `scroll_smoothly_modal`)
 - 5 roteiros definidos em `bin/roteiros.py`
 
+**Nesta sessão:**
+- Roteiro `07-farmacia` implementado: 49 passos, login `super@vet.com`, cria categoria "Medicamentos" → fornecedor "FarMed Distribuidora" → produto "Dipirona 500mg" (c/ TomSelects de categ/fornec) → ajuste estoque 100 un → fármaco "Dipirona Sódica" → lista produtos → logout
+- Engine: `selecionar_tom_select` com fallback para `select[name=...]` (necessário p/ form de estoque)
+
 **Próximo passo:**
 ```bash
 python3 bin/treinamento.py --modulo 07-farmacia
 ```
-Requer super-admin (`super@vet.com`) para criar categoria de produto.
 
 ### PROJETO WEBMANIA
 
