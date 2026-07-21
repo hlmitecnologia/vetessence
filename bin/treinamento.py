@@ -444,21 +444,19 @@ def executar_roteiro(driver, passos):
 
 # ── Selenium ──────────────────────────────────────────────────────────────────
 
-def kill_chrome():
-    subprocess.run(["killall", "-9", "chrome", "chromium", "chromium-browser",
-                    "google-chrome", "google-chrome-stable"],
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    time.sleep(1)
-
-
 def abrir_navegador():
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.chrome.service import Service
 
-    kill_chrome()
+    # Mata apenas instâncias Chromium do Selenium (nunca Google Chrome)
+    subprocess.run(["killall", "-9", "chromium", "chromium-browser"],
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    time.sleep(1)
 
     opts = Options()
+    # Perfil isolado para não afetar o Chrome do usuário
+    opts.add_argument("--user-data-dir=/tmp/selenium-chrome-profile")
     opts.add_argument("--kiosk")
     opts.add_argument("--no-sandbox")
     opts.add_argument("--disable-dev-shm-usage")
