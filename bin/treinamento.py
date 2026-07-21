@@ -77,17 +77,23 @@ def parar_gravacao():
 
 def preencher_livewire(driver, wire_model, valor):
     """Preenche um campo Livewire (wire:model) via JS."""
-    # Usa getAttribute em vez de CSS selector para evitar problemas com ':'
+    # Busca primeiro em modal aberto (prioritário) para evitar conflitos com
+    # campos de mesmo nome na página principal (ex: species no drug-formulary
+    # e no dosage-calculator). Fallback para o documento todo.
     ok = driver.execute_script(f"""
-        var els = document.querySelectorAll('input, select, textarea');
-        var el = null;
-        for (var i = 0; i < els.length; i++) {{
-            var m = els[i].getAttribute('wire:model') || els[i].getAttribute('wire:model.live') || els[i].getAttribute('wire:model.blur') || els[i].getAttribute('wire:model.defer');
-            if (m === '{wire_model}') {{
-                el = els[i];
-                break;
+        function buscarEl(container) {{
+            var els = container.querySelectorAll('input, select, textarea');
+            for (var i = 0; i < els.length; i++) {{
+                var m = els[i].getAttribute('wire:model') || els[i].getAttribute('wire:model.live') || els[i].getAttribute('wire:model.blur') || els[i].getAttribute('wire:model.defer');
+                if (m === '{wire_model}') return els[i];
             }}
+            return null;
         }}
+        // Procura primeiro dentro de modal visível
+        var modal = document.querySelector('.modal.show');
+        var el = modal ? buscarEl(modal) : null;
+        // Se não achou no modal, busca no documento todo
+        if (!el) el = buscarEl(document);
         if (!el) return 'not_found';
 
         var component = null;
@@ -198,7 +204,7 @@ def selecionar_tom_select(driver, wire_model, label_texto):
     driver.execute_script(f"""
         (function() {{
             var select = document.querySelector('select[data-wire="{wire_model}"]');
-            if (!select) return;  # name-based, sem Livewire p/ sincronizar
+            if (!select) return;  // name-based, sem Livewire p/ sincronizar
             var p = select;
             while (p) {{
                 var wid = p.getAttribute ? p.getAttribute('wire:id') : null;
@@ -341,8 +347,16 @@ def executar_roteiro(driver, passos):
             elif acao == "preencher":
                 el = wait.until(EC.presence_of_element_located(
                     (By.CSS_SELECTOR, passo["seletor"])))
-                el.clear()
-                el.send_keys(passo["valor"])
+                tag = driver.execute_script("return arguments[0].tagName;", el)
+                if tag.lower() == "select":
+                    driver.execute_script(
+                        "arguments[0].value = arguments[1]; "
+                        "arguments[0].dispatchEvent(new Event('change', {bubbles: true}));"
+                        "arguments[0].dispatchEvent(new Event('input', {bubbles: true}));",
+                        el, passo["valor"])
+                else:
+                    el.clear()
+                    el.send_keys(passo["valor"])
                 time.sleep(0.3)
 
             elif acao == "livewire":

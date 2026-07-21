@@ -49,6 +49,8 @@
 
 Para retomar a criação dos vídeos de treinamento, chame por **PROJETO TREINAMENTO**.
 
+**Regra**: erros encontrados durante execução do roteiro devem interromper a gravação para correção no sistema (código ou engine). Apenas roteiros 100% bem-sucedidos geram vídeo final. Use os screenshots em `/tmp/treinamento_screenshots/` para diagnosticar. Bugs corrigidos ficam registrados nesta seção.
+
 **Feito:**
 - Fase 01 (`11-tutores-pets`): roteiro + vídeo validado em `~/Videos/VetEssence/11-tutores-pets_20260710_095540.mp4`
 - Engine: `bin/treinamento.py` (Selenium + ffmpeg, helpers: `selecionar_tom_select`, `clicar_submit_modal` com scroll suave, `scroll_smoothly_modal`)
@@ -57,10 +59,17 @@ Para retomar a criação dos vídeos de treinamento, chame por **PROJETO TREINAM
 **Nesta sessão:**
 - Roteiro `07-farmacia` implementado: 49 passos, login `super@vet.com`, cria categoria "Medicamentos" → fornecedor "FarMed Distribuidora" → produto "Dipirona 500mg" (c/ TomSelects de categ/fornec) → ajuste estoque 100 un → fármaco "Dipirona Sódica" → lista produtos → logout
 - Engine: `selecionar_tom_select` com fallback para `select[name=...]` (necessário p/ form de estoque)
+- **Bugs corrigidos durante execução do roteiro**:
+  - `#` (Python comment) dentro de f-string JS → JS syntax error (trocado por `//`)
+  - `el.clear()` em `<select>` → InvalidElementState (agora usa JS value + events)
+  - `wire:model="species"` duplicado (drug-formulary + dosage-calculator) → `preencher_livewire` busca modal aberto primeiro
+- Vídeo `07-farmacia_20260721_084119.mp4` gravado e validado ✅
 
 **Próximo passo:**
 ```bash
-python3 bin/treinamento.py --modulo 07-farmacia
+python3 bin/treinamento.py --modulo 10-agendamento
+```
+
 ```
 
 ### PROJETO WEBMANIA
