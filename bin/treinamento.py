@@ -135,11 +135,12 @@ def selecionar_tom_select(driver, wire_model, label_texto):
     except Exception:
         pass
 
-    # Tudo via JS para robustez: encontra o <select>, sobe até o wrapper,
-    # clica no .ts-control, e depois clica na opção pelo texto.
+    # Tudo via JS para robustez: encontra o <select> (data-wire ou name),
+    # sobe até o wrapper, clica no .ts-control, e depois clica na opção pelo texto.
     driver.execute_script(f"""
         (function() {{
-            var select = document.querySelector('select[data-wire="{wire_model}"]');
+            var select = document.querySelector('select[data-wire="{wire_model}"]')
+                     || document.querySelector('select[name="{wire_model}"]');
             if (!select) return 'no_select';
 
             // Sobe no DOM até achar o .ts-wrapper (container TomSelect)
@@ -193,11 +194,11 @@ def selecionar_tom_select(driver, wire_model, label_texto):
     """, label_texto)
     time.sleep(1)
 
-    # Garante que o valor foi sincronizado via Livewire API
+    # Garante que o valor foi sincronizado via Livewire API (só para data-wire)
     driver.execute_script(f"""
         (function() {{
             var select = document.querySelector('select[data-wire="{wire_model}"]');
-            if (!select) return;
+            if (!select) return;  # name-based, sem Livewire p/ sincronizar
             var p = select;
             while (p) {{
                 var wid = p.getAttribute ? p.getAttribute('wire:id') : null;
