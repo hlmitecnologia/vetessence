@@ -40,7 +40,7 @@ class ProductFormTest extends ModuleTestCase
     {
         Livewire::test('product-form')
             ->call('save')
-            ->assertHasErrors(['name', 'cost_price', 'sale_price', 'stock']);
+            ->assertHasErrors(['name', 'sku', 'cost_price', 'sale_price', 'stock']);
     }
 
     public function test_can_edit_existing_product()
@@ -79,11 +79,12 @@ class ProductFormTest extends ModuleTestCase
             ->dispatch('editProduct', id: $product->id)
             ->assertSet('productId', $product->id)
             ->assertSet('name', 'Event Product')
-            ->set('stock', '30')
+            ->set('name', 'Event Product Updated')
             ->call('save')
             ->assertDispatched('product-saved');
 
-        $this->assertDatabaseHas('products', ['id' => $product->id, 'stock' => 30]);
+        $this->assertDatabaseHas('products', ['id' => $product->id, 'name' => 'Event Product Updated']);
+        $this->assertDatabaseHas('products', ['id' => $product->id, 'stock' => 20]);
     }
 
     public function test_stock_tracking_zero_stock()
@@ -128,6 +129,7 @@ class ProductFormTest extends ModuleTestCase
     {
         Livewire::test('product-form')
             ->set('name', 'Produto')
+            ->set('sku', 'TEST-001')
             ->set('cost_price', '-5')
             ->set('sale_price', '-10')
             ->set('stock', '-1')

@@ -30,7 +30,7 @@ class ProductForm extends Component
     {
         $rules = [
             'name' => 'required|string|max:255',
-            'sku' => 'nullable|string',
+            'sku' => 'required|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
             'supplier_id' => 'nullable|exists:suppliers,id',
             'cost_price' => 'required|numeric|min:0',
@@ -92,7 +92,7 @@ class ProductForm extends Component
 
     public function save()
     {
-        foreach (['sku', 'category_id', 'supplier_id'] as $f) {
+        foreach (['category_id', 'supplier_id'] as $f) {
             $this->$f = $this->$f ?: null;
         }
         $this->is_active = (bool) $this->is_active;

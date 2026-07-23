@@ -9,8 +9,9 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>SKU</label>
-                    <input type="text" wire:model="sku" class="form-control">
+                    <label>SKU *</label>
+                    <input type="text" wire:model="sku" class="form-control @error('sku') is-invalid @enderror" required>
+                    @error('sku') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
             </div>
             <div class="col-md-6">
