@@ -16,6 +16,7 @@ class PaymentServiceTest extends ModuleTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        PaymentGateway::withoutBranch()->update(['is_active' => false]);
         $this->service = app(PaymentService::class);
     }
 

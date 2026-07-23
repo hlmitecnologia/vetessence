@@ -109,9 +109,19 @@
             </div>
         </div>
 
-        {{-- PDV suspenso temporariamente
-        @if($hasPdvGateway) ... @endif
-        --}}
+        @if($hasPdvGateway)
+        <div class="card card-warning" id="pdv-section">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-credit-card"></i> Pagar com PDV</h3>
+            </div>
+            <div class="card-body text-center" id="pdv-body">
+                <button onclick="startPdvCharge()" class="btn btn-warning btn-lg" id="pdv-charge-btn">
+                    <i class="fas fa-credit-card"></i> Enviar para Maquininha
+                </button>
+                <p class="text-muted small mt-2 mb-0">O valor será enviado ao SmartPOS para pagamento com cartão, PIX ou dinheiro.</p>
+            </div>
+        </div>
+        @endif
 
         <div class="card">
             <div class="card-header">
@@ -293,6 +303,112 @@ document.addEventListener('DOMContentLoaded', function() {
 @push('scripts')
 <script>
 let currentPayload = '';
+
+function startPdvCharge() {
+    const btn = document.getElementById('pdv-charge-btn');
+    const body = document.getElementById('pdv-body');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+    fetch('{{ route("invoices.charge", $invoice) }}', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success && data.transaction_id) {
+            body.innerHTML = '<div class="text-center">' +
+                '<i class="fas fa-spinner fa-spin text-warning" style="font-size: 32px;"></i>' +
+                '<h5 class="mt-2">Aguardando pagamento na maquininha...</h5>' +
+                '<p class="text-muted">Identificador: <code>' + data.transaction_id + '</code></p>' +
+                '<p class="text-muted small">O cliente deve realizar o pagamento no SmartPOS.</p>' +
+                '<button onclick="cancelPdvCharge(\'' + data.transaction_id + '\')" class="btn btn-default btn-sm mt-2">' +
+                '<i class="fas fa-times"></i> Cancelar</button>' +
+                '</div>';
+            pollPdvStatus(data.transaction_id);
+        } else {
+            body.innerHTML = '<p class="text-danger"><i class="fas fa-exclamation-triangle"></i> ' + (data.message || 'Erro ao enviar para maquininha.') + '</p>' +
+                '<button onclick="startPdvCharge()" class="btn btn-warning btn-sm"><i class="fas fa-redo"></i> Tentar novamente</button>';
+        }
+    })
+    .catch(() => {
+        body.innerHTML = '<p class="text-danger"><i class="fas fa-exclamation-triangle"></i> Erro de comunicação com o servidor.</p>' +
+            '<button onclick="startPdvCharge()" class="btn btn-warning btn-sm"><i class="fas fa-redo"></i> Tentar novamente</button>';
+    });
+}
+
+function pollPdvStatus(identifier) {
+    const pollUrl = '{{ route("pinpdv.query", "__ID__") }}'.replace('__ID__', identifier);
+
+    function poll() {
+        fetch(pollUrl, { headers: { 'Accept': 'application/json' } })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'paid') {
+                confirmPdvPayment(identifier, data);
+            } else if (data.status === 'pending') {
+                setTimeout(poll, 3000);
+            } else {
+                document.getElementById('pdv-body').innerHTML =
+                    '<p class="text-danger"><i class="fas fa-exclamation-triangle"></i> ' + (data.message || 'Pagamento não confirmado.') + '</p>' +
+                    '<button onclick="startPdvCharge()" class="btn btn-warning btn-sm"><i class="fas fa-redo"></i> Tentar novamente</button>';
+            }
+        })
+        .catch(() => {
+            setTimeout(poll, 5000);
+        });
+    }
+
+    setTimeout(poll, 3000);
+}
+
+function confirmPdvPayment(identifier, pollData) {
+    const body = document.getElementById('pdv-body');
+    body.innerHTML = '<div class="text-center">' +
+        '<i class="fas fa-spinner fa-spin text-success" style="font-size: 32px;"></i>' +
+        '<h5 class="mt-2">Pagamento confirmado! Registrando...</h5>' +
+        '</div>';
+
+    fetch('{{ route("invoices.pay-with-gateway", $invoice) }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            payment_method: pollData.payment_method || 'cartao_credito',
+            transaction_data: pollData.transaction_data || {}
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            body.innerHTML = '<p class="text-danger"><i class="fas fa-exclamation-triangle"></i> ' + (data.message || 'Erro ao registrar pagamento.') + '</p>' +
+                '<button onclick="startPdvCharge()" class="btn btn-warning btn-sm"><i class="fas fa-redo"></i> Tentar novamente</button>';
+        }
+    })
+    .catch(() => {
+        body.innerHTML = '<p class="text-danger"><i class="fas fa-exclamation-triangle"></i> Erro ao registrar pagamento.</p>' +
+            '<button onclick="startPdvCharge()" class="btn btn-warning btn-sm"><i class="fas fa-redo"></i> Tentar novamente</button>';
+    });
+}
+
+function cancelPdvCharge(identifier) {
+    if (!confirm('Deseja cancelar esta cobrança?')) return;
+    const body = document.getElementById('pdv-body');
+    body.innerHTML = '<p class="text-muted"><i class="fas fa-spinner fa-spin"></i> Cancelando...</p>';
+
+    fetch('{{ route("invoices.charge", $invoice) }}', {
+        method: 'DELETE',
+        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
+    }).catch(() => {}).finally(() => {
+        body.innerHTML = '<button onclick="startPdvCharge()" class="btn btn-warning btn-lg"><i class="fas fa-credit-card"></i> Enviar para Maquininha</button>' +
+            '<p class="text-muted small mt-2 mb-0">O valor será enviado ao SmartPOS para pagamento.</p>';
+    });
+}
 
 function generatePix() {
     const loading = document.getElementById('pix-loading');

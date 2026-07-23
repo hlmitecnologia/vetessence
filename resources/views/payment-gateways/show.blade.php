@@ -30,9 +30,17 @@
                     <span class="badge badge-success">Ambos</span>
                 @endif
             </p></div>
+            @if($paymentGateway->provider === 'pix')
             <div class="col-md-4"><strong>Chave PIX:</strong><p>{{ $paymentGateway->public_key ?: '-' }}</p></div>
+            @endif
             <div class="col-md-4"><strong>Unidade:</strong><p>{{ $paymentGateway->branch_id ? $paymentGateway->branch->name : 'Todas as unidades' }}</p></div>
         </div>
+        @if($paymentGateway->provider === 'multicard')
+        <div class="row mt-2">
+            <div class="col-md-4"><strong>ID Dispositivo (PinPDV):</strong><p><code>{{ $paymentGateway->config['pinpdv_id'] ?? '-' }}</code></p></div>
+            <div class="col-md-4"><strong>Ambiente:</strong><p>{{ ucfirst($paymentGateway->config['ambiente'] ?? '-') }}</p></div>
+        </div>
+        @endif
         @if($paymentGateway->config['url'] ?? false)
         <div class="row">
             <div class="col-md-12"><strong>URL (PIX dinâmico):</strong><p><code>{{ $paymentGateway->config['url'] }}</code></p></div>

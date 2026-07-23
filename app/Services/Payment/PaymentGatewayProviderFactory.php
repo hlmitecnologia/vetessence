@@ -5,6 +5,7 @@ namespace App\Services\Payment;
 use App\Models\PaymentGateway;
 use App\Services\Payment\Contracts\PaymentGatewayProvider;
 use App\Services\Payment\Providers\MercadoPagoProvider;
+use App\Services\Payment\Providers\MultiplusCardProvider;
 use App\Services\Payment\Providers\PagSeguroProvider;
 use App\Services\Payment\Providers\StoneProvider;
 use App\Services\Payment\Providers\StripeProvider;
@@ -19,6 +20,7 @@ class PaymentGatewayProviderFactory
         'stone'       => StoneProvider::class,
         'stripe'      => StripeProvider::class,
         'pix'         => PixStaticProvider::class,
+        'multicard'   => MultiplusCardProvider::class,
     ];
 
     public function make(PaymentGateway $gateway): PaymentGatewayProvider

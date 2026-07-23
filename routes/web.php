@@ -178,6 +178,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('invoices/{invoice}/pix', 'App\Http\Controllers\InvoiceController@generatePix')->name('invoices.pix');
     Route::post('invoices/{invoice}/pay', 'App\Http\Controllers\InvoiceController@pay')->name('invoices.pay');
     Route::post('invoices/{invoice}/charge', 'App\Http\Controllers\InvoiceController@charge')->name('invoices.charge');
+    Route::post('invoices/{invoice}/pay-with-gateway', 'App\Http\Controllers\InvoiceController@payWithGateway')->name('invoices.pay-with-gateway');
+    Route::get('pinpdv/pre-venda/{identifier}', [\App\Http\Controllers\Api\PinPdvPollController::class, 'query'])->name('pinpdv.query');
     Route::post('invoices/{invoice}/cancel', 'App\Http\Controllers\InvoiceController@cancel')->name('invoices.cancel');
     Route::post('invoices/{invoice}/emitir-nota-fiscal', 'App\Http\Controllers\InvoiceController@emitirNotaFiscal')->name('invoices.emitir-nota-fiscal');
 

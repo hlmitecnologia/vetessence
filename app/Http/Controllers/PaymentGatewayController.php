@@ -29,14 +29,16 @@ class PaymentGatewayController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'provider' => 'required|string|max:50',
-            'channel' => 'required|in:portal',
+            'channel' => 'required|in:portal,pdv,both',
             'is_active' => 'boolean',
             'is_sandbox' => 'boolean',
             'public_key' => 'nullable|string|required_if:provider,pix',
-            'secret_key' => 'nullable|string',
+            'secret_key' => 'nullable|string|required_if:provider,multicard',
             'webhook_secret' => 'nullable|string',
             'config' => 'nullable',
             'config.url' => 'nullable|string|max:255',
+            'config.pinpdv_id' => 'nullable|required_if:provider,multicard|integer',
+            'config.ambiente' => 'nullable|required_if:provider,multicard|in:homologacao,producao',
             'notes' => 'nullable|string',
             'branch_id' => 'nullable|exists:branches,id',
         ]);
@@ -48,13 +50,14 @@ class PaymentGatewayController extends Controller
             $validated['branch_id'] = null;
         }
 
-        if ($request->has('config') && is_array($request->config)) {
-            $validated['config'] = array_merge([
-                'url' => '',
-            ], $request->config);
-        } elseif ($request->config) {
-            $validated['config'] = json_decode($request->config, true);
-        } else {
+        $config = $request->has('config') && is_array($request->config) ? $request->config : [];
+        $validated['config'] = array_filter([
+            'url' => $config['url'] ?? '',
+            'pinpdv_id' => $config['pinpdv_id'] ?? null,
+            'ambiente' => $config['ambiente'] ?? null,
+        ], fn ($v) => $v !== '' && $v !== null);
+
+        if (empty($validated['config'])) {
             $validated['config'] = null;
         }
 
@@ -84,14 +87,16 @@ class PaymentGatewayController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'provider' => 'required|string|max:50',
-            'channel' => 'required|in:portal',
+            'channel' => 'required|in:portal,pdv,both',
             'is_active' => 'boolean',
             'is_sandbox' => 'boolean',
             'public_key' => 'nullable|string|required_if:provider,pix',
-            'secret_key' => 'nullable|string',
+            'secret_key' => 'nullable|string|required_if:provider,multicard',
             'webhook_secret' => 'nullable|string',
             'config' => 'nullable',
             'config.url' => 'nullable|string|max:255',
+            'config.pinpdv_id' => 'nullable|required_if:provider,multicard|integer',
+            'config.ambiente' => 'nullable|required_if:provider,multicard|in:homologacao,producao',
             'notes' => 'nullable|string',
             'branch_id' => 'nullable|exists:branches,id',
         ]);
@@ -103,13 +108,14 @@ class PaymentGatewayController extends Controller
             $validated['branch_id'] = null;
         }
 
-        if ($request->has('config') && is_array($request->config)) {
-            $validated['config'] = array_merge([
-                'url' => '',
-            ], $request->config);
-        } elseif ($request->config) {
-            $validated['config'] = json_decode($request->config, true);
-        } else {
+        $config = $request->has('config') && is_array($request->config) ? $request->config : [];
+        $validated['config'] = array_filter([
+            'url' => $config['url'] ?? '',
+            'pinpdv_id' => $config['pinpdv_id'] ?? null,
+            'ambiente' => $config['ambiente'] ?? null,
+        ], fn ($v) => $v !== '' && $v !== null);
+
+        if (empty($validated['config'])) {
             $validated['config'] = null;
         }
 

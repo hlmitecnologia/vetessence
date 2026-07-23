@@ -137,7 +137,9 @@ class InvoiceController extends Controller
 
         $hasNfseConfig = NfseConfig::where('is_active', true)->exists();
         $hasNfeConfig = NfeConfig::where('is_active', true)->exists();
-        return view('invoices.show', compact('invoice', 'hasNfseConfig', 'hasNfeConfig'));
+        $hasPdvGateway = PaymentGateway::withoutBranch()->active()->where('channel', 'pdv')
+            ->orWhere(function ($q) { $q->where('channel', 'both'); })->exists();
+        return view('invoices.show', compact('invoice', 'hasNfseConfig', 'hasNfeConfig', 'hasPdvGateway'));
     }
 
     public function emitirNotaFiscal(Invoice $invoice, NfseService $nfseService, NfeService $nfeService)
@@ -393,5 +395,28 @@ class InvoiceController extends Controller
         InvoicePaid::dispatch($invoice);
 
         return redirect()->back()->with('success', 'Pagamento registrado!');
+    }
+
+    public function payWithGateway(Request $request, Invoice $invoice)
+    {
+        if ($invoice->status === 'paid') {
+            return response()->json(['success' => false, 'message' => 'Fatura já foi paga.'], 400);
+        }
+
+        $validated = $request->validate([
+            'payment_method' => 'required|in:pix,dinheiro,cartao_credito,cartao_debito',
+            'transaction_data' => 'nullable|array',
+        ]);
+
+        $invoice->update([
+            'status' => 'paid',
+            'paid_at' => now(),
+            'payment_method' => $validated['payment_method'],
+            'gateway_status' => $validated['transaction_data'] ?? $invoice->gateway_status,
+        ]);
+
+        InvoicePaid::dispatch($invoice);
+
+        return response()->json(['success' => true, 'message' => 'Pagamento confirmado via gateway.']);
     }
 }

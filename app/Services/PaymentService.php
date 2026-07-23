@@ -148,6 +148,9 @@ class PaymentService
                 if ($channel === 'portal') {
                     $q->orWhere('channel', 'both');
                 }
+                if ($channel === 'pdv') {
+                    $q->orWhere('channel', 'both');
+                }
             });
 
         return $query->first();
