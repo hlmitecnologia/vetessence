@@ -115,9 +115,14 @@ class PaymentService
                 'paid_at' => $data['paid_at'] ?: now(),
                 'gateway_status' => $data['gateway_status'],
                 'gateway_paid_at' => $data['paid_at'] ?: now(),
-                'payment_method' => 'cartao_credito',
+                'payment_method' => $data['payment_method'] ?? 'cartao_credito',
             ]);
             \App\Events\InvoicePaid::dispatch($invoice);
+        } elseif ($data['status'] === 'cancelled' && $invoice->status !== 'cancelled') {
+            $invoice->update([
+                'status' => 'cancelled',
+                'gateway_status' => 'cancelled',
+            ]);
         } elseif ($data['status'] !== $invoice->gateway_status) {
             $invoice->update([
                 'gateway_status' => $data['gateway_status'],

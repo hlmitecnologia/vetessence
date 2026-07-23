@@ -161,6 +161,17 @@
                     @error('config.pinpdv_id')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     <small class="text-muted">Para listar os dispositivos disponíveis, acesse o portal PinPDV ou use a API: <code>GET /pinpdv</code></small>
                 </div>
+                <div class="alert alert-warning mb-0">
+                    <i class="fas fa-link mr-1"></i><strong>Webhook (configurar no painel PinPDV)</strong><br>
+                    Para receber notificações automáticas de pagamento, configure a URL abaixo no painel do MultiplusCard:
+                    <div class="input-group mt-2">
+                        <input type="text" readonly class="form-control" value="Salve o gateway primeiro para gerar a URL" id="multicard-webhook-preview">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-default" onclick="copyMulticardWebhook()" title="Copiar"><i class="fas fa-copy"></i></button>
+                        </div>
+                    </div>
+                    <small class="text-muted">URL gerada após salvar: <code>{{ url('/api/payments/webhook/ID') }}</code></small>
+                </div>
             </div>
 
             {{-- OUTRO (genérico) --}}
@@ -211,5 +222,14 @@
             select.addEventListener('change', toggleProviderFields);
         }
     });
+
+    function copyMulticardWebhook() {
+        var el = document.getElementById('multicard-webhook-preview');
+        if (el) {
+            navigator.clipboard.writeText(el.value).then(function() {
+                alert('URL do webhook copiada!');
+            });
+        }
+    }
 })();
 </script>

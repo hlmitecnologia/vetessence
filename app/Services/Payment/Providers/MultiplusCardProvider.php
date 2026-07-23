@@ -51,6 +51,48 @@ class MultiplusCardProvider implements PaymentGatewayProvider
 
     public function verifyWebhook(array $payload, PaymentGateway $gateway): ?array
     {
+        $identificador = $payload['identificador'] ?? null;
+
+        if (!$identificador) {
+            return null;
+        }
+
+        $isCancelamento = $payload['isCancelamento'] ?? false;
+
+        if ($isCancelamento) {
+            return [
+                'transaction_id' => $identificador,
+                'status' => 'cancelled',
+                'gateway_status' => 'cancelled',
+                'paid_at' => null,
+                'reference' => null,
+            ];
+        }
+
+        $statusKey = $payload['status']['key'] ?? null;
+
+        if ($statusKey === 0) {
+            $transacao = $payload['transacoes'][0] ?? null;
+            $dados = $transacao['dados'] ?? null;
+            $tipoPagamento = $transacao['tipoPagamento'] ?? 0;
+
+            return [
+                'transaction_id' => $identificador,
+                'status' => 'paid',
+                'gateway_status' => 'paid',
+                'paid_at' => $transacao['atualizadoEm'] ?? $transacao['cadastradoEm'] ?? now()->toIso8601String(),
+                'payment_method' => self::TIPO_PAGAMENTO_MAP[$tipoPagamento] ?? 'cartao_credito',
+                'reference' => null,
+                'transaction_data' => [
+                    'nsu' => $dados['nsu'] ?? null,
+                    'autorizacao' => $dados['autorizacao'] ?? null,
+                    'bandeira' => $dados['bandeira'] ?? null,
+                    'adquirente' => $dados['adquirente'] ?? null,
+                    'data_hora' => $dados['dataHora'] ?? null,
+                ],
+            ];
+        }
+
         return null;
     }
 

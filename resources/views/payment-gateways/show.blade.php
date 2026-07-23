@@ -52,6 +52,12 @@
                 <p><code id="webhook-url">{{ url('/api/payments/webhook/' . $paymentGateway->id) }}</code>
                     <button type="button" class="btn btn-xs btn-default" onclick="copyWebhookUrl()"><i class="fas fa-copy"></i></button>
                 </p>
+                @if($paymentGateway->provider === 'multicard')
+                <div class="alert alert-warning mb-0 mt-2">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    <strong>Passo a passo:</strong> Acesse o painel PinPDV em <strong>Configurações &gt; Webhook</strong> e informe esta URL para receber notificações automáticas de pagamento a cada transação aprovada no SmartPOS.
+                </div>
+                @endif
             </div>
         </div>
     </div>
