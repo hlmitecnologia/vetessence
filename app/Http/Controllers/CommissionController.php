@@ -43,7 +43,7 @@ class CommissionController extends Controller
         $logs = $query->orderBy('created_at', 'desc')->get();
         $vets = User::where(fn($q) => $q->whereHas('roles', fn($q) => $q->whereIn('name', ['veterinarian', 'super-admin']))->orWhere('is_veterinarian', true))->orderBy('name')->get();
 
-        $totals = (clone $query)->toBase()->selectRaw('SUM(base_value) as total_base, SUM(commission_value) as total_commission')->first();
+        $totals = (clone $query)->toBase()->reorder()->selectRaw('SUM(base_value) as total_base, SUM(commission_value) as total_commission')->first();
 
         return view('commissions.index', compact('logs', 'vets', 'totals'));
     }
