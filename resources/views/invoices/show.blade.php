@@ -125,7 +125,7 @@
 
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Registrar Pagamento <i class="fas fa-question-circle text-muted" style="font-size: 0.7em; cursor: help;" data-toggle="tooltip" title="Use esta opção para registrar um pagamento efetuado que ocorreu manualmente, sem respostas de sistemas e integrações dos Gateways de Pagamento"></i></h3>
+                <h3 class="card-title">Registrar Pagamento <i class="fas fa-question-circle text-muted" style="font-size: 0.7em; cursor: help;" data-toggle="tooltip" title="Use esta opção para registrar manualmente um pagamento realizado sem respostas de sistemas e integrações dos Gateways de Pagamento"></i></h3>
             </div>
             <div class="card-body">
                 <form action="{{ route('invoices.pay', $invoice) }}" method="POST">
