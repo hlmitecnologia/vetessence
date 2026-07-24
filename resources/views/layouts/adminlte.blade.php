@@ -865,6 +865,9 @@
         // Legacy n() function for views that still call it
         window.n = function() { return true; };
 
+        // Initialize Bootstrap tooltips globally
+        $(function() { $('[data-toggle="tooltip"]').tooltip(); });
+
         // Global SweetAlert2 confirmation using data-confirm attribute
         // Colors: Sim=#455e36, Cancelar=#dc3545
         function swalConfirm(message) {
