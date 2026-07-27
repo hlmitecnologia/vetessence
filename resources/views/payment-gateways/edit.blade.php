@@ -43,6 +43,7 @@
                             <option value="">Selecione</option>
                             <option value="portal" {{ old('channel', $paymentGateway->channel) == 'portal' ? 'selected' : '' }}>Portal (pagamento online pelo tutor)</option>
                             <option value="pdv" {{ old('channel', $paymentGateway->channel) == 'pdv' ? 'selected' : '' }}>PDV (pagamento presencial na maquininha)</option>
+                            <option value="both" {{ old('channel', $paymentGateway->channel) == 'both' ? 'selected' : '' }}>Ambos (Portal + PDV)</option>
                         </select>
                         @error('channel')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
@@ -97,6 +98,24 @@
                             <label>Access Token (secret_key)</label>
                             <input type="password" name="secret_key" class="form-control @error('secret_key') is-invalid @enderror" value="{{ old('secret_key', $paymentGateway->secret_key) }}" placeholder="APP_USR-xxxx-xxxx">
                             @error('secret_key')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Terminal ID (Point Smart) *</label>
+                    <input type="text" name="config[terminal_id]" class="form-control @error('config.terminal_id') is-invalid @enderror" value="{{ old('config.terminal_id', $paymentGateway->config['terminal_id'] ?? '') }}" placeholder="Ex: NEWLAND_N950__N950NCB801293324">
+                    @error('config.terminal_id')<span class="invalid-feedback">{{ $message }}</span>@enderror>
+                    <small class="text-muted">ID do Point Smart obtido via <code>GET /point/integration-api/devices</code> ou no painel Mercado Pago. Necessário para canal PDV/Ambos.</small>
+                </div>
+                <div class="alert alert-warning mb-0">
+                    <i class="fas fa-link mr-1"></i><strong>Webhook (configurar no painel Mercado Pago)</strong><br>
+                    Configure a URL abaixo em <strong>Your Integrations &gt; Webhooks</strong> para o tópico <strong>Order (Mercado Pago)</strong>:
+                    <div class="input-group mt-2">
+                        <input type="text" readonly class="form-control"
+                            value="{{ url('/api/payments/webhook/' . $paymentGateway->id) }}"
+                            id="mp-webhook-preview">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-default" onclick="copyMpWebhook()" title="Copiar"><i class="fas fa-copy"></i></button>
                         </div>
                     </div>
                 </div>
@@ -224,6 +243,15 @@
 
     function copyMulticardWebhook() {
         var el = document.getElementById('multicard-webhook-preview');
+        if (el) {
+            navigator.clipboard.writeText(el.value).then(function() {
+                alert('URL do webhook copiada!');
+            });
+        }
+    }
+
+    function copyMpWebhook() {
+        var el = document.getElementById('mp-webhook-preview');
         if (el) {
             navigator.clipboard.writeText(el.value).then(function() {
                 alert('URL do webhook copiada!');

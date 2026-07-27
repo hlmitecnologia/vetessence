@@ -5,6 +5,8 @@ namespace App\Services\Payment\Providers;
 use App\Models\Invoice;
 use App\Models\PaymentGateway;
 use App\Services\Payment\Contracts\PaymentGatewayProvider;
+use GuzzleHttp\Client;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use MercadoPago\Client\Payment\PaymentClient;
 use MercadoPago\Client\Preference\PreferenceClient;
@@ -21,7 +23,13 @@ class MercadoPagoProvider implements PaymentGatewayProvider
 
     public function charge(Invoice $invoice): array
     {
-        return $this->errorResponse('Mercado Pago não suporta cobrança PDV/maquininha. Use o canal Portal para checkout online.');
+        $this->log('Iniciando cobrança PDV (Mercado Pago Point)', $invoice);
+
+        if ($this->hasCredentials()) {
+            return $this->apiChargePoint($invoice);
+        }
+
+        return $this->simulatedChargePoint($invoice);
     }
 
     public function checkout(Invoice $invoice): array
@@ -39,6 +47,15 @@ class MercadoPagoProvider implements PaymentGatewayProvider
     {
         $this->log('Verificando webhook Mercado Pago', ['payload' => $payload]);
 
+        $type = $payload['type'] ?? '';
+
+        if ($type === 'order') {
+            $orderId = $payload['data']['id'] ?? null;
+            if ($orderId) {
+                return $this->verifyOrderWebhook($orderId);
+            }
+        }
+
         $transactionId = $payload['data']['id'] ?? $payload['resource'] ?? null;
 
         if (!$transactionId) {
@@ -55,7 +72,59 @@ class MercadoPagoProvider implements PaymentGatewayProvider
 
     public static function supportedChannels(): array
     {
-        return ['portal'];
+        return ['portal', 'pdv'];
+    }
+
+    public function queryOrder(string $orderId): array
+    {
+        if (!$this->hasCredentials()) {
+            return $this->simulatedQueryOrder($orderId);
+        }
+
+        if (!$this->setupMercadoPago()) {
+            return ['success' => false, 'status' => 'failed', 'message' => 'Mercado Pago não configurado.'];
+        }
+
+        try {
+            $client = $this->makeHttpClient();
+            $response = $client->get("/v1/orders/{$orderId}");
+            $body = json_decode((string) $response->getBody(), true);
+
+            $status = $body['status'] ?? 'created';
+            $mappedStatus = $this->mapOrderStatus($status);
+
+            $result = [
+                'success' => true,
+                'status' => $mappedStatus,
+                'raw_response' => $body,
+            ];
+
+            if ($mappedStatus === 'paid') {
+                $payment = $body['transactions']['payments'][0] ?? null;
+                $result['payment_method'] = $this->mapMpPaymentType($payment['payment_method']['type'] ?? 'credit_card');
+                $result['transaction_data'] = [
+                    'payment_id' => $payment['id'] ?? null,
+                    'amount' => $payment['amount'] ?? null,
+                    'status_detail' => $payment['status_detail'] ?? null,
+                ];
+            } elseif ($mappedStatus === 'pending') {
+                $result['message'] = 'Aguardando pagamento no Point Smart...';
+            } else {
+                $result['message'] = 'Status: ' . $status;
+            }
+
+            return $result;
+        } catch (\Exception $e) {
+            Log::error('[MercadoPago] Erro ao consultar order', [
+                'order_id' => $orderId,
+                'error' => $e->getMessage(),
+            ]);
+            return [
+                'success' => false,
+                'status' => 'failed',
+                'message' => 'Erro ao consultar order: ' . $e->getMessage(),
+            ];
+        }
     }
 
     protected function hasCredentials(): bool
@@ -77,6 +146,116 @@ class MercadoPagoProvider implements PaymentGatewayProvider
         );
         $this->useApi = true;
         return true;
+    }
+
+    protected function apiChargePoint(Invoice $invoice): array
+    {
+        if (!$this->setupMercadoPago()) {
+            return $this->errorResponse('Mercado Pago não configurado: access_token ausente.');
+        }
+
+        $terminalId = $this->gateway->config['terminal_id'] ?? null;
+        if (!$terminalId) {
+            return $this->errorResponse('Terminal ID não configurado. Configure o ID do Point Smart nas credenciais do gateway.');
+        }
+
+        try {
+            $client = $this->makeHttpClient();
+            $idempotencyKey = (string) Str::uuid();
+            $orderId = 'VET-' . $invoice->id . '-' . strtoupper(uniqid());
+
+            $payload = [
+                'type' => 'point',
+                'external_reference' => (string) $invoice->id,
+                'description' => 'Fatura #' . $invoice->invoice_number,
+                'expiration_time' => 'PT15M',
+                'transactions' => [
+                    'payments' => [
+                        [
+                            'amount' => number_format($invoice->total, 2, '.', ''),
+                        ],
+                    ],
+                ],
+                'config' => [
+                    'point' => [
+                        'terminal_id' => $terminalId,
+                        'print_on_terminal' => 'no_ticket',
+                    ],
+                    'payment_method' => [
+                        'default_installments' => 1,
+                        'installments_cost' => 'seller',
+                    ],
+                ],
+            ];
+
+            $response = $client->post('/v1/orders', [
+                'json' => $payload,
+                'headers' => [
+                    'X-Idempotency-Key' => $idempotencyKey,
+                ],
+            ]);
+
+            $body = json_decode((string) $response->getBody(), true);
+
+            if (empty($body['id'])) {
+                throw new \RuntimeException('Resposta inválida ao criar order Point.');
+            }
+
+            return [
+                'success' => true,
+                'transaction_id' => $body['id'],
+                'reference' => (string) $invoice->id,
+                'status' => 'pending',
+                'message' => 'Pagamento enviado ao Point Smart. Aguardando...',
+                'redirect_url' => null,
+                'raw_response' => $body,
+            ];
+        } catch (MPApiException $e) {
+            $content = $e->getApiResponse()->getContent();
+            Log::error('[MercadoPago] Erro na API ao criar order Point', ['response' => $content]);
+            return $this->errorResponse('Erro Mercado Pago: ' . ($content['message'] ?? 'erro desconhecido'));
+        } catch (\Exception $e) {
+            Log::error('[MercadoPago] Erro inesperado ao criar order Point', ['error' => $e->getMessage()]);
+            return $this->errorResponse('Erro inesperado: ' . $e->getMessage());
+        }
+    }
+
+    protected function simulatedChargePoint(Invoice $invoice): array
+    {
+        $orderId = 'MP-POINT-' . strtoupper(uniqid());
+
+        return [
+            'success' => true,
+            'transaction_id' => $orderId,
+            'reference' => (string) $invoice->id,
+            'status' => 'pending',
+            'message' => '[SIMULADO] Pagamento enviado ao Point Smart. Aguardando...',
+            'redirect_url' => null,
+            'raw_response' => [
+                'id' => $orderId,
+                'status' => 'created',
+                'simulated' => true,
+            ],
+        ];
+    }
+
+    protected function simulatedQueryOrder(string $orderId): array
+    {
+        return [
+            'success' => true,
+            'status' => 'paid',
+            'payment_method' => 'cartao_credito',
+            'transaction_data' => [
+                'payment_id' => 'MP-PAY-' . strtoupper(uniqid()),
+                'amount' => '0.00',
+                'status_detail' => 'accredited',
+            ],
+            'raw_response' => [
+                'id' => $orderId,
+                'status' => 'processed',
+                'simulated' => true,
+            ],
+        ];
     }
 
     protected function simulatedCheckout(Invoice $invoice): array
@@ -171,6 +350,61 @@ class MercadoPagoProvider implements PaymentGatewayProvider
         }
     }
 
+    protected function verifyOrderWebhook(string $orderId): ?array
+    {
+        if (!$this->hasCredentials()) {
+            return $this->simulatedVerifyOrderWebhook($orderId);
+        }
+
+        return $this->apiVerifyOrderWebhook($orderId);
+    }
+
+    protected function apiVerifyOrderWebhook(string $orderId): ?array
+    {
+        if (!$this->setupMercadoPago()) {
+            Log::warning('[MercadoPago] Order webhook ignorado — access_token ausente.');
+            return null;
+        }
+
+        try {
+            $client = $this->makeHttpClient();
+            $response = $client->get("/v1/orders/{$orderId}");
+            $body = json_decode((string) $response->getBody(), true);
+
+            $status = $body['status'] ?? 'created';
+            $mappedStatus = $this->mapOrderStatus($status);
+            $externalReference = $body['external_reference'] ?? null;
+            $payment = $body['transactions']['payments'][0] ?? null;
+
+            return [
+                'transaction_id' => $orderId,
+                'reference' => $externalReference,
+                'status' => $mappedStatus,
+                'paid_at' => $mappedStatus === 'paid' ? ($body['last_updated_date'] ?? now()->toIso8601String()) : null,
+                'gateway_status' => $status,
+                'payment_method' => $mappedStatus === 'paid' ? $this->mapMpPaymentType($payment['payment_method']['type'] ?? 'credit_card') : null,
+            ];
+        } catch (\Exception $e) {
+            Log::error('[MercadoPago] Erro ao consultar order no webhook', [
+                'order_id' => $orderId,
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    protected function simulatedVerifyOrderWebhook(string $orderId): ?array
+    {
+        return [
+            'transaction_id' => $orderId,
+            'reference' => null,
+            'status' => 'paid',
+            'paid_at' => now(),
+            'gateway_status' => 'processed',
+            'payment_method' => 'cartao_credito',
+        ];
+    }
+
     protected function simulatedVerifyWebhook(string $transactionId, array $payload): ?array
     {
         $action = $payload['action'] ?? $payload['type'] ?? '';
@@ -242,6 +476,45 @@ class MercadoPagoProvider implements PaymentGatewayProvider
             'authorized' => 'pending',
             default => 'pending',
         };
+    }
+
+    protected function mapOrderStatus(?string $mpStatus): string
+    {
+        return match ($mpStatus) {
+            'processed' => 'paid',
+            'failed' => 'failed',
+            'canceled' => 'cancelled',
+            'refunded' => 'refunded',
+            'expired' => 'failed',
+            'created' => 'pending',
+            'at_terminal' => 'pending',
+            'action_required' => 'pending',
+            default => 'pending',
+        };
+    }
+
+    protected function mapMpPaymentType(?string $mpType): string
+    {
+        return match ($mpType) {
+            'credit_card' => 'cartao_credito',
+            'debit_card' => 'cartao_debito',
+            'pix' => 'pix',
+            'cash' => 'dinheiro',
+            default => 'cartao_credito',
+        };
+    }
+
+    protected function makeHttpClient(): Client
+    {
+        return new Client([
+            'base_uri' => 'https://api.mercadopago.com',
+            'timeout' => 15,
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->gateway->secret_key,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ],
+        ]);
     }
 
     protected function errorResponse(string $message): array

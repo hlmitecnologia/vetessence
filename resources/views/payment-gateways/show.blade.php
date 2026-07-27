@@ -41,6 +41,11 @@
             <div class="col-md-4"><strong>Ambiente:</strong><p>{{ ucfirst($paymentGateway->config['ambiente'] ?? '-') }}</p></div>
         </div>
         @endif
+        @if($paymentGateway->provider === 'mercadopago' && ($paymentGateway->channel === 'pdv' || $paymentGateway->channel === 'both'))
+        <div class="row mt-2">
+            <div class="col-md-6"><strong>Terminal ID (Point Smart):</strong><p><code>{{ $paymentGateway->config['terminal_id'] ?? '-' }}</code></p></div>
+        </div>
+        @endif
         @if($paymentGateway->config['url'] ?? false)
         <div class="row">
             <div class="col-md-12"><strong>URL (PIX dinâmico):</strong><p><code>{{ $paymentGateway->config['url'] }}</code></p></div>
@@ -56,6 +61,12 @@
                 <div class="alert alert-warning mb-0 mt-2">
                     <i class="fas fa-info-circle mr-1"></i>
                     <strong>Passo a passo:</strong> Acesse o painel PinPDV em <strong>Configurações &gt; Webhook</strong> e informe esta URL para receber notificações automáticas de pagamento a cada transação aprovada no SmartPOS.
+                </div>
+                @endif
+                @if($paymentGateway->provider === 'mercadopago')
+                <div class="alert alert-warning mb-0 mt-2">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    <strong>Passo a passo:</strong> Acesse <strong>Your Integrations &gt; Webhooks</strong> no painel Mercado Pago, configure esta URL para o tópico <strong>Order (Mercado Pago)</strong> para receber notificações de pagamentos no Point Smart.
                 </div>
                 @endif
             </div>
