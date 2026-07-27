@@ -307,8 +307,7 @@ let currentPayload = '';
 function startPdvCharge() {
     const btn = document.getElementById('pdv-charge-btn');
     const body = document.getElementById('pdv-body');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...'; }
 
     fetch('{{ route("invoices.charge", $invoice) }}', {
         method: 'POST',
