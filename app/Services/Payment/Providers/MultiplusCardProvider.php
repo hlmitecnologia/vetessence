@@ -53,9 +53,17 @@ class MultiplusCardProvider implements PaymentGatewayProvider
     {
         $identificador = $payload['identificador'] ?? null;
 
+        Log::info('[MultiplusCard] Webhook recebido', [
+            'identificador' => $identificador,
+            'status' => $payload['status'] ?? null,
+            'isCancelamento' => $payload['isCancelamento'] ?? null,
+        ]);
+
         if (!$identificador) {
             return null;
         }
+
+        $reference = $this->extractInvoiceId($identificador);
 
         $isCancelamento = $payload['isCancelamento'] ?? false;
 
@@ -65,7 +73,7 @@ class MultiplusCardProvider implements PaymentGatewayProvider
                 'status' => 'cancelled',
                 'gateway_status' => 'cancelled',
                 'paid_at' => null,
-                'reference' => null,
+                'reference' => $reference,
             ];
         }
 
@@ -82,7 +90,7 @@ class MultiplusCardProvider implements PaymentGatewayProvider
                 'gateway_status' => 'paid',
                 'paid_at' => $transacao['atualizadoEm'] ?? $transacao['cadastradoEm'] ?? now()->toIso8601String(),
                 'payment_method' => self::TIPO_PAGAMENTO_MAP[$tipoPagamento] ?? 'cartao_credito',
-                'reference' => null,
+                'reference' => $reference,
                 'transaction_data' => [
                     'nsu' => $dados['nsu'] ?? null,
                     'autorizacao' => $dados['autorizacao'] ?? null,
@@ -250,7 +258,7 @@ class MultiplusCardProvider implements PaymentGatewayProvider
     {
         try {
             $client = $this->makeClient();
-            $identifier = $invoice->gateway_transaction_id ?: ('VET-' . $invoice->id . '-' . strtoupper(uniqid()));
+            $identifier = 'VET-' . $invoice->id . '-' . strtoupper(uniqid());
             $payload = [
                 'Identificador' => $identifier,
                 'Valor' => (float) number_format($invoice->total, 2, '.', ''),
@@ -292,6 +300,14 @@ class MultiplusCardProvider implements PaymentGatewayProvider
                 'raw_response' => [],
             ];
         }
+    }
+
+    protected function extractInvoiceId(string $identifier): ?string
+    {
+        if (preg_match('/^VET-(\d+)-/', $identifier, $matches)) {
+            return $matches[1];
+        }
+        return null;
     }
 
     protected function makeClient(): Client
