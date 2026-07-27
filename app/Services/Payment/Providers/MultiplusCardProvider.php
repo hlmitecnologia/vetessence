@@ -256,7 +256,7 @@ class MultiplusCardProvider implements PaymentGatewayProvider
                 'Valor' => (float) number_format($invoice->total, 2, '.', ''),
                 'Descricao' => 'Fatura #' . $invoice->invoice_number,
                 'Parcelas' => 1,
-                'TipoPagamento' => 2,
+                'TipoPagamento' => 0,
                 'PinPdvId' => (int) $this->gateway->config['pinpdv_id'],
                 'Produtos' => [],
             ];
