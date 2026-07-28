@@ -155,7 +155,11 @@ class MercadoPagoProvider implements PaymentGatewayProvider
 
         try {
             $client = $this->makeHttpClient();
-            $client->post("/v1/orders/{$orderId}/cancel");
+            $client->post("/v1/orders/{$orderId}/cancel", [
+                'headers' => [
+                    'X-Idempotency-Key' => (string) Str::uuid(),
+                ],
+            ]);
             Log::info('[MercadoPago] Order cancelada', ['order_id' => $orderId]);
             return true;
         } catch (\Exception $e) {
@@ -194,7 +198,7 @@ class MercadoPagoProvider implements PaymentGatewayProvider
         return true;
     }
 
-    protected function apiChargePoint(Invoice $invoice): array
+    protected function apiChargePoint(Invoice $invoice, int $retryCount = 0): array
     {
         if (!$this->setupMercadoPago()) {
             return $this->errorResponse('Mercado Pago não configurado: access_token ausente.');
@@ -291,12 +295,12 @@ class MercadoPagoProvider implements PaymentGatewayProvider
             $statusCode = $e->getApiResponse()->getStatusCode();
             $content = $e->getApiResponse()->getContent();
 
-            if ($statusCode === 409 && $this->isAlreadyQueuedError($content)) {
+            if ($statusCode === 409 && $this->isAlreadyQueuedError($content) && $retryCount < 1) {
                 Log::info('[MercadoPago] Order pendente detectada no terminal, cancelando e tentando novamente');
                 $client = $this->makeHttpClient();
                 $this->cancelPendingOrdersOnTerminal($client, $terminalId);
 
-                return $this->apiChargePoint($invoice);
+                return $this->apiChargePoint($invoice, $retryCount + 1);
             }
 
             Log::warning('[MercadoPago] Erro na API ao criar order Point', [
@@ -626,44 +630,34 @@ class MercadoPagoProvider implements PaymentGatewayProvider
 
     protected function cancelPendingOrdersOnTerminal(Client $client, ?string $terminalId): void
     {
-        if (!$terminalId) {
-            return;
-        }
+        $pendingInvoices = Invoice::where('gateway_id', $this->gateway->id)
+            ->where('status', 'pending')
+            ->whereNotNull('gateway_transaction_id')
+            ->where('gateway_transaction_id', 'like', 'ORD%')
+            ->get();
 
-        try {
-            $response = $client->get('/v1/orders', [
-                'query' => [
-                    'terminal_id' => $terminalId,
-                    'status' => 'created',
-                    'limit' => 10,
-                ],
-            ]);
-
-            $body = json_decode((string) $response->getBody(), true);
-            $orders = $body['results'] ?? [];
-
-            foreach ($orders as $order) {
-                $orderId = $order['id'] ?? null;
-                if ($orderId) {
-                    try {
-                        $client->post("/v1/orders/{$orderId}/cancel");
-                        Log::info('[MercadoPago] Order pendente cancelada no terminal', [
-                            'order_id' => $orderId,
-                            'terminal_id' => $terminalId,
-                        ]);
-                    } catch (\Exception $cancelEx) {
-                        Log::warning('[MercadoPago] Falha ao cancelar order pendente', [
-                            'order_id' => $orderId,
-                            'error' => $cancelEx->getMessage(),
-                        ]);
-                    }
-                }
+        foreach ($pendingInvoices as $pendingInvoice) {
+            $orderId = $pendingInvoice->gateway_transaction_id;
+            try {
+                $client->post("/v1/orders/{$orderId}/cancel", [
+                    'headers' => [
+                        'X-Idempotency-Key' => (string) Str::uuid(),
+                    ],
+                ]);
+                Log::info('[MercadoPago] Order pendente cancelada', [
+                    'order_id' => $orderId,
+                    'invoice_id' => $pendingInvoice->id,
+                ]);
+                $pendingInvoice->update([
+                    'gateway_status' => 'cancelled',
+                    'gateway_transaction_id' => null,
+                ]);
+            } catch (\Exception $e) {
+                Log::warning('[MercadoPago] Falha ao cancelar order pendente', [
+                    'order_id' => $orderId,
+                    'error' => $e->getMessage(),
+                ]);
             }
-        } catch (\Exception $e) {
-            Log::warning('[MercadoPago] Erro ao listar orders pendentes no terminal', [
-                'terminal_id' => $terminalId,
-                'error' => $e->getMessage(),
-            ]);
         }
     }
 
