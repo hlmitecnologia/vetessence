@@ -437,7 +437,8 @@ class InvoiceController extends Controller
             'status' => 'paid',
             'paid_at' => now(),
             'payment_method' => $validated['payment_method'],
-            'gateway_status' => $validated['transaction_data'] ?? $invoice->gateway_status,
+            'gateway_status' => 'paid',
+            'gateway_paid_at' => now(),
         ]);
 
         InvoicePaid::dispatch($invoice);
