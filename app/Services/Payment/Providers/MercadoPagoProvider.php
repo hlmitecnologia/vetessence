@@ -212,6 +212,9 @@ class MercadoPagoProvider implements PaymentGatewayProvider
 
         try {
             $client = $this->makeHttpClient();
+
+            $this->cancelPendingOrdersOnTerminal($client, $terminalId);
+
             $idempotencyKey = (string) Str::uuid();
             $orderId = 'VET-' . $invoice->id . '-' . strtoupper(uniqid());
 
@@ -287,19 +290,26 @@ class MercadoPagoProvider implements PaymentGatewayProvider
         } catch (MPApiException $e) {
             $statusCode = $e->getApiResponse()->getStatusCode();
             $content = $e->getApiResponse()->getContent();
+
+            if ($statusCode === 409 && $this->isAlreadyQueuedError($content)) {
+                Log::info('[MercadoPago] Order pendente detectada no terminal, cancelando e tentando novamente');
+                $client = $this->makeHttpClient();
+                $this->cancelPendingOrdersOnTerminal($client, $terminalId);
+
+                return $this->apiChargePoint($invoice);
+            }
+
             Log::warning('[MercadoPago] Erro na API ao criar order Point', [
                 'status' => $statusCode,
                 'response' => $content,
             ]);
 
             if ($this->gateway->is_sandbox) {
-                Log::info('[MercadoPago][SANDBOX] API Point indisponível, usando modo simulado', [
-                    'status' => $statusCode,
-                ]);
+                Log::info('[MercadoPago][SANDBOX] API Point indisponível, usando modo simulado');
                 return $this->simulatedChargePoint($invoice);
             }
 
-            return $this->errorResponse('Erro Mercado Pago: ' . ($content['message'] ?? 'erro desconhecido'));
+            return $this->errorResponse('Erro Mercado Pago: ' . $this->parseApiErrorMessage($content));
         } catch (\Exception $e) {
             Log::error('[MercadoPago] Erro inesperado ao criar order Point', ['error' => $e->getMessage()]);
 
@@ -612,6 +622,66 @@ class MercadoPagoProvider implements PaymentGatewayProvider
             'cash' => 'dinheiro',
             default => 'cartao_credito',
         };
+    }
+
+    protected function cancelPendingOrdersOnTerminal(Client $client, ?string $terminalId): void
+    {
+        if (!$terminalId) {
+            return;
+        }
+
+        try {
+            $response = $client->get('/v1/orders', [
+                'query' => [
+                    'terminal_id' => $terminalId,
+                    'status' => 'created',
+                    'limit' => 10,
+                ],
+            ]);
+
+            $body = json_decode((string) $response->getBody(), true);
+            $orders = $body['results'] ?? [];
+
+            foreach ($orders as $order) {
+                $orderId = $order['id'] ?? null;
+                if ($orderId) {
+                    try {
+                        $client->post("/v1/orders/{$orderId}/cancel");
+                        Log::info('[MercadoPago] Order pendente cancelada no terminal', [
+                            'order_id' => $orderId,
+                            'terminal_id' => $terminalId,
+                        ]);
+                    } catch (\Exception $cancelEx) {
+                        Log::warning('[MercadoPago] Falha ao cancelar order pendente', [
+                            'order_id' => $orderId,
+                            'error' => $cancelEx->getMessage(),
+                        ]);
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning('[MercadoPago] Erro ao listar orders pendentes no terminal', [
+                'terminal_id' => $terminalId,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    protected function isAlreadyQueuedError(string $content): bool
+    {
+        return str_contains($content, 'already_queued_order_on_terminal');
+    }
+
+    protected function parseApiErrorMessage(string $content): string
+    {
+        $decoded = json_decode($content, true);
+        if (!empty($decoded['errors'][0]['message'])) {
+            return $decoded['errors'][0]['message'];
+        }
+        if (!empty($decoded['message'])) {
+            return $decoded['message'];
+        }
+        return 'erro desconhecido';
     }
 
     protected function makeHttpClient(): Client
