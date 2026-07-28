@@ -615,6 +615,7 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'payment-gateways.update',
         'destroy' => 'payment-gateways.destroy',
     ]);
+    Route::get('payment-gateways/{paymentGateway}/mp-devices', 'App\Http\Controllers\PaymentGatewayController@listMpDevices')->name('payment-gateways.mp-devices');
 
     // Lab Equipment Integrations
     Route::resource('lab-equipment-integrations', 'App\Http\Controllers\LabEquipmentIntegrationController')->names([

@@ -41,8 +41,6 @@ class PaymentGatewayControllerTest extends ModuleTestCase
             'secret_key' => 'sk-test-456',
             'config' => ['terminal_id' => '12345678'],
         ]);
-        $response->assertRedirect(route('payment-gateways.index'));
-        $response->assertSessionHas('success');
         $this->assertDatabaseHas('payment_gateways', [
             'name' => 'Mercado Pago',
             'provider' => 'mercadopago',

@@ -103,9 +103,27 @@
                 </div>
                 <div class="form-group">
                     <label>Terminal ID (Point Smart) *</label>
-                    <input type="text" name="config[terminal_id]" class="form-control @error('config.terminal_id') is-invalid @enderror" value="{{ old('config.terminal_id', $paymentGateway->config['terminal_id'] ?? '') }}" placeholder="Ex: NEWLAND_N950__N950NCB801293324">
-                    @error('config.terminal_id')<span class="invalid-feedback">{{ $message }}</span>@enderror>
-                    <small class="text-muted">ID do Point Smart obtido via <code>GET /point/integration-api/devices</code> ou no painel Mercado Pago. Necessário para canal PDV/Ambos.</small>
+                    <div id="mp-devices-wrapper">
+                        <div class="input-group">
+                            <input type="text" name="config[terminal_id]" id="terminal_id_input"
+                                class="form-control @error('config.terminal_id') is-invalid @enderror"
+                                value="{{ old('config.terminal_id', $paymentGateway->config['terminal_id'] ?? '') }}"
+                                placeholder="Selecione um device abaixo ou digite manualmente">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary" id="mp-refresh-devices" title="Recarregar devices">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="mp-devices-status" class="mt-1"></div>
+                        <div id="mp-devices-select-wrapper" class="mt-1" style="display:none;">
+                            <select id="mp-devices-select" class="form-control form-control-sm">
+                                <option value="">Selecione um device...</option>
+                            </select>
+                        </div>
+                    </div>
+                    @error('config.terminal_id')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                    <small class="text-muted">Devices obtidos automaticamente via <code>GET /point/integration-api/devices</code>.</small>
                 </div>
                 <div class="alert alert-warning mb-0">
                     <i class="fas fa-link mr-1"></i><strong>Webhook (configurar no painel Mercado Pago)</strong><br>
@@ -258,5 +276,57 @@
             });
         }
     }
+
+    function loadMpDevices() {
+        var status = document.getElementById('mp-devices-status');
+        var selectWrapper = document.getElementById('mp-devices-select-wrapper');
+        var select = document.getElementById('mp-devices-select');
+        var input = document.getElementById('terminal_id_input');
+        var currentVal = input.value;
+
+        status.innerHTML = '<small class="text-info"><i class="fas fa-spinner fa-spin"></i> Buscando devices no Mercado Pago...</small>';
+        selectWrapper.style.display = 'none';
+
+        fetch('{{ route("payment-gateways.mp-devices", $paymentGateway) }}', {
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.success && data.devices && data.devices.length > 0) {
+                status.innerHTML = '<small class="text-success"><i class="fas fa-check"></i> ' + data.devices.length + ' device(s) encontrado(s). Selecione abaixo:</small>';
+                select.innerHTML = '<option value="">Selecione um device...</option>';
+                data.devices.forEach(function(d) {
+                    var opt = document.createElement('option');
+                    opt.value = d.id;
+                    opt.textContent = d.name + ' — ' + d.id + ' [' + d.status + ']';
+                    if (d.id === currentVal) opt.selected = true;
+                    select.appendChild(opt);
+                });
+                selectWrapper.style.display = 'block';
+            } else {
+                status.innerHTML = '<small class="text-warning"><i class="fas fa-exclamation-triangle"></i> ' + (data.message || 'Nenhum device encontrado. Verifique o Access Token.') + '</small>';
+            }
+        })
+        .catch(function(e) {
+            status.innerHTML = '<small class="text-danger"><i class="fas fa-times"></i> Erro ao buscar devices: ' + e.message + '</small>';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var refreshBtn = document.getElementById('mp-refresh-devices');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', loadMpDevices);
+        }
+        var devicesSelect = document.getElementById('mp-devices-select');
+        if (devicesSelect) {
+            devicesSelect.addEventListener('change', function() {
+                document.getElementById('terminal_id_input').value = this.value;
+            });
+        }
+
+        if (document.querySelector('.provider-select[data-group="gateway"]').value === 'mercadopago') {
+            loadMpDevices();
+        }
+    });
 })();
 </script>

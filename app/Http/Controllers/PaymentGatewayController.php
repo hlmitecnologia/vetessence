@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Branch;
 use App\Models\PaymentGateway;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class PaymentGatewayController extends Controller
 {
@@ -38,7 +39,7 @@ class PaymentGatewayController extends Controller
             'config' => 'nullable',
             'config.url' => 'nullable|string|max:255',
             'config.pinpdv_id' => 'nullable|required_if:provider,multicard|integer',
-            'config.terminal_id' => 'nullable|required_if:provider,mercadopago|integer',
+            'config.terminal_id' => 'nullable|integer',
             'config.ambiente' => 'nullable|required_if:provider,multicard|in:homologacao,producao',
             'notes' => 'nullable|string',
             'branch_id' => 'nullable|exists:branches,id',
@@ -72,7 +73,12 @@ class PaymentGatewayController extends Controller
             }
         }
 
-        PaymentGateway::create($validated);
+        $gateway = PaymentGateway::create($validated);
+
+        if ($validated['provider'] === 'mercadopago' && !empty($validated['secret_key'])) {
+            return redirect()->route('payment-gateways.edit', $gateway)
+                ->with('success', 'Gateway cadastrado! Agora selecione o Terminal ID (Point Smart).');
+        }
 
         return redirect()->route('payment-gateways.index')
             ->with('success', 'Gateway cadastrado com sucesso!');
@@ -103,7 +109,7 @@ class PaymentGatewayController extends Controller
             'config' => 'nullable',
             'config.url' => 'nullable|string|max:255',
             'config.pinpdv_id' => 'nullable|required_if:provider,multicard|integer',
-            'config.terminal_id' => 'nullable|required_if:provider,mercadopago|integer',
+            'config.terminal_id' => 'nullable|integer',
             'config.ambiente' => 'nullable|required_if:provider,multicard|in:homologacao,producao',
             'notes' => 'nullable|string',
             'branch_id' => 'nullable|exists:branches,id',
@@ -141,6 +147,40 @@ class PaymentGatewayController extends Controller
 
         return redirect()->route('payment-gateways.index')
             ->with('success', 'Gateway atualizado com sucesso!');
+    }
+
+    public function listMpDevices(PaymentGateway $paymentGateway)
+    {
+        if ($paymentGateway->provider !== 'mercadopago' || empty($paymentGateway->secret_key)) {
+            return response()->json(['success' => false, 'message' => 'Gateway não é Mercado Pago ou access token não configurado.'], 422);
+        }
+
+        try {
+            $response = Http::withToken($paymentGateway->secret_key)
+                ->timeout(10)
+                ->get('https://api.mercadopago.com/point/integration-api/devices');
+
+            if ($response->failed()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro ao consultar devices: ' . $response->body(),
+                ], $response->status());
+            }
+
+            $devices = $response->json('devices', []);
+            $list = collect($devices)->map(fn ($d) => [
+                'id' => $d['id'] ?? null,
+                'name' => ($d['name'] ?? '') . ' (' . ($d['type'] ?? '') . ')',
+                'status' => $d['status'] ?? 'unknown',
+            ])->values();
+
+            return response()->json(['success' => true, 'devices' => $list]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro de conexão: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     protected function findConflictingActiveGateway(string $channel, string $provider, ?int $exceptId = null): ?PaymentGateway

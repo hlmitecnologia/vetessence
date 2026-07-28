@@ -189,8 +189,13 @@ class MercadoPagoProvider implements PaymentGatewayProvider
         }
 
         $terminalId = $this->gateway->config['terminal_id'] ?? null;
-        if (!$terminalId) {
+
+        if (!$terminalId && !$this->gateway->is_sandbox) {
             return $this->errorResponse('Terminal ID não configurado. Configure o ID do Point Smart nas credenciais do gateway.');
+        }
+
+        if (!$terminalId && $this->gateway->is_sandbox) {
+            $terminalId = 'PAX_A910__SBX0000001';
         }
 
         try {
@@ -235,9 +240,31 @@ class MercadoPagoProvider implements PaymentGatewayProvider
                 throw new \RuntimeException('Resposta inválida ao criar order Point.');
             }
 
+            $mpOrderId = $body['id'];
+
+            if ($this->gateway->is_sandbox) {
+                $this->simulateOrderStatus($mpOrderId, 'processed');
+
+                $queryResult = $this->queryOrder($mpOrderId);
+
+                if ($queryResult['success'] && ($queryResult['status'] ?? '') === 'paid') {
+                    return [
+                        'success' => true,
+                        'transaction_id' => $mpOrderId,
+                        'reference' => (string) $invoice->id,
+                        'status' => 'paid',
+                        'message' => '[SANDBOX] Pagamento simulado com sucesso.',
+                        'payment_method' => $queryResult['payment_method'] ?? 'cartao_credito',
+                        'transaction_data' => $queryResult['transaction_data'] ?? [],
+                        'redirect_url' => null,
+                        'raw_response' => $body,
+                    ];
+                }
+            }
+
             return [
                 'success' => true,
-                'transaction_id' => $body['id'],
+                'transaction_id' => $mpOrderId,
                 'reference' => (string) $invoice->id,
                 'status' => 'pending',
                 'message' => 'Pagamento enviado ao Point Smart. Aguardando...',
@@ -251,6 +278,24 @@ class MercadoPagoProvider implements PaymentGatewayProvider
         } catch (\Exception $e) {
             Log::error('[MercadoPago] Erro inesperado ao criar order Point', ['error' => $e->getMessage()]);
             return $this->errorResponse('Erro inesperado: ' . $e->getMessage());
+        }
+    }
+
+    protected function simulateOrderStatus(string $orderId, string $status): bool
+    {
+        try {
+            $client = $this->makeHttpClient();
+            $client->post("/v1/orders/{$orderId}/events", [
+                'json' => ['status' => $status],
+            ]);
+            Log::info('[MercadoPago][SANDBOX] Order simulada', ['order_id' => $orderId, 'status' => $status]);
+            return true;
+        } catch (\Exception $e) {
+            Log::error('[MercadoPago][SANDBOX] Erro ao simular status', [
+                'order_id' => $orderId,
+                'error' => $e->getMessage(),
+            ]);
+            return false;
         }
     }
 
