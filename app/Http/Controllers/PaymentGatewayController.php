@@ -75,6 +75,10 @@ class PaymentGatewayController extends Controller
 
         $gateway = PaymentGateway::create($validated);
 
+        if ($validated['provider'] === 'mercadopago') {
+            $this->setTerminalToPdv($gateway);
+        }
+
         if ($validated['provider'] === 'mercadopago' && !empty($validated['secret_key'])) {
             return redirect()->route('payment-gateways.edit', $gateway)
                 ->with('success', 'Gateway cadastrado! Agora selecione o Terminal ID (Point Smart).');
@@ -145,6 +149,10 @@ class PaymentGatewayController extends Controller
 
         $paymentGateway->update($validated);
 
+        if ($paymentGateway->provider === 'mercadopago') {
+            $this->setTerminalToPdv($paymentGateway);
+        }
+
         return redirect()->route('payment-gateways.index')
             ->with('success', 'Gateway atualizado com sucesso!');
     }
@@ -180,6 +188,31 @@ class PaymentGatewayController extends Controller
                 'success' => false,
                 'message' => 'Erro de conexão: ' . $e->getMessage(),
             ], 500);
+        }
+    }
+
+    protected function setTerminalToPdv(PaymentGateway $gateway): void
+    {
+        $terminalId = $gateway->config['terminal_id'] ?? null;
+        $secretKey = $gateway->secret_key ?? null;
+
+        if (!$terminalId || !$secretKey) {
+            return;
+        }
+
+        try {
+            Http::withToken($secretKey)
+                ->timeout(10)
+                ->patch('https://api.mercadopago.com/terminals/v1/setup', [
+                    'terminals' => [
+                        ['id' => $terminalId, 'operating_mode' => 'PDV'],
+                    ],
+                ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('[MercadoPago] Falha ao configurar terminal para PDV', [
+                'terminal_id' => $terminalId,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 
