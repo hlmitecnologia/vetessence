@@ -41,6 +41,13 @@ class PaymentGatewayController extends Controller
             'config.pinpdv_id' => 'nullable|required_if:provider,multicard|integer',
             'config.terminal_id' => 'nullable|string|max:100',
             'config.ambiente' => 'nullable|required_if:provider,multicard|in:homologacao,producao',
+            'config.company_id' => 'nullable|required_if:provider,payer|string|max:255',
+            'config.store_id' => 'nullable|required_if:provider,payer|string|max:255',
+            'config.terminal_id' => 'nullable|required_if:provider,payer|string|max:255',
+            'config.automation_name' => 'nullable|required_if:provider,payer|string|max:255',
+            'config.client_id' => 'nullable|required_if:provider,payer|string|max:255',
+            'config.username' => 'nullable|required_if:provider,payer|string|max:255',
+            'config.user_alias' => 'nullable|required_if:provider,payer|string|max:255',
             'notes' => 'nullable|string',
             'branch_id' => 'nullable|exists:branches,id',
         ]);
@@ -53,12 +60,7 @@ class PaymentGatewayController extends Controller
         }
 
         $config = $request->has('config') && is_array($request->config) ? $request->config : [];
-        $validated['config'] = array_filter([
-            'url' => $config['url'] ?? '',
-            'pinpdv_id' => $config['pinpdv_id'] ?? null,
-            'terminal_id' => $config['terminal_id'] ?? null,
-            'ambiente' => $config['ambiente'] ?? null,
-        ], fn ($v) => $v !== '' && $v !== null);
+        $validated['config'] = $this->filterConfig($validated['provider'], $config);
 
         if (empty($validated['config'])) {
             $validated['config'] = null;
@@ -115,6 +117,13 @@ class PaymentGatewayController extends Controller
             'config.pinpdv_id' => 'nullable|required_if:provider,multicard|integer',
             'config.terminal_id' => 'nullable|string|max:100',
             'config.ambiente' => 'nullable|required_if:provider,multicard|in:homologacao,producao',
+            'config.company_id' => 'nullable|required_if:provider,payer|string|max:255',
+            'config.store_id' => 'nullable|required_if:provider,payer|string|max:255',
+            'config.terminal_id' => 'nullable|required_if:provider,payer|string|max:255',
+            'config.automation_name' => 'nullable|required_if:provider,payer|string|max:255',
+            'config.client_id' => 'nullable|required_if:provider,payer|string|max:255',
+            'config.username' => 'nullable|required_if:provider,payer|string|max:255',
+            'config.user_alias' => 'nullable|required_if:provider,payer|string|max:255',
             'notes' => 'nullable|string',
             'branch_id' => 'nullable|exists:branches,id',
         ]);
@@ -127,12 +136,7 @@ class PaymentGatewayController extends Controller
         }
 
         $config = $request->has('config') && is_array($request->config) ? $request->config : [];
-        $validated['config'] = array_filter([
-            'url' => $config['url'] ?? '',
-            'pinpdv_id' => $config['pinpdv_id'] ?? null,
-            'terminal_id' => $config['terminal_id'] ?? null,
-            'ambiente' => $config['ambiente'] ?? null,
-        ], fn ($v) => $v !== '' && $v !== null);
+        $validated['config'] = $this->filterConfig($validated['provider'], $config);
 
         if (empty($validated['config'])) {
             $validated['config'] = null;
@@ -240,6 +244,30 @@ class PaymentGatewayController extends Controller
         }
 
         return $query->first();
+    }
+
+    protected function filterConfig(string $provider, array $config): array
+    {
+        $common = array_filter([
+            'url' => $config['url'] ?? '',
+            'pinpdv_id' => $config['pinpdv_id'] ?? null,
+            'terminal_id' => $config['terminal_id'] ?? null,
+            'ambiente' => $config['ambiente'] ?? null,
+        ], fn ($v) => $v !== '' && $v !== null);
+
+        if ($provider === 'payer') {
+            return array_filter([
+                'company_id' => $config['company_id'] ?? '',
+                'store_id' => $config['store_id'] ?? '',
+                'terminal_id' => $config['terminal_id'] ?? '',
+                'automation_name' => $config['automation_name'] ?? '',
+                'client_id' => $config['client_id'] ?? '',
+                'username' => $config['username'] ?? '',
+                'user_alias' => $config['user_alias'] ?? '',
+            ], fn ($v) => $v !== '' && $v !== null);
+        }
+
+        return $common;
     }
 
     public function destroy(PaymentGateway $paymentGateway)

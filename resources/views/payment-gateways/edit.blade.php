@@ -27,6 +27,7 @@
                             <option value="">Selecione</option>
                             <option value="mercadopago" {{ old('provider', $paymentGateway->provider) == 'mercadopago' ? 'selected' : '' }}>Mercado Pago</option>
                             <option value="multicard" {{ old('provider', $paymentGateway->provider) == 'multicard' ? 'selected' : '' }}>MultiplusCard (PinPDV)</option>
+                            <option value="payer" {{ old('provider', $paymentGateway->provider) == 'payer' ? 'selected' : '' }}>Payer API Gateway</option>
                             <option value="pix" {{ old('provider', $paymentGateway->provider) == 'pix' ? 'selected' : '' }}>PIX</option>
                             <option value="pagseguro" style="display:none;" {{ old('provider', $paymentGateway->provider) == 'pagseguro' ? 'selected' : '' }}>PagSeguro</option>
                             <option value="stone" style="display:none;" {{ old('provider', $paymentGateway->provider) == 'stone' ? 'selected' : '' }}>Stone</option>
@@ -162,6 +163,83 @@
                 </div>
             </div>
 
+            {{-- PAYER --}}
+            <div class="provider-fields" data-provider="payer" data-group="gateway" style="display:none;">
+                <h6 class="text-primary mt-3"><i class="fas fa-cloud mr-1"></i>Payer API Gateway</h6>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    Integração com Payer API Gateway. Autenticação JWT via endpoint OAuth.
+                    Credenciais fornecidas pela Payer.
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Company ID *</label>
+                            <input type="text" name="config[company_id]" class="form-control @error('config.company_id') is-invalid @enderror" value="{{ old('config.company_id', $paymentGateway->config['company_id'] ?? '') }}" placeholder="ID da empresa na Payer">
+                            @error('config.company_id')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Store ID *</label>
+                            <input type="text" name="config[store_id]" class="form-control @error('config.store_id') is-invalid @enderror" value="{{ old('config.store_id', $paymentGateway->config['store_id'] ?? '') }}" placeholder="ID da loja na Payer">
+                            @error('config.store_id')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Terminal ID *</label>
+                            <input type="text" name="config[terminal_id]" class="form-control @error('config.terminal_id') is-invalid @enderror" value="{{ old('config.terminal_id', $paymentGateway->config['terminal_id'] ?? '') }}" placeholder="ID do terminal Payer">
+                            @error('config.terminal_id')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Automation Name *</label>
+                            <input type="text" name="config[automation_name]" class="form-control @error('config.automation_name') is-invalid @enderror" value="{{ old('config.automation_name', $paymentGateway->config['automation_name'] ?? '') }}" placeholder="Nome da automação">
+                            @error('config.automation_name')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Client ID *</label>
+                            <input type="text" name="config[client_id]" class="form-control @error('config.client_id') is-invalid @enderror" value="{{ old('config.client_id', $paymentGateway->config['client_id'] ?? '') }}" placeholder="clientId da API Payer">
+                            @error('config.client_id')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Username *</label>
+                            <input type="text" name="config[username]" class="form-control @error('config.username') is-invalid @enderror" value="{{ old('config.username', $paymentGateway->config['username'] ?? '') }}" placeholder="userName (e-mail)">
+                            @error('config.username')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>User Alias *</label>
+                            <input type="text" name="config[user_alias]" class="form-control @error('config.user_alias') is-invalid @enderror" value="{{ old('config.user_alias', $paymentGateway->config['user_alias'] ?? '') }}" placeholder="userAlias">
+                            @error('config.user_alias')<span class="invalid-feedback">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-warning mb-0">
+                    <i class="fas fa-link mr-1"></i><strong>Webhook (configurar no painel Payer)</strong><br>
+                    Configure a URL abaixo no painel da Payer para receber notificações de pagamento:
+                    <div class="input-group mt-2">
+                        <input type="text" readonly class="form-control"
+                            value="{{ url('/api/payments/webhook/' . $paymentGateway->id) }}"
+                            id="payer-webhook-preview">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-default" onclick="copyPayerWebhook()" title="Copiar"><i class="fas fa-copy"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {{-- MULTIPLUSCARD --}}
             <div class="provider-fields" data-provider="multicard" data-group="gateway" style="display:none;">
                 <h6 class="text-primary mt-3"><i class="fas fa-credit-card mr-1"></i>MultiplusCard (PinPDV)</h6>
@@ -258,6 +336,15 @@
             select.addEventListener('change', toggleProviderFields);
         }
     });
+
+    function copyPayerWebhook() {
+        var el = document.getElementById('payer-webhook-preview');
+        if (el) {
+            navigator.clipboard.writeText(el.value).then(function() {
+                alert('URL do webhook copiada!');
+            });
+        }
+    }
 
     function copyMulticardWebhook() {
         var el = document.getElementById('multicard-webhook-preview');

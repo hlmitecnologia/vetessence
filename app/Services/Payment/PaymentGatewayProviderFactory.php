@@ -9,6 +9,7 @@ use App\Services\Payment\Providers\MultiplusCardProvider;
 use App\Services\Payment\Providers\PagSeguroProvider;
 use App\Services\Payment\Providers\StoneProvider;
 use App\Services\Payment\Providers\StripeProvider;
+use App\Services\Payment\Providers\PayerProvider;
 use App\Services\Payment\Providers\PixStaticProvider;
 use InvalidArgumentException;
 
@@ -21,6 +22,7 @@ class PaymentGatewayProviderFactory
         'stripe'      => StripeProvider::class,
         'pix'         => PixStaticProvider::class,
         'multicard'   => MultiplusCardProvider::class,
+        'payer'       => PayerProvider::class,
     ];
 
     public function make(PaymentGateway $gateway): PaymentGatewayProvider
