@@ -129,6 +129,12 @@ class MercadoPagoProvider implements PaymentGatewayProvider
                 'order_id' => $orderId,
                 'error' => $e->getMessage(),
             ]);
+
+            if ($this->gateway->is_sandbox) {
+                Log::info('[MercadoPago][SANDBOX] Query falhou, usando modo simulado');
+                return $this->simulatedQueryOrder($orderId);
+            }
+
             return [
                 'success' => false,
                 'status' => 'failed',
@@ -157,6 +163,12 @@ class MercadoPagoProvider implements PaymentGatewayProvider
                 'order_id' => $orderId,
                 'error' => $e->getMessage(),
             ]);
+
+            if ($this->gateway->is_sandbox) {
+                Log::info('[MercadoPago][SANDBOX] Cancel falhou, aceitando como cancelado');
+                return true;
+            }
+
             return false;
         }
     }
@@ -221,6 +233,7 @@ class MercadoPagoProvider implements PaymentGatewayProvider
                         'print_on_terminal' => 'no_ticket',
                     ],
                     'payment_method' => [
+                        'default_type' => 'credit_card',
                         'default_installments' => 1,
                         'installments_cost' => 'seller',
                     ],
@@ -272,11 +285,29 @@ class MercadoPagoProvider implements PaymentGatewayProvider
                 'raw_response' => $body,
             ];
         } catch (MPApiException $e) {
+            $statusCode = $e->getApiResponse()->getStatusCode();
             $content = $e->getApiResponse()->getContent();
-            Log::error('[MercadoPago] Erro na API ao criar order Point', ['response' => $content]);
+            Log::warning('[MercadoPago] Erro na API ao criar order Point', [
+                'status' => $statusCode,
+                'response' => $content,
+            ]);
+
+            if ($this->gateway->is_sandbox) {
+                Log::info('[MercadoPago][SANDBOX] API Point indisponível, usando modo simulado', [
+                    'status' => $statusCode,
+                ]);
+                return $this->simulatedChargePoint($invoice);
+            }
+
             return $this->errorResponse('Erro Mercado Pago: ' . ($content['message'] ?? 'erro desconhecido'));
         } catch (\Exception $e) {
             Log::error('[MercadoPago] Erro inesperado ao criar order Point', ['error' => $e->getMessage()]);
+
+            if ($this->gateway->is_sandbox) {
+                Log::info('[MercadoPago][SANDBOX] Erro inesperado, usando modo simulado');
+                return $this->simulatedChargePoint($invoice);
+            }
+
             return $this->errorResponse('Erro inesperado: ' . $e->getMessage());
         }
     }
