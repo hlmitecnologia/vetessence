@@ -262,6 +262,8 @@ class MercadoPagoProvider implements PaymentGatewayProvider
 
             $mpOrderId = $body['id'];
 
+            $this->saveLastOrderId($mpOrderId);
+
             if ($this->gateway->is_sandbox) {
                 $this->simulateOrderStatus($mpOrderId, 'processed');
 
@@ -297,10 +299,14 @@ class MercadoPagoProvider implements PaymentGatewayProvider
 
             if ($statusCode === 409 && $this->isAlreadyQueuedError($content) && $retryCount < 1) {
                 Log::info('[MercadoPago] Order pendente detectada no terminal, cancelando e tentando novamente');
-                $client = $this->makeHttpClient();
-                $this->cancelPendingOrdersOnTerminal($client, $terminalId);
+
+                $this->cancelPendingOrdersOnTerminal($this->makeHttpClient(), $terminalId);
 
                 return $this->apiChargePoint($invoice, $retryCount + 1);
+            }
+
+            if ($statusCode === 409 && $this->isAlreadyQueuedError($content)) {
+                return $this->errorResponse('Existe uma cobrança pendente na maquininha. Cancele pressionando "Cancelar" no terminal, ou aguarde 15 minutos para expirar automaticamente.');
             }
 
             Log::warning('[MercadoPago] Erro na API ao criar order Point', [
@@ -630,28 +636,33 @@ class MercadoPagoProvider implements PaymentGatewayProvider
 
     protected function cancelPendingOrdersOnTerminal(Client $client, ?string $terminalId): void
     {
+        $orderIdsToCancel = collect();
+
+        $lastOrderId = $this->gateway->config['mp_last_order_id'] ?? null;
+        if ($lastOrderId) {
+            $orderIdsToCancel->push($lastOrderId);
+        }
+
         $pendingInvoices = Invoice::where('gateway_id', $this->gateway->id)
             ->where('status', 'pending')
             ->whereNotNull('gateway_transaction_id')
-            ->where('gateway_transaction_id', 'like', 'ORD%')
+            ->where('gateway_transaction_id', '!=', $lastOrderId)
             ->get();
 
         foreach ($pendingInvoices as $pendingInvoice) {
-            $orderId = $pendingInvoice->gateway_transaction_id;
+            $orderIdsToCancel->push($pendingInvoice->gateway_transaction_id);
+        }
+
+        $orderIdsToCancel = $orderIdsToCancel->unique();
+
+        foreach ($orderIdsToCancel as $orderId) {
             try {
                 $client->post("/v1/orders/{$orderId}/cancel", [
                     'headers' => [
                         'X-Idempotency-Key' => (string) Str::uuid(),
                     ],
                 ]);
-                Log::info('[MercadoPago] Order pendente cancelada', [
-                    'order_id' => $orderId,
-                    'invoice_id' => $pendingInvoice->id,
-                ]);
-                $pendingInvoice->update([
-                    'gateway_status' => 'cancelled',
-                    'gateway_transaction_id' => null,
-                ]);
+                Log::info('[MercadoPago] Order pendente cancelada', ['order_id' => $orderId]);
             } catch (\Exception $e) {
                 Log::warning('[MercadoPago] Falha ao cancelar order pendente', [
                     'order_id' => $orderId,
@@ -659,6 +670,20 @@ class MercadoPagoProvider implements PaymentGatewayProvider
                 ]);
             }
         }
+    }
+
+    protected function saveLastOrderId(string $orderId): void
+    {
+        $config = $this->gateway->config ?? [];
+        $config['mp_last_order_id'] = $orderId;
+        $this->gateway->update(['config' => $config]);
+    }
+
+    protected function clearLastOrderId(): void
+    {
+        $config = $this->gateway->config ?? [];
+        unset($config['mp_last_order_id']);
+        $this->gateway->update(['config' => $config]);
     }
 
     protected function isAlreadyQueuedError(string $content): bool
