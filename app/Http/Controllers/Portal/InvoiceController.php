@@ -23,7 +23,19 @@ class InvoiceController extends Controller
     {
         $invoice = Auth::guard('tutor')->user()->invoices()->findOrFail($id);
 
-        if ($invoice->status === 'pending' && !$invoice->pix_code) {
+        $hasPixPortal = PaymentGateway::withoutBranch()->active()->where('provider', 'pix')
+            ->whereIn('channel', ['portal', 'both'])
+            ->whereNull('branch_id')
+            ->exists();
+
+        if (!$hasPixPortal && $invoice->branch_id) {
+            $hasPixPortal = PaymentGateway::withoutBranch()->active()->where('provider', 'pix')
+                ->whereIn('channel', ['portal', 'both'])
+                ->where('branch_id', $invoice->branch_id)
+                ->exists();
+        }
+
+        if ($invoice->status === 'pending' && !$invoice->pix_code && $hasPixPortal) {
             $invoice->generatePixCode();
             $invoice->refresh();
         }
@@ -49,7 +61,7 @@ class InvoiceController extends Controller
                 ->exists();
         }
 
-        return view('portal.invoices.show', compact('invoice', 'hasPortalGateway'));
+        return view('portal.invoices.show', compact('invoice', 'hasPortalGateway', 'hasPixPortal'));
     }
 
     public function checkout($id, PaymentService $paymentService)

@@ -88,7 +88,7 @@
     </div>
 
     <div class="col-md-4">
-        @if($invoice->status === 'pending' || $invoice->status === 'overdue')
+        @if(($invoice->status === 'pending' || $invoice->status === 'overdue') && $hasPixGateway)
         <div class="card card-success" id="pix-section">
             <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-qrcode"></i> Pagamento via PIX</h3>

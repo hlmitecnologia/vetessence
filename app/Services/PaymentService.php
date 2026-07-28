@@ -158,7 +158,7 @@ class PaymentService
                 }
             });
 
-        return $query->first();
+        return $query->orderByRaw("provider = 'pix' ASC, id ASC")->first();
     }
 
     protected function getCurrentBranchId(): ?int

@@ -222,6 +222,16 @@ class PaymentGatewayController extends Controller
 
     protected function findConflictingActiveGateway(string $channel, string $provider, ?int $exceptId = null): ?PaymentGateway
     {
+        $query = PaymentGateway::withoutBranch()->where('is_active', true);
+
+        if ($exceptId) {
+            $query->where('id', '!=', $exceptId);
+        }
+
+        if ($provider === 'pix') {
+            return $query->where('provider', 'pix')->first();
+        }
+
         $conflictingChannels = match ($channel) {
             'portal' => ['portal', 'both'],
             'pdv' => ['pdv', 'both'],
@@ -229,21 +239,10 @@ class PaymentGatewayController extends Controller
             default => [],
         };
 
-        $query = PaymentGateway::withoutBranch()
-            ->where('is_active', true)
-            ->where(function ($q) use ($conflictingChannels, $provider) {
-                $q->whereIn('channel', $conflictingChannels);
-
-                if ($provider === 'pix') {
-                    $q->orWhere('provider', 'pix');
-                }
-            });
-
-        if ($exceptId) {
-            $query->where('id', '!=', $exceptId);
-        }
-
-        return $query->first();
+        return $query
+            ->whereIn('channel', $conflictingChannels)
+            ->where('provider', '!=', 'pix')
+            ->first();
     }
 
     protected function filterConfig(string $provider, array $config): array

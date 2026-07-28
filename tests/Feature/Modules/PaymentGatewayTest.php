@@ -37,10 +37,11 @@ class PaymentGatewayTest extends ModuleTestCase
 
     public function test_only_one_active()
     {
-        $old = PaymentGateway::factory()->create(['is_active' => true, 'channel' => 'portal']);
+        $old = PaymentGateway::factory()->create(['is_active' => true, 'channel' => 'portal', 'provider' => 'mercadopago']);
         $response = $this->post(route('payment-gateways.store'), [
-            'name' => 'Gateway 2', 'provider' => 'pix', 'channel' => 'portal',
-            'is_active' => true, 'is_sandbox' => true, 'public_key' => 'pk_test',
+            'name' => 'Gateway 2', 'provider' => 'mercadopago', 'channel' => 'portal',
+            'is_active' => true, 'is_sandbox' => true, 'secret_key' => 'sk_test',
+            'config' => ['terminal_id' => '12345678'],
         ]);
         $response->assertSessionHas('error');
         $this->assertDatabaseHas('payment_gateways', ['id' => $old->id, 'is_active' => true]);

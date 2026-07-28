@@ -51,7 +51,7 @@
 
     @if(in_array($invoice->status, ['pending', 'overdue']))
     <div id="payment-root">
-        @if($invoice->pix_code)
+        @if($hasPixPortal && $invoice->pix_code)
             @include('portal.invoices._pix', ['invoice' => $invoice])
         @endif
 
