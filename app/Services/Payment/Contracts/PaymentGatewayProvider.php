@@ -11,6 +11,10 @@ interface PaymentGatewayProvider
 
     public function checkout(Invoice $invoice): array;
 
+    public function queryTransaction(string $identifier): array;
+
+    public function cancelTransaction(string $identifier): bool;
+
     public function verifyWebhook(array $payload, PaymentGateway $gateway): ?array;
 
     public static function supportedChannels(): array;

@@ -109,6 +109,16 @@ class MultiplusCardProvider implements PaymentGatewayProvider
         return ['pdv'];
     }
 
+    public function queryTransaction(string $identifier): array
+    {
+        return $this->queryPreVenda($identifier);
+    }
+
+    public function cancelTransaction(string $identifier): bool
+    {
+        return $this->abortPreVenda($identifier);
+    }
+
     public function queryPreVenda(string $identifier): array
     {
         if (!$this->hasCredentials()) {

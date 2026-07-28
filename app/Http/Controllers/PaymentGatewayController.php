@@ -33,11 +33,12 @@ class PaymentGatewayController extends Controller
             'is_active' => 'boolean',
             'is_sandbox' => 'boolean',
             'public_key' => 'nullable|string|required_if:provider,pix',
-            'secret_key' => 'nullable|string|required_if:provider,multicard',
+            'secret_key' => 'nullable|string|required_if:provider,multicard,mercadopago',
             'webhook_secret' => 'nullable|string',
             'config' => 'nullable',
             'config.url' => 'nullable|string|max:255',
             'config.pinpdv_id' => 'nullable|required_if:provider,multicard|integer',
+            'config.terminal_id' => 'nullable|required_if:provider,mercadopago|integer',
             'config.ambiente' => 'nullable|required_if:provider,multicard|in:homologacao,producao',
             'notes' => 'nullable|string',
             'branch_id' => 'nullable|exists:branches,id',
@@ -54,6 +55,7 @@ class PaymentGatewayController extends Controller
         $validated['config'] = array_filter([
             'url' => $config['url'] ?? '',
             'pinpdv_id' => $config['pinpdv_id'] ?? null,
+            'terminal_id' => $config['terminal_id'] ?? null,
             'ambiente' => $config['ambiente'] ?? null,
         ], fn ($v) => $v !== '' && $v !== null);
 
@@ -91,11 +93,12 @@ class PaymentGatewayController extends Controller
             'is_active' => 'boolean',
             'is_sandbox' => 'boolean',
             'public_key' => 'nullable|string|required_if:provider,pix',
-            'secret_key' => 'nullable|string|required_if:provider,multicard',
+            'secret_key' => 'nullable|string|required_if:provider,multicard,mercadopago',
             'webhook_secret' => 'nullable|string',
             'config' => 'nullable',
             'config.url' => 'nullable|string|max:255',
             'config.pinpdv_id' => 'nullable|required_if:provider,multicard|integer',
+            'config.terminal_id' => 'nullable|required_if:provider,mercadopago|integer',
             'config.ambiente' => 'nullable|required_if:provider,multicard|in:homologacao,producao',
             'notes' => 'nullable|string',
             'branch_id' => 'nullable|exists:branches,id',
@@ -112,6 +115,7 @@ class PaymentGatewayController extends Controller
         $validated['config'] = array_filter([
             'url' => $config['url'] ?? '',
             'pinpdv_id' => $config['pinpdv_id'] ?? null,
+            'terminal_id' => $config['terminal_id'] ?? null,
             'ambiente' => $config['ambiente'] ?? null,
         ], fn ($v) => $v !== '' && $v !== null);
 

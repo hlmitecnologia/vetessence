@@ -380,6 +380,31 @@ class InvoiceController extends Controller
         return response()->json($result, $result['success'] ? 200 : 422);
     }
 
+    public function cancelPdvCharge(Request $request, Invoice $invoice, PaymentService $paymentService)
+    {
+        $transactionId = $invoice->gateway_transaction_id;
+
+        if (!$transactionId || !$invoice->gateway_id) {
+            return response()->json(['success' => false, 'message' => 'Nenhuma transação PDV ativa.']);
+        }
+
+        $gateway = \App\Models\PaymentGateway::withoutBranch()->find($invoice->gateway_id);
+
+        if (!$gateway) {
+            return response()->json(['success' => false, 'message' => 'Gateway não encontrado.']);
+        }
+
+        $provider = app(\App\Services\Payment\PaymentGatewayProviderFactory::class)->make($gateway);
+        $provider->cancelTransaction($transactionId);
+
+        $invoice->update([
+            'gateway_status' => 'cancelled',
+            'gateway_transaction_id' => null,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Cobrança cancelada.']);
+    }
+
     public function pay(Request $request, Invoice $invoice)
     {
         $validated = $request->validate([

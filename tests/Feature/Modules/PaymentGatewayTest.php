@@ -29,6 +29,7 @@ class PaymentGatewayTest extends ModuleTestCase
             'is_sandbox' => false,
             'public_key' => 'pub_key_123',
             'secret_key' => 'sec_key_456',
+            'config' => ['terminal_id' => '87654321'],
         ]);
         $response->assertRedirect(route('payment-gateways.index'));
         $this->assertDatabaseHas('payment_gateways', ['name' => 'Mercado Pago Produção']);

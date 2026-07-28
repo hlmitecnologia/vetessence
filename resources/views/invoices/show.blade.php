@@ -400,10 +400,10 @@ function cancelPdvCharge(identifier) {
     const body = document.getElementById('pdv-body');
     body.innerHTML = '<p class="text-muted"><i class="fas fa-spinner fa-spin"></i> Cancelando...</p>';
 
-    fetch('{{ route("invoices.charge", $invoice) }}', {
+    fetch('{{ route("invoices.cancel-pdv", $invoice) }}', {
         method: 'DELETE',
         headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
-    }).catch(() => {}).finally(() => {
+    }).then(r => r.json()).catch(() => {}).finally(() => {
         body.innerHTML = '<button onclick="startPdvCharge()" class="btn btn-warning btn-lg"><i class="fas fa-credit-card"></i> Enviar para Maquininha</button>' +
             '<p class="text-muted small mt-2 mb-0">O valor será enviado ao SmartPOS para pagamento.</p>';
     });

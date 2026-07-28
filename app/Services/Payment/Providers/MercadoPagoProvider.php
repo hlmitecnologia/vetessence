@@ -75,6 +75,16 @@ class MercadoPagoProvider implements PaymentGatewayProvider
         return ['portal', 'pdv'];
     }
 
+    public function queryTransaction(string $identifier): array
+    {
+        return $this->queryOrder($identifier);
+    }
+
+    public function cancelTransaction(string $identifier): bool
+    {
+        return $this->cancelOrder($identifier);
+    }
+
     public function queryOrder(string $orderId): array
     {
         if (!$this->hasCredentials()) {
@@ -124,6 +134,30 @@ class MercadoPagoProvider implements PaymentGatewayProvider
                 'status' => 'failed',
                 'message' => 'Erro ao consultar order: ' . $e->getMessage(),
             ];
+        }
+    }
+
+    protected function cancelOrder(string $orderId): bool
+    {
+        if (!$this->hasCredentials()) {
+            return true;
+        }
+
+        if (!$this->setupMercadoPago()) {
+            return false;
+        }
+
+        try {
+            $client = $this->makeHttpClient();
+            $client->post("/v1/orders/{$orderId}/cancel");
+            Log::info('[MercadoPago] Order cancelada', ['order_id' => $orderId]);
+            return true;
+        } catch (\Exception $e) {
+            Log::error('[MercadoPago] Erro ao cancelar order', [
+                'order_id' => $orderId,
+                'error' => $e->getMessage(),
+            ]);
+            return false;
         }
     }
 

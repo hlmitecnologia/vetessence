@@ -38,6 +38,7 @@ class PaymentGatewayControllerTest extends ModuleTestCase
             'is_sandbox' => true,
             'public_key' => 'pk-test-123',
             'secret_key' => 'sk-test-456',
+            'config' => ['terminal_id' => '12345678'],
         ]);
         $response->assertRedirect(route('payment-gateways.index'));
         $response->assertSessionHas('success');
@@ -114,6 +115,8 @@ class PaymentGatewayControllerTest extends ModuleTestCase
             'channel' => 'portal',
             'is_active' => true,
             'is_sandbox' => true,
+            'secret_key' => 'sk-test-456',
+            'config' => ['terminal_id' => '12345678'],
         ]);
         $response->assertSessionHas('success');
         $response->assertRedirect(route('payment-gateways.index'));
