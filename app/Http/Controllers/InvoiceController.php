@@ -385,7 +385,7 @@ class InvoiceController extends Controller
     public function charge(Request $request, Invoice $invoice, PaymentService $paymentService)
     {
         if ($invoice->status === 'paid') {
-            return response()->json(['success' => false, 'message' => 'Fatura já foi paga.'], 400);
+            return response()->json(['success' => true, 'message' => 'Pagamento já confirmado.'], 200);
         }
 
         $result = $paymentService->charge($invoice, 'pdv');
@@ -438,7 +438,7 @@ class InvoiceController extends Controller
     public function payWithGateway(Request $request, Invoice $invoice)
     {
         if ($invoice->status === 'paid') {
-            return response()->json(['success' => false, 'message' => 'Fatura já foi paga.'], 400);
+            return response()->json(['success' => true, 'message' => 'Pagamento já confirmado.'], 200);
         }
 
         $validated = $request->validate([
