@@ -12,6 +12,7 @@ class PinPdvPollController extends Controller
     {
         $gateway = PaymentGateway::withoutBranch()->active()
             ->whereIn('channel', ['pdv', 'both'])
+            ->where('provider', 'multicard')
             ->first();
 
         if (!$gateway) {

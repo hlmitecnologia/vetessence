@@ -7,6 +7,7 @@ use App\Models\PaymentGateway;
 use App\Services\Payment\Contracts\PaymentGatewayProvider;
 use App\Services\PixService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class PixStaticProvider implements PaymentGatewayProvider
 {
@@ -57,6 +58,36 @@ class PixStaticProvider implements PaymentGatewayProvider
         // PIX estático não tem webhook. O pagamento é confirmado manualmente.
         Log::info('PixStaticProvider: webhook recebido mas PIX estático não suporta confirmação automática.', $payload);
         return null;
+    }
+
+    public function queryTransaction(string $identifier): array
+    {
+        $invoiceNumber = Str::after($identifier, 'PIX-');
+        $invoice = Invoice::where('invoice_number', $invoiceNumber)->first();
+
+        if (!$invoice) {
+            return [
+                'success' => false,
+                'status' => 'not_found',
+                'message' => 'Fatura não encontrada.',
+                'transaction_id' => $identifier,
+                'raw_response' => [],
+            ];
+        }
+
+        return [
+            'success' => true,
+            'status' => $invoice->payment_status === 'paid' ? 'paid' : 'pending',
+            'message' => $invoice->payment_status === 'paid' ? 'Pagamento confirmado.' : 'Aguardando pagamento.',
+            'transaction_id' => $identifier,
+            'raw_response' => ['invoice_status' => $invoice->payment_status],
+        ];
+    }
+
+    public function cancelTransaction(string $identifier): bool
+    {
+        $this->log('Cancelando transação PIX', ['identifier' => $identifier]);
+        return true;
     }
 
     public static function supportedChannels(): array
