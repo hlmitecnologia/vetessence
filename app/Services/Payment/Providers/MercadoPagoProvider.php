@@ -238,6 +238,7 @@ class MercadoPagoProvider implements PaymentGatewayProvider
                     'point' => [
                         'terminal_id' => $terminalId,
                         'print_on_terminal' => 'no_ticket',
+                        'screen_time' => 'PT5M',
                     ],
                     'payment_method' => [
                         'default_type' => 'credit_card',
