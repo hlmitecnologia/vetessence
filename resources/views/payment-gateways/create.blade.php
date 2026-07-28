@@ -27,7 +27,7 @@
                             <option value="">Selecione</option>
                             <option value="mercadopago" {{ old('provider') == 'mercadopago' ? 'selected' : '' }}>Mercado Pago</option>
                             <option value="multicard" {{ old('provider') == 'multicard' ? 'selected' : '' }}>MultiplusCard (PinPDV)</option>
-                            <option value="payer" {{ old('provider') == 'payer' ? 'selected' : '' }}>Payer API Gateway</option>
+                            <option value="payer" style="display:none;" {{ old('provider') == 'payer' ? 'selected' : '' }}>Payer API Gateway</option>
                             <option value="pix" {{ old('provider') == 'pix' ? 'selected' : '' }}>PIX</option>
                             <option value="pagseguro" style="display:none;" {{ old('provider') == 'pagseguro' ? 'selected' : '' }}>PagSeguro</option>
                             <option value="stone" style="display:none;" {{ old('provider') == 'stone' ? 'selected' : '' }}>Stone</option>
