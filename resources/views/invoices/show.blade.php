@@ -376,7 +376,7 @@ function confirmPdvPayment(identifier, pollData) {
             'Accept': 'application/json'
         },
         body: JSON.stringify({
-            payment_method: pollData.payment_method || 'cartao_credito',
+            payment_method: (pollData.payment_method === 'none' ? 'dinheiro' : (pollData.payment_method || 'cartao_credito')),
             transaction_data: pollData.transaction_data || {}
         })
     })

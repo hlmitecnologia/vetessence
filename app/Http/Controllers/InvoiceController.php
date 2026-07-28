@@ -442,7 +442,7 @@ class InvoiceController extends Controller
         }
 
         $validated = $request->validate([
-            'payment_method' => 'required|in:pix,dinheiro,cartao_credito,cartao_debito',
+            'payment_method' => 'required|in:pix,dinheiro,cartao_credito,cartao_debito,none,vale_refeicao,vale_alimentacao',
             'transaction_data' => 'nullable|array',
         ]);
 
