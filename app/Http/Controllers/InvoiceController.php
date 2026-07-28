@@ -142,11 +142,14 @@ class InvoiceController extends Controller
             $q->where('channel', 'pdv')->orWhere('channel', 'both');
         })->where('provider', '!=', 'pix')->exists();
 
-        $hasPixGateway = PaymentGateway::withoutBranch()->active()->where('provider', 'pix')
-            ->whereNull('branch_id')->exists();
-        if (!$hasPixGateway && $invoice->branch_id) {
+        $hasPixGateway = false;
+        if ($invoice->branch_id) {
             $hasPixGateway = PaymentGateway::withoutBranch()->active()->where('provider', 'pix')
                 ->where('branch_id', $invoice->branch_id)->exists();
+        }
+        if (!$hasPixGateway) {
+            $hasPixGateway = PaymentGateway::withoutBranch()->active()->where('provider', 'pix')
+                ->whereNull('branch_id')->exists();
         }
 
         return view('invoices.show', compact('invoice', 'hasNfseConfig', 'hasNfeConfig', 'hasPdvGateway', 'hasPixGateway'));

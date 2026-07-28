@@ -23,15 +23,17 @@ class InvoiceController extends Controller
     {
         $invoice = Auth::guard('tutor')->user()->invoices()->findOrFail($id);
 
-        $hasPixPortal = PaymentGateway::withoutBranch()->active()->where('provider', 'pix')
-            ->whereIn('channel', ['portal', 'both'])
-            ->whereNull('branch_id')
-            ->exists();
-
-        if (!$hasPixPortal && $invoice->branch_id) {
+        $hasPixPortal = false;
+        if ($invoice->branch_id) {
             $hasPixPortal = PaymentGateway::withoutBranch()->active()->where('provider', 'pix')
                 ->whereIn('channel', ['portal', 'both'])
                 ->where('branch_id', $invoice->branch_id)
+                ->exists();
+        }
+        if (!$hasPixPortal) {
+            $hasPixPortal = PaymentGateway::withoutBranch()->active()->where('provider', 'pix')
+                ->whereIn('channel', ['portal', 'both'])
+                ->whereNull('branch_id')
                 ->exists();
         }
 
