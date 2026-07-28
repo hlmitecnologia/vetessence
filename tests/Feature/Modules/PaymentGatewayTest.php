@@ -10,6 +10,7 @@ class PaymentGatewayTest extends ModuleTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        PaymentGateway::withoutBranch()->where('is_active', true)->update(['is_active' => false]);
         $this->loginAs('admin');
     }
 
@@ -38,12 +39,12 @@ class PaymentGatewayTest extends ModuleTestCase
     public function test_only_one_active()
     {
         $old = PaymentGateway::factory()->create(['is_active' => true, 'channel' => 'portal']);
-        $this->post(route('payment-gateways.store'), [
+        $response = $this->post(route('payment-gateways.store'), [
             'name' => 'Gateway 2', 'provider' => 'pix', 'channel' => 'portal',
             'is_active' => true, 'is_sandbox' => true, 'public_key' => 'pk_test',
         ]);
-        $this->assertDatabaseHas('payment_gateways', ['name' => 'Gateway 2', 'is_active' => true]);
-        $this->assertDatabaseHas('payment_gateways', ['id' => $old->id, 'is_active' => false]);
+        $response->assertSessionHas('error');
+        $this->assertDatabaseHas('payment_gateways', ['id' => $old->id, 'is_active' => true]);
     }
 
     public function test_service_returns_gateway()

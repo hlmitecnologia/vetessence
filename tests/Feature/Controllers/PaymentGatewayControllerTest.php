@@ -11,6 +11,7 @@ class PaymentGatewayControllerTest extends ModuleTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        PaymentGateway::withoutBranch()->where('is_active', true)->update(['is_active' => false]);
         $this->loginAs('admin');
     }
 
@@ -118,17 +119,49 @@ class PaymentGatewayControllerTest extends ModuleTestCase
             'secret_key' => 'sk-test-456',
             'config' => ['terminal_id' => '12345678'],
         ]);
-        $response->assertSessionHas('success');
-        $response->assertRedirect(route('payment-gateways.index'));
+        $response->assertSessionHas('error');
+        $response->assertSessionHas('error', fn ($msg) => str_contains($msg, $active->name));
 
         $this->assertDatabaseHas('payment_gateways', [
             'id' => $active->id,
-            'is_active' => false,
+            'is_active' => true,
         ]);
         $this->assertDatabaseHas('payment_gateways', [
             'id' => $gateway->id,
-            'is_active' => true,
+            'is_active' => false,
         ]);
+    }
+
+    public function test_update_conflict_with_both_channel()
+    {
+        $active = PaymentGateway::factory()->create(['is_active' => true, 'channel' => 'both']);
+        $gateway = PaymentGateway::factory()->create(['is_active' => false, 'channel' => 'pdv', 'provider' => 'mercadopago']);
+
+        $response = $this->put(route('payment-gateways.update', $gateway), [
+            'name' => $gateway->name,
+            'provider' => 'mercadopago',
+            'channel' => 'pdv',
+            'is_active' => true,
+            'is_sandbox' => true,
+            'secret_key' => 'sk-test',
+            'config' => ['terminal_id' => '12345678'],
+        ]);
+        $response->assertSessionHas('error');
+        $this->assertDatabaseHas('payment_gateways', ['id' => $gateway->id, 'is_active' => false]);
+    }
+
+    public function test_store_conflict_with_both_channel()
+    {
+        PaymentGateway::factory()->create(['is_active' => true, 'channel' => 'both']);
+
+        $response = $this->post(route('payment-gateways.store'), [
+            'name' => 'Portal Gateway',
+            'provider' => 'pix',
+            'channel' => 'portal',
+            'is_active' => true,
+            'public_key' => 'pk-test',
+        ]);
+        $response->assertSessionHas('error');
     }
 
     public function test_destroy_deletes_record()
@@ -138,5 +171,20 @@ class PaymentGatewayControllerTest extends ModuleTestCase
         $response->assertRedirect(route('payment-gateways.index'));
         $response->assertSessionHas('success');
         $this->assertDatabaseMissing('payment_gateways', ['id' => $gateway->id]);
+    }
+
+    public function test_pix_provider_conflict_blocks_activation()
+    {
+        PaymentGateway::factory()->create(['is_active' => true, 'provider' => 'pix', 'channel' => 'portal']);
+
+        $response = $this->post(route('payment-gateways.store'), [
+            'name' => 'PIX 2',
+            'provider' => 'pix',
+            'channel' => 'pdv',
+            'is_active' => true,
+            'public_key' => 'pk-test-2',
+        ]);
+        $response->assertSessionHas('error');
+        $this->assertDatabaseMissing('payment_gateways', ['name' => 'PIX 2']);
     }
 }

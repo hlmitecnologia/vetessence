@@ -64,7 +64,12 @@ class PaymentGatewayController extends Controller
         }
 
         if ($validated['is_active']) {
-            $this->deactivateOtherGateways($validated['channel']);
+            $conflict = $this->findConflictingActiveGateway($validated['channel'], $validated['provider']);
+            if ($conflict) {
+                return back()->withInput()->with('error',
+                    'Para ativar este gateway, você precisa desativar primeiro o gateway "' . $conflict->name . '".'
+                );
+            }
         }
 
         PaymentGateway::create($validated);
@@ -124,7 +129,12 @@ class PaymentGatewayController extends Controller
         }
 
         if ($validated['is_active']) {
-            $this->deactivateOtherGateways($validated['channel'], $paymentGateway->id);
+            $conflict = $this->findConflictingActiveGateway($validated['channel'], $validated['provider'], $paymentGateway->id);
+            if ($conflict) {
+                return back()->withInput()->with('error',
+                    'Para ativar este gateway, você precisa desativar primeiro o gateway "' . $conflict->name . '".'
+                );
+            }
         }
 
         $paymentGateway->update($validated);
@@ -133,15 +143,30 @@ class PaymentGatewayController extends Controller
             ->with('success', 'Gateway atualizado com sucesso!');
     }
 
-    protected function deactivateOtherGateways(string $channel, ?int $exceptId = null)
+    protected function findConflictingActiveGateway(string $channel, string $provider, ?int $exceptId = null): ?PaymentGateway
     {
-        $query = PaymentGateway::withoutBranch()->where('is_active', true);
+        $conflictingChannels = match ($channel) {
+            'portal' => ['portal', 'both'],
+            'pdv' => ['pdv', 'both'],
+            'both' => ['portal', 'pdv', 'both'],
+            default => [],
+        };
+
+        $query = PaymentGateway::withoutBranch()
+            ->where('is_active', true)
+            ->where(function ($q) use ($conflictingChannels, $provider) {
+                $q->whereIn('channel', $conflictingChannels);
+
+                if ($provider === 'pix') {
+                    $q->orWhere('provider', 'pix');
+                }
+            });
 
         if ($exceptId) {
             $query->where('id', '!=', $exceptId);
         }
 
-        $query->where('channel', $channel)->update(['is_active' => false]);
+        return $query->first();
     }
 
     public function destroy(PaymentGateway $paymentGateway)
