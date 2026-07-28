@@ -31,12 +31,15 @@ Ao abrir uma fatura, você confere:
 ## Pagamento
 
 ### Formas de Pagamento Disponíveis
-- **PIX**: Pagamento instantâneo (recomendado)
+- **PIX**: Pagamento instantâneo (recomendado), disponível se configurado pela clínica
+- **Mercado Pago**: Pagamento online com cartão de crédito ou saldo (se configurado)
+
+> O QR Code PIX e o botão **Pagar Online** aparecem apenas se a clínica tiver configurado o respectivo gateway para o canal Portal.
 
 ### Como Pagar via PIX
 
 1. Acesse a fatura
-2. Clique em **Pagar Agora**
+2. Se disponível, clique em **Pagar Agora**
 3. O sistema exibe o **QR Code PIX** na tela
 4. Abra o aplicativo do seu banco
 5. Escaneie o QR Code ou copie o código PIX

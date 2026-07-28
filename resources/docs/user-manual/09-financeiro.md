@@ -421,6 +421,43 @@ Isso permite, por exemplo, faturar uma consulta (serviço) + medicamento (produt
 - `bank-reconciliation.view` — Visualizar conciliação
 - `bank-reconciliation.reconcile` — Conciliar lançamentos
 
+## Pagamento via PIX
+
+O PIX é um meio de pagamento disponível tanto no PDV quanto no Portal do Tutor. Sua exibição e regras de conflito seguem as diretrizes abaixo:
+
+### Regras de Exibição do PIX
+
+| Contexto | Condição |
+|----------|----------|
+| **Administrativo** (tela da fatura) | O botão **Gerar QR Code** aparece apenas se houver um gateway PIX **ativo** configurado para a unidade da fatura, **ou** um gateway PIX global (todas as unidades) |
+| **Portal do Tutor** | O QR Code PIX aparece apenas se houver gateway PIX ativo configurado para canais **portal** ou **ambos**, na unidade do atendimento ou global |
+
+**Ordem de precedência:**
+1. Se a fatura tem uma **unidade específica**, o sistema primeiro verifica se há PIX configurado para **aquela unidade**
+2. Se não houver, verifica se há PIX **global** (sem unidade vinculada)
+3. Se não houver nenhum, o PIX **não é exibido**
+
+### Regras de Conflito entre Gateways
+
+| Provedor | Conflita com |
+|----------|-------------|
+| **PIX** | Apenas com **outro PIX** (mesmo provedor) |
+| **Mercado Pago** | Apenas com gateways **não-PIX** no mesmo canal |
+| **MultiplusCard** | Apenas com gateways **não-PIX** no mesmo canal |
+
+- PIX pode **coexistir** com Mercado Pago, MultiplusCard ou qualquer outro provedor, independente do canal
+- Apenas **um gateway PIX** pode estar ativo por vez
+- Gateways não-PIX ignoram gateways PIX na verificação de conflito
+
+### Exemplo Prático
+
+```
+Gateway A: Mercado Pago (portal, ativo)
+Gateway B: PIX (portal, ativo)        ← permitido (PIX não conflita com MP)
+Gateway C: PIX (pdv, ativo)           ← bloqueado (só um PIX ativo)
+Gateway D: Mercado Pago (pdv, ativo)  ← permitido (canal diferente)
+```
+
 ## Regras de Negócio
 - Recebimentos não podem ser editados após baixa (apenas estorno)
 - Estorno exige justificativa e autorização de admin

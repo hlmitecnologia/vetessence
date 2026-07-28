@@ -106,7 +106,7 @@ class PayerProvider implements PaymentGatewayProvider
                 return $this->errorResponse("Payer: validação falhou — {$errors}");
             }
 
-            $callbackUrl = route('webhooks.payer', ['gateway' => $this->gateway->id]);
+            $callbackUrl = route('api.payments.webhook', ['gateway' => $this->gateway->id]);
 
             $executePayload = $validatePayload;
             $executePayload['data']['callbackUrl'] = $callbackUrl;
@@ -143,7 +143,7 @@ class PayerProvider implements PaymentGatewayProvider
             $client = $this->makeHttpClient($token);
             $correlationId = (string) Str::uuid();
 
-            $callbackUrl = route('webhooks.payer', ['gateway' => $this->gateway->id]);
+            $callbackUrl = route('api.payments.webhook', ['gateway' => $this->gateway->id]);
 
             $payload = [
                 'type' => 'INPUT',
@@ -266,7 +266,7 @@ class PayerProvider implements PaymentGatewayProvider
                 'type' => 'INPUT',
                 'origin' => 'VETESSENCE',
                 'data' => [
-                    'callbackUrl' => route('webhooks.payer', ['gateway' => $this->gateway->id]),
+                    'callbackUrl' => route('api.payments.webhook', ['gateway' => $this->gateway->id]),
                     'correlationId' => (string) Str::uuid(),
                     'flow' => 'SYNC',
                     'automationName' => $this->gateway->config['automation_name'],

@@ -1,5 +1,23 @@
 # Changelog
 
+## [Não versionado] — 2026-07-28
+
+### Adicionado
+- **PIX: regra de conflito revisada**: PIX não conflita mais com outros provedores (apenas com outro PIX). Gateways não-PIX ignoram PIX na verificação de conflito
+- **PIX: exibição por unidade**: QR Code PIX aparece apenas se houver gateway PIX ativo. Precedência: unidade específica → fallback global
+- **PIX no Portal**: QR Code só exibido se gateway PIX ativo para canais portal/both
+- **MultiplusCard (PinPDV)**: provider completo com webhook, polling, TipoPagamento, suporte a PDV e Ambos
+- **Mercado Pago PDV avançado**: terminal Point Smart 2, sandbox auto-simulate, 409 Conflict retry, cancelPendingOrdersOnTerminal, listagem de devices, auto-PDV mode
+- **Mercado Pago verificação reforçada**: não confia em querystring — consulta API para validar status real
+- **Payer API Gateway**: implementação completa (auth OAuth JWT, validate→execute, query/cancel, webhook). Suspenso posteriormente (parceria encerrada, código mantido)
+- **Documentação**: diagramas `32-fluxo-pagamento` e `15-fluxo-fatura` atualizados; regras de PIX e conflito documentadas; Payer documentado como suspenso
+
+### Corrigido
+- PIX: `findConflictingActiveGateway` agora permite coexistência com MP/MultiplusCard
+- `PaymentService::getActiveGatewayForChannel`: prioriza gateways não-PIX (`ORDER BY provider = 'pix' ASC`)
+- Testes: `PaymentGatewayControllerTest` e `PaymentGatewayTest` atualizados para nova regra de conflito
+- Duplicação de código: `filterConfig()` extraído para método reutilizável
+
 ## [Não versionado] — 2026-07-21
 
 ### Adicionado

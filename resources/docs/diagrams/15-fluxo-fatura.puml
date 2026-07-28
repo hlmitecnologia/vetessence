@@ -9,7 +9,13 @@ start
 :Adicionar Itens/Serviços;
 
 |Tutor / Recepcionista|
-:Pagar (Dinheiro/Cartão/PIX/MP);
+if (Tem gateway PIX ativo\npara esta unidade?) then ([sim])
+  :Pagar via PIX\n(Gerar QR Code);
+  note right: PIX exibido apenas\nse gateway PIX ativo.\nUnidade específica\n→ fallback global
+else ([não])
+  :Verifica outros meios;
+endif
+:Pagar\;(Dinheiro/Cartão/MP/PDV);
 
 |Sistema|
 if (Pago?) then ([não])

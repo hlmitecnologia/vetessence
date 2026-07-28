@@ -67,27 +67,41 @@ As integrações abaixo são configuradas via painel admin.
 
 ### Gateway de Pagamento
 
-O gateway **PIX** está sempre disponível. O **Mercado Pago** também pode ser ativado para pagamento online no portal do tutor (cartão de crédito e saldo). PagSeguro, Stripe e Stone estão previstos para próximas versões.
+O sistema oferece **três provedores** de gateway, cada um com características específicas:
+
+| Provedor | Canal | Funcionamento | Conflito |
+|----------|-------|---------------|----------|
+| **PIX** | Portal / Ambos | QR Code EMV, confirmação manual | Apenas com outro PIX |
+| **Mercado Pago** | Portal | Checkout online (cartão/saldo) | Com não-PIX no mesmo canal |
+| **MultiplusCard (PinPDV)** | PDV / Ambos | Cobrança no SmartPOS, webhook+polling | Com não-PIX no mesmo canal |
+
+> **Payer API Gateway** foi implementado e posteriormente desativado (parceria suspensa). Permanece no código para reativação futura.
+
+#### Regras de Ativação
+
+- **PIX** pode ser ativado **junto com** Mercado Pago e MultiplusCard — não há conflito entre PIX e outros provedores
+- Apenas **um gateway PIX** pode estar ativo por vez
+- Se o PIX for configurado para uma **unidade específica**, o QR Code só aparece para faturas daquela unidade
+- Se o PIX for **global** (sem unidade), aparece para todas
 
 #### Configuração
 1. Acesse **Financeiro > Gateways de Pagamento**
 2. Clique em **Novo**
 3. Configure:
-   - **Provedor**: PIX ou Mercado Pago
-   - **Canal**: Portal (PDV removido; Mercado Pago suporta apenas portal)
-   - **Chave PIX** (CPF, CNPJ, e-mail, telefone ou chave aleatória)
+   - **Provedor**: PIX, Mercado Pago ou MultiplusCard (PinPDV)
+   - **Canal**: Portal (MP), PDV (MultiplusCard) ou Ambos
+   - **Credenciais** conforme o provedor escolhido
    - **Unidade**: Todas as unidades ou uma específica
 4. Marque **Ativo** para habilitar
-5. O nome do recebedor e a cidade são obtidos da configuração do sistema
 
-#### Funcionamento
+#### Funcionamento do PIX
 A chave PIX cadastrada é usada para gerar o payload EMV BR Code, exibido como QR Code na fatura para o tutor pagar via app do banco. O pagamento é confirmado manualmente no sistema.
 
 > O PIX não utiliza webhook. O pagamento é registrado manualmente na tela da fatura.
 
-![Fluxo de Pagamento PIX](../diagrams/32-fluxo-pagamento-gateway.svg)
+![Fluxo de Pagamento — Multi-Provedor](../diagrams/32-fluxo-pagamento-gateway.svg)
 
-#### Geração do QR Code
+#### Geração do QR Code (PIX)
 1. Acesse uma fatura em aberto
 2. Clique em **Gerar QR Code**
 3. O tutor escaneia com o app do banco e efetua o pagamento

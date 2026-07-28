@@ -1,37 +1,59 @@
 @startuml
 !include _common.puml
 
-title Fluxo de Pagamento
+title Fluxo de Pagamento — Gateway Multi-Provedor
 
 |Admin|
 start
 :Configurar Gateway;
 if (Provedor?) then ([PIX])
   :Definir Chave PIX + Unidade;
-else ([Mercado Pago])
-  :Definir Access Token + Public Key;
+  :Canal (Portal / Ambos);
+  :Ativar;
+  note right: PIX só conflita com\noutro PIX. Convivência\ncom MP / MultiplusCard
+  if (Unidade específica?) then ([sim])
+    :PIX disponível apenas\npara aquela unidade;
+  else ([não])
+    :PIX disponível para\ntodas as unidades;
+  endif
+elseif ([Mercado Pago])
+  :Definir Access Token\n+ Public Key;
+  :Configurar Terminal ID\n(Point Smart 2);
+  :Canal: Portal (PDV removido);
+  :Ativar;
+else ([MultiplusCard / PinPDV])
+  :Definir Token de Acesso;
+  :Configurar ID do Dispositivo;
+  :Canal: PDV / Ambos;
+  :Ativar;
 endif
-:Selecionar Canal (Portal);
-:Ativar;
 
 |Sistema|
-:Gateway Ativo (portal);
+:Gateway Ativo;
 
-:Tutor / Recepcionista|
-if (Gateway?) then ([PIX])
-  :Acessa Fatura em Aberto;
+|Tutor|
+if (Gateway disponível?) then ([PIX — Portal])
+  :Acessa Fatura;
   :Clique em Gerar QR Code;
-else ([Mercado Pago])
-  :Acessa Fatura em Aberto;
+elseif ([Mercado Pago — Portal])
+  :Acessa Fatura;
   :Clique em Pagar Online;
+elseif ([MultiplusCard — PDV])
+  :Clínica inicia cobrança\nno PDV;
 endif
 
 |Sistema|
 if (Gateway?) then ([PIX])
+  if (Tem gateway PIX para\nesta unidade?) then ([sim])
+    :Usar config PIX\nda unidade;
+  else ([não])
+    :Usar config PIX\nglobal (matriz);
+  endif
   :PixService::generateQRCode();
   :Gerar Payload EMV + QR Code;
-  :Exibir QR Code na Tela;
-else ([Mercado Pago])
+  :Exibir QR Code;
+  note right: Se sem gateway PIX,\nQR Code não é exibido
+elseif ([Mercado Pago])
   :MercadoPagoProvider::checkout();
   if (Sandbox?) then ([sim])
     :Usar sandbox_init_point;
@@ -39,21 +61,30 @@ else ([Mercado Pago])
     :Usar init_point;
   endif
   :Redirecionar ao Checkout MP;
+else ([MultiplusCard])
+  :MultiplusCardProvider::charge();
+  :Pré-venda (POST /pre-venda);
+  :Polling GET /pre-venda/{id};
+  :Aguardar conclusão\nno SmartPOS;
 endif
 
-|Tutor|
+|Tutor / Recepcionista|
 if (Gateway?) then ([PIX])
   :Escanear QR Code;
   :Confirmar Pagamento no App;
   |Recepcionista|
-  :Registrar Pagamento Manualmente;
-else ([Mercado Pago])
+  :Registrar Pagamento\nManualmente;
+elseif ([Mercado Pago])
   :Preencher Dados Cartão/Saldo;
   :Confirmar Pagamento;
   |Sistema|
-  :Receber Retorno (querystring);
-  :Consultar API MP via processWebhook();
-  :Validar Status Real do Pagamento;
+  :Receber Retorno (webhook);
+  :Consultar API MP via\nprocessWebhook();
+  :Validar Status Real;
+else ([MultiplusCard])
+  :Cliente paga no SmartPOS\n(cartão/PIX/dinheiro);
+  |Sistema|
+  :Webhook PinPDV;\nou polling confirma;
 endif
 
 |Sistema|
