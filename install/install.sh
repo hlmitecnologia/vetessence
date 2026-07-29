@@ -157,7 +157,22 @@ else
     MAIL_FROM_ADDRESS="$ADMIN_EMAIL"
 fi
 
+echo ""
+echo -e "${BLUE}══════════════════════════════════════════${NC}"
+echo -e "${BLUE}   DIRETÓRIO E AMBIENTE                  ${NC}"
+echo -e "${BLUE}══════════════════════════════════════════${NC}"
 
+APP_DIR=$(prompt "APP_DIR" "Diretório de instalação" "/var/www/vetessence")
+INSTALL_TYPE=$(prompt "INSTALL_TYPE" "Tipo: (D)emo / (P)rodução" "P")
+
+case "${INSTALL_TYPE^^}" in
+    D|DEMO)
+        INSTALL_MODE="demo"
+        ;;
+    *)
+        INSTALL_MODE="production"
+        ;;
+esac
 
 # ═══════════════════════════════════════════════════════════════════════════
 # RESUMO E CONFIRMAÇÃO
@@ -170,6 +185,8 @@ echo -e " ${CYAN}Domínio:${NC}          $APP_URL"
 echo -e " ${CYAN}Nome do sistema:${NC}  $APP_NAME"
 echo -e " ${CYAN}GitHub:${NC}           $GITHUB_REPO ($GITHUB_BRANCH)"
 echo -e " ${CYAN}Banco:${NC}            $DB_CONNECTION://$DB_HOST:$DB_PORT/$DB_DATABASE"
+echo -e " ${CYAN}Diretório:${NC}        $APP_DIR"
+echo -e " ${CYAN}Ambiente:${NC}         ${INSTALL_MODE^}"
 echo -e " ${CYAN}Super-admin:${NC}      $ADMIN_EMAIL"
 echo ""
 
@@ -347,8 +364,6 @@ echo -e "${BLUE}═════════════════════�
 echo -e "${BLUE}   ETAPA 4: CLONAR REPOSITÓRIO           ${NC}"
 echo -e "${BLUE}══════════════════════════════════════════${NC}"
 
-APP_DIR=$(prompt "APP_DIR" "Diretório de instalação" "/var/www/vetessence")
-
 if [[ -d "$APP_DIR" && -f "$APP_DIR/artisan" ]]; then
     warn "Já existe uma instalação do Laravel em ${APP_DIR}."
     REINSTALL=$(prompt "REINSTALL" "Deseja reinstalar sobrescrevendo? (s/N)" "N")
@@ -396,14 +411,14 @@ APP_KEY=$(grep -oP '^APP_KEY=\K.*' .env || "")
 log "Escrevendo configurações no .env..."
 $SUDO tee .env > /dev/null <<ENVEOF
 APP_NAME="${APP_NAME}"
-APP_ENV=production
+APP_ENV=${INSTALL_MODE}
 APP_KEY=${APP_KEY:-base64:$(openssl rand -base64 32)}
-APP_DEBUG=false
+APP_DEBUG=$([[ "$INSTALL_MODE" == "demo" ]] && echo "true" || echo "false")
 APP_URL=${APP_URL}
 
 LOG_CHANNEL=stack
 LOG_DEPRECATIONS_CHANNEL=null
-LOG_LEVEL=error
+LOG_LEVEL=$([[ "$INSTALL_MODE" == "demo" ]] && echo "debug" || echo "error")
 
 DB_CONNECTION=${DB_CONNECTION}
 DB_HOST=${DB_HOST}
@@ -415,7 +430,7 @@ DB_PASSWORD=${DB_PASSWORD}
 BROADCAST_DRIVER=log
 CACHE_DRIVER=file
 FILESYSTEM_DRIVER=local
-QUEUE_CONNECTION=database
+QUEUE_CONNECTION=$([[ "$INSTALL_MODE" == "demo" ]] && echo "sync" || echo "database")
 SESSION_DRIVER=file
 SESSION_LIFETIME=120
 
@@ -451,6 +466,27 @@ MIX_PUSHER_APP_CLUSTER="\${PUSHER_APP_CLUSTER}"
 ENVEOF
 
 ok ".env configurado."
+
+# ── Testar conexão MySQL ─────────────────────────────────────────────
+log "Testando conexão com o banco MySQL..."
+if command -v mysql &>/dev/null; then
+    if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME" -p"$DB_PASSWORD" -e "SELECT 1;" "$DB_DATABASE" &>/dev/null; then
+        ok "Conexão MySQL OK."
+    else
+        # Tenta criar o banco se não existir
+        mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME" -p"$DB_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS \`${DB_DATABASE}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" 2>/dev/null || true
+        if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME" -p"$DB_PASSWORD" -e "SELECT 1;" "$DB_DATABASE" &>/dev/null; then
+            ok "Banco ${DB_DATABASE} criado e conexão OK."
+        else
+            warn "Não foi possível conectar ao MySQL em ${DB_HOST}:${DB_PORT}."
+            warn "Verifique se o servidor MySQL está acessível e as credenciais estão corretas."
+            warn "Para continuar manualmente após resolver: php artisan migrate --force --seed"
+        fi
+    fi
+else
+    warn "Comando mysql não encontrado. Verifique se o cliente MySQL está instalado."
+    warn "Para continuar manualmente: php artisan migrate --force --seed"
+fi
 
 # ═══════════════════════════════════════════════════════════════════════════
 # ETAPA 6:  Instalar dependências Composer e NPM
@@ -527,6 +563,12 @@ fi
 
 # ═══════════════════════════════════════════════════════════════════════════
 # ETAPA 9:  Configurar Nginx
+# ═══════════════════════════════════════════════════════════════════════════
+
+if [[ "$INSTALL_MODE" == "demo" ]]; then
+    log "Ambiente demo: Nginx não será configurado."
+    log "Para testar, execute: php artisan serve --host=0.0.0.0 --port=8000"
+else
 # ═══════════════════════════════════════════════════════════════════════════
 echo ""
 echo -e "${BLUE}══════════════════════════════════════════${NC}"
@@ -617,6 +659,7 @@ log "Reiniciando Nginx..."
 $SUDO systemctl enable nginx --now 2>/dev/null || true
 $SUDO systemctl restart nginx
 ok "Nginx configurado."
+fi
 
 # ═══════════════════════════════════════════════════════════════════════════
 # ETAPA 10:  Cache de otimização
@@ -640,12 +683,17 @@ echo -e "${BLUE}═════════════════════�
 echo -e "${BLUE}   ETAPA 11: CRON                        ${NC}"
 echo -e "${BLUE}══════════════════════════════════════════${NC}"
 
-CRON_LINE="* * * * * ${WWW_USER} php ${APP_DIR}/artisan schedule:run >> /dev/null 2>&1"
-if $SUDO crontab -u "${WWW_USER}" -l 2>/dev/null | grep -qF "$CRON_LINE"; then
-    ok "Cron já configurado."
+if [[ "$INSTALL_MODE" == "demo" ]]; then
+    log "Ambiente demo: cron não será configurado."
+    log "Para testar agendamentos manualmente: php artisan schedule:run"
 else
-    ($SUDO crontab -u "${WWW_USER}" -l 2>/dev/null; echo "$CRON_LINE") | $SUDO crontab -u "${WWW_USER}" -
-    ok "Cron configurado para o usuário ${WWW_USER}."
+    CRON_LINE="* * * * * ${WWW_USER} php ${APP_DIR}/artisan schedule:run >> /dev/null 2>&1"
+    if $SUDO crontab -u "${WWW_USER}" -l 2>/dev/null | grep -qF "$CRON_LINE"; then
+        ok "Cron já configurado."
+    else
+        ($SUDO crontab -u "${WWW_USER}" -l 2>/dev/null; echo "$CRON_LINE") | $SUDO crontab -u "${WWW_USER}" -
+        ok "Cron configurado para o usuário ${WWW_USER}."
+    fi
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -656,7 +704,10 @@ echo -e "${BLUE}═════════════════════�
 echo -e "${BLUE}   ETAPA 12: SUPERVISOR (QUEUE)          ${NC}"
 echo -e "${BLUE}══════════════════════════════════════════${NC}"
 
-if command -v supervisorctl &>/dev/null; then
+if [[ "$INSTALL_MODE" == "demo" ]]; then
+    log "Ambiente demo: supervisor não será configurado."
+    log "Filas executam em sync (QUEUE_CONNECTION=sync)."
+elif command -v supervisorctl &>/dev/null; then
     SUP_CFG="/etc/supervisor/conf.d/vetessence-queue.conf"
     $SUDO tee "$SUP_CFG" > /dev/null <<SUPEOF
 [program:vetessence-queue]
@@ -690,8 +741,11 @@ echo -e "${BLUE}═════════════════════�
 echo -e "${BLUE}   ETAPA 13: CRON (SCHEDULER)            ${NC}"
 echo -e "${BLUE}══════════════════════════════════════════${NC}"
 
-CRON_LINE="* * * * * ${WWW_USER} cd ${APP_DIR} && php artisan schedule:run >> /dev/null 2>&1"
-if command -v crontab &>/dev/null; then
+if [[ "$INSTALL_MODE" == "demo" ]]; then
+    log "Ambiente demo: cron do scheduler não configurado."
+else
+    CRON_LINE="* * * * * ${WWW_USER} cd ${APP_DIR} && php artisan schedule:run >> /dev/null 2>&1"
+    if command -v crontab &>/dev/null; then
     # Adiciona ao crontab do www-user ou root — o ideal é /etc/cron.d/
     CRON_FILE="/etc/cron.d/vetessence-scheduler"
     if [[ ! -f "$CRON_FILE" ]]; then
@@ -702,9 +756,10 @@ if command -v crontab &>/dev/null; then
     else
         ok "${CRON_FILE} já existe, pulando."
     fi
-else
-    warn "crontab não encontrado. Adicione manualmente ao crontab:"
-    warn "${CRON_LINE}"
+    else
+        warn "crontab não encontrado. Adicione manualmente ao crontab:"
+        warn "${CRON_LINE}"
+    fi
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════
