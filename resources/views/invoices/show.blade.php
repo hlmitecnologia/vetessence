@@ -108,6 +108,7 @@
                 </div>
             </div>
         </div>
+        @endif
 
         @if($hasPdvGateway)
         <div class="card card-warning" id="pdv-section">
@@ -123,6 +124,7 @@
         </div>
         @endif
 
+        @if($invoice->status === 'pending' || $invoice->status === 'overdue')
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Registrar Pagamento <i class="fas fa-question-circle text-muted" style="font-size: 0.7em; cursor: help;" data-toggle="tooltip" title="Use esta opção para registrar manualmente um pagamento realizado sem respostas de sistemas e integrações dos Gateways de Pagamento"></i></h3>
