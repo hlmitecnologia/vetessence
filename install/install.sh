@@ -43,7 +43,14 @@ SUDO=""
 if [[ $EUID -ne 0 ]]; then
     if command -v sudo &>/dev/null; then
         SUDO="sudo"
-        warn "Este script precisa de privilégios root. Usarei 'sudo' automaticamente."
+        echo -e "${YELLOW}Este script precisa de privilégios administrativos para instalar dependências.${NC}"
+        echo -e "${YELLOW}Será solicitada a senha do sudo. O acesso expira em 15 minutos.${NC}"
+        echo ""
+        if ! sudo -v; then
+            fail "Senha sudo incorreta ou cancelada pelo usuário."
+        fi
+        # Mantém o ticket sudo ativo durante toda a execução
+        while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done 2>/dev/null &
     else
         fail "Execute como root ou tenha sudo disponível."
     fi
@@ -67,21 +74,62 @@ echo ""
 # ═══════════════════════════════════════════════════════════════════════════
 log "Verificando dependências do sistema..."
 
-REQUIRED_CMDS=(php composer node npm git curl unzip)
-MISSING=()
+# ── Comandos essenciais ───────────────────────────────────────────────
+REQUIRED_CMDS=(php composer node npm git curl unzip zip)
+MISSING_CMDS=()
 for cmd in "${REQUIRED_CMDS[@]}"; do
     if ! command -v "$cmd" &>/dev/null; then
-        MISSING+=("$cmd")
+        MISSING_CMDS+=("$cmd")
     fi
 done
 
-if [[ ${#MISSING[@]} -gt 0 ]]; then
-    echo -e "${WARN} Faltam os seguintes comandos: ${MISSING[*]}"
-    echo -e "${INFO} Eles serão instalados automaticamente na Etapa 3."
+if [[ ${#MISSING_CMDS[@]} -gt 0 ]]; then
+    echo -e "${WARN} Faltam comandos: ${MISSING_CMDS[*]}"
     INSTALL_DEPS=true
+fi
+
+# ── PHP ───────────────────────────────────────────────────────────────
+PHP_MISSING_EXT=()
+PHP_REQUIRED_EXT=(pdo pdo_mysql mbstring xml curl gd zip bcmath intl json fileinfo openssl tokenizer)
+if command -v php &>/dev/null; then
+    PHP_VER_CHECK=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;' 2>/dev/null)
+    if [[ $(echo "$PHP_VER_CHECK 8.2" | awk '{print ($1 < $2) ? 1 : 0}') -eq 1 ]]; then
+        echo -e "${WARN} PHP ${PHP_VER_CHECK} detectado — versão mínima é 8.2."
+        INSTALL_DEPS=true
+    fi
+    for ext in "${PHP_REQUIRED_EXT[@]}"; do
+        if ! php -m 2>/dev/null | grep -qi "^$ext$"; then
+            PHP_MISSING_EXT+=("$ext")
+        fi
+    done
+    if [[ ${#PHP_MISSING_EXT[@]} -gt 0 ]]; then
+        echo -e "${WARN} Extensões PHP ausentes: ${PHP_MISSING_EXT[*]}"
+        INSTALL_DEPS=true
+    fi
 else
-    ok "Todas as dependências básicas estão instaladas."
-    INSTALL_DEPS=false
+    echo -e "${WARN} PHP não encontrado."
+    INSTALL_DEPS=true
+fi
+
+# ── Node.js ───────────────────────────────────────────────────────────
+if command -v node &>/dev/null; then
+    NODE_VER=$(node -v 2>/dev/null | sed 's/v//' | cut -d. -f1)
+    if [[ "$NODE_VER" -lt 18 ]]; then
+        echo -e "${WARN} Node.js $(node -v) — versão mínima é 18."
+        INSTALL_DEPS=true
+    fi
+fi
+
+# ── MySQL client ──────────────────────────────────────────────────────
+if ! command -v mysql &>/dev/null; then
+    echo -e "${WARN} Cliente MySQL não encontrado (necessário para testar conexão)."
+    INSTALL_DEPS=true
+fi
+
+if [[ "$INSTALL_DEPS" == true ]]; then
+    echo -e "${INFO} As dependências faltantes serão instaladas na etapa de instalação."
+else
+    ok "Todas as dependências estão atendidas."
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -222,7 +270,7 @@ fi
 if ! command -v node &>/dev/null || ! command -v npm &>/dev/null; then
     NEEDS_APT=true
 fi
-for cmd in curl git unzip zip nginx; do
+for cmd in curl git unzip zip nginx mysql; do
     if ! command -v "$cmd" &>/dev/null; then
         NEEDS_APT=true
     fi
