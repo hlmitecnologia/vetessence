@@ -566,7 +566,42 @@ ufw --force enable
 
 ---
 
-### 2. Instalação de Demonstração (servidor único)
+## Instalação Automatizada (Script)
+
+O diretório `install/` contém o script `install.sh` que automatiza toda a instalação do VetEssence.
+
+```bash
+sudo bash install/install.sh
+```
+
+### Fluxo
+
+1. **Pré-requisitos** — verifica PHP 8.2+, extensões obrigatórias (13), Node 18+, Composer, MySQL client
+2. **Perguntas** — domínio, GitHub (token + repo), banco (local/remoto), e-mail, diretório, tipo de ambiente
+3. **Confirmação** — resumo com todos os parâmetros antes de alterar o sistema
+4. **Instalação** — sistema de dependências → clone → .env → Composer/NPM → permissões → migrate → Nginx → cache → cron → supervisor
+
+### Ambiente Demo vs Produção
+
+| Característica | Demo | Produção |
+|---------------|------|----------|
+| `APP_DEBUG` | `true` | `false` |
+| `LOG_LEVEL` | `debug` | `error` |
+| `QUEUE_CONNECTION` | `sync` | `database` |
+| Nginx | Pulado (use `php artisan serve`) | Configurado |
+| Supervisor | Pulado | Configurado |
+| Cron | Pulado | Configurado |
+
+### Pré-requisitos verificados
+
+- PHP 8.2+ com extensões: `pdo`, `pdo_mysql`, `mbstring`, `xml`, `curl`, `gd`, `zip`, `bcmath`, `intl`, `json`, `fileinfo`, `openssl`, `tokenizer`
+- Node.js 18+ e npm
+- Composer, git, curl, unzip, zip
+- MySQL client (conexão testada após gerar `.env`)
+
+---
+
+## Instalação Manual
 
 Aplicável quando app e banco rodam na mesma máquina (mínimo 2 GB RAM, 1 core).
 

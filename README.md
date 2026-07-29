@@ -140,7 +140,7 @@ O **VetEssence** é um sistema ERP completo para clínicas veterinárias, constr
 | PDF | Dompdf |
 | QR Code | endroid/qr-code |
 | Nota Fiscal (NFe/NFCe/NFSe) | Webmania, NFE.io |
-| Pagamentos | PIX (ativo); Mercado Pago, PagSeguro, Stripe, Stone previstos |
+| Pagamentos | PIX (ativo); MultiplusCard PinPDV (PDV); Mercado Pago (portal); Payer API Gateway (suspenso) |
 | IA | OpenAI, Anthropic, Gemini, Grok, Ollama |
 | Testes | PHPUnit (675 testes, 0 falhas), Laravel Dusk (45 testes E2E em 9 fluxos) |
 
@@ -175,14 +175,32 @@ php artisan migrate --seed
 php artisan serve
 ```
 
-### Instalação Manual (Ubuntu 24.04)
+### Instalação Manual (Ubuntu 24.04 / Debian 12)
 
 ```bash
 chmod +x install/install.sh
 sudo ./install/install.sh
 ```
 
-O script interativo configura PHP, Nginx, MariaDB, Node.js, Redis, Supervisor e Certbot automaticamente. Consulte [install/install.sh](install/install.sh).
+O script é **interativo**: todas as perguntas (domínio, banco de dados, GitHub, tipo de ambiente) são feitas antes de qualquer alteração no sistema. Após a confirmação, a instalação roda de forma autônoma.
+
+**Pré-requisitos verificados automaticamente:**
+- PHP 8.2+ com extensões: `pdo`, `pdo_mysql`, `mbstring`, `xml`, `curl`, `gd`, `zip`, `bcmath`, `intl`, `json`, `fileinfo`, `openssl`, `tokenizer`
+- Node.js 18+ e npm
+- Composer, git, curl, unzip, zip
+- MySQL client (para testar a conexão)
+
+**O que é instalado:**
+- PHP 8.x (+ FPM), Nginx, MySQL/MariaDB, Redis, Supervisor
+- Dependências Composer e NPM
+- Banco de dados criado e populado (migrations + seeders)
+- Certificado SSL via Certbot (opcional)
+
+**Ambiente Demo vs Produção:**
+- **Demo**: `APP_DEBUG=true`, fila em `sync`, pula Nginx/Supervisor/Cron. Use `php artisan serve` para testar.
+- **Produção**: `APP_DEBUG=false`, fila `database`, Nginx, Supervisor, Cron configurados.
+
+Consulte [install/install.sh](install/install.sh) para detalhes.
 
 ### Servidor de Produção
 
