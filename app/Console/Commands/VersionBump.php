@@ -216,8 +216,11 @@ class VersionBump extends Command
     {
         $branch = config('update.branch') ?: 'main';
 
-        $push = $this->runGit(['push', 'origin', $branch, '--tags']);
+        $push = $this->runGit(['push', 'origin', $branch]);
         $this->line('  ' . trim($push));
+
+        $tag = $this->runGit(['push', 'origin', "v{$new}"]);
+        $this->line('  ' . trim($tag));
 
         $this->createGithubRelease($new);
     }
