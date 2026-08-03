@@ -1,6 +1,8 @@
 # Changelog
 
-## [Não versionado] — 2026-07-28
+## [Não versionado] — 2026-08-03
+
+## [v1.0.1] — 2026-08-03
 
 ### Adicionado
 - **PIX: regra de conflito revisada**: PIX não conflita mais com outros provedores (apenas com outro PIX). Gateways não-PIX ignoram PIX na verificação de conflito
@@ -17,7 +19,6 @@
 - `PaymentService::getActiveGatewayForChannel`: prioriza gateways não-PIX (`ORDER BY provider = 'pix' ASC`)
 - Testes: `PaymentGatewayControllerTest` e `PaymentGatewayTest` atualizados para nova regra de conflito
 - Duplicação de código: `filterConfig()` extraído para método reutilizável
-
 ## [Não versionado] — 2026-07-21
 
 ### Adicionado

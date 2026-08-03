@@ -12,7 +12,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/hlmitecnologia/vetessence?style=social)](https://github.com/hlmitecnologia/vetessence)
 [![GitHub issues](https://img.shields.io/github/issues/hlmitecnologia/vetessence)](https://github.com/hlmitecnologia/vetessence/issues)
 [![Testes](https://github.com/hlmitecnologia/vetessence/actions/workflows/tests.yml/badge.svg)](https://github.com/hlmitecnologia/vetessence/actions/workflows/tests.yml)
-[![Versão](https://img.shields.io/badge/versão-v1.0.0-blue.svg)](https://github.com/hlmitecnologia/vetessence/releases)
+[![Versão](https://img.shields.io/badge/versão-v1.0.1-blue.svg)](https://github.com/hlmitecnologia/vetessence/releases)
 
 ---
 
