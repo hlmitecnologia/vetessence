@@ -28,7 +28,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/config', function () {
         return response()->json([
             'app_name' => config('app.name'),
-            'version' => '1.0.0',
+            'version' => config('app.version'),
         ]);
     });
 

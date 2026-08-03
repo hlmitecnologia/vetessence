@@ -45,12 +45,13 @@ class SystemUpdateController extends Controller
 
         $throttledUntil = Cache::get(self::RATE_LIMIT_KEY . auth()->id());
 
+        $appVersion = config('app.version');
+
         return view('system-update.index', compact(
             'hasToken', 'hasRepo', 'hasBranch',
             'currentHash', 'remoteHash', 'behind', 'logs',
-            'licenseKey', 'repo', 'branch', 'throttledUntil'
-        ));
-    }
+            'licenseKey', 'repo', 'branch', 'throttledUntil', 'appVersion'
+        ));    }
 
     public function token(Request $request)
     {

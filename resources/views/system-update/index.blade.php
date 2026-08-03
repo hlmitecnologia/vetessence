@@ -54,6 +54,9 @@
                 <div class="card-header"><h5>Status</h5></div>
                 <div class="card-body">
                     <dl class="row">
+                        <dt class="col-sm-5">Versão do sistema</dt>
+                        <dd class="col-sm-7"><span class="badge badge-primary">v{{ $appVersion }}</span></dd>
+
                         <dt class="col-sm-5">Commit atual</dt>
                         <dd class="col-sm-7"><code>{{ $currentHash }}</code></dd>
 
