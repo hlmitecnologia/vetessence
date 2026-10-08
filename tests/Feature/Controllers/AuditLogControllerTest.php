@@ -35,8 +35,10 @@ class AuditLogControllerTest extends ModuleTestCase
         AuditLog::factory()->create(['model_type' => 'App\Models\User']);
         AuditLog::factory()->create(['model_type' => 'App\Models\Pet']);
 
-        $response = $this->get(route('audit-logs.index', ['model' => 'User']));
+        $response = $this->get(route('audit-logs.index', ['model_type' => 'User']));
         $response->assertOk();
+        $response->assertViewHas('logs', fn ($logs) => $logs->count() >= 1
+            && $logs->every(fn ($log) => $log->model_type === User::class));
     }
 
     public function test_index_filters_by_date_range()

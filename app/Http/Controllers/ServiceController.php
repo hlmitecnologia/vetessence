@@ -14,7 +14,10 @@ class ServiceController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:admin');
+        $this->middleware('can:services.view')->only(['index', 'show']);
+        $this->middleware('can:services.create')->only(['create', 'store']);
+        $this->middleware('can:services.edit')->only(['edit', 'update']);
+        $this->middleware('can:services.delete')->only(['destroy']);
     }
 
     public function index(Request $request)
@@ -29,7 +32,7 @@ class ServiceController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
-        $services = $query->orderBy('name')->get();
+        $services = $query->orderBy('name')->paginate(20);
 
         $categories = Category::where('type', 'service')->orderBy('name')->get();
 

@@ -41,7 +41,7 @@ class ClinicalReportTemplateControllerTest extends ModuleTestCase
     public function test_create()
     {
         $response = $this->get(route('clinical-report-templates.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('clinical-report-templates.index'));
     }
 
     public function test_store_creates_template()
@@ -80,7 +80,7 @@ class ClinicalReportTemplateControllerTest extends ModuleTestCase
     {
         $template = ClinicalReportTemplate::factory()->create();
         $response = $this->get(route('clinical-report-templates.edit', $template));
-        $response->assertOk();
+        $response->assertRedirect(route('clinical-report-templates.index'));
     }
 
     public function test_update_modifies_template()

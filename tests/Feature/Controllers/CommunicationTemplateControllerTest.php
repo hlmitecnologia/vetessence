@@ -34,7 +34,7 @@ class CommunicationTemplateControllerTest extends ModuleTestCase
     public function test_create()
     {
         $response = $this->get(route('communication-templates.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('communication-templates.index'));
     }
 
     public function test_store()
@@ -65,7 +65,7 @@ class CommunicationTemplateControllerTest extends ModuleTestCase
         $template = $this->createTemplate();
 
         $response = $this->get(route('communication-templates.edit', $template));
-        $response->assertOk();
+        $response->assertRedirect(route('communication-templates.index'));
     }
 
     public function test_update()

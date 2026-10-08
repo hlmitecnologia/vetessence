@@ -23,7 +23,7 @@ class GroomingTemplateControllerTest extends ModuleTestCase
     public function test_create()
     {
         $response = $this->get(route('grooming-templates.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('grooming-templates.index'));
     }
 
     public function test_store_creates_template()
@@ -60,7 +60,7 @@ class GroomingTemplateControllerTest extends ModuleTestCase
     {
         $template = GroomingTemplate::factory()->create();
         $response = $this->get(route('grooming-templates.edit', $template));
-        $response->assertOk();
+        $response->assertRedirect(route('grooming-templates.index'));
     }
 
     public function test_update_modifies_record()

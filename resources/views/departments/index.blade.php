@@ -44,6 +44,8 @@
             </tbody>
         </table>
 
+        {{ $departments->links() }}
+
         @else
         <p class="text-center text-muted my-4">Nenhum departamento cadastrado.</p>
         @endif

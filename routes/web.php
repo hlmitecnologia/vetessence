@@ -490,7 +490,7 @@ Route::middleware(['auth'])->group(function () {
         'edit' => 'controlled-substances.edit',
         'update' => 'controlled-substances.update',
         'destroy' => 'controlled-substances.destroy',
-    ]);
+    ])->whereNumber('controlled_substance');
     Route::get('controlled-substances/movements', 'App\Http\Controllers\ControlledSubstanceLogController@index')
         ->name('controlled-substance-logs.index');
     Route::get('controlled-substances/movements/create', 'App\Http\Controllers\ControlledSubstanceLogController@create')

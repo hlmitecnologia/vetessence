@@ -35,7 +35,7 @@ class TreatmentPlanControllerTest extends ModuleTestCase
             'vet_id' => $vet->id,
             'title' => 'Plano de quimioterapia',
             'description' => '6 sessões',
-            'status' => 'pending',
+            'status' => 'pending_approval',
             'vet_notes' => 'Aguardando aprovação',
         ]);
 
@@ -63,13 +63,13 @@ class TreatmentPlanControllerTest extends ModuleTestCase
             'tutor_id' => $plan->tutor_id,
             'vet_id' => $plan->vet_id,
             'title' => $plan->title,
-            'status' => 'pending',
+            'status' => 'pending_approval',
         ]);
 
         $response->assertRedirect();
         $this->assertDatabaseHas('treatment_plans', [
             'id' => $plan->id,
-            'status' => 'pending',
+            'status' => 'pending_approval',
         ]);
     }
 

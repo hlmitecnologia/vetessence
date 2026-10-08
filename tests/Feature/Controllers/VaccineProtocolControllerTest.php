@@ -23,7 +23,7 @@ class VaccineProtocolControllerTest extends ModuleTestCase
     public function test_create()
     {
         $response = $this->get(route('vaccine-protocols.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('vaccine-protocols.index'));
     }
 
     public function test_store_creates_record()
@@ -60,7 +60,7 @@ class VaccineProtocolControllerTest extends ModuleTestCase
     {
         $protocol = VaccineProtocol::factory()->create();
         $response = $this->get(route('vaccine-protocols.edit', $protocol));
-        $response->assertOk();
+        $response->assertRedirect(route('vaccine-protocols.index'));
     }
 
     public function test_update_modifies_record()

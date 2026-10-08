@@ -12,7 +12,7 @@ class HealthCertificateFactory extends Factory
     public function definition()
     {
         return [
-            'certificate_number' => HealthCertificate::generateNumber(),
+            'certificate_number' => $this->uniqueCertificateNumber(),
             'pet_id' => \App\Models\Pet::factory(),
             'type' => 'international',
             'destination' => $this->faker->country,
@@ -23,5 +23,14 @@ class HealthCertificateFactory extends Factory
             'is_export' => false,
             'status' => 'draft',
         ];
+    }
+
+    private function uniqueCertificateNumber(): string
+    {
+        do {
+            $number = sprintf('HC-%04d/%d', $this->faker->numberBetween(1, 9999), now()->year);
+        } while (HealthCertificate::withoutGlobalScopes()->where('certificate_number', $number)->exists());
+
+        return $number;
     }
 }

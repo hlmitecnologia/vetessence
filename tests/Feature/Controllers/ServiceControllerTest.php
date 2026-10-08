@@ -23,7 +23,7 @@ class ServiceControllerTest extends ModuleTestCase
     public function test_create()
     {
         $response = $this->get(route('services.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('services.index'));
     }
 
     public function test_store_creates_record()
@@ -54,7 +54,7 @@ class ServiceControllerTest extends ModuleTestCase
     {
         $service = Service::factory()->create();
         $response = $this->get(route('services.edit', $service));
-        $response->assertOk();
+        $response->assertRedirect(route('services.index'));
     }
 
     public function test_update_modifies_record()

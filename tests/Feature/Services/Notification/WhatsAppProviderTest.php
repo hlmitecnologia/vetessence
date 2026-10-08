@@ -27,6 +27,7 @@ class WhatsAppProviderTest extends TestCase
 
         $this->assertTrue($result->success);
         $this->assertEquals('Z-API', $result->provider);
+        Http::assertSent(fn ($request) => $request->header('Client-Token')[0] === 'zapi-token');
     }
 
     public function test_zapi_send_failure()

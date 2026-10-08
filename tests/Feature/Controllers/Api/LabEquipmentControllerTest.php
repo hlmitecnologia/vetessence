@@ -41,7 +41,7 @@ class LabEquipmentControllerTest extends ModuleTestCase
         ]);
 
         $response->assertForbidden();
-        $response->assertJson(['error' => 'Integration inactive']);
+        $response->assertJson(['error' => 'Integração inativa']);
     }
 
     public function test_receive_validates_required_fields()

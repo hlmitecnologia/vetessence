@@ -35,6 +35,7 @@ class BankAccountControllerTest extends ModuleTestCase
             'agency' => '1234',
             'account' => '56789-0',
             'account_type' => 'checking',
+            'branch_id' => $branch->id,
         ]);
         $response->assertRedirect();
         $this->assertDatabaseHas('bank_accounts', ['bank' => 'Banco do Brasil']);

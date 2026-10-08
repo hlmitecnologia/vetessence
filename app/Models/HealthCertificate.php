@@ -38,7 +38,10 @@ class HealthCertificate extends Model
     public static function generateNumber(): string
     {
         $year = now()->year;
-        $last = static::whereYear('created_at', $year)->orderBy('id', 'desc')->first();
+        $last = static::withoutGlobalScopes()
+            ->whereYear('created_at', $year)
+            ->orderByDesc('id')
+            ->first();
         $seq = $last ? (int) substr($last->certificate_number, 3, 4) + 1 : 1;
         return sprintf('HC-%04d/%d', $seq, $year);
     }

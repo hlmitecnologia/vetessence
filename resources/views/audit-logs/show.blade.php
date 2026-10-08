@@ -15,29 +15,29 @@
             <div class="col-md-6">
                 <dl class="row">
                     <dt class="col-sm-4">Usuário:</dt>
-                    <dd class="col-sm-8">{{ $log->user->name ?? 'Sistema' }}</dd>
+                    <dd class="col-sm-8">{{ $auditLog->user->name ?? 'Sistema' }}</dd>
 
                     <dt class="col-sm-4">Ação:</dt>
                     <dd class="col-sm-8">
                         @php
                             $actionColors = ['create' => 'badge-success', 'update' => 'badge-info', 'delete' => 'badge-danger'];
                         @endphp
-                        <span class="badge {{ $actionColors[$log->action] ?? 'badge-secondary' }}">
-                            {{ $log->action }}
+                        <span class="badge {{ $actionColors[$auditLog->action] ?? 'badge-secondary' }}">
+                            {{ $auditLog->action }}
                         </span>
                     </dd>
 
                     <dt class="col-sm-4">Modelo:</dt>
-                    <dd class="col-sm-8">{{ $log->model_type }}</dd>
+                    <dd class="col-sm-8">{{ $auditLog->model_type }}</dd>
 
                     <dt class="col-sm-4">ID do Registro:</dt>
-                    <dd class="col-sm-8">{{ $log->model_id }}</dd>
+                    <dd class="col-sm-8">{{ $auditLog->model_id }}</dd>
 
                     <dt class="col-sm-4">IP:</dt>
-                    <dd class="col-sm-8">{{ $log->ip_address ?? '-' }}</dd>
+                    <dd class="col-sm-8">{{ $auditLog->ip_address ?? '-' }}</dd>
 
                     <dt class="col-sm-4">Data:</dt>
-                    <dd class="col-sm-8">{{ $log->created_at->format('d/m/Y H:i:s') }}</dd>
+                    <dd class="col-sm-8">{{ $auditLog->created_at->format('d/m/Y H:i:s') }}</dd>
                 </dl>
             </div>
         </div>
@@ -49,8 +49,8 @@
                         <h5 class="card-title">Valores Antigos</h5>
                     </div>
                     <div class="card-body">
-                        @if($log->old_values)
-                            <pre class="mb-0" style="max-height: 300px; overflow-y: auto;">{{ json_encode($log->old_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                        @if($auditLog->old_values)
+                            <pre class="mb-0" style="max-height: 300px; overflow-y: auto;">{{ json_encode($auditLog->old_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
                         @else
                             <p class="text-muted mb-0">Nenhum dado anterior.</p>
                         @endif
@@ -63,8 +63,8 @@
                         <h5 class="card-title">Novos Valores</h5>
                     </div>
                     <div class="card-body">
-                        @if($log->new_values)
-                            <pre class="mb-0" style="max-height: 300px; overflow-y: auto;">{{ json_encode($log->new_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                        @if($auditLog->new_values)
+                            <pre class="mb-0" style="max-height: 300px; overflow-y: auto;">{{ json_encode($auditLog->new_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
                         @else
                             <p class="text-muted mb-0">Nenhum dado novo.</p>
                         @endif

@@ -128,7 +128,8 @@ class ExecutionBoard extends Component
 
     public function confirmExecution()
     {
-        $this->validate();
+        $this->validateOnly('executeStatus');
+        $this->validateOnly('executeNotes');
 
         $task = ExecutionTask::findOrFail($this->executingTaskId);
 
@@ -157,9 +158,21 @@ class ExecutionBoard extends Component
         $this->showManualTaskModal = true;
     }
 
-    public function saveManualTask()
+    public function saveManualTask($title = null, $category = null, $time = null, $description = null)
     {
-        $this->validate(['manualTaskTitle' => 'required|string|max:255']);
+        if ($title !== null) {
+            $this->manualTaskTitle = $title;
+            $this->manualTaskCategory = $category ?? $this->manualTaskCategory;
+            $this->manualTaskTime = $time ?? '';
+            $this->manualTaskDescription = $description ?? '';
+        }
+
+        $this->validate([
+            'manualTaskTitle' => 'required|string|max:255',
+            'manualTaskCategory' => 'required|string|max:50',
+            'manualTaskTime' => 'nullable|date_format:H:i',
+            'manualTaskDescription' => 'nullable|string|max:1000',
+        ]);
 
         $this->executionMap->tasks()->create([
             'category' => $this->manualTaskCategory,

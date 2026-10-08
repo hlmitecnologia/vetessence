@@ -18,7 +18,7 @@ class DocumentationTest extends TestCase
     public function test_requires_docs_view_permission()
     {
         $user = User::factory()->create();
-        $this->actingAs($user)->get(route('docs.index'))->assertStatus(403);
+        $this->actingAs($user)->get(route('docs.index'))->assertRedirect(route('dashboard'));
     }
 
     public function test_authorized_user_can_access()

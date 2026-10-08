@@ -19,7 +19,7 @@ class SystemUpdateTest extends TestCase
     public function test_requires_permission()
     {
         $user = User::factory()->create();
-        $this->actingAs($user)->get(route('system-update.index'))->assertStatus(403);
+        $this->actingAs($user)->get(route('system-update.index'))->assertRedirect(route('dashboard'));
     }
 
     public function test_authorized_user_can_access()

@@ -23,7 +23,7 @@ class CategoryControllerTest extends ModuleTestCase
     public function test_create()
     {
         $response = $this->get(route('categories.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('categories.index'));
     }
 
     public function test_store_creates_record()
@@ -53,7 +53,7 @@ class CategoryControllerTest extends ModuleTestCase
     {
         $category = Category::factory()->create();
         $response = $this->get(route('categories.edit', $category));
-        $response->assertOk();
+        $response->assertRedirect(route('categories.index'));
     }
 
     public function test_update_modifies_record()

@@ -24,7 +24,7 @@ class DepartmentControllerTest extends ModuleTestCase
     public function test_create()
     {
         $response = $this->get(route('departments.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('departments.index'));
     }
 
     public function test_store_creates_record()
@@ -54,7 +54,7 @@ class DepartmentControllerTest extends ModuleTestCase
     {
         $department = Department::factory()->create();
         $response = $this->get(route('departments.edit', $department));
-        $response->assertOk();
+        $response->assertRedirect(route('departments.index'));
     }
 
     public function test_update_modifies_record()

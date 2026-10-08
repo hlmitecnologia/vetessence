@@ -403,10 +403,13 @@ class PermissionSeeder extends Seeder
             if ($existing) {
                 $role = SpatieRole::findById($existing->id);
             } else {
-                $role = SpatieRole::findOrCreate($slug, 'web');
+                $role = new SpatieRole();
+                $role->name = $slug;
+                $role->guard_name = 'web';
                 if (\Schema::hasColumn('roles', 'slug')) {
-                    $role->update(['slug' => $slug]);
+                    $role->slug = $slug;
                 }
+                $role->save();
             }
             $role->syncPermissions($perms);
         }

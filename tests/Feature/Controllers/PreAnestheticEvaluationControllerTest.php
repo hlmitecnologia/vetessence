@@ -20,7 +20,7 @@ class PreAnestheticEvaluationControllerTest extends ModuleTestCase
     {
         $this->loginAs('veterinario');
         $response = $this->get(route('pre-anesthetic-evaluations.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('pre-anesthetic-evaluations.index'));
     }
 
     public function test_store()

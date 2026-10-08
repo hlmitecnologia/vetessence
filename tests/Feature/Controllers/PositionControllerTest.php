@@ -24,7 +24,7 @@ class PositionControllerTest extends ModuleTestCase
     public function test_create()
     {
         $response = $this->get(route('positions.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('positions.index'));
     }
 
     public function test_store_creates_record()
@@ -56,7 +56,7 @@ class PositionControllerTest extends ModuleTestCase
     {
         $position = Position::factory()->create();
         $response = $this->get(route('positions.edit', $position));
-        $response->assertOk();
+        $response->assertRedirect(route('positions.index'));
     }
 
     public function test_update_modifies_record()

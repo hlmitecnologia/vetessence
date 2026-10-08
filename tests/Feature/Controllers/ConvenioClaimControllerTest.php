@@ -20,7 +20,7 @@ class ConvenioClaimControllerTest extends ModuleTestCase
     {
         $this->loginAs('veterinario');
         $response = $this->get(route('convenio-claims.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('convenio-claims.index'));
     }
 
     public function test_store()

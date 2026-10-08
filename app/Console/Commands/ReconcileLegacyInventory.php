@@ -102,7 +102,9 @@ class ReconcileLegacyInventory extends Command
             ));
         }
 
-        $this->info(sprintf('%d saldo(s) analisado(s). %s', count($results), $this->option('apply') ? 'Alterações aplicadas.' : 'Relatório; use --apply para persistir.'));
+        if (!$this->option('json')) {
+            $this->info(sprintf('%d saldo(s) analisado(s). %s', count($results), $this->option('apply') ? 'Alterações aplicadas.' : 'Relatório; use --apply para persistir.'));
+        }
         return self::SUCCESS;
     }
 
@@ -115,14 +117,14 @@ class ReconcileLegacyInventory extends Command
                 return null;
             }
             $handle = fopen($file, 'rb');
-            $headers = fgetcsv($handle);
+            $headers = fgetcsv($handle, 0, ',', '"', '');
             if (!$headers || array_diff(['product_id', 'branch_id', 'quantity', 'unit', 'expiration_date'], $headers)) {
                 fclose($handle);
                 $this->error('CSV deve conter: product_id,branch_id,quantity,unit,expiration_date');
                 return null;
             }
             $rows = [];
-            while (($values = fgetcsv($handle)) !== false) {
+            while (($values = fgetcsv($handle, 0, ',', '"', '')) !== false) {
                 $row = array_combine($headers, $values);
                 $row['confirmed'] = true;
                 $rows[] = $row;

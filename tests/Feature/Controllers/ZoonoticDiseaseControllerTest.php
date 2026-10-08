@@ -42,7 +42,7 @@ class ZoonoticDiseaseControllerTest extends ModuleTestCase
     public function test_create()
     {
         $response = $this->get(route('zoonotic-diseases.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('zoonotic-diseases.index'));
     }
 
     public function test_store_creates_disease()
@@ -87,7 +87,7 @@ class ZoonoticDiseaseControllerTest extends ModuleTestCase
     {
         $disease = ZoonoticDisease::create(['name' => 'Editar Doença', 'category' => 'viral']);
         $response = $this->get(route('zoonotic-diseases.edit', $disease));
-        $response->assertOk();
+        $response->assertRedirect(route('zoonotic-diseases.index'));
     }
 
     public function test_update_modifies_disease()

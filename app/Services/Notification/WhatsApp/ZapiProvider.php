@@ -36,10 +36,18 @@ class ZapiProvider implements WhatsAppProvider
                 $phone = '55' . $phone;
             }
 
-            $url = "https://api.z-api.io/instances/{$instance}/token/{$apiToken}/send-text";
+            $configuredBaseUrl = $this->config['api_url'] ?? null;
+            if ($configuredBaseUrl) {
+                $baseUrl = rtrim($configuredBaseUrl, '/');
+                $url = "{$baseUrl}/instances/{$instance}/send-text";
+                $headers = ['Content-Type' => 'application/json', 'Client-Token' => $apiToken];
+            } else {
+                $url = "https://api.z-api.io/instances/{$instance}/token/{$apiToken}/send-text";
+                $headers = ['Content-Type' => 'application/json'];
+            }
 
             $response = Http::timeout(15)
-                ->withHeaders(['Content-Type' => 'application/json'])
+                ->withHeaders($headers)
                 ->post($url, [
                     'phone' => $phone,
                     'message' => $message,

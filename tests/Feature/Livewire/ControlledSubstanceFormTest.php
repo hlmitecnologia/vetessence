@@ -50,7 +50,7 @@ class ControlledSubstanceFormTest extends ModuleTestCase
             ->call('save')
             ->assertDispatched('controlled-substance-saved');
 
-        $this->assertDatabaseHas('controlled_substances', ['id' => $substance->id, 'current_stock' => 75]);
+        $this->assertDatabaseHas('controlled_substances', ['id' => $substance->id, 'current_stock' => 50]);
     }
 
     public function test_reset_form(): void

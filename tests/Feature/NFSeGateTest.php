@@ -16,13 +16,11 @@ class NFSeGateTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        if (Role::count() === 0) {
-            Role::create(['name' => 'super-admin', 'guard_name' => 'web']);
-        }
-        Permission::create(['name' => 'nfse.view', 'guard_name' => 'web']);
-        Permission::create(['name' => 'nfse.emit', 'guard_name' => 'web']);
-        Permission::create(['name' => 'nfse.cancel', 'guard_name' => 'web']);
-        Permission::create(['name' => 'nfse-config.edit', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'nfse.view', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'nfse.emit', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'nfse.cancel', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'nfse-config.edit', 'guard_name' => 'web']);
         $this->user = User::factory()->create(['is_active' => true]);
     }
 

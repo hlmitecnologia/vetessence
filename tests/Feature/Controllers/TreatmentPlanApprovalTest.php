@@ -13,7 +13,7 @@ class TreatmentPlanApprovalTest extends ModuleTestCase
     public function test_approve_plan()
     {
         $this->loginAs('veterinario');
-        $plan = TreatmentPlan::factory()->create(['status' => 'pending']);
+        $plan = TreatmentPlan::factory()->create(['status' => 'pending_approval']);
         $response = $this->put(route('treatment-plans.approve', $plan));
         $response->assertRedirect();
         $this->assertEquals('approved', $plan->fresh()->status);
@@ -23,7 +23,7 @@ class TreatmentPlanApprovalTest extends ModuleTestCase
     public function test_reject_plan()
     {
         $this->loginAs('veterinario');
-        $plan = TreatmentPlan::factory()->create(['status' => 'pending']);
+        $plan = TreatmentPlan::factory()->create(['status' => 'pending_approval']);
         $response = $this->put(route('treatment-plans.reject', $plan), [
             'rejection_reason' => 'Valor muito alto',
         ]);
@@ -34,7 +34,7 @@ class TreatmentPlanApprovalTest extends ModuleTestCase
 
     public function test_model_approve_method()
     {
-        $plan = TreatmentPlan::factory()->create(['status' => 'pending']);
+        $plan = TreatmentPlan::factory()->create(['status' => 'pending_approval']);
         $plan->approve();
         $this->assertTrue($plan->isApproved());
         $this->assertNotNull($plan->client_approved_at);
@@ -42,7 +42,7 @@ class TreatmentPlanApprovalTest extends ModuleTestCase
 
     public function test_model_reject_method()
     {
-        $plan = TreatmentPlan::factory()->create(['status' => 'pending']);
+        $plan = TreatmentPlan::factory()->create(['status' => 'pending_approval']);
         $plan->reject('Cliente desistiu');
         $this->assertTrue($plan->fresh()->isRejected());
         $this->assertEquals('Cliente desistiu', $plan->fresh()->rejection_reason);
@@ -50,7 +50,7 @@ class TreatmentPlanApprovalTest extends ModuleTestCase
 
     public function test_scopes()
     {
-        TreatmentPlan::factory()->count(2)->create(['status' => 'pending']);
+        TreatmentPlan::factory()->count(2)->create(['status' => 'pending_approval']);
         TreatmentPlan::factory()->create(['status' => 'approved']);
         TreatmentPlan::factory()->create(['status' => 'rejected']);
 

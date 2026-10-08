@@ -52,6 +52,7 @@
                 @endforeach
             </tbody>
         </table>
+        {{ $services->links() }}
         @else
         <p class="text-center text-muted">Nenhum registro encontrado.</p>
         @endif

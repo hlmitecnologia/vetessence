@@ -22,7 +22,7 @@ class ControlledSubstanceControllerTest extends ModuleTestCase
     public function test_create()
     {
         $response = $this->get(route('controlled-substances.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('controlled-substances.index'));
     }
 
     public function test_store()
@@ -70,7 +70,7 @@ class ControlledSubstanceControllerTest extends ModuleTestCase
         $substance = $this->createSubstance();
 
         $response = $this->get(route('controlled-substances.edit', $substance));
-        $response->assertOk();
+        $response->assertRedirect(route('controlled-substances.index'));
     }
 
     public function test_update()

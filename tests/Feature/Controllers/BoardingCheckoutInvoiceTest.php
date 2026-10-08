@@ -34,10 +34,11 @@ class BoardingCheckoutInvoiceTest extends ModuleTestCase
         $tutor = Tutor::factory()->create();
         $pet = $this->makePet($tutor);
         $kennel = BoardingKennel::factory()->create();
+        $branch = \App\Models\Branch::factory()->create();
         $boarding = Boarding::factory()->create([
             'pet_id' => $pet->id,
             'kennel_id' => $kennel->id,
-            'branch_id' => 1,
+            'branch_id' => $branch->id,
             'status' => 'checked_in',
             'check_in_at' => Carbon::now()->subDays(2),
             'daily_rate' => 50,
@@ -66,10 +67,11 @@ class BoardingCheckoutInvoiceTest extends ModuleTestCase
         $tutor = Tutor::factory()->create();
         $pet = $this->makePet($tutor);
         $kennel = BoardingKennel::factory()->create();
+        $branch = \App\Models\Branch::factory()->create();
         $boarding = Boarding::factory()->create([
             'pet_id' => $pet->id,
             'kennel_id' => $kennel->id,
-            'branch_id' => 1,
+            'branch_id' => $branch->id,
             'status' => 'checked_in',
             'check_in_at' => Carbon::now()->subDays(1),
             'daily_rate' => 0,
@@ -101,10 +103,11 @@ class BoardingCheckoutInvoiceTest extends ModuleTestCase
         $sub->coveredPets()->create(['pet_id' => $pet->id]);
 
         $kennel = BoardingKennel::factory()->create();
+        $branch = \App\Models\Branch::factory()->create();
         $boarding = Boarding::factory()->create([
             'pet_id' => $pet->id,
             'kennel_id' => $kennel->id,
-            'branch_id' => 1,
+            'branch_id' => $branch->id,
             'status' => 'checked_in',
             'check_in_at' => Carbon::now()->subDays(1),
             'daily_rate' => 100,

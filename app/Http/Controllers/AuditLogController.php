@@ -20,8 +20,12 @@ class AuditLogController extends Controller
             $query->where('action', $request->action);
         }
 
-        if ($request->model) {
-            $query->where('auditable_type', 'App\\Models\\' . $request->model);
+        $model = $request->input('model_type', $request->input('model'));
+        if ($model) {
+            $modelType = str_starts_with($model, 'App\\Models\\')
+                ? $model
+                : 'App\\Models\\' . $model;
+            $query->where('model_type', $modelType);
         }
 
         if ($request->date_from) {

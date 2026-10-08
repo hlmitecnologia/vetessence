@@ -29,7 +29,7 @@ class ControlledSubstanceLogControllerTest extends ModuleTestCase
 
     public function test_index()
     {
-        $response = $this->get(route('controlled-substance-logs.index', ['substance' => 0]));
+        $response = $this->get(route('controlled-substance-logs.index'));
         $response->assertOk();
     }
 
@@ -37,7 +37,7 @@ class ControlledSubstanceLogControllerTest extends ModuleTestCase
     {
         $substance = $this->createSubstance();
 
-        $response = $this->post(route('controlled-substance-logs.store', ['substance' => $substance->id]), [
+        $response = $this->post(route('controlled-substance-logs.store', ['substance_id' => $substance->id]), [
             'controlled_substance_id' => $substance->id,
             'type' => 'in',
             'quantity' => 10,
@@ -45,7 +45,7 @@ class ControlledSubstanceLogControllerTest extends ModuleTestCase
             'notes' => 'Compra',
         ]);
 
-        $response->assertRedirect(route('controlled-substance-logs.index', ['substance' => $substance->id]));
+        $response->assertRedirect(route('controlled-substance-logs.index', ['substance_id' => $substance->id]));
         $this->assertDatabaseHas('controlled_substance_logs', [
             'controlled_substance_id' => $substance->id,
             'type' => 'in',
@@ -82,7 +82,7 @@ class ControlledSubstanceLogControllerTest extends ModuleTestCase
         ]);
 
         $response = $this->delete(route('controlled-substance-logs.destroy', $log));
-        $response->assertRedirect(route('controlled-substance-logs.index', ['substance' => $substance->id]));
+        $response->assertRedirect(route('controlled-substance-logs.index', ['substance_id' => $substance->id]));
         $this->assertDatabaseMissing('controlled_substance_logs', ['id' => $log->id]);
     }
 }
