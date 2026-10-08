@@ -36,13 +36,17 @@
 - **MailerSend provider**: `app/Services/Notification/Email/MailerSendProvider.php` implementando `EmailProvider` com SDK send + attachments
 - **Z-API fix**: URL corrigida para `https://api.z-api.io/instances/{instance}/token/{token}/send-text`; telefone sanitizado (digits only, DDI 55); `Authorization: Bearer` removido
 - **NotificationLog**: `VaccinationReminderController::send()` agora cria `NotificationLog` (tipo `vaccine_reminder`) — consultável em Conf. Sistema → Logs de Notificação
-- **Mercado Pago restrito a Portal**: PDV/maquininha removido; `charge()` retorna erro; `supportedChannels()` → `['portal']`; `RuntimeEnviroment` → `MercadoPagoConfig::SERVER`/`LOCAL`
-- **PDV removido**: `channel` validation restrito a `portal`; opções `pdv`/`both` removidas dos formulários; JS morto (`startPdvCharge`/`copyPdvPix`) removido de `invoices/show.blade.php`; `InvoiceController::show()` não passa mais `$hasPdvGateway`
-- **Retrocompatibilidade `both`**: `scopeByChannel('portal')` busca `portal` e `both`; `isPortal()` retorna true para `both`; `getActiveGatewayForChannel('portal')` no PaymentService também busca ambos; `Portal/InvoiceController` idem
-- **Stone inativo**: provider fica sem uso (era exclusivo PDV/maquininha)
+- **Mercado Pago**: Portal / PDV; Point Smart e checkout online, conforme a configuração do canal
+- **MultiplusCard**: PDV; SmartPOS com webhook/polling
+- **PIX**: Portal / PDV; compatibilidade com `both` mantida para registros existentes
 - **Testes corrigidos**: `PaymentServiceTest` faz `withoutBranch()->update(['is_active' => false])` antes de criar gateway (data pollution); 34 testes passando (PaymentGateway unit/feature/controller + Invoice/Portal)
 
-### Suite Status
+### Estado atual de pagamentos (fonte: controllers e providers)
+- `PaymentGatewayController` aceita os canais `portal`, `pdv` e `both`.
+- Mercado Pago suporta `portal` e `pdv`; MultiplusCard suporta `pdv`; PIX suporta `portal` e `pdv`.
+- Registros `both` permanecem aceitos para compatibilidade, mas a disponibilidade efetiva deve ser validada pelo provider.
+
+### Status da suíte (histórico a reconfirmar)
 - **674+ passed, 1 skipped** (SoftDeleteTest — intencional), **0 failures** ✅
 - Data import commands (DbImport*) and DemoSeed intentionally not tested (one-shot scripts)
 

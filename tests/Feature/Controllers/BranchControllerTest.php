@@ -33,6 +33,9 @@ class BranchControllerTest extends ModuleTestCase
             'name' => 'Nova Unidade',
             'city' => 'São Paulo',
             'state' => 'SP',
+            'cnpj' => '12.345.678/0001-90',
+            'ie' => '123456789',
+            'im' => '987654321',
         ]);
         $response->assertRedirect(route('branches.index'));
         $this->assertDatabaseHas('branches', ['name' => 'Nova Unidade']);
@@ -63,6 +66,9 @@ class BranchControllerTest extends ModuleTestCase
         $branch = Branch::factory()->create(['name' => 'Antigo Nome']);
         $response = $this->put(route('branches.update', $branch), [
             'name' => 'Novo Nome',
+            'cnpj' => '12.345.678/0001-90',
+            'ie' => '123456789',
+            'im' => '987654321',
         ]);
         $response->assertRedirect(route('branches.index'));
         $this->assertDatabaseHas('branches', ['id' => $branch->id, 'name' => 'Novo Nome']);

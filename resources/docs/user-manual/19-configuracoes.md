@@ -71,9 +71,9 @@ O sistema oferece **três provedores** de gateway, cada um com características 
 
 | Provedor | Canal | Funcionamento | Conflito |
 |----------|-------|---------------|----------|
-| **PIX** | Portal / Ambos | QR Code EMV, confirmação manual | Apenas com outro PIX |
-| **Mercado Pago** | Portal | Checkout online (cartão/saldo) | Com não-PIX no mesmo canal |
-| **MultiplusCard (PinPDV)** | PDV / Ambos | Cobrança no SmartPOS, webhook+polling | Com não-PIX no mesmo canal |
+| **PIX** | Portal / PDV (compatibilidade `both`) | QR Code EMV, confirmação manual | Apenas com outro PIX |
+| **Mercado Pago** | Portal / PDV | Checkout online e Point Smart | Com não-PIX no mesmo canal |
+| **MultiplusCard (PinPDV)** | PDV | Cobrança no SmartPOS, webhook+polling | Com não-PIX no mesmo canal |
 
 #### Regras de Ativação
 
@@ -87,7 +87,7 @@ O sistema oferece **três provedores** de gateway, cada um com características 
 2. Clique em **Novo**
 3. Configure:
    - **Provedor**: PIX, Mercado Pago ou MultiplusCard (PinPDV)
-   - **Canal**: Portal (MP), PDV (MultiplusCard) ou Ambos
+   - **Canal**: Portal, PDV ou Ambos, respeitando os canais suportados pelo provedor
    - **Credenciais** conforme o provedor escolhido
    - **Unidade**: Todas as unidades ou uma específica
 4. Marque **Ativo** para habilitar

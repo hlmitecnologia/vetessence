@@ -11,7 +11,7 @@
 [![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
 [![GitHub stars](https://img.shields.io/github/stars/hlmitecnologia/vetessence?style=social)](https://github.com/hlmitecnologia/vetessence)
 [![GitHub issues](https://img.shields.io/github/issues/hlmitecnologia/vetessence)](https://github.com/hlmitecnologia/vetessence/issues)
-[![Versão](https://img.shields.io/badge/versão-v1.1.4-blue.svg)](https://github.com/hlmitecnologia/vetessence/releases)
+[![Versão](https://img.shields.io/badge/versão-v1.1.5-blue.svg)](https://github.com/hlmitecnologia/vetessence/releases)
 
 ---
 
@@ -117,7 +117,7 @@ O **VetEssence** é um sistema ERP completo para clínicas veterinárias, constr
 - **Modo Mobile (/m)** — Navegação inferior para veterinários em campo
 
 ### Administração
-- **Usuários** — Controle de acesso por papel (12 perfis), 160+ permissões CRUD
+- **Usuários** — Controle de acesso por papel (12 perfis), 284 permissões CRUD
 - **Unidades (Multi-filiais)** — Dados escopados por filial, dashboard corporativo
 - **Backup** — Backup automatizado com retenção configurável
 - **Auto-Update** — Atualização via GitHub diretamente do painel admin
@@ -142,7 +142,7 @@ O **VetEssence** é um sistema ERP completo para clínicas veterinárias, constr
 | Nota Fiscal (NFe/NFCe/NFSe) | Webmania, NFE.io |
 | Pagamentos | PIX; Mercado Pago; MultiplusCard (PinPDV) |
 | IA | OpenAI, Anthropic, Gemini, Grok, Ollama |
-| Testes | PHPUnit (675 testes, 0 falhas), Laravel Dusk (45 testes E2E em 9 fluxos) |
+| Testes | PHPUnit (2.087 testes descobertos; executar a suíte para confirmar o status), Laravel Dusk (45 testes E2E em 9 fluxos) |
 
 ---
 

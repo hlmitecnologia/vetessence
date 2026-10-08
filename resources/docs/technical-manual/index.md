@@ -316,9 +316,9 @@ Configurado via painel admin em **Configurações > Notificações** (aba E-mail
 
 | Provider | Classe | SDK | Canais | Conflito |
 |----------|--------|-----|--------|----------|
-| PIX | `PixStaticProvider` + `PixService` | `endroid/qr-code` | portal / ambos | Apenas com outro PIX |
+| PIX | `PixStaticProvider` + `PixService` | `endroid/qr-code` | portal / pdv (compatibilidade `both`) | Apenas com outro PIX |
 | Mercado Pago | `MercadoPagoProvider` | `mercadopago/dx-php` | portal / pdv (checkout cartão, saldo e Point) | Com não-PIX no mesmo canal |
-| MultiplusCard | `MultiplusCardProvider` | HTTP direto (PinPDV API) | pdv / ambos (SmartPOS) | Com não-PIX no mesmo canal |
+| MultiplusCard | `MultiplusCardProvider` | HTTP direto (PinPDV API) | pdv | Com não-PIX no mesmo canal |
 
 **Serviço PIX:**
 
@@ -342,7 +342,7 @@ Configurado via painel admin em **Configurações > Notificações** (aba E-mail
 | Campo | Descrição |
 |-------|-----------|
 | `provider` | Nome do provedor (`pix`, `mercadopago`, `multicard`) |
-| `channel` | Canal: `portal`, `pdv` ou `both` |
+| `channel` | Canal persistido: `portal`, `pdv` ou `both`; a disponibilidade efetiva depende do provider |
 | `public_key` | Chave PIX (CPF, CNPJ, e-mail, telefone ou EVP) |
 | `secret_key` | Access Token (MP), Token de acesso (MultiplusCard) |
 | `branch_id` | Unidade específica ou null (todas as unidades) |
