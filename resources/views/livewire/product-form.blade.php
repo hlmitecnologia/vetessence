@@ -73,6 +73,36 @@
         </div>
 
         <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Unidade de estoque *</label>
+                    <select wire:model="stock_unit" class="form-control">
+                        <option value="un">Unidade</option><option value="ml">ml</option><option value="mg">mg</option><option value="g">g</option><option value="comprimido">Comprimido</option><option value="dose">Dose</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Unidade de dispensação</label>
+                    <select wire:model="dispensing_unit" class="form-control">
+                        <option value="">Igual à unidade de estoque</option><option value="ml">ml</option><option value="mg">mg</option><option value="g">g</option><option value="comprimido">Comprimido</option><option value="dose">Dose</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4"><label>Conteúdo da embalagem</label><input type="number" step="0.0001" min="0.0001" wire:model="package_quantity" class="form-control"></div>
+            <div class="col-md-4"><label>Custo fracionado</label><input type="number" step="0.0001" min="0" wire:model="fractional_cost_price" class="form-control"></div>
+            <div class="col-md-4"><label>Venda fracionada</label><input type="number" step="0.0001" min="0" wire:model="fractional_sale_price" class="form-control"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-4"><div class="custom-control custom-switch"><input type="checkbox" wire:model="allows_fractional" class="custom-control-input" id="prodFractional"><label class="custom-control-label" for="prodFractional">Permitir fracionamento</label></div></div>
+            <div class="col-md-4"><div class="custom-control custom-switch"><input type="checkbox" wire:model="requires_container_tracking" class="custom-control-input" id="prodContainer"><label class="custom-control-label" for="prodContainer">Rastrear recipiente</label></div></div>
+            <div class="col-md-2"><label>Após abertura (dias)</label><input type="number" min="1" wire:model="opened_use_days" class="form-control" placeholder="5"></div>
+            <div class="col-md-2"><label>Após reconstituição</label><input type="number" min="1" wire:model="reconstituted_use_days" class="form-control" placeholder="5"></div>
+        </div>
+
+        <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Lote</label>

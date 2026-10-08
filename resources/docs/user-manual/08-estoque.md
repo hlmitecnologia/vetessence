@@ -291,3 +291,27 @@ O formulário de ajuste de estoque em **Estoque > Ajustar** unifica entrada, sa�
 
 ![Substâncias Controladas](../diagrams/14-fluxo-substancias.svg)
 *Clique na imagem para ampliar. Diagrama de Atividades UML com raias — retângulos = atividades, losangos = decisão, setas = fluxo entre atividades, raias = atores.*
+
+## Medicamentos fracionáveis, lotes e recipientes
+
+No cadastro do produto, marque **Permitir fracionamento** somente quando o medicamento puder ser usado ou vendido em unidade parcial. Configure a unidade de estoque/dispensação, o conteúdo da embalagem e, quando aplicável, **Rastrear recipiente**.
+
+- Unidades suportadas: `ml`, `mg`, `g`, `comprimido`, `dose` e `un`.
+- `cost_price`/`sale_price` são os valores da embalagem inteira.
+- `fractional_cost_price`/`fractional_sale_price` são os valores da unidade fracionada.
+- O prazo após abertura/reconstituição vem do cadastro; quando vazio, o sistema aplica **5 dias**.
+- A seleção automática usa FEFO: primeiro o lote/recipiente com vencimento mais próximo.
+
+### Reserva e administração
+
+O veterinário cria a reserva para atendimento ou internação. A Farmácia recebe uma notificação, separa e entrega o item. A baixa definitiva ocorre no consumo/administração, não na criação da reserva. O registro de administração informa quantidade, unidade, responsável, lote e recipiente.
+
+Exemplo: um frasco de `10 ml` recebe consumo de `2 ml`; o ledger registra `-2 ml` e o recipiente permanece com `8 ml`. A sobra pode ser devolvida usando o mesmo lote/recipiente, sem recriar o estoque.
+
+### Produtos antigos sem lote
+
+O saldo antigo deve ser inventariado e reconciliado por filial. A migração cria o lote `LEGACY-SIN-LOTE`, marcado como legado, sem inventar validade ou número de lote. Saldos cuja quantidade ou validade não seja confirmada ficam em quarentena até conferência e autorização. Novos recebimentos exigem lote, validade e unidade.
+
+### Aprovações
+
+Perdas, ajustes e reversões exigem aprovação de Super Admin/Admin por padrão. Essas permissões podem ser atribuídas a outros perfis/usuários pelo mecanismo existente. O Técnico mantém a regra atual e não recebe automaticamente permissão para prescrever, confirmar administração ou aprovar ajustes.

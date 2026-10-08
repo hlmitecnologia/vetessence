@@ -11,7 +11,7 @@
 [![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
 [![GitHub stars](https://img.shields.io/github/stars/hlmitecnologia/vetessence?style=social)](https://github.com/hlmitecnologia/vetessence)
 [![GitHub issues](https://img.shields.io/github/issues/hlmitecnologia/vetessence)](https://github.com/hlmitecnologia/vetessence/issues)
-[![Versão](https://img.shields.io/badge/versão-v1.1.5-blue.svg)](https://github.com/hlmitecnologia/vetessence/releases)
+[![Versão](https://img.shields.io/badge/versão-v1.2.0-blue.svg)](https://github.com/hlmitecnologia/vetessence/releases)
 
 ---
 
@@ -64,8 +64,10 @@ O **VetEssence** é um sistema ERP completo para clínicas veterinárias, constr
 - **Disponibilidade em Tempo Real** — Portal do Tutor mostra veterinários com turno e slots livres
 
 ### Farmácia & Estoque
-- **Produtos** — Catálogo completo com SKU, código de barras, preço custo/venda, rastreamento por lote
-- **Movimentações de Estoque** — Entrada/saída/ajuste/transferência, alertas de estoque baixo
+- **Produtos** — Catálogo completo com SKU, código de barras, preço custo/venda, rastreamento por lote e configuração de fracionamento
+- **Medicamentos fracionáveis** — Unidades ml, mg, g, comprimido e dose; preço/custo inteiro e fracionado; controle de abertura, validade pós-abertura e recipientes
+- **Reservas e administrações** — Reserva para atendimento/internação, notificação para Farmácia, consumo parcial e devolução auditável
+- **Movimentações de Estoque** — Entrada/saída/ajuste/transferência, alertas de estoque baixo, ledger decimal e FEFO por lote/recipiente
 - **Estoque Inteligente** — Dashboard com sugestão de reposição baseada em consumo médio + lead time + estoque de segurança, alerta de vencimentos
 - **Pedidos de Compra** — Fluxo de compras: rascunho → pedido → recebimento → conciliação
 - **Substâncias Controladas** — Rastreamento conforme ANVISA com registro de uso

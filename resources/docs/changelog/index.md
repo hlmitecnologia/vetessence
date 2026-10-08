@@ -2,6 +2,14 @@
 
 ## [Não versionado] — 2026-10-08
 
+## [v1.2.0] — 2026-10-08
+
+### Adicionado
+- Controle de medicamentos fracionáveis por unidade (`ml`, `mg`, `g`, comprimido, dose e unidade).
+- Lotes e recipientes por filial, consumo parcial, devolução, FEFO e validade pós-abertura.
+- Reservas para atendimento/internação, notificações para Farmácia e registros de administração.
+- Preço/custo separado para embalagem inteira e unidade fracionada.
+- Idempotência no ledger de movimentos e compatibilidade gradual com `products.stock`.
 ## [v1.1.5] — 2026-10-08
 ## [v1.1.4] — 2026-08-13
 ## [v1.1.3] — 2026-08-13

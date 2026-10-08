@@ -2,6 +2,16 @@
 
 Documentação para desenvolvedores e administradores do sistema.
 
+## Domínio de estoque fracionado (v1.2.0)
+
+O catálogo `products` define `stock_unit`, `dispensing_unit`, `package_quantity`, `allows_fractional`, `requires_container_tracking`, prazos de uso após abertura/reconstituição e preços fracionados. O saldo operacional é mantido em `inventory_batches` por produto/filial e, quando necessário, em `inventory_containers` por recipiente físico.
+
+`FractionalInventoryService` executa consumo e devolução dentro de transação, seleciona lote/recipiente por FEFO, rejeita validade expirada, registra quantidade decimal no `stock_movements` e atualiza `products.stock` apenas como compatibilidade/cache. A chave `idempotency_key` evita baixa duplicada.
+
+`medication_reservations` representa a comunicação veterinário–Farmácia e `medication_administrations` registra o consumo real. Criar uma reserva não reduz definitivamente o saldo; entregar/administrar é que gera o movimento. O perfil Técnico permanece sem autorização automática para administração ou aprovação.
+
+Produtos antigos sem lote devem ser inventariados e reconciliados. O lote sintético `LEGACY-SIN-LOTE` é marcado como legado; não se inventam validade ou lote. Quantidade/validade não confirmadas devem permanecer em quarentena. Novas entradas devem informar lote, validade e unidade.
+
 ---
 
 ## Arquitetura

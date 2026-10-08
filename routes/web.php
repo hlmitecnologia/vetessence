@@ -267,6 +267,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('services/type-map/{type}', 'App\Http\Controllers\ServiceController@updateTypeMap')
         ->name('services.type-map.update');
 
+    // Medication reservations and fractional administration
+    Route::post('medication-reservations', 'App\Http\Controllers\MedicationReservationController@store')->name('medication-reservations.store');
+    Route::post('medication-reservations/{medicationReservation}/fulfill', 'App\Http\Controllers\MedicationReservationController@fulfill')->name('medication-reservations.fulfill');
+    Route::post('medication-reservations/{medicationReservation}/administer', 'App\Http\Controllers\MedicationReservationController@administer')->name('medication-reservations.administer');
+    Route::post('medication-reservations/{medicationReservation}/cancel', 'App\Http\Controllers\MedicationReservationController@cancel')->name('medication-reservations.cancel');
+
     // Stock
     Route::get('stock', 'App\Http\Controllers\StockController@dashboard')->name('stock.index');
     Route::get('stock/movements', 'App\Http\Controllers\StockController@movements')->name('stock.movements');
