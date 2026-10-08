@@ -500,5 +500,9 @@ Plano aprovado e execução inicial realizada na release v1.2.0. A camada de dom
 - [x] Rotas de reserva, entrega, administração e cancelamento com notificação para Farmácia.
 - [x] Teste automatizado do cenário 10 ml → consumo 2 ml → saldo 8 ml.
 - [x] README, manual do usuário e manual técnico atualizados.
-- [ ] Migração operacional de saldos legados e reconciliação física em homologação/produção.
+- [x] Comando local de relatório/reconciliação legado com quarentena, CSV confirmado e `LEGACY-SIN-LOTE`.
+- [ ] Execução operacional da reconciliação física com inventário aprovado por filial.
+- [x] Validação E2E local do fluxo de Estoque: 9 testes e 9 assertions aprovados após iniciar a aplicação com o banco Dusk correto.
+- [ ] Suíte completa: ainda há 46 falhas em testes preexistentes/não relacionados, incluindo isolamento de banco, permissões e expectativas de redirects; não declarar aprovação global até corrigi-las.
+- [ ] Aplicação operacional da reconciliação legada após conferência física.
 - [ ] Suíte completa e validação E2E antes do deploy remoto.

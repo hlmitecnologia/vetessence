@@ -11,7 +11,7 @@
 [![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
 [![GitHub stars](https://img.shields.io/github/stars/hlmitecnologia/vetessence?style=social)](https://github.com/hlmitecnologia/vetessence)
 [![GitHub issues](https://img.shields.io/github/issues/hlmitecnologia/vetessence)](https://github.com/hlmitecnologia/vetessence/issues)
-[![Versão](https://img.shields.io/badge/versão-v1.2.0-blue.svg)](https://github.com/hlmitecnologia/vetessence/releases)
+[![Versão](https://img.shields.io/badge/versão-v1.2.1-blue.svg)](https://github.com/hlmitecnologia/vetessence/releases)
 
 ---
 

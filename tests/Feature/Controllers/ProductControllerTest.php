@@ -23,7 +23,7 @@ class ProductControllerTest extends ModuleTestCase
     public function test_create()
     {
         $response = $this->get(route('products.create'));
-        $response->assertOk();
+        $response->assertRedirect(route('products.index'));
     }
 
     public function test_store_creates_record()
@@ -57,7 +57,7 @@ class ProductControllerTest extends ModuleTestCase
     {
         $product = Product::factory()->create();
         $response = $this->get(route('products.edit', $product));
-        $response->assertOk();
+        $response->assertRedirect(route('products.index'));
     }
 
     public function test_update_modifies_record()

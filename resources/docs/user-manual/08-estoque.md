@@ -308,6 +308,15 @@ O veterinário cria a reserva para atendimento ou internação. A Farmácia rece
 
 Exemplo: um frasco de `10 ml` recebe consumo de `2 ml`; o ledger registra `-2 ml` e o recipiente permanece com `8 ml`. A sobra pode ser devolvida usando o mesmo lote/recipiente, sem recriar o estoque.
 
+### Diagramas dos novos fluxos
+
+- ![Medicamento fracionável, lote, recipiente e FEFO](../diagrams/33-fluxo-medicamento-fracionado.svg)
+- ![Reserva, Farmácia e administração](../diagrams/34-fluxo-reserva-farmacia.svg)
+- ![Reconciliação de legado e quarentena](../diagrams/35-fluxo-legado-quarentena.svg)
+- ![Venda fracionada ao tutor](../diagrams/36-fluxo-venda-fracionada.svg)
+
+Os diagramas mostram os pontos de decisão, atores e registros gerados. Eles complementam os procedimentos abaixo e não substituem as permissões configuradas no sistema.
+
 ### Produtos antigos sem lote
 
 O saldo antigo deve ser inventariado e reconciliado por filial. A migração cria o lote `LEGACY-SIN-LOTE`, marcado como legado, sem inventar validade ou número de lote. Saldos cuja quantidade ou validade não seja confirmada ficam em quarentena até conferência e autorização. Novos recebimentos exigem lote, validade e unidade.

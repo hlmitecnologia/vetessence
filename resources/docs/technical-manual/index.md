@@ -12,6 +12,35 @@ O catálogo `products` define `stock_unit`, `dispensing_unit`, `package_quantity
 
 Produtos antigos sem lote devem ser inventariados e reconciliados. O lote sintético `LEGACY-SIN-LOTE` é marcado como legado; não se inventam validade ou lote. Quantidade/validade não confirmadas devem permanecer em quarentena. Novas entradas devem informar lote, validade e unidade.
 
+### Reconciliação operacional de legado
+
+O relatório inicial não altera o banco:
+
+```bash
+php artisan inventory:reconcile-legacy --json
+```
+
+Para aplicar saldos não confirmados em quarentena:
+
+```bash
+php artisan inventory:reconcile-legacy --apply --branch=ID_DA_FILIAL
+```
+
+Para aplicar uma reconciliação física confirmada, use um CSV com as colunas `product_id,branch_id,quantity,unit,expiration_date`:
+
+```bash
+php artisan inventory:reconcile-legacy --confirm-file=/caminho/reconciliacao.csv --apply
+```
+
+O comando nunca inventa lote, validade ou custo. Sem confirmação física, cria `LEGACY-SIN-LOTE` em `quarantined`; somente linhas confirmadas com quantidade, unidade e validade podem ficar `active`. Execute primeiro sem `--apply`, revise o relatório e mantenha backup antes da aplicação.
+
+### Diagramas de referência
+
+- `33-fluxo-medicamento-fracionado.svg`: recebimento, recipiente, FEFO, consumo parcial e validade pós-abertura.
+- `34-fluxo-reserva-farmacia.svg`: reserva, notificação, separação, entrega, administração e devolução/cancelamento.
+- `35-fluxo-legado-quarentena.svg`: reconciliação física, lote sintético, quarentena e relatório.
+- `36-fluxo-venda-fracionada.svg`: fatura, preço fracionado, baixa e ledger auditável.
+
 ---
 
 ## Arquitetura
